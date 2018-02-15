@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 4053681432
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: song3_bnthtr.acb.unity3d
+      Dependencies: {}
+    Info_1:
+      Name: song3_blsymp.acb.unity3d
+      Dependencies: {}

@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlatiumTheater.Plugins", "PlatiumTheater.Plugins.csproj", "{12E73D70-8CE4-062B-4109-C2293F8456A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlatiumTheater", "PlatiumTheater.csproj", "{D61973E0-B4B0-09F6-F212-6FACD163D766}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlatiumTheater.Editor", "PlatiumTheater.Editor.csproj", "{8E487F44-73B0-4459-5355-E6D39944C353}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12E73D70-8CE4-062B-4109-C2293F8456A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12E73D70-8CE4-062B-4109-C2293F8456A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12E73D70-8CE4-062B-4109-C2293F8456A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12E73D70-8CE4-062B-4109-C2293F8456A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D61973E0-B4B0-09F6-F212-6FACD163D766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D61973E0-B4B0-09F6-F212-6FACD163D766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D61973E0-B4B0-09F6-F212-6FACD163D766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D61973E0-B4B0-09F6-F212-6FACD163D766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E487F44-73B0-4459-5355-E6D39944C353}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E487F44-73B0-4459-5355-E6D39944C353}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E487F44-73B0-4459-5355-E6D39944C353}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E487F44-73B0-4459-5355-E6D39944C353}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 1181871989
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 24536fa411eb575c41d7996205e6dc3a
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 1033bf7ddfd4c6d43e7a6382c0a0a61a
+HashAppended: 0
+ClassTypes:
+- Class: 49
+  Script: {instanceID: 0}
+Assets:
+- Assets/IMas/Resources/ADX2/Song3/song3_blsymp.acb.bytes
+Dependencies: []

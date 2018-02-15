@@ -1,0 +1,3 @@
+[submodule "thirdparty/UnityStudioLib"]
+	path = thirdparty/UnityStudioLib
+	url = https://github.com/OpenMLTD/UnityStudioLib.git

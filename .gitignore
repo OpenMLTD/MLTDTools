@@ -15,6 +15,7 @@ unity/PlatiumTheater/Build
 *.csproj.user
 *.sln.user
 *.DotSettings.user
+*.DotSettings
 
 *.data
 *.[Pp]rivate.cs

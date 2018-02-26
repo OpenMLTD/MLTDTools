@@ -7,12 +7,12 @@ using YamlDotNet.Serialization.NamingConventions;
 
 public static class BuildAssetBundles {
 
-    [MenuItem("MLTD Tools/Build AssetBundles/Android")]
+    [MenuItem("Tools/MLTD Tools/Build AssetBundles/Android")]
     public static void BuildAllAndroidAssetBundlesExtra() {
         PlatformBuildAllAssetBundles(BuildTarget.Android, "Android");
     }
 
-    [MenuItem("MLTD Tools/Build AssetBundles/iOS")]
+    [MenuItem("Tools/MLTD Tools/Build AssetBundles/iOS")]
     public static void BuildAlliOSAssetBundles() {
         PlatformBuildAllAssetBundles(BuildTarget.iOS, "iOS");
     }

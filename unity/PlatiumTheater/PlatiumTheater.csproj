@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.2f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -90,10 +92,23 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Imas\Live\ColorRGBA.cs" />
+    <Compile Include="Assets\Imas\Live\EventConductorData.cs" />
+    <Compile Include="Assets\Imas\Live\EventNoteData.cs" />
+    <Compile Include="Assets\Imas\Live\EventScenarioData.cs" />
+    <Compile Include="Assets\Imas\Live\NoteScrObj.cs" />
+    <Compile Include="Assets\Imas\Live\PolyPoint.cs" />
+    <Compile Include="Assets\Imas\Live\ScenarioScrObj.cs" />
+    <Compile Include="Assets\Imas\Live\TexTargetName.cs" />
+    <Compile Include="Assets\Imas\Live\VjParam.cs" />
     <Compile Include="Assets\Scripts\Runtime\CostumeDatabase.cs" />
     <Compile Include="Assets\Scripts\Runtime\ErrorLog.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_fumen_sobj.txt" />
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_sobj.txt" />
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_tate_sobj.txt" />
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_yoko_sobj.txt" />
     <None Include="Assets\Plugins\YamlDotNet\Readme.txt" />
     <None Include="Assets\Plugins\YamlDotNet\YamlDotNet.license.txt" />
     <None Include="Assets\Readme.txt" />

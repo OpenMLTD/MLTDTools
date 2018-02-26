@@ -287,6 +287,10 @@
     <Compile Include="Assets\Plugins\YamlDotNet\Serialization\YamlMember.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_fumen_sobj.txt" />
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_sobj.txt" />
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_tate_sobj.txt" />
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_yoko_sobj.txt" />
     <None Include="Assets\Plugins\YamlDotNet\Readme.txt" />
     <None Include="Assets\Plugins\YamlDotNet\YamlDotNet.license.txt" />
     <None Include="Assets\Readme.txt" />

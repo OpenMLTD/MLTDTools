@@ -1,0 +1,799 @@
+PPtr<GameObject> m_GameObject
+	int m_FileID = 0
+	SInt64 m_PathID = 0
+UInt8 m_Enabled = 1
+PPtr<MonoScript> m_Script
+	int m_FileID = 0
+	SInt64 m_PathID = 745042210871120355
+string m_Name = "shtstr_scenario_tate_sobj"
+EventScenarioData scenario
+	Array Array
+	int size = 7
+		[0]
+		EventScenarioData data
+			double absTime = 0
+			UInt8 selected = 0
+			SInt64 tick = 0
+			int measure = 0
+			int beat = 0
+			int track = 10
+			int type = 46
+			int param = 0
+			int target = 0
+			SInt64 duration = 0
+			string str = ""
+			string info = ""
+			int on = 0
+			int on2 = 0
+			ColorRGBA col
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			ColorRGBA col2
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			vector cols
+				Array Array
+				int size = 0
+			PPtr<$Texture> tex
+				int m_FileID = 0
+				SInt64 m_PathID = 0
+			int texInx = -1
+			int trig = 0
+			float speed = 1
+			int idol = 0
+			vector mute
+				Array Array
+				int size = 0
+			UInt8 addf = 0
+			float eye_x = 0
+			float eye_y = 0
+			vector formation
+				Array Array
+				int size = 0
+			UInt8 appeal = 0
+			int cheeklv = 0
+			UInt8 eyeclose = 0
+			UInt8 talking = 0
+			UInt8 delay = 0
+			vector clratio
+				Array Array
+				int size = 0
+			vector clcols
+				Array Array
+				int size = 0
+			int camCut = -1
+			VjParam vjparam
+				UInt8 use = 0
+				UInt8 renderTex = 0
+				int col = 8
+				int row = 4
+				int begin = 0
+				int speed = 16
+				ColorRGBA color
+					float r = 0
+					float g = 0
+					float b = 0
+					float a = 0
+		[1]
+		EventScenarioData data
+			double absTime = 88
+			UInt8 selected = 0
+			SInt64 tick = 105600
+			int measure = 0
+			int beat = 0
+			int track = 10
+			int type = 58
+			int param = 1
+			int target = 0
+			SInt64 duration = 0
+			string str = ""
+			string info = ""
+			int on = 0
+			int on2 = 0
+			ColorRGBA col
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			ColorRGBA col2
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			vector cols
+				Array Array
+				int size = 0
+			PPtr<$Texture> tex
+				int m_FileID = 0
+				SInt64 m_PathID = 0
+			int texInx = -1
+			int trig = 0
+			float speed = 1
+			int idol = 1
+			vector mute
+				Array Array
+				int size = 0
+			UInt8 addf = 0
+			float eye_x = 0
+			float eye_y = 0
+			vector formation
+				Array Array
+				int size = 0
+			UInt8 appeal = 1
+			int cheeklv = 0
+			UInt8 eyeclose = 0
+			UInt8 talking = 0
+			UInt8 delay = 0
+			vector clratio
+				Array Array
+				int size = 0
+			vector clcols
+				Array Array
+				int size = 0
+			int camCut = 0
+			VjParam vjparam
+				UInt8 use = 0
+				UInt8 renderTex = 0
+				int col = 8
+				int row = 4
+				int begin = 0
+				int speed = 16
+				ColorRGBA color
+					float r = 0
+					float g = 0
+					float b = 0
+					float a = 0
+		[2]
+		EventScenarioData data
+			double absTime = 88
+			UInt8 selected = 0
+			SInt64 tick = 105600
+			int measure = 0
+			int beat = 0
+			int track = 10
+			int type = 52
+			int param = 1
+			int target = 0
+			SInt64 duration = 0
+			string str = ""
+			string info = ""
+			int on = 0
+			int on2 = 0
+			ColorRGBA col
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			ColorRGBA col2
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			vector cols
+				Array Array
+				int size = 0
+			PPtr<$Texture> tex
+				int m_FileID = 0
+				SInt64 m_PathID = 0
+			int texInx = -1
+			int trig = 0
+			float speed = 1
+			int idol = 1
+			vector mute
+				Array Array
+				int size = 0
+			UInt8 addf = 0
+			float eye_x = 0
+			float eye_y = 0
+			vector formation
+				Array Array
+				int size = 5
+					[0]
+					Vector4f data
+						float x = 0
+						float y = 0
+						float z = 0
+						float w = 0
+					[1]
+					Vector4f data
+						float x = 0
+						float y = 0
+						float z = 0
+						float w = 0
+					[2]
+					Vector4f data
+						float x = 0
+						float y = 0
+						float z = 0
+						float w = 0
+					[3]
+					Vector4f data
+						float x = 0
+						float y = 0
+						float z = 0
+						float w = 0
+					[4]
+					Vector4f data
+						float x = 0
+						float y = 0
+						float z = 0
+						float w = 0
+			UInt8 appeal = 1
+			int cheeklv = 0
+			UInt8 eyeclose = 0
+			UInt8 talking = 0
+			UInt8 delay = 0
+			vector clratio
+				Array Array
+				int size = 0
+			vector clcols
+				Array Array
+				int size = 0
+			int camCut = 0
+			VjParam vjparam
+				UInt8 use = 0
+				UInt8 renderTex = 0
+				int col = 8
+				int row = 4
+				int begin = 0
+				int speed = 16
+				ColorRGBA color
+					float r = 0
+					float g = 0
+					float b = 0
+					float a = 0
+		[3]
+		EventScenarioData data
+			double absTime = 88
+			UInt8 selected = 0
+			SInt64 tick = 105600
+			int measure = 0
+			int beat = 0
+			int track = 11
+			int type = 50
+			int param = 1
+			int target = 0
+			SInt64 duration = 0
+			string str = ""
+			string info = ""
+			int on = 0
+			int on2 = 0
+			ColorRGBA col
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			ColorRGBA col2
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			vector cols
+				Array Array
+				int size = 0
+			PPtr<$Texture> tex
+				int m_FileID = 0
+				SInt64 m_PathID = 0
+			int texInx = -1
+			int trig = 0
+			float speed = 1
+			int idol = 0
+			vector mute
+				Array Array
+				int size = 0
+			UInt8 addf = 0
+			float eye_x = 0
+			float eye_y = 0
+			vector formation
+				Array Array
+				int size = 0
+			UInt8 appeal = 1
+			int cheeklv = 0
+			UInt8 eyeclose = 0
+			UInt8 talking = 0
+			UInt8 delay = 0
+			vector clratio
+				Array Array
+				int size = 0
+			vector clcols
+				Array Array
+				int size = 0
+			int camCut = -1
+			VjParam vjparam
+				UInt8 use = 0
+				UInt8 renderTex = 0
+				int col = 8
+				int row = 4
+				int begin = 0
+				int speed = 16
+				ColorRGBA color
+					float r = 0
+					float g = 0
+					float b = 0
+					float a = 0
+		[4]
+		EventScenarioData data
+			double absTime = 91.0833333333333
+			UInt8 selected = 0
+			SInt64 tick = 109300
+			int measure = 0
+			int beat = 0
+			int track = 10
+			int type = 58
+			int param = 0
+			int target = 0
+			SInt64 duration = 0
+			string str = ""
+			string info = ""
+			int on = 0
+			int on2 = 0
+			ColorRGBA col
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			ColorRGBA col2
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			vector cols
+				Array Array
+				int size = 0
+			PPtr<$Texture> tex
+				int m_FileID = 0
+				SInt64 m_PathID = 0
+			int texInx = -1
+			int trig = 0
+			float speed = 1
+			int idol = 1
+			vector mute
+				Array Array
+				int size = 0
+			UInt8 addf = 0
+			float eye_x = 0
+			float eye_y = 0
+			vector formation
+				Array Array
+				int size = 0
+			UInt8 appeal = 1
+			int cheeklv = 0
+			UInt8 eyeclose = 0
+			UInt8 talking = 0
+			UInt8 delay = 0
+			vector clratio
+				Array Array
+				int size = 0
+			vector clcols
+				Array Array
+				int size = 0
+			int camCut = 1
+			VjParam vjparam
+				UInt8 use = 0
+				UInt8 renderTex = 0
+				int col = 8
+				int row = 4
+				int begin = 0
+				int speed = 16
+				ColorRGBA color
+					float r = 0
+					float g = 0
+					float b = 0
+					float a = 0
+		[5]
+		EventScenarioData data
+			double absTime = 92.5
+			UInt8 selected = 0
+			SInt64 tick = 111000
+			int measure = 0
+			int beat = 0
+			int track = 10
+			int type = 58
+			int param = 1
+			int target = 0
+			SInt64 duration = 0
+			string str = ""
+			string info = ""
+			int on = 0
+			int on2 = 0
+			ColorRGBA col
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			ColorRGBA col2
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			vector cols
+				Array Array
+				int size = 0
+			PPtr<$Texture> tex
+				int m_FileID = 0
+				SInt64 m_PathID = 0
+			int texInx = -1
+			int trig = 0
+			float speed = 1
+			int idol = 1
+			vector mute
+				Array Array
+				int size = 0
+			UInt8 addf = 0
+			float eye_x = 0
+			float eye_y = 0
+			vector formation
+				Array Array
+				int size = 0
+			UInt8 appeal = 1
+			int cheeklv = 0
+			UInt8 eyeclose = 0
+			UInt8 talking = 0
+			UInt8 delay = 0
+			vector clratio
+				Array Array
+				int size = 0
+			vector clcols
+				Array Array
+				int size = 0
+			int camCut = 2
+			VjParam vjparam
+				UInt8 use = 0
+				UInt8 renderTex = 0
+				int col = 8
+				int row = 4
+				int begin = 0
+				int speed = 16
+				ColorRGBA color
+					float r = 0
+					float g = 0
+					float b = 0
+					float a = 0
+		[6]
+		EventScenarioData data
+			double absTime = 94.95
+			UInt8 selected = 0
+			SInt64 tick = 113940
+			int measure = 0
+			int beat = 0
+			int track = 10
+			int type = 58
+			int param = 1
+			int target = 0
+			SInt64 duration = 0
+			string str = ""
+			string info = ""
+			int on = 0
+			int on2 = 0
+			ColorRGBA col
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			ColorRGBA col2
+				float r = 1
+				float g = 1
+				float b = 1
+				float a = 1
+			vector cols
+				Array Array
+				int size = 0
+			PPtr<$Texture> tex
+				int m_FileID = 0
+				SInt64 m_PathID = 0
+			int texInx = -1
+			int trig = 0
+			float speed = 1
+			int idol = 1
+			vector mute
+				Array Array
+				int size = 0
+			UInt8 addf = 0
+			float eye_x = 0
+			float eye_y = 0
+			vector formation
+				Array Array
+				int size = 0
+			UInt8 appeal = 1
+			int cheeklv = 0
+			UInt8 eyeclose = 0
+			UInt8 talking = 0
+			UInt8 delay = 0
+			vector clratio
+				Array Array
+				int size = 0
+			vector clcols
+				Array Array
+				int size = 0
+			int camCut = 3
+			VjParam vjparam
+				UInt8 use = 0
+				UInt8 renderTex = 0
+				int col = 8
+				int row = 4
+				int begin = 0
+				int speed = 16
+				ColorRGBA color
+					float r = 0
+					float g = 0
+					float b = 0
+					float a = 0
+TexTargetName texs
+	Array Array
+	int size = 0
+EventScenarioData ap_st
+	double absTime = 88
+	UInt8 selected = 0
+	SInt64 tick = 105600
+	int measure = 0
+	int beat = 0
+	int track = 5
+	int type = 53
+	int param = 0
+	int target = 0
+	SInt64 duration = 11520
+	string str = ""
+	string info = ""
+	int on = 0
+	int on2 = 0
+	ColorRGBA col
+		float r = 1
+		float g = 1
+		float b = 1
+		float a = 1
+	ColorRGBA col2
+		float r = 1
+		float g = 1
+		float b = 1
+		float a = 1
+	vector cols
+		Array Array
+		int size = 0
+	PPtr<$Texture> tex
+		int m_FileID = 0
+		SInt64 m_PathID = 0
+	int texInx = -1
+	int trig = 0
+	float speed = 1
+	int idol = 0
+	vector mute
+		Array Array
+		int size = 0
+	UInt8 addf = 0
+	float eye_x = 0
+	float eye_y = 0
+	vector formation
+		Array Array
+		int size = 0
+	UInt8 appeal = 0
+	int cheeklv = 0
+	UInt8 eyeclose = 0
+	UInt8 talking = 0
+	UInt8 delay = 0
+	vector clratio
+		Array Array
+		int size = 0
+	vector clcols
+		Array Array
+		int size = 0
+	int camCut = -1
+	VjParam vjparam
+		UInt8 use = 0
+		UInt8 renderTex = 0
+		int col = 8
+		int row = 4
+		int begin = 0
+		int speed = 16
+		ColorRGBA color
+			float r = 0
+			float g = 0
+			float b = 0
+			float a = 0
+EventScenarioData ap_pose
+	double absTime = 0
+	UInt8 selected = 0
+	SInt64 tick = 0
+	int measure = 0
+	int beat = 0
+	int track = 5
+	int type = 0
+	int param = 0
+	int target = 0
+	SInt64 duration = 0
+	string str = ""
+	string info = ""
+	int on = 1
+	int on2 = 1
+	ColorRGBA col
+		float r = 1
+		float g = 1
+		float b = 1
+		float a = 1
+	ColorRGBA col2
+		float r = 1
+		float g = 1
+		float b = 1
+		float a = 1
+	vector cols
+		Array Array
+		int size = 0
+	PPtr<$Texture> tex
+		int m_FileID = 0
+		SInt64 m_PathID = 0
+	int texInx = 0
+	int trig = 0
+	float speed = 1
+	int idol = 0
+	vector mute
+		Array Array
+		int size = 0
+	UInt8 addf = 0
+	float eye_x = 0
+	float eye_y = 0
+	vector formation
+		Array Array
+		int size = 0
+	UInt8 appeal = 0
+	int cheeklv = 0
+	UInt8 eyeclose = 0
+	UInt8 talking = 0
+	UInt8 delay = 0
+	vector clratio
+		Array Array
+		int size = 0
+	vector clcols
+		Array Array
+		int size = 0
+	int camCut = -1
+	VjParam vjparam
+		UInt8 use = 0
+		UInt8 renderTex = 0
+		int col = 8
+		int row = 4
+		int begin = 0
+		int speed = 16
+		ColorRGBA color
+			float r = 0
+			float g = 0
+			float b = 0
+			float a = 0
+EventScenarioData ap_end
+	double absTime = 0
+	UInt8 selected = 0
+	SInt64 tick = 0
+	int measure = 0
+	int beat = 0
+	int track = 5
+	int type = 0
+	int param = 0
+	int target = 0
+	SInt64 duration = 0
+	string str = ""
+	string info = ""
+	int on = 1
+	int on2 = 1
+	ColorRGBA col
+		float r = 1
+		float g = 1
+		float b = 1
+		float a = 1
+	ColorRGBA col2
+		float r = 1
+		float g = 1
+		float b = 1
+		float a = 1
+	vector cols
+		Array Array
+		int size = 0
+	PPtr<$Texture> tex
+		int m_FileID = 0
+		SInt64 m_PathID = 0
+	int texInx = 0
+	int trig = 0
+	float speed = 1
+	int idol = 0
+	vector mute
+		Array Array
+		int size = 0
+	UInt8 addf = 0
+	float eye_x = 0
+	float eye_y = 0
+	vector formation
+		Array Array
+		int size = 0
+	UInt8 appeal = 0
+	int cheeklv = 0
+	UInt8 eyeclose = 0
+	UInt8 talking = 0
+	UInt8 delay = 0
+	vector clratio
+		Array Array
+		int size = 0
+	vector clcols
+		Array Array
+		int size = 0
+	int camCut = -1
+	VjParam vjparam
+		UInt8 use = 0
+		UInt8 renderTex = 0
+		int col = 8
+		int row = 4
+		int begin = 0
+		int speed = 16
+		ColorRGBA color
+			float r = 0
+			float g = 0
+			float b = 0
+			float a = 0
+EventScenarioData fine_ev
+	double absTime = 0
+	UInt8 selected = 0
+	SInt64 tick = 0
+	int measure = 0
+	int beat = 0
+	int track = 5
+	int type = 0
+	int param = 0
+	int target = 0
+	SInt64 duration = 0
+	string str = ""
+	string info = ""
+	int on = 1
+	int on2 = 1
+	ColorRGBA col
+		float r = 1
+		float g = 1
+		float b = 1
+		float a = 1
+	ColorRGBA col2
+		float r = 1
+		float g = 1
+		float b = 1
+		float a = 1
+	vector cols
+		Array Array
+		int size = 0
+	PPtr<$Texture> tex
+		int m_FileID = 0
+		SInt64 m_PathID = 0
+	int texInx = 0
+	int trig = 0
+	float speed = 1
+	int idol = 0
+	vector mute
+		Array Array
+		int size = 0
+	UInt8 addf = 0
+	float eye_x = 0
+	float eye_y = 0
+	vector formation
+		Array Array
+		int size = 0
+	UInt8 appeal = 0
+	int cheeklv = 0
+	UInt8 eyeclose = 0
+	UInt8 talking = 0
+	UInt8 delay = 0
+	vector clratio
+		Array Array
+		int size = 0
+	vector clcols
+		Array Array
+		int size = 0
+	int camCut = -1
+	VjParam vjparam
+		UInt8 use = 0
+		UInt8 renderTex = 0
+		int col = 8
+		int row = 4
+		int begin = 0
+		int speed = 16
+		ColorRGBA color
+			float r = 0
+			float g = 0
+			float b = 0
+			float a = 0

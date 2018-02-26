@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{906E225D-7C75-4836-BC90-350547238F4E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenMLTD.AllStarsTheater</RootNamespace>
-    <AssemblyName>AllStarsTheater.Common</AssemblyName>
+    <ProjectGuid>{3EDDA55A-573C-4855-B2C6-3D4E0A122E24}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>OpenMLTD.MLTDTools.Applications.HcaDec</RootNamespace>
+    <AssemblyName>HcaDec</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +22,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -30,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="CommandLine, Version=2.2.1.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.2.1\lib\net45\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,36 +44,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationHelper.cs" />
-    <Compile Include="Database\AssetInfo.cs" />
-    <Compile Include="Database\AssetInfoList.cs" />
-    <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="MathHelper.cs" />
-    <Compile Include="Mltd\Entities\IdolInfo.cs" />
-    <Compile Include="Net\TcpForwarderSlim.cs" />
-    <Compile Include="TheaterHelper.cs" />
-    <Compile Include="Core\DisposableBase.cs" />
-    <Compile Include="Core\Endian.cs" />
-    <Compile Include="Core\EndianBinaryReader.cs" />
-    <Compile Include="Core\EndianBinaryWriter.cs" />
-    <Compile Include="Extensions\ArrayExtensions.cs" />
-    <Compile Include="Extensions\StreamExtensions.cs" />
-    <Compile Include="MltdConstants.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\SystemEndian.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Tests\db-9300.data">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\AllStarsTheater.Mltd.Entities\AllStarsTheater.Mltd.Entities.csproj">
-      <Project>{b96a8b56-db9e-419c-bebc-f9d2ccf0345b}</Project>
-      <Name>AllStarsTheater.Mltd.Entities</Name>
+    <ProjectReference Include="..\..\thirdparty\DereTore\Exchange\DereTore.Exchange.Audio.HCA\DereTore.Exchange.Audio.HCA.csproj">
+      <Project>{7c6fadd7-a0bb-4bf3-8992-3d89ace1cc69}</Project>
+      <Name>DereTore.Exchange.Audio.HCA</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenMLTD.MLTDTools.Common.Theater\OpenMLTD.MLTDTools.Common.Theater.csproj">
+      <Project>{cd776040-5458-4b82-96a9-bfb45ea1d909}</Project>
+      <Name>OpenMLTD.MLTDTools.Common.Theater</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

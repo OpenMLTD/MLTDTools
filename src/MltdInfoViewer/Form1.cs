@@ -9,7 +9,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenMLTD.AllStarsTheater;
 using OpenMLTD.AllStarsTheater.Database;
+using OpenMLTD.AllStarsTheater.Extensions;
 using OpenMLTD.AllStarsTheater.Mltd.Entities;
+using UnityStudio.Extensions;
+using UnityStudio.Models;
 
 namespace MltdInfoViewer {
     public partial class Form1 : Form {
@@ -34,20 +37,86 @@ namespace MltdInfoViewer {
             lvwCostumes.Columns.Add("Category");
             lvwCostumes.Columns.Add("Number");
             lvwCostumes.Columns.Add("Post");
+
+            lvwManifest.Columns.Add("Name");
+            lvwManifest.Columns.Add("Remote Name");
+            lvwManifest.Columns.Add("Hash");
+            lvwManifest.Columns.Add("Size");
         }
 
         private void RegisterEventHandlers() {
             btnSelectCardsDatabase.Click += BtnSelectCardsDatabase_Click;
             btnSelectCostumesDatabase.Click += BtnSelectCostumesDatabase_Click;
+            btnSelectManifestDatabase.Click += BtnSelectManifestDatabase_Click;
+            btnManifestFilter.Click += BtnManifestFilter_Click;
+            btnManifestReset.Click += BtnManifestReset_Click;
         }
 
-        private void BtnSelectCostumesDatabase_Click(object sender, EventArgs e) {
+        private void BtnManifestReset_Click(object sender, EventArgs e) {
+            if (_assetInfoList == null) {
+                return;
+            }
+
+            lvwManifest.Items.Clear();
+
+            var listViewItems = new List<ListViewItem>();
+
+            foreach (var assetInfo in _assetInfoList.Assets) {
+                var lvi = new ListViewItem(assetInfo.ResourceName);
+                lvi.SubItems.Add(assetInfo.RemoteName);
+                lvi.SubItems.Add(assetInfo.ContentHash);
+                var humanReadableSize = MathHelper.GetHumanReadableFileSize(assetInfo.Size);
+                lvi.SubItems.Add(humanReadableSize);
+                listViewItems.Add(lvi);
+            }
+
+            lvwManifest.BeginUpdate();
+            lvwManifest.Items.AddRange(listViewItems.ToArray());
+            lvwManifest.EndUpdate();
+        }
+
+        private void BtnManifestFilter_Click(object sender, EventArgs e) {
+            var filter = txtManifestFilter.Text;
+
+            if (filter.Length == 0) {
+                BtnManifestReset_Click(sender, e);
+                return;
+            }
+
+            if (_assetInfoList == null) {
+                return;
+            }
+
+            lvwManifest.Items.Clear();
+
+            var listViewItems = new List<ListViewItem>();
+
+            foreach (var assetInfo in _assetInfoList.Assets) {
+                if (!assetInfo.ResourceName.Contains(filter, StringComparison.OrdinalIgnoreCase)) {
+                    continue;
+                }
+
+                var lvi = new ListViewItem(assetInfo.ResourceName);
+                lvi.SubItems.Add(assetInfo.RemoteName);
+                lvi.SubItems.Add(assetInfo.ContentHash);
+                var humanReadableSize = MathHelper.GetHumanReadableFileSize(assetInfo.Size);
+                lvi.SubItems.Add(humanReadableSize);
+
+                listViewItems.Add(lvi);
+            }
+
+            lvwManifest.BeginUpdate();
+            lvwManifest.Items.AddRange(listViewItems.ToArray());
+            lvwManifest.EndUpdate();
+        }
+
+        private void BtnSelectManifestDatabase_Click(object sender, EventArgs e) {
             ofd.FileName = string.Empty;
             ofd.CheckFileExists = true;
             ofd.ValidateNames = true;
             ofd.ShowReadOnly = false;
             ofd.ReadOnlyChecked = false;
-            ofd.Filter = "Costume Database (chara_costume_release.json)|chara_costume_release.json";
+            ofd.Filter = "Manifest Database (*.data)|*.data";
 
             var r = ofd.ShowDialog(this);
 
@@ -56,9 +125,74 @@ namespace MltdInfoViewer {
             }
 
             var filePath = ofd.FileName;
-            var text = File.ReadAllText(filePath);
+            var bytes = File.ReadAllBytes(filePath);
+            AssetInfoList assetInfoList;
 
-            var obj = JsonConvert.DeserializeObject(text);
+            try {
+                assetInfoList = AssetInfoList.Parse(bytes, MltdConstants.Utf8WithoutBom);
+            } catch (Exception ex) {
+                MessageBox.Show(ex.ToString(), ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            txtManifestDatabasePath.Text = filePath;
+
+            _assetInfoList = assetInfoList;
+
+            BtnManifestReset_Click(sender, e);
+        }
+
+        private void BtnSelectCostumesDatabase_Click(object sender, EventArgs e) {
+            ofd.FileName = string.Empty;
+            ofd.CheckFileExists = true;
+            ofd.ValidateNames = true;
+            ofd.ShowReadOnly = false;
+            ofd.ReadOnlyChecked = false;
+            ofd.Filter = "Costume Database (chara_costume_release.json)|chara_costume_release.json|Costume Database (chara_costume_release.unity3d)|chara_costume_release.unity3d";
+
+            var r = ofd.ShowDialog(this);
+
+            if (r == DialogResult.Cancel) {
+                return;
+            }
+
+            var selectedFilterIndex = ofd.FilterIndex;
+            var filePath = ofd.FileName;
+
+            string jsonText = null;
+
+            switch (selectedFilterIndex) {
+                case 1:
+                    jsonText = File.ReadAllText(filePath);
+                    break;
+                case 2: {
+                        using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                            var assetBundle = new BundleFile(fileStream, false);
+
+                            foreach (var assetFile in assetBundle.AssetFiles) {
+                                foreach (var preloadData in assetFile.PreloadDataList) {
+                                    if (preloadData.KnownType != KnownClassID.TextAsset) {
+                                        continue;
+                                    }
+
+                                    var textAsset = preloadData.LoadAsTextAsset(false);
+
+                                    jsonText = textAsset.GetString();
+                                }
+                            }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(jsonText)) {
+                            MessageBox.Show("The file selected does not contain costume data.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(selectedFilterIndex));
+            }
+
+            var obj = JsonConvert.DeserializeObject(jsonText);
 
             var costumes = new List<(int IdolID, string Idol, string Main, string Variation, string Category, int Number, string DirPost)>();
 
@@ -220,6 +354,8 @@ namespace MltdInfoViewer {
 
         private readonly List<(string Idol, ColorType Color, Rarity Rarity, string Serial)> _cardList = new List<(string Idol, ColorType Color, Rarity Rarity, string Serial)>();
         private readonly List<(string Idol, string Main, string Variation, string Category, int Number, string DirPost)> _costumeList = new List<(string Idol, string Main, string Variation, string Category, int Number, string DirPost)>();
+
+        private AssetInfoList _assetInfoList;
 
     }
 }

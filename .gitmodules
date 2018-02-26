@@ -1,3 +1,6 @@
 [submodule "thirdparty/UnityStudioLib"]
 	path = thirdparty/UnityStudioLib
 	url = https://github.com/OpenMLTD/UnityStudioLib.git
+[submodule "thirdparty/DereTore"]
+	path = thirdparty/DereTore
+	url = https://github.com/OpenCGSS/DereTore.git

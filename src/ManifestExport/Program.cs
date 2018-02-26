@@ -38,7 +38,7 @@ namespace ManifestExport {
                     writer.WriteLine("Resource name: {0}", asset.ResourceName);
                     writer.WriteLine("Resource hash: {0}", asset.ContentHash);
                     writer.WriteLine("Remote name: {0}", asset.RemoteName);
-                    writer.WriteLine("File size: {0} ({1})", asset.Size, BytesToString(asset.Size));
+                    writer.WriteLine("File size: {0} ({1})", asset.Size, MathHelper.GetHumanReadableFileSize(asset.Size));
                 }
             }
         }
@@ -46,20 +46,6 @@ namespace ManifestExport {
         private static void PrintUsage() {
             Console.WriteLine("Usage: ManifestExport <input manifest> [<output txt>]");
         }
-
-        private static string BytesToString(long byteCount) {
-            if (byteCount == 0) {
-                return "0 B";
-            }
-
-            var bytes = Math.Abs(byteCount);
-            var place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
-            var num = Math.Round(bytes / Math.Pow(1024, place), 1);
-
-            return (Math.Sign(byteCount) * num).ToString("0.#") + SizeSuffixes[place];
-        }
-
-        private static readonly string[] SizeSuffixes = { " B", " KB", " MB", " GB", " TB", " PB", " EB" };
 
     }
 }

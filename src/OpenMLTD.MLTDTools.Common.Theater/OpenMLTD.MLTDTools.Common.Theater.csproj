@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{906E225D-7C75-4836-BC90-350547238F4E}</ProjectGuid>
+    <ProjectGuid>{CD776040-5458-4B82-96A9-BFB45EA1D909}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenMLTD.AllStarsTheater</RootNamespace>
-    <AssemblyName>AllStarsTheater.Common</AssemblyName>
+    <RootNamespace>OpenMLTD.MLTDTools.Common.Theater</RootNamespace>
+    <AssemblyName>OpenMLTD.MLTDTools.Common.Theater</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,37 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationHelper.cs" />
-    <Compile Include="Database\AssetInfo.cs" />
-    <Compile Include="Database\AssetInfoList.cs" />
-    <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="MathHelper.cs" />
-    <Compile Include="Mltd\Entities\IdolInfo.cs" />
-    <Compile Include="Net\TcpForwarderSlim.cs" />
-    <Compile Include="TheaterHelper.cs" />
-    <Compile Include="Core\DisposableBase.cs" />
-    <Compile Include="Core\Endian.cs" />
-    <Compile Include="Core\EndianBinaryReader.cs" />
-    <Compile Include="Core\EndianBinaryWriter.cs" />
-    <Compile Include="Extensions\ArrayExtensions.cs" />
-    <Compile Include="Extensions\StreamExtensions.cs" />
-    <Compile Include="MltdConstants.cs" />
+    <Compile Include="MltdCipher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\SystemEndian.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Tests\db-9300.data">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <ProjectReference Include="..\AllStarsTheater.Mltd.Entities\AllStarsTheater.Mltd.Entities.csproj">
-      <Project>{b96a8b56-db9e-419c-bebc-f9d2ccf0345b}</Project>
-      <Name>AllStarsTheater.Mltd.Entities</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

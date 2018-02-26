@@ -1,6 +1,6 @@
 # MLTDTools
 
-Tools for THE iDOLM@STER Million Live! Theater Days (MiriShita/ミリシタ). A sister project of [OpenCGSS/DereTore](https://github.com/OpenCGSS/DereTore).
+Tools for [THE iDOLM@STER Million Live! Theater Days](https://millionlive.idolmaster.jp/theaterdays/) (MiriShita/ミリシタ). A sister project of [OpenCGSS/DereTore](https://github.com/OpenCGSS/DereTore).
 
 This repository:
 

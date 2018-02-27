@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Editor:5</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.2f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -111,6 +109,9 @@
     <Reference Include="UnityEditor.Android.Extensions">
       <HintPath>F:/Unity Technologies/Unity/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions">
+      <HintPath>F:/Unity Technologies/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>F:/Unity Technologies/Unity/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
@@ -122,6 +123,12 @@
     </Reference>
     <Reference Include="System.Windows.Forms">
       <HintPath>Assets/Plugins/StandaloneFileBrowser/Plugins/System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>F:/Unity Technologies/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Common">
+      <HintPath>F:/Unity Technologies/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +152,7 @@
     <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_sobj.txt" />
     <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_tate_sobj.txt" />
     <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_yoko_sobj.txt" />
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\shtstr_fumen_sobj.txt" />
     <None Include="Assets\Plugins\YamlDotNet\Readme.txt" />
     <None Include="Assets\Plugins\YamlDotNet\YamlDotNet.license.txt" />
     <None Include="Assets\Readme.txt" />

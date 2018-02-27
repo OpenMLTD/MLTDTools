@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 2691319668
+CRC: 3728534121
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -10,4 +10,7 @@ AssetBundleManifest:
       Dependencies: {}
     Info_2:
       Name: scrobj_blsymp.unity3d
+      Dependencies: {}
+    Info_3:
+      Name: song3_blsymp1.acb.unity3d
       Dependencies: {}

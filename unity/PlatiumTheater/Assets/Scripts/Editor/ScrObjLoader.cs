@@ -104,7 +104,7 @@ internal static class ScrObjLoader {
 
     private static EventConductorData[] ReadEventConductorDataList([NotNull] string[] lines, ref int index) {
         index += 2;
-
+        
         var cc = lines[index++].ConvInt32(12);
         var result = new EventConductorData[cc];
 

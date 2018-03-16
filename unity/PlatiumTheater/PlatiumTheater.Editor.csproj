@@ -14,6 +14,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
     <CompilerResponseFile></CompilerResponseFile>
+    <UnityProjectGenerator>VSTU</UnityProjectGenerator>
     <UnityProjectType>Editor:5</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.2f1</UnityVersion>
@@ -150,6 +151,7 @@
   <ItemGroup>
     <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_fumen_sobj.txt" />
     <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_sobj.txt" />
+    <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_sobj_shtstr.txt" />
     <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_tate_sobj.txt" />
     <None Include="Assets\Imas\Resources\Scrobj\blsymp\blsymp_scenario_yoko_sobj.txt" />
     <None Include="Assets\Imas\Resources\Scrobj\blsymp\shtstr_fumen_sobj.txt" />

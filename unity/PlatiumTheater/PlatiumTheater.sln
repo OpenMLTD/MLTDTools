@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlatiumTheater.Plugins", "PlatiumTheater.Plugins.csproj", "{12E73D70-8CE4-062B-4109-C2293F8456A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlatiumTheater", "PlatiumTheater.csproj", "{D61973E0-B4B0-09F6-F212-6FACD163D766}"

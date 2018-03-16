@@ -10,7 +10,12 @@ packages
 src/AllStarsTheater
 src/AllStarsTheater.Private
 
-unity/PlatiumTheater/Build
+unity/PlatiumTheater/[Bb]uild
+unity/PlatiumTheater/[Bb]uilds
+unity/PlatiumTheater/[Ll]ibrary
+unity/PlatiumTheater/[Tt]emp
+unity/PlatiumTheater/[Oo]bj
+unity/PlatiumTheater/Assets/AssetStoreTools*
 
 *.csproj.user
 *.sln.user

@@ -26,8 +26,8 @@ The Unity project demonstrates how to build custom music and beatmap playable in
 
 Current Unity project is for Unity 5.6.2f1. I might not have time to track all the things, so here is a check list if you want to build assets for the real game:
 
-- For MLTD **before** 1.3.000, you need Unity 5.4+, but no later than 5.6.x. Recommended version is 5.6.2f1, which is also the one that MLTD was built with.
-- For MLTD version 1.3.000 (live with 13 people on the stage) and newer, you need Unity 2017.3. Assets built with old Unity versions may cause app crash.
+- For MLTD before 1.3.000, you need Unity 5.4+, but no later than 5.6.x. Recommended version is 5.6.2f1, which is also the one that MLTD was built with.
+- For MLTD version 1.3.000 (live with 13 people on the stage) and newer, you need Unity 2017.4.0f1. Assets built with old Unity versions may cause app crash.
 
 Since MLTD has a forced updating mechanism, you can safely use Unity 2017.3, unless there are specific requirements.
 

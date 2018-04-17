@@ -24,7 +24,12 @@ The Unity project demonstrates how to build custom music and beatmap playable in
 - Blue Symphony's ACB file contains audio data from Death by Glamour. An alternative test contains [Brand New Theater!](https://www.project-imas.com/wiki/Brand_New_Theater!).
 - Blue Symphony's song title is changed to an image writing "Death by Glamour". The most important parameters are sprite names (`songname_1` and `songname_2`) and sizes (256x72 and 84x72).
 
-To run the Unity project you need Unity 5.4+, but NO LATER THAN 5.6.x. Recommended version is 5.6.2f1, which is also the one that MLTD is built with.
+Current Unity project is for Unity 5.6.2f1. I might not have time to track all the things, so here is a check list if you want to build assets for the real game:
+
+- For MLTD **before** 1.3.000, you need Unity 5.4+, but no later than 5.6.x. Recommended version is 5.6.2f1, which is also the one that MLTD was built with.
+- For MLTD version 1.3.000 (live with 13 people on the stage) and newer, you need Unity 2017.3. Assets built with old Unity versions may cause app crash.
+
+Since MLTD has a forced updating mechanism, you can safely use Unity 2017.3, unless there are specific requirements.
 
 ## Contributing
 

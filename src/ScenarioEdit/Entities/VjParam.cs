@@ -5,6 +5,9 @@ namespace OpenMLTD.ScenarioEdit.Entities {
     [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public sealed class VjParam {
 
+        internal VjParam() {
+        }
+
         public bool Use { get; set; }
 
         [MonoBehaviourProperty(Name = "renderTex")]

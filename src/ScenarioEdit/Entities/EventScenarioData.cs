@@ -1,10 +1,14 @@
 ﻿using JetBrains.Annotations;
+using OpenMLTD.AllStarsTheater;
 using UnityStudio.Serialization;
 using UnityStudio.Serialization.Naming;
 
 namespace OpenMLTD.ScenarioEdit.Entities {
     [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public sealed class EventScenarioData {
+
+        internal EventScenarioData() {
+        }
 
         [MonoBehaviourProperty(Name = "absTime")]
         public double AbsoluteTime { get; set; }
@@ -31,9 +35,9 @@ namespace OpenMLTD.ScenarioEdit.Entities {
         /// Lyrics text may contain LF (<code>'\n'</code>), so remember to replace it with <see cref="string.Empty"/>.
         /// </summary>
         [MonoBehaviourProperty(Name = "str")]
-        public string Lyrics { get; set; }
+        public string Lyrics { get; set; } = string.Empty;
 
-        public string Info { get; set; }
+        public string Info { get; set; } = string.Empty;
 
         public int On { get; set; }
 
@@ -46,10 +50,10 @@ namespace OpenMLTD.ScenarioEdit.Entities {
         public ColorRGBA Color2 { get; set; }
 
         [MonoBehaviourProperty(Name = "cols")]
-        public float[] Colors { get; set; }
+        public float[] Colors { get; set; } = EmptyArray.Of<float>();
 
         [MonoBehaviourProperty(Name = "tex")]
-        public object Texture { get; set; }
+        public object Texture { get; set; } = null;
 
         [MonoBehaviourProperty(Name = "texInx")]
         public int TextureIndex { get; set; }
@@ -57,14 +61,14 @@ namespace OpenMLTD.ScenarioEdit.Entities {
         [MonoBehaviourProperty(Name = "trig")]
         public int Trigger { get; set; }
 
-        public float Speed { get; set; }
+        public float Speed { get; set; } = 1.0f;
 
         /// <summary>
         /// Idol index, zero-based (0 to 4).
         /// </summary>
         public int Idol { get; set; }
 
-        public bool[] Mute { get; set; }
+        public bool[] Mute { get; set; } = EmptyArray.Of<bool>();
 
         public bool Addf { get; set; }
 
@@ -74,7 +78,7 @@ namespace OpenMLTD.ScenarioEdit.Entities {
         [MonoBehaviourProperty(Name = "eye_y")]
         public float EyeY { get; set; }
 
-        public Vector4[] Formation { get; set; }
+        public Vector4[] Formation { get; set; } = EmptyArray.Of<Vector4>();
 
         public bool Appeal { get; set; }
 
@@ -89,10 +93,10 @@ namespace OpenMLTD.ScenarioEdit.Entities {
         public bool Delay { get; set; }
 
         [MonoBehaviourProperty(Name = "clratio")]
-        public int[] ColorRatio { get; set; }
+        public int[] ColorRatio { get; set; } = EmptyArray.Of<int>();
 
         [MonoBehaviourProperty(Name = "clcols")]
-        public int[] ColorColumns { get; set; }
+        public int[] ColorColumns { get; set; } = EmptyArray.Of<int>();
 
         [MonoBehaviourProperty(Name = "camcut")]
         public int CameraCut { get; set; }

@@ -3,6 +3,7 @@ using UnityStudio.Serialization.Naming;
 
 namespace OpenMLTD.ScenarioEdit.Entities {
     [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention))]
+    // ReSharper disable once InconsistentNaming
     public struct ColorRGBA {
 
         public float R { get; set; }

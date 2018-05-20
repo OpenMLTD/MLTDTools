@@ -63,6 +63,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReplTest.cs" />
+    <Compile Include="ScenarioFactory.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -94,6 +95,10 @@
     <ProjectReference Include="..\..\thirdparty\UnityStudioLib\UnityStudioLib\UnityStudio.csproj">
       <Project>{97696198-d591-4d31-b468-b19834ebb913}</Project>
       <Name>UnityStudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AllStarsTheater.Common\AllStarsTheater.Common.csproj">
+      <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
+      <Name>AllStarsTheater.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -56,7 +56,7 @@ namespace OpenMLTD.ThankYou {
             Console.CancelKeyPress += OnConsoleCancelKeyPressed;
 
             IdolLog.InfoFormat(Lang.Get("upstream_dns_address+tpl"), dnsConfig.UpstreamDns);
-            IdolLog.InfoFormat(Lang.Get("processing_host_names+tpl"), string.Join(Environment.NewLine, dnsConfig.RedirectPatterns));
+            IdolLog.InfoFormat(Lang.Get("processing_host_names+tpl"), dnsConfig.LocalIP, string.Join(Environment.NewLine, dnsConfig.RedirectPatterns));
 
             var controller = new DnsController();
 

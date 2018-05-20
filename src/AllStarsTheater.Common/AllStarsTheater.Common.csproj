@@ -46,6 +46,7 @@
     <Compile Include="ApplicationHelper.cs" />
     <Compile Include="Database\AssetInfo.cs" />
     <Compile Include="Database\AssetInfoList.cs" />
+    <Compile Include="EmptyArray.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="MathHelper.cs" />

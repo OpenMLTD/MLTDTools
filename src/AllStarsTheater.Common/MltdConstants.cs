@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenMLTD.AllStarsTheater.Mltd;
 using OpenMLTD.AllStarsTheater.Mltd.Entities;
 
 namespace OpenMLTD.AllStarsTheater {
     public static class MltdConstants {
-
-        public const string AssetsHost = "td-assets.bn765.com";
-
-        public const string RpcHost = "theaterdays.appspot.com";
-
-        public const string WebViewHost = "webview-dot-theaterdays.appspot.com";
 
         public static readonly Encoding Utf8WithoutBom = new UTF8Encoding(false);
 

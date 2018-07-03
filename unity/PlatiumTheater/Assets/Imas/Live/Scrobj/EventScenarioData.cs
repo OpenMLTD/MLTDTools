@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Imas.Live {
+namespace Imas.Live.Scrobj {
     [Serializable]
     public sealed class EventScenarioData {
 

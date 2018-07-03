@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Imas.Live {
+namespace Imas.Live.Scrobj {
     [Serializable]
     public sealed class EventNoteData {
 

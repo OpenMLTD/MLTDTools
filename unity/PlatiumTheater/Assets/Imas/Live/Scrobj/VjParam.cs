@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Imas.Live {
+namespace Imas.Live.Scrobj {
     [Serializable]
     public sealed class VjParam {
 

@@ -7,10 +7,10 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OpenMLTD.AllStarsTheater;
-using OpenMLTD.AllStarsTheater.Database;
-using OpenMLTD.AllStarsTheater.Extensions;
-using OpenMLTD.AllStarsTheater.Mltd.Entities;
+using OpenMLTD.MiriTore;
+using OpenMLTD.MiriTore.Database;
+using OpenMLTD.MiriTore.Extensions;
+using OpenMLTD.MiriTore.Mltd.Entities;
 using UnityStudio.Extensions;
 using UnityStudio.Models;
 

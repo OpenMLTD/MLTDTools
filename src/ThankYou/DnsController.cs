@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using OpenMLTD.AllStarsTheater.Logging;
+using OpenMLTD.MiriTore.Logging;
 
 namespace OpenMLTD.ThankYou {
     internal sealed class DnsController {

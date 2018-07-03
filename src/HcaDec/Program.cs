@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using CommandLine;
 using DereTore.Exchange.Audio.HCA;
-using OpenMLTD.MLTDTools.Common.Theater;
+using OpenMLTD.MiriTore.Mltd;
 
 namespace OpenMLTD.MLTDTools.Applications.HcaDec {
     internal static class Program {
@@ -55,7 +55,7 @@ namespace OpenMLTD.MLTDTools.Applications.HcaDec {
                     return defaultExitCodeFail;
                 }
             } else {
-                key1 = MltdCipher.Key1;
+                key1 = MltdHcaCipher.Key1;
             }
             if (!string.IsNullOrWhiteSpace(options.Key2)) {
                 if (!uint.TryParse(options.Key2, NumberStyles.HexNumber, formatProvider, out key2)) {
@@ -63,7 +63,7 @@ namespace OpenMLTD.MLTDTools.Applications.HcaDec {
                     return defaultExitCodeFail;
                 }
             } else {
-                key2 = MltdCipher.Key2;
+                key2 = MltdHcaCipher.Key2;
             }
 
             using (var inputFileStream = File.Open(options.InputFileName, FileMode.Open, FileAccess.Read)) {

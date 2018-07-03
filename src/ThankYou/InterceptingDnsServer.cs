@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ARSoft.Tools.Net.Dns;
 using JetBrains.Annotations;
-using OpenMLTD.AllStarsTheater.Logging;
+using OpenMLTD.MiriTore.Logging;
 
 namespace OpenMLTD.ThankYou {
     public sealed class InterceptingDnsServer {

@@ -72,6 +72,7 @@
     <Compile Include="PortForwardingWrapper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TcpForwarderSlim.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -82,17 +83,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AllStarsTheater.Common\AllStarsTheater.Common.csproj">
-      <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
-      <Name>AllStarsTheater.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AllStarsTheater.Logging\AllStarsTheater.Logging.csproj">
-      <Project>{ec1e2f06-5af6-42e8-9161-e5b26cef2c63}</Project>
-      <Name>AllStarsTheater.Logging</Name>
-    </ProjectReference>
+    <Content Include="License-FiddlerDnsForwarder.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="License-FiddlerDnsForwarder.txt" />
+    <ProjectReference Include="..\MiriTore.Common\MiriTore.Common.csproj">
+      <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
+      <Name>MiriTore.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiriTore.Logging\MiriTore.Logging.csproj">
+      <Project>{ec1e2f06-5af6-42e8-9161-e5b26cef2c63}</Project>
+      <Name>MiriTore.Logging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

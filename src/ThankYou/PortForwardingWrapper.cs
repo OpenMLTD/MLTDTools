@@ -3,8 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using OpenMLTD.AllStarsTheater.Core;
-using OpenMLTD.AllStarsTheater.Net;
+using OpenMLTD.MiriTore.Core;
 
 namespace OpenMLTD.ThankYou {
     internal sealed class PortForwardingWrapper : DisposableBase {

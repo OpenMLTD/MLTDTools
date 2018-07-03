@@ -4,7 +4,7 @@ using System.Reflection;
 using CommandLine;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using OpenMLTD.AllStarsTheater.Logging;
+using OpenMLTD.MiriTore.Logging;
 
 namespace OpenMLTD.ThankYou {
     internal static class Program {

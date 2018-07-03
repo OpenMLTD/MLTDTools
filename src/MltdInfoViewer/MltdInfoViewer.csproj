@@ -85,21 +85,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AllStarsTheater.Common\AllStarsTheater.Common.csproj">
-      <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
-      <Name>AllStarsTheater.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AllStarsTheater.Mltd.Entities\AllStarsTheater.Mltd.Entities.csproj">
-      <Project>{b96a8b56-db9e-419c-bebc-f9d2ccf0345b}</Project>
-      <Name>AllStarsTheater.Mltd.Entities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AllStarsTheater.Private\AllStarsTheater.Private.csproj">
-      <Project>{d00ea059-6314-4370-a7e0-b7e9dcc4e0db}</Project>
-      <Name>AllStarsTheater.Private</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\thirdparty\UnityStudioLib\UnityStudioLib\UnityStudio.csproj">
       <Project>{97696198-d591-4d31-b468-b19834ebb913}</Project>
       <Name>UnityStudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiriTore.Common\MiriTore.Common.csproj">
+      <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
+      <Name>MiriTore.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

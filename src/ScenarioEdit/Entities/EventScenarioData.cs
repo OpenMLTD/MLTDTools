@@ -1,5 +1,5 @@
 ﻿using JetBrains.Annotations;
-using OpenMLTD.AllStarsTheater;
+using OpenMLTD.MiriTore;
 using UnityStudio.Serialization;
 using UnityStudio.Serialization.Naming;
 

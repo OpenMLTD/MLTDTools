@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using OpenMLTD.AllStarsTheater;
-using OpenMLTD.AllStarsTheater.Database;
+using OpenMLTD.MiriTore;
+using OpenMLTD.MiriTore.Database;
 
 namespace ManifestExport {
     internal static class Program {

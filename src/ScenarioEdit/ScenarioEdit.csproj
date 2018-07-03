@@ -96,9 +96,9 @@
       <Project>{97696198-d591-4d31-b468-b19834ebb913}</Project>
       <Name>UnityStudio</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AllStarsTheater.Common\AllStarsTheater.Common.csproj">
+    <ProjectReference Include="..\MiriTore.Common\MiriTore.Common.csproj">
       <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
-      <Name>AllStarsTheater.Common</Name>
+      <Name>MiriTore.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

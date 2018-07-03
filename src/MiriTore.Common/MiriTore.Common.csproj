@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3EDDA55A-573C-4855-B2C6-3D4E0A122E24}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>OpenMLTD.MLTDTools.Applications.HcaDec</RootNamespace>
-    <AssemblyName>HcaDec</AssemblyName>
+    <ProjectGuid>{906E225D-7C75-4836-BC90-350547238F4E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenMLTD.MiriTore</RootNamespace>
+    <AssemblyName>MiriTore.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine, Version=2.2.1.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommandLineParser.2.2.1\lib\net45\CommandLine.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,23 +43,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Options.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="ApplicationHelper.cs" />
+    <Compile Include="Database\AssetInfo.cs" />
+    <Compile Include="Database\AssetInfoList.cs" />
+    <Compile Include="EmptyArray.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="MathHelper.cs" />
+    <Compile Include="Mltd\Entities\ColorType.cs" />
+    <Compile Include="Mltd\Entities\Course.cs" />
+    <Compile Include="Mltd\Entities\FourLevelRank.cs" />
+    <Compile Include="Mltd\Entities\IdolInfo.cs" />
+    <Compile Include="Mltd\Entities\NoteDesign.cs" />
+    <Compile Include="Mltd\Entities\ProducerRank.cs" />
+    <Compile Include="Mltd\Entities\Rarity.cs" />
+    <Compile Include="Mltd\MltdHcaCipher.cs" />
+    <Compile Include="TheaterHelper.cs" />
+    <Compile Include="Core\DisposableBase.cs" />
+    <Compile Include="Core\Endian.cs" />
+    <Compile Include="Core\EndianBinaryReader.cs" />
+    <Compile Include="Core\EndianBinaryWriter.cs" />
+    <Compile Include="Extensions\ArrayExtensions.cs" />
+    <Compile Include="Extensions\StreamExtensions.cs" />
+    <Compile Include="MltdConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\SystemEndian.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="Resources\Tests\db-9300.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\thirdparty\DereTore\Exchange\DereTore.Exchange.Audio.HCA\DereTore.Exchange.Audio.HCA.csproj">
-      <Project>{7c6fadd7-a0bb-4bf3-8992-3d89ace1cc69}</Project>
-      <Name>DereTore.Exchange.Audio.HCA</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiriTore.Common\MiriTore.Common.csproj">
-      <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
-      <Name>MiriTore.Common</Name>
-    </ProjectReference>
+    <Folder Include="Net\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

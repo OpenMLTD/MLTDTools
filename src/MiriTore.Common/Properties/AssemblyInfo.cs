@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("MltdInfoViewer")]
-[assembly: AssemblyDescription("Viewer utility for some MLTD data.")]
+[assembly: AssemblyTitle("MiriTore.Common")]
+[assembly: AssemblyDescription("Common utilities for MiriTore.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("OpenMLTD")]
-[assembly: AssemblyProduct("MltdInfoViewer")]
+[assembly: AssemblyProduct("MiriTore.Common")]
 [assembly: AssemblyCopyright("Copyright © 2018 OpenMLTD")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("4d854645-4e3c-4235-85b1-65ebcd235697")]
+[assembly: Guid("906e225d-7c75-4836-bc90-350547238f4e")]
 
 // 程序集的版本信息由下列四个值组成: 
 //
@@ -29,9 +29,9 @@ using System.Runtime.InteropServices;
 //      修订号
 //
 // 可以指定所有值，也可以使用以下所示的 "*" 预置版本号和修订号
-// 方法是按如下所示使用“*”: :
+//通过使用 "*"，如下所示:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.2018.0703")]
-[assembly: AssemblyFileVersion("1.1.2018.0703")]
+[assembly: AssemblyVersion("1.3.2018.0703")]
+[assembly: AssemblyFileVersion("1.3.2018.0703")]
 
-[assembly: AssemblyInformationalVersion("1.1.0-beta")]
+[assembly: AssemblyInformationalVersion("1.3.0-beta-01")]

@@ -70,13 +70,8 @@
     <Compile Include="Core\SystemEndian.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Tests\db-9300.data">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Net\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

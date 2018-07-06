@@ -24,6 +24,13 @@
         /// </summary>
         private void InitializeComponent() {
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnManifestReset = new System.Windows.Forms.Button();
+            this.btnManifestFilterString = new System.Windows.Forms.Button();
+            this.txtManifestFilter = new System.Windows.Forms.TextBox();
+            this.lvwManifest = new System.Windows.Forms.ListView();
+            this.btnSelectManifestDatabase = new System.Windows.Forms.Button();
+            this.txtManifestDatabasePath = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lvwCards = new System.Windows.Forms.ListView();
             this.btnSelectCardsDatabase = new System.Windows.Forms.Button();
@@ -33,17 +40,11 @@
             this.btnSelectCostumesDatabase = new System.Windows.Forms.Button();
             this.txtCostumesDatabasePath = new System.Windows.Forms.TextBox();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.lvwManifest = new System.Windows.Forms.ListView();
-            this.btnSelectManifestDatabase = new System.Windows.Forms.Button();
-            this.txtManifestDatabasePath = new System.Windows.Forms.TextBox();
-            this.btnManifestFilter = new System.Windows.Forms.Button();
-            this.txtManifestFilter = new System.Windows.Forms.TextBox();
-            this.btnManifestReset = new System.Windows.Forms.Button();
+            this.btnManifestFilterRegex = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -59,6 +60,85 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(704, 372);
             this.tabControl1.TabIndex = 0;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.btnManifestFilterRegex);
+            this.tabPage1.Controls.Add(this.btnManifestReset);
+            this.tabPage1.Controls.Add(this.btnManifestFilterString);
+            this.tabPage1.Controls.Add(this.txtManifestFilter);
+            this.tabPage1.Controls.Add(this.lvwManifest);
+            this.tabPage1.Controls.Add(this.btnSelectManifestDatabase);
+            this.tabPage1.Controls.Add(this.txtManifestDatabasePath);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(696, 346);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Manifest";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // btnManifestReset
+            // 
+            this.btnManifestReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnManifestReset.Location = new System.Drawing.Point(619, 319);
+            this.btnManifestReset.Name = "btnManifestReset";
+            this.btnManifestReset.Size = new System.Drawing.Size(70, 21);
+            this.btnManifestReset.TabIndex = 8;
+            this.btnManifestReset.Text = "Reset";
+            this.btnManifestReset.UseVisualStyleBackColor = true;
+            // 
+            // btnManifestFilterString
+            // 
+            this.btnManifestFilterString.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnManifestFilterString.Location = new System.Drawing.Point(467, 319);
+            this.btnManifestFilterString.Name = "btnManifestFilterString";
+            this.btnManifestFilterString.Size = new System.Drawing.Size(70, 21);
+            this.btnManifestFilterString.TabIndex = 7;
+            this.btnManifestFilterString.Text = "String";
+            this.btnManifestFilterString.UseVisualStyleBackColor = true;
+            // 
+            // txtManifestFilter
+            // 
+            this.txtManifestFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtManifestFilter.Location = new System.Drawing.Point(6, 319);
+            this.txtManifestFilter.Name = "txtManifestFilter";
+            this.txtManifestFilter.Size = new System.Drawing.Size(455, 21);
+            this.txtManifestFilter.TabIndex = 6;
+            // 
+            // lvwManifest
+            // 
+            this.lvwManifest.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwManifest.FullRowSelect = true;
+            this.lvwManifest.Location = new System.Drawing.Point(5, 33);
+            this.lvwManifest.Name = "lvwManifest";
+            this.lvwManifest.Size = new System.Drawing.Size(684, 279);
+            this.lvwManifest.TabIndex = 5;
+            this.lvwManifest.UseCompatibleStateImageBehavior = false;
+            this.lvwManifest.View = System.Windows.Forms.View.Details;
+            // 
+            // btnSelectManifestDatabase
+            // 
+            this.btnSelectManifestDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSelectManifestDatabase.Location = new System.Drawing.Point(622, 6);
+            this.btnSelectManifestDatabase.Name = "btnSelectManifestDatabase";
+            this.btnSelectManifestDatabase.Size = new System.Drawing.Size(70, 21);
+            this.btnSelectManifestDatabase.TabIndex = 4;
+            this.btnSelectManifestDatabase.Text = "Select...";
+            this.btnSelectManifestDatabase.UseVisualStyleBackColor = true;
+            // 
+            // txtManifestDatabasePath
+            // 
+            this.txtManifestDatabasePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtManifestDatabasePath.Location = new System.Drawing.Point(5, 6);
+            this.txtManifestDatabasePath.Name = "txtManifestDatabasePath";
+            this.txtManifestDatabasePath.ReadOnly = true;
+            this.txtManifestDatabasePath.Size = new System.Drawing.Size(611, 21);
+            this.txtManifestDatabasePath.TabIndex = 3;
             // 
             // tabPage2
             // 
@@ -152,83 +232,15 @@
             this.txtCostumesDatabasePath.Size = new System.Drawing.Size(611, 21);
             this.txtCostumesDatabasePath.TabIndex = 3;
             // 
-            // tabPage1
+            // btnManifestFilterRegex
             // 
-            this.tabPage1.Controls.Add(this.btnManifestReset);
-            this.tabPage1.Controls.Add(this.btnManifestFilter);
-            this.tabPage1.Controls.Add(this.txtManifestFilter);
-            this.tabPage1.Controls.Add(this.lvwManifest);
-            this.tabPage1.Controls.Add(this.btnSelectManifestDatabase);
-            this.tabPage1.Controls.Add(this.txtManifestDatabasePath);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(696, 346);
-            this.tabPage1.TabIndex = 2;
-            this.tabPage1.Text = "Manifest";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // lvwManifest
-            // 
-            this.lvwManifest.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvwManifest.FullRowSelect = true;
-            this.lvwManifest.Location = new System.Drawing.Point(5, 33);
-            this.lvwManifest.Name = "lvwManifest";
-            this.lvwManifest.Size = new System.Drawing.Size(684, 279);
-            this.lvwManifest.TabIndex = 5;
-            this.lvwManifest.UseCompatibleStateImageBehavior = false;
-            this.lvwManifest.View = System.Windows.Forms.View.Details;
-            // 
-            // btnSelectManifestDatabase
-            // 
-            this.btnSelectManifestDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSelectManifestDatabase.Location = new System.Drawing.Point(622, 6);
-            this.btnSelectManifestDatabase.Name = "btnSelectManifestDatabase";
-            this.btnSelectManifestDatabase.Size = new System.Drawing.Size(70, 21);
-            this.btnSelectManifestDatabase.TabIndex = 4;
-            this.btnSelectManifestDatabase.Text = "Select...";
-            this.btnSelectManifestDatabase.UseVisualStyleBackColor = true;
-            // 
-            // txtManifestDatabasePath
-            // 
-            this.txtManifestDatabasePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtManifestDatabasePath.Location = new System.Drawing.Point(5, 6);
-            this.txtManifestDatabasePath.Name = "txtManifestDatabasePath";
-            this.txtManifestDatabasePath.ReadOnly = true;
-            this.txtManifestDatabasePath.Size = new System.Drawing.Size(611, 21);
-            this.txtManifestDatabasePath.TabIndex = 3;
-            // 
-            // btnManifestFilter
-            // 
-            this.btnManifestFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnManifestFilter.Location = new System.Drawing.Point(546, 319);
-            this.btnManifestFilter.Name = "btnManifestFilter";
-            this.btnManifestFilter.Size = new System.Drawing.Size(70, 21);
-            this.btnManifestFilter.TabIndex = 7;
-            this.btnManifestFilter.Text = "Filter";
-            this.btnManifestFilter.UseVisualStyleBackColor = true;
-            // 
-            // txtManifestFilter
-            // 
-            this.txtManifestFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtManifestFilter.Location = new System.Drawing.Point(6, 319);
-            this.txtManifestFilter.Name = "txtManifestFilter";
-            this.txtManifestFilter.Size = new System.Drawing.Size(534, 21);
-            this.txtManifestFilter.TabIndex = 6;
-            // 
-            // btnManifestReset
-            // 
-            this.btnManifestReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnManifestReset.Location = new System.Drawing.Point(619, 319);
-            this.btnManifestReset.Name = "btnManifestReset";
-            this.btnManifestReset.Size = new System.Drawing.Size(70, 21);
-            this.btnManifestReset.TabIndex = 8;
-            this.btnManifestReset.Text = "Reset";
-            this.btnManifestReset.UseVisualStyleBackColor = true;
+            this.btnManifestFilterRegex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnManifestFilterRegex.Location = new System.Drawing.Point(543, 319);
+            this.btnManifestFilterRegex.Name = "btnManifestFilterRegex";
+            this.btnManifestFilterRegex.Size = new System.Drawing.Size(70, 21);
+            this.btnManifestFilterRegex.TabIndex = 9;
+            this.btnManifestFilterRegex.Text = "Regex";
+            this.btnManifestFilterRegex.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -240,12 +252,12 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MLTD Info Viewer";
             this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -266,9 +278,10 @@
         private System.Windows.Forms.ListView lvwManifest;
         private System.Windows.Forms.Button btnSelectManifestDatabase;
         private System.Windows.Forms.TextBox txtManifestDatabasePath;
-        private System.Windows.Forms.Button btnManifestFilter;
+        private System.Windows.Forms.Button btnManifestFilterString;
         private System.Windows.Forms.TextBox txtManifestFilter;
         private System.Windows.Forms.Button btnManifestReset;
+        private System.Windows.Forms.Button btnManifestFilterRegex;
     }
 }
 

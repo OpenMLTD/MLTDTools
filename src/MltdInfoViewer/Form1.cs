@@ -48,8 +48,53 @@ namespace MltdInfoViewer {
             btnSelectCardsDatabase.Click += BtnSelectCardsDatabase_Click;
             btnSelectCostumesDatabase.Click += BtnSelectCostumesDatabase_Click;
             btnSelectManifestDatabase.Click += BtnSelectManifestDatabase_Click;
-            btnManifestFilter.Click += BtnManifestFilter_Click;
+            btnManifestFilterString.Click += BtnManifestFilter_Click;
             btnManifestReset.Click += BtnManifestReset_Click;
+            btnManifestFilterRegex.Click += BtnManifestFilterRegex_Click;
+        }
+
+        private void BtnManifestFilterRegex_Click(object sender, EventArgs e) {
+            var filter = txtManifestFilter.Text;
+
+            if (filter.Length == 0) {
+                BtnManifestReset_Click(sender, e);
+                return;
+            }
+
+            if (_assetInfoList == null) {
+                return;
+            }
+
+            Regex regex;
+
+            try {
+                regex = new Regex(filter);
+            } catch (Exception ex) {
+                MessageBox.Show(ex.ToString(), ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            lvwManifest.Items.Clear();
+
+            var listViewItems = new List<ListViewItem>();
+
+            foreach (var assetInfo in _assetInfoList.Assets) {
+                if (!regex.IsMatch(assetInfo.ResourceName)) {
+                    continue;
+                }
+
+                var lvi = new ListViewItem(assetInfo.ResourceName);
+                lvi.SubItems.Add(assetInfo.RemoteName);
+                lvi.SubItems.Add(assetInfo.ContentHash);
+                var humanReadableSize = MathHelper.GetHumanReadableFileSize(assetInfo.Size);
+                lvi.SubItems.Add(humanReadableSize);
+
+                listViewItems.Add(lvi);
+            }
+
+            lvwManifest.BeginUpdate();
+            lvwManifest.Items.AddRange(listViewItems.ToArray());
+            lvwManifest.EndUpdate();
         }
 
         private void BtnManifestReset_Click(object sender, EventArgs e) {
@@ -196,8 +241,6 @@ namespace MltdInfoViewer {
 
             var costumes = new List<(int IdolID, string Idol, string Main, string Variation, string Category, int Number, string DirPost)>();
 
-            int iid = 0;
-
             try {
                 var root = (JObject)obj;
                 var costumeArray = (JArray)root["costumes"];
@@ -224,7 +267,11 @@ namespace MltdInfoViewer {
                         var charaAbbr = charaResID.Substring(3, 3);
 
                         var idolIndex = Array.FindIndex(idols, idol => idol.IdolID == charaID);
-                        iid = charaID;
+
+                        if (idolIndex < 0) {
+                            Debug.Print("Failed to find idol with idol ID: {0}, abbr: {1}", charaID, charaAbbr);
+                        }
+
                         var idolName = idols[idolIndex].Name;
 
                         var entry = (charaID, idolName, charaResID, variation, category, number, dirPost);

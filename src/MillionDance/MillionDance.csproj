@@ -77,9 +77,6 @@
   <ItemGroup>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
-    <None Include="Resources\dan_shtstr_01_dan.imo.unity3d">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\thirdparty\UnityStudioLib\UnityStudioLib\UnityStudio.csproj">

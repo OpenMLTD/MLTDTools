@@ -67,8 +67,10 @@ namespace OpenMLTD.MiriTore {
             new IdolInfo("桜守 歌織", 52, "kao", ColorType.Angel),
             new IdolInfo("音無 小鳥", 101,"kot", ColorType.Extra),
             new IdolInfo("青叶 美咲", 102, "mis", ColorType.Extra),
-            new IdolInfo("XXX", 201,  "xxx", ColorType.Extra),
-            new IdolInfo("XXX", 202,  "xxx", ColorType.Extra)
+            // Presumed to be 201/sik after update
+            new IdolInfo("詩花", 201,  "xxx", ColorType.Extra),
+            // Presumed to be 202/rei after update
+            new IdolInfo("玲音", 202,  "xxx", ColorType.Extra)
         };
 
     }

@@ -13,6 +13,7 @@
 
         /// <summary>
         /// Idol ID, starting from 1.
+        /// May be not-continuous, e.g. ..., 51, 52, 101, 102, 201, 202.
         /// </summary>
         public int IdolID { get; }
 

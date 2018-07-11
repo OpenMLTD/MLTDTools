@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using OpenMLTD.MiriTore.Mltd.Entities;
 
 namespace OpenMLTD.MiriTore {
     public static class TheaterHelper {
@@ -113,13 +115,19 @@ namespace OpenMLTD.MiriTore {
         /// <returns></returns>
         [NotNull]
         public static string GetIdolSerialAbbreviation(int idolID) {
-            if (idolID < 1 || idolID > MltdConstants.Idols.Count) {
-                throw new IndexOutOfRangeException();
+            var idolInfo = MltdConstants.Idols.SingleOrDefault(info => info.IdolID == idolID);
+
+            if (idolInfo == null) {
+                throw new ArgumentException($"Idol with Mst ID {idolID} is not found.", nameof(idolID));
             }
 
-            var idolInfo = MltdConstants.Idols[idolID - 1];
+            return GetIdolSerialAbbreviation(idolInfo);
+        }
 
-            return idolID.ToString("000") + idolInfo.Abbreviation;
+        [NotNull]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetIdolSerialAbbreviation([NotNull] IdolInfo idolInfo) {
+            return idolInfo.IdolID.ToString("000") + idolInfo.Abbreviation;
         }
 
     }

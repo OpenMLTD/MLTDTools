@@ -2,6 +2,7 @@
 using UnityStudio.Serialization.Naming;
 
 namespace MillionDance.Entities.Unity {
+    // True name: Imas.Curve
     [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention), ThrowOnUnmatched = false, PopulationStrategy = PopulationStrategy.OptIn)]
     public sealed class Curve {
 

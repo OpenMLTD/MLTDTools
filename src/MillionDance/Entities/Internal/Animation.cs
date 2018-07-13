@@ -17,7 +17,7 @@ namespace MillionDance.Entities.Internal {
 
         public TimeSpan Duration { get; }
 
-        public static Animation CreateFrom([NotNull] DanceData dance) {
+        public static Animation CreateFrom([NotNull] CharacterImasMotionAsset dance) {
             var curves = dance.Curves;
 
             var frameCount = curves.Max(curve => curve.Values.Length);

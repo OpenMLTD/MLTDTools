@@ -17,8 +17,8 @@ namespace MillionDance {
             }
         }
 
-        private static (DanceData, DanceData, DanceData) LoadDance() {
-            DanceData dan = null, apa = null, apg = null;
+        private static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDance() {
+            CharacterImasMotionAsset dan = null, apa = null, apg = null;
 
             var ser = new MonoBehaviourSerializer();
 
@@ -35,15 +35,15 @@ namespace MillionDance {
                             switch (behaviour.Name) {
                                 case "dan_shtstr_01_dan.imo":
                                     behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                    dan = ser.Deserialize<DanceData>(behaviour);
+                                    dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                                     break;
                                 case "dan_shtstr_01_apa.imo":
                                     behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                    apa = ser.Deserialize<DanceData>(behaviour);
+                                    apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                                     break;
                                 case "dan_shtstr_01_apg.imo":
                                     behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                    apg = ser.Deserialize<DanceData>(behaviour);
+                                    apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                                     break;
                             }
 

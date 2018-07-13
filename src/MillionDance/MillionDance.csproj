@@ -57,7 +57,7 @@
     <Compile Include="Entities\Internal\Animation.cs" />
     <Compile Include="Entities\Internal\KeyFrame.cs" />
     <Compile Include="Entities\Unity\Curve.cs" />
-    <Compile Include="Entities\Unity\DanceData.cs" />
+    <Compile Include="Entities\Unity\CharacterImasMotionAsset.cs" />
     <Compile Include="Entities\Unity\KeyType.cs" />
     <Compile Include="Entities\Unity\PropertyType.cs" />
     <Compile Include="Entities\Vmd\IkControl.cs" />

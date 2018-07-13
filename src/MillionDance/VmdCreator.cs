@@ -11,7 +11,7 @@ namespace MillionDance {
     public static class VmdCreator {
 
         [NotNull]
-        public static VmdMotion FromDanceData([NotNull] DanceData dance) {
+        public static VmdMotion FromDanceData([NotNull] CharacterImasMotionAsset dance) {
             const string modelName = "MODEL_00";
 
             var boneFrames = new List<VmdBoneFrame>();

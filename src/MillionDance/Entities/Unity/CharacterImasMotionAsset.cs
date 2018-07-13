@@ -2,8 +2,9 @@
 using UnityStudio.Serialization.Naming;
 
 namespace MillionDance.Entities.Unity {
+    // True name: Imas.CharacterImasMotionAsset
     [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention), ThrowOnUnmatched = false, PopulationStrategy = PopulationStrategy.OptIn)]
-    public sealed class DanceData {
+    public sealed class CharacterImasMotionAsset {
 
         [MonoBehaviourProperty]
         public string Kind { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace MillionDance.Entities.Unity {
+﻿namespace MillionDance.Entities.Mltd {
     internal enum PropertyType {
 
         AngleX,

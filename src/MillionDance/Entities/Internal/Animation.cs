@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using MillionDance.Entities.Extensions;
-using MillionDance.Entities.Unity;
+using MillionDance.Entities.Mltd;
 
 namespace MillionDance.Entities.Internal {
     public sealed class Animation {
@@ -35,10 +35,11 @@ namespace MillionDance.Entities.Internal {
                     frameDict.Add(curve.Path, frameList);
                 }
 
+                var path = curve.Path;
                 var keyType = curve.GetKeyType();
                 var propertyType = curve.GetPropertyType();
 
-                KeyFrame GetOrAddFrame(int index, string path) {
+                KeyFrame GetOrAddFrame(int index) {
                     KeyFrame frame;
 
                     if (frameList.Count > index) {
@@ -56,37 +57,37 @@ namespace MillionDance.Entities.Internal {
                             switch (propertyType) {
                                 case PropertyType.AngleX:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        GetOrAddFrame(frameIndex, curve.Path).AngleX = curve.Values[0];
+                                        GetOrAddFrame(frameIndex).AngleX = curve.Values[0];
                                     }
 
                                     break;
                                 case PropertyType.AngleY:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        GetOrAddFrame(frameIndex, curve.Path).AngleY = curve.Values[0];
+                                        GetOrAddFrame(frameIndex).AngleY = curve.Values[0];
                                     }
 
                                     break;
                                 case PropertyType.AngleZ:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        GetOrAddFrame(frameIndex, curve.Path).AngleZ = curve.Values[0];
+                                        GetOrAddFrame(frameIndex).AngleZ = curve.Values[0];
                                     }
 
                                     break;
                                 case PropertyType.PositionX:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        GetOrAddFrame(frameIndex, curve.Path).PositionX = curve.Values[0];
+                                        GetOrAddFrame(frameIndex).PositionX = curve.Values[0];
                                     }
 
                                     break;
                                 case PropertyType.PositionY:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        GetOrAddFrame(frameIndex, curve.Path).PositionY = curve.Values[0];
+                                        GetOrAddFrame(frameIndex).PositionY = curve.Values[0];
                                     }
 
                                     break;
                                 case PropertyType.PositionZ:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        GetOrAddFrame(frameIndex, curve.Path).PositionZ = curve.Values[0];
+                                        GetOrAddFrame(frameIndex).PositionZ = curve.Values[0];
                                     }
 
                                     break;
@@ -102,42 +103,42 @@ namespace MillionDance.Entities.Internal {
                                 case PropertyType.AngleX:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                         var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                        GetOrAddFrame(frameIndex, curve.Path).AngleX = curve.Values[index];
+                                        GetOrAddFrame(frameIndex).AngleX = curve.Values[index];
                                     }
 
                                     break;
                                 case PropertyType.AngleY:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                         var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                        GetOrAddFrame(frameIndex, curve.Path).AngleY = curve.Values[index];
+                                        GetOrAddFrame(frameIndex).AngleY = curve.Values[index];
                                     }
 
                                     break;
                                 case PropertyType.AngleZ:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                         var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                        GetOrAddFrame(frameIndex, curve.Path).AngleZ = curve.Values[index];
+                                        GetOrAddFrame(frameIndex).AngleZ = curve.Values[index];
                                     }
 
                                     break;
                                 case PropertyType.PositionX:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                         var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                        GetOrAddFrame(frameIndex, curve.Path).PositionX = curve.Values[index];
+                                        GetOrAddFrame(frameIndex).PositionX = curve.Values[index];
                                     }
 
                                     break;
                                 case PropertyType.PositionY:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                         var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                        GetOrAddFrame(frameIndex, curve.Path).PositionY = curve.Values[index];
+                                        GetOrAddFrame(frameIndex).PositionY = curve.Values[index];
                                     }
 
                                     break;
                                 case PropertyType.PositionZ:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                         var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                        GetOrAddFrame(frameIndex, curve.Path).PositionZ = curve.Values[index];
+                                        GetOrAddFrame(frameIndex).PositionZ = curve.Values[index];
                                     }
 
                                     break;
@@ -191,7 +192,7 @@ namespace MillionDance.Entities.Internal {
                             switch (propertyType) {
                                 case PropertyType.AngleX:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        var frame = GetOrAddFrame(frameIndex, curve.Path);
+                                        var frame = GetOrAddFrame(frameIndex);
                                         var value = InterpolateValue(frame);
                                         frame.AngleX = value;
                                     }
@@ -199,7 +200,7 @@ namespace MillionDance.Entities.Internal {
                                     break;
                                 case PropertyType.AngleY:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        var frame = GetOrAddFrame(frameIndex, curve.Path);
+                                        var frame = GetOrAddFrame(frameIndex);
                                         var value = InterpolateValue(frame);
                                         frame.AngleY = value;
                                     }
@@ -207,7 +208,7 @@ namespace MillionDance.Entities.Internal {
                                     break;
                                 case PropertyType.AngleZ:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        var frame = GetOrAddFrame(frameIndex, curve.Path);
+                                        var frame = GetOrAddFrame(frameIndex);
                                         var value = InterpolateValue(frame);
                                         frame.AngleZ = value;
                                     }
@@ -215,7 +216,7 @@ namespace MillionDance.Entities.Internal {
                                     break;
                                 case PropertyType.PositionX:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        var frame = GetOrAddFrame(frameIndex, curve.Path);
+                                        var frame = GetOrAddFrame(frameIndex);
                                         var value = InterpolateValue(frame);
                                         frame.PositionX = value;
                                     }
@@ -223,7 +224,7 @@ namespace MillionDance.Entities.Internal {
                                     break;
                                 case PropertyType.PositionY:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        var frame = GetOrAddFrame(frameIndex, curve.Path);
+                                        var frame = GetOrAddFrame(frameIndex);
                                         var value = InterpolateValue(frame);
                                         frame.PositionY = value;
                                     }
@@ -231,7 +232,7 @@ namespace MillionDance.Entities.Internal {
                                     break;
                                 case PropertyType.PositionZ:
                                     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                        var frame = GetOrAddFrame(frameIndex, curve.Path);
+                                        var frame = GetOrAddFrame(frameIndex);
                                         var value = InterpolateValue(frame);
                                         frame.PositionZ = value;
                                     }

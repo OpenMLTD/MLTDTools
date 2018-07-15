@@ -1,7 +1,7 @@
 ﻿using UnityStudio.Serialization;
 using UnityStudio.Serialization.Naming;
 
-namespace MillionDance.Entities.Unity {
+namespace MillionDance.Entities.Mltd {
     // True name: Imas.CharacterImasMotionAsset
     [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention), ThrowOnUnmatched = false, PopulationStrategy = PopulationStrategy.OptIn)]
     public sealed class CharacterImasMotionAsset {

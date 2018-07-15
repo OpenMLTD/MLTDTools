@@ -1,6 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
-using MillionDance.Entities.Unity;
+using MillionDance.Entities.Mltd;
 
 namespace MillionDance.Entities.Extensions {
     internal static class CurveExtension {

@@ -25,7 +25,7 @@ namespace MillionDanceView.Extensions {
         /// <returns>Fixed quaternion whose values can be used in OpenTK.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static OpenTK.Quaternion FixCoordSystem(this OpenTK.Quaternion q) {
-            return new OpenTK.Quaternion(-q.X, -q.Y, q.Z, q.W);
+            return new OpenTK.Quaternion(q.X, -q.Y, -q.Z, q.W);
         }
 
     }

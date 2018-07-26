@@ -11,7 +11,7 @@ namespace MillionDanceView.Extensions {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static OpenTK.Vector3 FixCoordSystem(this OpenTK.Vector3 vector) {
-            return new OpenTK.Vector3(vector.X, vector.Y, -vector.Z);
+            return new OpenTK.Vector3(-vector.X, vector.Y, vector.Z);
         }
 
     }

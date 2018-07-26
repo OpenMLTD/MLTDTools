@@ -184,7 +184,7 @@ namespace MillionDanceView {
         }
 
         private void Initialize() {
-            _camera.Position = new Vector3(0, 1, -3);
+            _camera.Position = new Vector3(0, 1, 3);
             _camera.Up = new Vector3(0, 1, 0);
             _camera.LookAtTarget(new Vector3(0, 0.75f, 0));
 
@@ -195,7 +195,7 @@ namespace MillionDanceView {
             _phongProgram.Material = new Vector4(1, 1, 1, 0.5f);
             _phongProgram.Alpha = 1.0f;
 
-            _phongProgram.LightPosition = new Vector3(1, 0, -5);
+            _phongProgram.LightPosition = new Vector3(1, 0, 5);
 
             GL.Enable(EnableCap.DepthTest);
         }

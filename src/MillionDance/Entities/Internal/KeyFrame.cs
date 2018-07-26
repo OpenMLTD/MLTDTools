@@ -7,13 +7,13 @@ namespace MillionDance.Entities.Internal {
 
         public KeyFrame(int frameIndex, [NotNull] string path) {
             FrameIndex = frameIndex;
-            Time = TimeSpan.FromSeconds(1.0f / 60.0f * frameIndex);
+            Time = 1.0f / 60.0f * frameIndex;
             Path = path;
         }
 
         public int FrameIndex { get; }
 
-        public TimeSpan Time { get; }
+        public float Time { get; }
 
         [NotNull]
         public string Path { get; }

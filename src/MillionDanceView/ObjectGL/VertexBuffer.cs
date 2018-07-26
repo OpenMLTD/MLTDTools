@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using OpenTK.Graphics.OpenGL4;
 
 namespace MillionDanceView.ObjectGL {
@@ -23,7 +24,7 @@ namespace MillionDanceView.ObjectGL {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         }
 
-        public void BufferData<T>(T[] data, BufferUsageHint usage)
+        public void BufferData<T>([NotNull] T[] data, BufferUsageHint usage)
             where T : struct {
             EnsureNotDisposed();
 

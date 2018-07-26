@@ -1,5 +1,5 @@
 ﻿namespace MillionDanceView.ObjectGL {
-    public interface IGLObject {
+    internal interface IGLObject {
 
         int ObjectId { get; }
 

@@ -2,7 +2,7 @@
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
-namespace MillionDanceView.Specialized {
+namespace MillionDanceView.Programs {
     public sealed class Phong : Program {
 
         private Phong() {

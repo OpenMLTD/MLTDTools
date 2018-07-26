@@ -5,7 +5,7 @@ using MillionDance.Entities.Pmx;
 using UnityStudio.Extensions;
 using UnityStudio.Models;
 using UnityStudio.Serialization;
-using UnityStudio.Unity.Animation;
+using UnityStudio.UnityEngine.Animation;
 
 namespace MillionDance {
     internal static class Program {

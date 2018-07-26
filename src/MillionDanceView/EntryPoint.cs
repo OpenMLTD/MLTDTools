@@ -3,7 +3,7 @@
 namespace MillionDanceView {
     internal static class EntryPoint {
 
-        private static void Main(string[] args) {
+        private static void Main() {
             const int updateRate = 0;
             const int drawRate = 0;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace MillionDanceView.ObjectGL {
     public class OpenGLException : ApplicationException {
@@ -6,11 +7,11 @@ namespace MillionDanceView.ObjectGL {
         public OpenGLException() {
         }
 
-        public OpenGLException(string message)
+        public OpenGLException([NotNull] string message)
             : base(message) {
         }
 
-        public OpenGLException(string message, Exception innerException)
+        public OpenGLException([NotNull] string message, [NotNull] Exception innerException)
             : base(message, innerException) {
         }
 

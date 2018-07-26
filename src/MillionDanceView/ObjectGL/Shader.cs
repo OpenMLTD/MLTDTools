@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 using OpenTK.Graphics.OpenGL4;
 
 namespace MillionDanceView.ObjectGL {
@@ -14,6 +15,7 @@ namespace MillionDanceView.ObjectGL {
 
         public int ObjectId => _shader;
 
+        [NotNull]
         public string GetSource() {
             EnsureNotDisposed();
 
@@ -27,7 +29,8 @@ namespace MillionDanceView.ObjectGL {
             return source;
         }
 
-        public static Shader Compile(string source, ShaderType shaderType) {
+        [NotNull]
+        public static Shader Compile([NotNull] string source, ShaderType shaderType) {
             var shader = GL.CreateShader(shaderType);
 
             GL.ShaderSource(shader, source);

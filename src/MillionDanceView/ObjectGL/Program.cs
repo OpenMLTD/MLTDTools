@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 using OpenTK.Graphics.OpenGL4;
 
 namespace MillionDanceView.ObjectGL {
@@ -19,7 +20,8 @@ namespace MillionDanceView.ObjectGL {
 
         public Shader FragmentShader => _fragmentShader;
 
-        public static T Link<T>(Shader vertexShader, Shader fragmentShader)
+        [NotNull]
+        public static T Link<T>([CanBeNull] Shader vertexShader, [CanBeNull] Shader fragmentShader)
             where T : Program {
             var program = GL.CreateProgram();
 
@@ -85,7 +87,7 @@ namespace MillionDanceView.ObjectGL {
 
         public int ObjectId => _program;
 
-        public int GetAttributeLocation(string name) {
+        public int GetAttributeLocation([NotNull] string name) {
             EnsureNotDisposed();
 
             if (_attributeLocations.ContainsKey(name)) {
@@ -101,7 +103,7 @@ namespace MillionDanceView.ObjectGL {
             return location;
         }
 
-        public int GetUniformLocation(string name) {
+        public int GetUniformLocation([NotNull] string name) {
             EnsureNotDisposed();
 
             if (_uniformLocations.ContainsKey(name)) {

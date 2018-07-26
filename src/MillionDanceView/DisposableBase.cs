@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace MillionDanceView.ObjectGL {
+namespace MillionDanceView {
     public abstract class DisposableBase : IDisposable {
 
         ~DisposableBase() {
-            if (!IsDisposed) {
-                Dispose(false);
-
-                IsDisposed = true;
-                Disposed?.Invoke(this, EventArgs.Empty);
+            if (IsDisposed) {
+                return;
             }
+
+            Dispose(false);
+
+            IsDisposed = true;
+            Disposed?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler<EventArgs> Disposed;

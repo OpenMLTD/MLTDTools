@@ -40,12 +40,18 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.3.0.1\lib\net20\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,9 +60,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnityRotation.cs" />
+    <Compile Include="Extensions\ArrayExtensions.cs" />
+    <Compile Include="Extensions\AvatarExtensions.cs" />
+    <Compile Include="Extensions\Matrix4x4Extensions.cs" />
+    <Compile Include="Extensions\QuaternionExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
+    <Compile Include="Internal\AnimationRenderer.cs" />
+    <Compile Include="Internal\AxesDebugger.cs" />
+    <Compile Include="Internal\BoneDebugger.cs" />
+    <Compile Include="Internal\BoneNode.cs" />
+    <Compile Include="Internal\Game.cs" />
+    <Compile Include="Internal\IDrawable.cs" />
+    <Compile Include="Internal\IUpdateable.cs" />
+    <Compile Include="ResHelper.cs" />
     <Compile Include="ObjectGL\Camera.cs" />
-    <Compile Include="ObjectGL\DisposableBase.cs" />
+    <Compile Include="DisposableBase.cs" />
     <Compile Include="ObjectGL\IGLObject.cs" />
     <Compile Include="ObjectGL\IndexBuffer.cs" />
     <Compile Include="ObjectGL\OpenGLException.cs" />
@@ -67,8 +86,8 @@
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderForm.cs" />
-    <Compile Include="Specialized\Phong.cs" />
-    <Compile Include="Specialized\SimpleColor.cs" />
+    <Compile Include="Programs\Phong.cs" />
+    <Compile Include="Programs\SimpleColor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

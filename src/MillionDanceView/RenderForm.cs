@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
-using MillionDanceView.Extensions;
+using System.Drawing;
+using System.Linq;
+using System.Threading;
+using MillionDance.Entities.Internal;
+using MillionDance.Entities.Mltd;
+using MillionDanceView.Internal;
 using MillionDanceView.ObjectGL;
-using MillionDanceView.Specialized;
+using MillionDanceView.Programs;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
-using UnityStudio.Extensions;
-using UnityStudio.Models;
-using UnityStudio.Unity;
-using UnityStudio.Unity.Animation;
+using UnityStudio.UnityEngine;
+using UnityStudio.UnityEngine.Animation;
+using Vector2 = OpenTK.Vector2;
 using Vector3 = OpenTK.Vector3;
 using Vector4 = OpenTK.Vector4;
 
@@ -19,7 +22,10 @@ namespace MillionDanceView {
     public sealed class RenderForm : GameWindow {
 
         public RenderForm() {
+            _game = new Game();
             RegisterEventHandlers();
+
+            ClientSize = new Size(512, 512);
         }
 
         ~RenderForm() {
@@ -31,6 +37,10 @@ namespace MillionDanceView {
             UpdateFrame -= RenderForm_UpdateFrame;
             RenderFrame -= RenderForm_RenderFrame;
             Closed -= RenderForm_Closed;
+            KeyDown -= RenderForm_KeyDown;
+            MouseDown -= RenderForm_MouseDown;
+            MouseUp -= RenderForm_MouseUp;
+            Resize -= RenderForm_Resize;
         }
 
         private void RegisterEventHandlers() {
@@ -38,17 +48,60 @@ namespace MillionDanceView {
             UpdateFrame += RenderForm_UpdateFrame;
             RenderFrame += RenderForm_RenderFrame;
             Closed += RenderForm_Closed;
+            KeyDown += RenderForm_KeyDown;
+            MouseDown += RenderForm_MouseDown;
+            MouseUp += RenderForm_MouseUp;
+            Resize += RenderForm_Resize;
+        }
+
+        private void RenderForm_Resize(object sender, EventArgs e) {
+            GL.Viewport(ClientSize);
+        }
+
+        private void RenderForm_MouseUp(object sender, MouseButtonEventArgs e) {
+            if (e.Button == MouseButton.Right) {
+                _trackingMouse = false;
+            }
+        }
+
+        private void RenderForm_MouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.Button == MouseButton.Right) {
+                _trackingMouse = true;
+
+                var mouseState = Mouse.GetState();
+                _lastMousePos = new Vector2(mouseState.X, mouseState.Y);
+            }
+        }
+
+        private void RenderForm_KeyDown(object sender, KeyboardKeyEventArgs e) {
+            switch (e.Key) {
+                case Key.Space:
+                    _animationRenderer.Enabled = !_animationRenderer.Enabled;
+                    break;
+                case Key.X:
+                    _invertMouseX = !_invertMouseX;
+                    break;
+                case Key.Y:
+                    _invertMouseY = !_invertMouseY;
+                    break;
+            }
         }
 
         private void RenderForm_Closed(object sender, EventArgs e) {
-            _vertexBuffer?.Dispose();
-            _vertexBuffer = null;
+            _boneDebugger?.Dispose();
+            _boneDebugger = null;
 
-            _indexBuffer?.Dispose();
-            _indexBuffer = null;
+            _animationRenderer?.Dispose();
+            _animationRenderer = null;
 
-            _program?.Dispose();
-            _program = null;
+            _axesDebugger?.Dispose();
+            _axesDebugger = null;
+
+            _phongProgram?.Dispose();
+            _phongProgram = null;
+
+            _simpleColorProgram?.Dispose();
+            _simpleColorProgram = null;
 
             _vertexArrayObject?.Dispose();
             _vertexArrayObject = null;
@@ -69,75 +122,147 @@ namespace MillionDanceView {
                 Exit();
             }
 
-            Update();
+            if (_trackingMouse) {
+                var mouseState = Mouse.GetState();
+                var mousePos = new Vector2(mouseState.X, mouseState.Y);
+                var delta = _lastMousePos - mousePos;
+
+                if (_invertMouseX) {
+                    delta.X = -delta.X;
+                }
+
+                if (_invertMouseY) {
+                    delta.Y = -delta.Y;
+                }
+
+                _camera.AddRotation(delta.X, delta.Y);
+
+                _lastMousePos = mousePos;
+            }
+
+            do {
+                if (keyboardState.IsKeyDown(Key.W)) {
+                    _camera.Move(0f, 0.1f, 0f);
+                }
+
+                if (keyboardState.IsKeyDown(Key.S)) {
+                    _camera.Move(0f, -0.1f, 0f);
+                }
+
+                if (keyboardState.IsKeyDown(Key.A)) {
+                    _camera.Move(-0.1f, 0f, 0f);
+                }
+
+                if (keyboardState.IsKeyDown(Key.D)) {
+                    _camera.Move(0.1f, 0f, 0f);
+                }
+
+                if (keyboardState.IsKeyDown(Key.PageUp)) {
+                    _camera.Move(0f, 0f, 0.1f);
+                }
+
+                if (keyboardState.IsKeyDown(Key.PageDown)) {
+                    _camera.Move(0f, 0f, -0.1f);
+                }
+            } while (false);
+
+            Update(_currentTime);
+
+            _currentTime += (float)e.Time;
         }
 
         private void RenderForm_Load(object sender, EventArgs e) {
             _vertexArrayObject = new VertexArrayObject();
 
             Initialize();
+
+            var thread = new Thread(Initialize1);
+
+            thread.IsBackground = true;
+
+            thread.Start();
         }
 
         private void Initialize() {
-            //_camera.Position = new Vector3(4, 3, 3);
-            _camera.Position = new Vector3(0, 1, 2);
-            _camera.Target = new Vector3(0, 0.75f, 0);
+            _camera.Position = new Vector3(0, 1, -3);
             _camera.Up = new Vector3(0, 1, 0);
+            _camera.LookAtTarget(new Vector3(0, 0.75f, 0));
 
-            var vertSource = File.ReadAllText("Resources/Phong.vert");
-            var fragSource = File.ReadAllText("Resources/Phong.frag");
+            _phongProgram = ResHelper.LoadProgram<Phong>("Resources/Phong.vert", "Resources/Phong.frag");
+            _simpleColorProgram = ResHelper.LoadProgram<SimpleColor>("Resources/SimpleColor.vert", "Resources/SimpleColor.frag");
 
-            var vert = Shader.Compile(vertSource, ShaderType.VertexShader);
-            var frag = Shader.Compile(fragSource, ShaderType.FragmentShader);
+            _phongProgram.LightColor = new Vector3(1, 1, 1);
+            _phongProgram.Material = new Vector4(1, 1, 1, 0.5f);
+            _phongProgram.Alpha = 1.0f;
 
-            var program = Program.Link<Phong>(vert, frag);
-
-            _program = program;
-
-            _mesh = LoadMesh();
-
-            {
-                var vertexBuffer = new VertexBuffer();
-                var indexBuffer = new IndexBuffer();
-
-                var vertices = new PosNorm[_mesh.Vertices.Length];
-                var indices = new uint[_mesh.Indices.Count];
-
-                for (var k = 0; k < vertices.Length; ++k) {
-                    vertices[k] = new PosNorm {
-                        Position = _mesh.Vertices[k].ToOpenTK(),
-                        Normal = _mesh.Normals[k].ToOpenTK()
-                    };
-                }
-
-                for (var k = 0; k < indices.Length; ++k) {
-                    indices[k] = _mesh.Indices[k];
-                }
-
-                GL.EnableVertexAttribArray(0);
-                GL.EnableVertexAttribArray(1);
-
-                vertexBuffer.BufferData(vertices, BufferUsageHint.StaticDraw);
-                indexBuffer.BufferData(indices, BufferUsageHint.StaticDraw);
-
-                _vertexBuffer = vertexBuffer;
-                _indexBuffer = indexBuffer;
-            }
-
-            _avatar = LoadAvatar();
-
-            _program.LightColor = new Vector3(1, 1, 1);
-            _program.Material = new Vector4(1, 1, 1, 0.5f);
-            _program.Alpha = 1.0f;
-
-            _program.LightPosition = new Vector3(1, 0, 5);
+            _phongProgram.LightPosition = new Vector3(1, 0, -5);
 
             GL.Enable(EnableCap.DepthTest);
-            GL.DepthFunc(DepthFunction.Less);
-            //GL.Disable(EnableCap.CullFace);
         }
 
-        private void Update() {
+        // Some heavy stuff
+        private void Initialize1() {
+            _mesh = ResHelper.LoadMesh();
+
+            _avatar = ResHelper.LoadAvatar();
+
+            Debug.Assert(_avatar != null, nameof(_avatar) + " != null");
+            Debug.Assert(_mesh != null, nameof(_mesh) + " != null");
+
+            _boneList = ResHelper.BuildBoneHierachy(_avatar, _mesh);
+
+            (_danceData, _, _) = ResHelper.LoadDance();
+
+#if DEBUG
+            do {
+                var influencingBones = _boneList.Where((_, i) => _mesh.Skin.Any(sk => sk.Any(a => a.BoneIndex == i)));
+
+                Debug.Print("Bones that influences the mesh:");
+
+                foreach (var bone in influencingBones) {
+                    Debug.Print("#{0} \"{1}\"", bone.Index, bone.Path);
+                }
+            } while (false);
+#endif
+
+            _animation = Animation.CreateFrom(_danceData);
+
+#if DEBUG
+            do {
+                var animatedBoneNames = _animation.KeyFrames.Select(f => f.Path).Distinct();
+
+                Debug.Print("Animated bone names:");
+
+                foreach (var boneName in animatedBoneNames) {
+                    Debug.Print(boneName);
+                }
+            } while (false);
+#endif
+
+            _initialized1 = true;
+        }
+
+        private void Initialize2() {
+            _animationRenderer = new AnimationRenderer(_game, _mesh, _avatar, _animation, _boneList);
+            _boneDebugger = new BoneDebugger(_boneList, _simpleColorProgram);
+
+            _animationRenderer.Enabled = false;
+
+            _axesDebugger = new AxesDebugger(_simpleColorProgram);
+        }
+
+        private void Update(float currentTime) {
+            if (!_initialized1) {
+                return;
+            }
+
+            if (!_initialized2) {
+                Initialize2();
+                _initialized2 = true;
+            }
+
+            _game.CurrentTime = currentTime;
+
             var size = ClientSize;
             var aspect = (float)size.Width / size.Height;
 
@@ -146,105 +271,67 @@ namespace MillionDanceView {
             _worldMatrix = Matrix4.Identity;
             _projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45), aspect, 0.1f, 100.0f);
 
-            _program.SetMatrices(_worldMatrix, _camera.ViewMatrix, _projectionMatrix);
+            _phongProgram.SetMatrices(_worldMatrix, _camera.ViewMatrix, _projectionMatrix);
+            _simpleColorProgram.SetMatrices(_worldMatrix, _camera.ViewMatrix, _projectionMatrix);
 
-            _program.ViewPosition = _camera.Position;
+            _phongProgram.ViewPosition = _camera.Position;
+
+            _animationRenderer.Update();
+            _boneDebugger.Update();
         }
 
         private void Draw() {
-            _program.Activate();
-
-            foreach (var subMesh in _mesh.SubMeshes) {
-                DrawBuffered(_vertexBuffer, _indexBuffer, subMesh.FirstIndex, subMesh.IndexCount * 3);
-            }
-        }
-
-        private static void DrawBuffered(VertexBuffer vertexBuffer, IndexBuffer indexBuffer, uint startIndex, uint elementCount) {
-            Debug.Assert(elementCount % 3 == 0);
-
-            vertexBuffer.Activate();
-            indexBuffer.Activate();
-
-            GL.EnableVertexAttribArray(0);
-            GL.EnableVertexAttribArray(1);
-
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), IntPtr.Zero);
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), IntPtr.Zero + 3 * sizeof(float));
-
-            GL.DrawElements(BeginMode.Triangles, (int)elementCount * 3, DrawElementsType.UnsignedInt, (int)startIndex * sizeof(uint));
-
-            GL.DisableVertexAttribArray(0);
-            GL.DisableVertexAttribArray(1);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-        }
-
-        private static Mesh LoadMesh() {
-            Mesh mesh = null;
-
-            using (var fileStream = File.Open(BodyModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Mesh) {
-                                continue;
-                            }
-
-                            mesh = preloadData.LoadAsMesh();
-                            break;
-                        }
-                    }
-                }
+            if (!_initialized2) {
+                return;
             }
 
-            return mesh;
+            GL.DepthFunc(DepthFunction.Less);
+
+            // The animated model
+            _phongProgram.Activate();
+            _animationRenderer.Draw();
+
+            // Axes (R=X, G=Y, B=Z)
+            _simpleColorProgram.Activate();
+            _axesDebugger.Draw();
+
+            GL.DepthFunc(DepthFunction.Always);
+
+            // Bone debugging info
+            _simpleColorProgram.Activate();
+            _boneDebugger.Draw();
         }
 
-        private static Avatar LoadAvatar() {
-            Avatar avatar = null;
+        private float _currentTime;
 
-            using (var fileStream = File.Open(BodyModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Avatar) {
-                                continue;
-                            }
+        private bool _initialized1;
+        private bool _initialized2;
 
-                            avatar = preloadData.LoadAsAvatar();
-                            break;
-                        }
-                    }
-                }
-            }
+        private AnimationRenderer _animationRenderer;
+        private BoneDebugger _boneDebugger;
+        private AxesDebugger _axesDebugger;
 
-            return avatar;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private struct PosNorm {
-
-            public Vector3 Position;
-
-            public Vector3 Normal;
-
-        }
-
-        private const string BodyModelFilePath = "Resources/cb_ss001_015siz.unity3d";
-
-        private VertexBuffer _vertexBuffer;
-        private IndexBuffer _indexBuffer;
-
+        private IReadOnlyList<BoneNode> _boneList;
+        private CharacterImasMotionAsset _danceData;
+        private Animation _animation;
         private Avatar _avatar;
         private Mesh _mesh;
 
         private Matrix4 _worldMatrix, _projectionMatrix;
 
+        private Vector2 _lastMousePos;
+        private bool _trackingMouse;
+        private bool _invertMouseX = true;
+        private bool _invertMouseY;
+
         private readonly Camera _camera = new Camera();
 
         private VertexArrayObject _vertexArrayObject;
-        private Phong _program;
+
+        private Phong _phongProgram;
+        private SimpleColor _simpleColorProgram;
+
+        private readonly Game _game;
 
     }
 }

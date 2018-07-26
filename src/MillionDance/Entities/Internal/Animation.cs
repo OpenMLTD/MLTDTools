@@ -8,14 +8,17 @@ using MillionDance.Entities.Mltd;
 namespace MillionDance.Entities.Internal {
     public sealed class Animation {
 
-        private Animation([NotNull, ItemNotNull] KeyFrame[] keyFrames, TimeSpan duration) {
+        private Animation([NotNull, ItemNotNull] IReadOnlyList<KeyFrame> keyFrames, float duration, int boneCount) {
             KeyFrames = keyFrames;
             Duration = duration;
+            BoneCount = boneCount;
         }
 
         public IReadOnlyList<KeyFrame> KeyFrames { get; }
 
-        public TimeSpan Duration { get; }
+        public float Duration { get; }
+
+        public int BoneCount { get; }
 
         public static Animation CreateFrom([NotNull] CharacterImasMotionAsset dance) {
             var curves = dance.Curves;
@@ -154,9 +157,9 @@ namespace MillionDance.Entities.Internal {
                             }
 
                             var curveValueCount = curve.Values.Length / 2;
-                            var curTime = TimeSpan.FromSeconds(curve.Values[0]);
+                            var curTime = curve.Values[0];
                             var curValue = curve.Values[1];
-                            var nextTime = TimeSpan.FromSeconds(curve.Values[2]);
+                            var nextTime = curve.Values[2];
                             var nextValue = curve.Values[3];
                             var curIndex = 0;
 
@@ -173,7 +176,7 @@ namespace MillionDance.Entities.Internal {
                                     ++curIndex;
 
                                     if (curIndex < curveValueCount - 1) {
-                                        nextTime = TimeSpan.FromSeconds(curve.Values[(curIndex + 1) * 2]);
+                                        nextTime = curve.Values[(curIndex + 1) * 2];
                                         nextValue = curve.Values[(curIndex + 1) * 2 + 1];
                                     }
                                 }
@@ -182,8 +185,8 @@ namespace MillionDance.Entities.Internal {
                                     return curValue;
                                 }
 
-                                var duration = (float)(nextTime - curTime).TotalSeconds;
-                                var delta = (float)(frameTime - curTime).TotalSeconds;
+                                var duration = nextTime - curTime;
+                                var delta = frameTime - curTime;
                                 var p = delta / duration;
 
                                 return curValue * (1 - p) + nextValue * p;
@@ -261,7 +264,7 @@ namespace MillionDance.Entities.Internal {
                 return string.Compare(f1.Path, f2.Path, StringComparison.Ordinal);
             });
 
-            return new Animation(totalList.ToArray(), TimeSpan.FromSeconds(dance.Duration));
+            return new Animation(totalList.ToArray(), dance.Duration, frameDict.Count);
         }
 
     }

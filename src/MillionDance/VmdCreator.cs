@@ -12,7 +12,7 @@ using MillionDance.Entities.Pmx;
 using MillionDance.Entities.Vmd;
 using MillionDance.Extensions;
 using OpenTK;
-using UnityStudio.Unity.Animation;
+using UnityStudio.UnityEngine.Animation;
 
 namespace MillionDance {
     public static class VmdCreator {

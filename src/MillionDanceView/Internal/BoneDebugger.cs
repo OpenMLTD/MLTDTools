@@ -54,6 +54,8 @@ namespace MillionDanceView.Internal {
             _indexBuffer = indexBuffer;
         }
 
+        public Vector4 Color { get; set; } = new Vector4(1, 0, 0, 0.5f);
+
         public void Update() {
             if (!Enabled) {
                 return;
@@ -73,7 +75,7 @@ namespace MillionDanceView.Internal {
 
             var originalColor = _simpleColor.Color;
 
-            _simpleColor.Color = new Vector4(1, 0, 0, 0.5f);
+            _simpleColor.Color = Color;
 
             _vertexBuffer.Activate();
             _indexBuffer.Activate();

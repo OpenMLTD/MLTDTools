@@ -21,38 +21,74 @@ using Vector3 = OpenTK.Vector3;
 namespace MillionDanceView.Internal {
     internal sealed class AnimationRenderer : DisposableBase, IUpdateable, IDrawable {
 
-        public AnimationRenderer([NotNull] Game game, [NotNull] Mesh mesh, [NotNull] Avatar avatar, [NotNull] BodyAnimation animation, [NotNull, ItemNotNull] IReadOnlyList<BoneNode> boneList) {
+        public AnimationRenderer([NotNull] Game game,
+            [NotNull] Mesh bodyMesh, [NotNull] Avatar bodyAvatar, [NotNull, ItemNotNull] IReadOnlyList<BoneNode> bodyBoneList,
+            [NotNull] Mesh headMesh, [NotNull] Avatar headAvatar, [NotNull, ItemNotNull] IReadOnlyList<BoneNode> headBoneList,
+            [NotNull] BodyAnimation animation) {
             _game = game;
-            _mesh = mesh;
-            _avatar = avatar;
+            _bodyMesh = bodyMesh;
+            _bodyAvatar = bodyAvatar;
+            _bodyBoneList = bodyBoneList;
+            _headMesh = headMesh;
+            _headAvatar = headAvatar;
+            _headBoneList = headBoneList;
             _animation = animation;
-            _boneList = boneList;
 
-            var vertexBuffer = new VertexBuffer();
-            var indexBuffer = new IndexBuffer();
+            #region Body
+            var bodyVertexBuffer = new VertexBuffer();
+            var bodyIndexBuffer = new IndexBuffer();
 
-            var vertices = new PosNorm[mesh.Vertices.Length];
-            var indices = new uint[mesh.Indices.Count];
+            var bodyVertices = new PosNorm[bodyMesh.Vertices.Length];
+            var bodyIndices = new uint[bodyMesh.Indices.Count];
 
-            for (var k = 0; k < vertices.Length; ++k) {
-                vertices[k] = new PosNorm {
-                    Position = mesh.Vertices[k].ToOpenTK().FixCoordSystem(),
-                    Normal = mesh.Normals[k].ToOpenTK().FixCoordSystem()
+            for (var k = 0; k < bodyVertices.Length; ++k) {
+                bodyVertices[k] = new PosNorm {
+                    Position = bodyMesh.Vertices[k].ToOpenTK().FixCoordSystem(),
+                    Normal = bodyMesh.Normals[k].ToOpenTK().FixCoordSystem()
                 };
             }
 
-            _originalVertices = vertices;
-            _vertices = (PosNorm[])vertices.Clone();
+            _originalBodyVertices = bodyVertices;
+            _bodyVertices = (PosNorm[])bodyVertices.Clone();
 
-            for (var k = 0; k < indices.Length; ++k) {
-                indices[k] = mesh.Indices[k];
+            for (var k = 0; k < bodyIndices.Length; ++k) {
+                bodyIndices[k] = bodyMesh.Indices[k];
             }
 
-            vertexBuffer.BufferData(vertices, BufferUsageHint.StreamDraw);
-            indexBuffer.BufferData(indices, BufferUsageHint.StaticDraw);
+            bodyVertexBuffer.BufferData(bodyVertices, BufferUsageHint.StreamDraw);
+            bodyIndexBuffer.BufferData(bodyIndices, BufferUsageHint.StaticDraw);
 
-            _vertexBuffer = vertexBuffer;
-            _indexBuffer = indexBuffer;
+            _bodyVertexBuffer = bodyVertexBuffer;
+            _bodyIndexBuffer = bodyIndexBuffer;
+            #endregion
+
+            #region Head
+            var headVertexBuffer = new VertexBuffer();
+            var headIndexBuffer = new IndexBuffer();
+
+            var headVertices = new PosNorm[headMesh.Vertices.Length];
+            var headIndices = new uint[headMesh.Indices.Count];
+
+            for (var k = 0; k < headVertices.Length; ++k) {
+                headVertices[k] = new PosNorm {
+                    Position = headMesh.Vertices[k].ToOpenTK().FixCoordSystem(),
+                    Normal = headMesh.Normals[k].ToOpenTK().FixCoordSystem()
+                };
+            }
+
+            _originalHeadVertices = headVertices;
+            _headVertices = (PosNorm[])headVertices.Clone();
+
+            for (var k = 0; k < headIndices.Length; ++k) {
+                headIndices[k] = headMesh.Indices[k];
+            }
+
+            headVertexBuffer.BufferData(headVertices, BufferUsageHint.StreamDraw);
+            headIndexBuffer.BufferData(headIndices, BufferUsageHint.StaticDraw);
+
+            _headVertexBuffer = headVertexBuffer;
+            _headIndexBuffer = headIndexBuffer;
+            #endregion
         }
 
         public void Update() {
@@ -60,9 +96,10 @@ namespace MillionDanceView.Internal {
                 return;
             }
 
-            UpdateVertices(_game.CurrentTime, _originalVertices, _vertices);
+            UpdateVertices(_game.CurrentTime);
 
-            _vertexBuffer.BufferData(_vertices, BufferUsageHint.StreamDraw);
+            _bodyVertexBuffer.BufferData(_bodyVertices, BufferUsageHint.StreamDraw);
+            _headVertexBuffer.BufferData(_headVertices, BufferUsageHint.StreamDraw);
         }
 
         public void Draw() {
@@ -70,8 +107,12 @@ namespace MillionDanceView.Internal {
                 return;
             }
 
-            foreach (var subMesh in _mesh.SubMeshes) {
-                DrawBuffered(_vertexBuffer, _indexBuffer, subMesh.FirstIndex, subMesh.IndexCount * 3);
+            foreach (var subMesh in _bodyMesh.SubMeshes) {
+                DrawBuffered(_bodyVertexBuffer, _bodyIndexBuffer, subMesh.FirstIndex, subMesh.IndexCount * 3);
+            }
+
+            foreach (var subMesh in _headMesh.SubMeshes) {
+                DrawBuffered(_headVertexBuffer, _headIndexBuffer, subMesh.FirstIndex, subMesh.IndexCount * 3);
             }
         }
 
@@ -80,11 +121,17 @@ namespace MillionDanceView.Internal {
         public bool Visible { get; set; } = true;
 
         protected override void Dispose(bool disposing) {
-            _vertexBuffer?.Dispose();
-            _vertexBuffer = null;
+            _bodyVertexBuffer?.Dispose();
+            _bodyVertexBuffer = null;
 
-            _indexBuffer?.Dispose();
-            _indexBuffer = null;
+            _bodyIndexBuffer?.Dispose();
+            _bodyIndexBuffer = null;
+
+            _headVertexBuffer?.Dispose();
+            _headVertexBuffer = null;
+
+            _headIndexBuffer?.Dispose();
+            _headIndexBuffer = null;
 
             base.Dispose(disposing);
         }
@@ -110,9 +157,16 @@ namespace MillionDanceView.Internal {
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
         }
 
-        private void UpdateVertices(float currentTime, [NotNull] PosNorm[] origVertices, [NotNull] PosNorm[] vertices) {
-            var mesh = _mesh;
-            var avatar = _avatar;
+        private void UpdateVertices(float currentTime) {
+            var bodyMesh = _bodyMesh;
+            var bodyAvatar = _bodyAvatar;
+            var bodyVertices = _bodyVertices;
+            var headMesh = _headMesh;
+            var headAvatar = _headAvatar;
+            var origBodyVertices = _originalBodyVertices;
+            var headVertices = _headVertices;
+            var origHeadVertices = _originalHeadVertices;
+
             var keyFrames = _animation.KeyFrames;
 
 #if !STATIC_POSE_DEBUG 
@@ -138,7 +192,7 @@ namespace MillionDanceView.Internal {
             for (var i = firstKeyFrameIndex; i < firstKeyFrameIndex + animatedBoneCount; ++i) {
                 var frame = keyFrames[i];
                 var altPath = frame.Path.Contains("BODY_SCALE/") ? frame.Path.Replace("BODY_SCALE/", string.Empty) : frame.Path;
-                var bone = _boneList.FirstOrDefault(b => b.Path == altPath);
+                var bone = _bodyBoneList.FirstOrDefault(b => b.Path == altPath);
 
                 if (bone == null) {
                     throw new ApplicationException($"Invalid bone path: {altPath}");
@@ -166,53 +220,62 @@ namespace MillionDanceView.Internal {
             }
 #endif
 
-            foreach (var bone in _boneList) {
+            foreach (var bone in _bodyBoneList) {
                 bone.UpdateTransform();
             }
 
-            var vertexCount = vertices.Length;
+            foreach (var bone in _headBoneList) {
+                bone.UpdateTransform();
+            }
 
-            for (var i = 0; i < vertexCount; ++i) {
-                var vertex = origVertices[i];
-                var skin = mesh.Skin[i];
+            UpdateVertInternal(origBodyVertices, bodyVertices, bodyAvatar, bodyMesh, _bodyBoneList);
+            UpdateVertInternal(origHeadVertices, headVertices, headAvatar, headMesh, _headBoneList);
 
-                var m = Matrix4.Zero;
-                var activeSkinCount = 0;
-                float totalWeight = 0;
+            void UpdateVertInternal(PosNorm[] origVertices, PosNorm[] vertices, Avatar avatar, Mesh mesh, IReadOnlyList<BoneNode> boneList) {
+                var vertexCount = vertices.Length;
 
-                for (var j = 0; j < 4; ++j) {
-                    if (skin[j].Weight <= 0) {
+                for (var i = 0; i < vertexCount; ++i) {
+                    var vertex = origVertices[i];
+                    var skin = mesh.Skin[i];
+
+                    var m = Matrix4.Zero;
+                    var activeSkinCount = 0;
+                    float totalWeight = 0;
+
+                    for (var j = 0; j < 4; ++j) {
+                        if (skin[j].Weight <= 0) {
+                            continue;
+                        }
+
+                        ++activeSkinCount;
+
+                        var boneNameHash = mesh.BoneNameHashes[skin[j].BoneIndex];
+                        var boneIndex = avatar.FindBoneIndexByNameHash(boneNameHash);
+                        var transform = boneList[boneIndex].SkinMatrix;
+                        m = m + transform * skin[j].Weight;
+                        totalWeight += skin[j].Weight;
+                    }
+
+                    if (activeSkinCount == 0) {
+#if DEBUG
+                        Debug.Print("Warning: one skin is not bound to bones.");
+#endif
                         continue;
                     }
 
-                    ++activeSkinCount;
-
-                    var boneNameHash = mesh.BoneNameHashes[skin[j].BoneIndex];
-                    var boneIndex = avatar.FindBoneIndexByNameHash(boneNameHash);
-                    var transform = _boneList[boneIndex].SkinMatrix;
-                    m = m + transform * skin[j].Weight;
-                    totalWeight += skin[j].Weight;
-                }
-
-                if (activeSkinCount == 0) {
 #if DEBUG
-                    Debug.Print("Warning: one skin is not bound to bones.");
-#endif
-                    continue;
-                }
-
-#if DEBUG
-                if (Math.Abs(totalWeight - 1.0f) > 0.00001f) {
-                    Debug.Print("Warning: weights do not sum up.");
-                }
+                    if (Math.Abs(totalWeight - 1.0f) > 0.00001f) {
+                        Debug.Print("Warning: weights do not sum up.");
+                    }
 #endif
 
 #if !NO_TRANSFORM_MESH
-                vertex.Position = Vector3.TransformPosition(vertex.Position, m);
-                vertex.Normal = Vector3.TransformNormal(vertex.Normal, m);
+                    vertex.Position = Vector3.TransformPosition(vertex.Position, m);
+                    vertex.Normal = Vector3.TransformNormal(vertex.Normal, m);
 #endif
 
-                vertices[i] = vertex;
+                    vertices[i] = vertex;
+                }
             }
 
             ++_lastFrameIndex;
@@ -227,15 +290,23 @@ namespace MillionDanceView.Internal {
 
         }
 
-        private readonly Mesh _mesh;
-        private readonly Avatar _avatar;
+        private readonly Mesh _bodyMesh;
+        private readonly Avatar _bodyAvatar;
+        private readonly IReadOnlyList<BoneNode> _bodyBoneList;
+        private readonly Mesh _headMesh;
+        private readonly Avatar _headAvatar;
+        private readonly IReadOnlyList<BoneNode> _headBoneList;
         private readonly BodyAnimation _animation;
-        private readonly IReadOnlyList<BoneNode> _boneList;
 
-        private readonly PosNorm[] _originalVertices;
-        private readonly PosNorm[] _vertices;
-        private VertexBuffer _vertexBuffer;
-        private IndexBuffer _indexBuffer;
+        private readonly PosNorm[] _originalBodyVertices;
+        private readonly PosNorm[] _bodyVertices;
+        private VertexBuffer _bodyVertexBuffer;
+        private IndexBuffer _bodyIndexBuffer;
+
+        private readonly PosNorm[] _originalHeadVertices;
+        private readonly PosNorm[] _headVertices;
+        private VertexBuffer _headVertexBuffer;
+        private IndexBuffer _headIndexBuffer;
 
         private int _lastFrameIndex = -1;
 

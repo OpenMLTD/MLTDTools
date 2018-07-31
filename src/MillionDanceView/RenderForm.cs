@@ -14,6 +14,7 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using UnityStudio.UnityEngine;
 using UnityStudio.UnityEngine.Animation;
+using Quaternion = OpenTK.Quaternion;
 using Vector2 = OpenTK.Vector2;
 using Vector3 = OpenTK.Vector3;
 using Vector4 = OpenTK.Vector4;
@@ -88,8 +89,11 @@ namespace MillionDanceView {
         }
 
         private void RenderForm_Closed(object sender, EventArgs e) {
-            _boneDebugger?.Dispose();
-            _boneDebugger = null;
+            _bodyBoneDebugger?.Dispose();
+            _bodyBoneDebugger = null;
+
+            _headBoneDebugger?.Dispose();
+            _headBoneDebugger = null;
 
             _animationRenderer?.Dispose();
             _animationRenderer = null;
@@ -202,20 +206,59 @@ namespace MillionDanceView {
 
         // Some heavy stuff
         private void Initialize1() {
-            _mesh = ResHelper.LoadMesh();
+            ResHelper.LoadHeadMesh();
 
-            _avatar = ResHelper.LoadAvatar();
+            _bodyMesh = ResHelper.LoadBodyMesh();
+            _bodyAvatar = ResHelper.LoadBodyAvatar();
+            _headMesh = ResHelper.LoadHeadMesh();
+            _headAvatar = ResHelper.LoadHeadAvatar();
 
-            Debug.Assert(_avatar != null, nameof(_avatar) + " != null");
-            Debug.Assert(_mesh != null, nameof(_mesh) + " != null");
+            Debug.Assert(_bodyAvatar != null, nameof(_bodyAvatar) + " != null");
+            Debug.Assert(_bodyMesh != null, nameof(_bodyMesh) + " != null");
+            Debug.Assert(_headAvatar != null, nameof(_headAvatar) + " != null");
+            Debug.Assert(_headMesh != null, nameof(_headMesh) + " != null");
 
-            _boneList = ResHelper.BuildBoneHierachy(_avatar, _mesh);
+            _bodyBoneList = ResHelper.BuildBoneHierachy(_bodyAvatar, _bodyMesh);
+            _headBoneList = ResHelper.BuildBoneHierachy(_headAvatar, _headMesh);
+
+            do {
+                // Fix "KUBI" (neck) bone's parent
+                var kubiParent = _bodyBoneList.SingleOrDefault(bn => bn.Path == "MODEL_00/BASE/MUNE1/MUNE2/KUBI");
+                var kubiBone = _headBoneList.SingleOrDefault(bn => bn.Path == "KUBI");
+
+                Debug.Assert(kubiParent != null);
+                Debug.Assert(kubiBone != null);
+
+                kubiParent.AddChild(kubiBone);
+
+                Debug.Assert(kubiBone.Parent != null);
+
+                // Don't forget to remove it from its old parent (or it will be updated twice from two parents).
+                // The original parents and grandparents of KUBI are not needed; they are just like model anchors and shouldn't be animated.
+                // See decompiled model for more information.
+                kubiBone.Parent.RemoveChild(kubiBone);
+
+                kubiBone.Parent = kubiParent;
+
+                // Set its new initial parameters.
+                // Since the two bones (KUBI and MODEL_00/BASE/MUNE1/MUNE2/KUBI) actually share the exact same transforms,
+                // set its local transform to identity (t=0, q=0).
+                kubiBone.InitialPosition = Vector3.Zero;
+                kubiBone.InitialRotation = Quaternion.Identity;
+                kubiBone.LocalPosition = Vector3.Zero;
+                kubiBone.LocalRotation = Quaternion.Identity;
+
+                // Now inform the rest of the head bones the new bone hierarchy. Force them to do so.
+                foreach (var bone in _headBoneList) {
+                    bone.Initialize(true);
+                }
+            } while (false);
 
             (_danceData, _, _) = ResHelper.LoadDance();
 
 #if DEBUG
             do {
-                var influencingBones = _boneList.Where((_, i) => _mesh.Skin.Any(sk => sk.Any(a => a.BoneIndex == i)));
+                var influencingBones = _bodyBoneList.Where((_, i) => _bodyMesh.Skin.Any(sk => sk.Any(a => a.BoneIndex == i)));
 
                 Debug.Print("Bones that influences the mesh:");
 
@@ -243,8 +286,13 @@ namespace MillionDanceView {
         }
 
         private void Initialize2() {
-            _animationRenderer = new AnimationRenderer(_game, _mesh, _avatar, _animation, _boneList);
-            _boneDebugger = new BoneDebugger(_boneList, _simpleColorProgram);
+            _animationRenderer = new AnimationRenderer(_game, _bodyMesh, _bodyAvatar, _bodyBoneList, _headMesh, _headAvatar, _headBoneList, _animation);
+            _bodyBoneDebugger = new BoneDebugger(_bodyBoneList, _simpleColorProgram) {
+                Color = new Vector4(1, 0, 0, 0.5f)
+            };
+            _headBoneDebugger = new BoneDebugger(_headBoneList, _simpleColorProgram) {
+                Color = new Vector4(0, 1, 0, 0.5f)
+            };
 
             _animationRenderer.Enabled = false;
 
@@ -277,7 +325,8 @@ namespace MillionDanceView {
             _phongProgram.ViewPosition = _camera.Position;
 
             _animationRenderer.Update();
-            _boneDebugger.Update();
+            _bodyBoneDebugger.Update();
+            _headBoneDebugger.Update();
         }
 
         private void Draw() {
@@ -299,7 +348,8 @@ namespace MillionDanceView {
 
             // Bone debugging info
             _simpleColorProgram.Activate();
-            _boneDebugger.Draw();
+            _bodyBoneDebugger.Draw();
+            _headBoneDebugger.Draw();
         }
 
         private float _currentTime;
@@ -308,14 +358,18 @@ namespace MillionDanceView {
         private bool _initialized2;
 
         private AnimationRenderer _animationRenderer;
-        private BoneDebugger _boneDebugger;
+        private BoneDebugger _bodyBoneDebugger;
+        private BoneDebugger _headBoneDebugger;
         private AxesDebugger _axesDebugger;
 
-        private IReadOnlyList<BoneNode> _boneList;
         private CharacterImasMotionAsset _danceData;
         private BodyAnimation _animation;
-        private Avatar _avatar;
-        private Mesh _mesh;
+        private Avatar _bodyAvatar;
+        private Mesh _bodyMesh;
+        private IReadOnlyList<BoneNode> _bodyBoneList;
+        private Avatar _headAvatar;
+        private Mesh _headMesh;
+        private IReadOnlyList<BoneNode> _headBoneList;
 
         private Matrix4 _worldMatrix, _projectionMatrix;
 

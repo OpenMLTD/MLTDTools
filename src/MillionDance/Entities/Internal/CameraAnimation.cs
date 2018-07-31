@@ -138,6 +138,10 @@ namespace MillionDance.Entities.Internal {
                     var curValue = curve.Values[i * 4 + 1];
                     var nextValue = curve.Values[(i + 1) * 4 + 1];
 
+                    // suspect:
+                    // +2: tan(in)
+                    // +3: tan(out)
+
                     // TODO: use F-curve interpolation.
                     return Lerp(curValue, nextValue, (time - curTime) / (nextTime - curTime));
                 } else {

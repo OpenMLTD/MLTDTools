@@ -13,7 +13,7 @@ namespace MillionDance {
         private static void Main() {
             var avatar = LoadAvatar();
             var mesh = LoadMesh();
-            var newPmx = PmxCreator.Create(avatar, mesh);
+            var newPmx = PmxCreator.Create(avatar, mesh, @"tex\body");
 
             using (var w = new PmxWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\mayu_gen.pmx", FileMode.Create, FileAccess.Write, FileShare.Write))) {
                 w.Write(newPmx);

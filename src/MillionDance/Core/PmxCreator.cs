@@ -16,7 +16,7 @@ using Vector4 = OpenTK.Vector4;
 namespace MillionDance.Core {
     public static class PmxCreator {
 
-        public static PmxModel Create([NotNull] Avatar avatar, [NotNull] Mesh mesh) {
+        public static PmxModel Create([NotNull] Avatar avatar, [NotNull] Mesh mesh, [NotNull] string bodyTexturePrefix) {
             var model = new PmxModel();
 
             model.Name = "ミリシタ モデル00";
@@ -163,7 +163,7 @@ namespace MillionDance.Core {
                 material.EdgeColor = new Vector4(0, 0, 0, 1);
                 material.EdgeSize = 1.0f;
                 // TODO: The right way: reading textures' path ID and do the mapping.
-                material.TextureFileName = $@"tex\mltd_tex_{i:00}.png";
+                material.TextureFileName = $"{bodyTexturePrefix}_{i:00}.png";
 
                 material.Flags = MaterialFlags.Shadow | MaterialFlags.SelfShadow;
 

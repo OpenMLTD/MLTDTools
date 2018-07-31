@@ -13,6 +13,7 @@ using UnityStudio.Models;
 using UnityStudio.Serialization;
 using UnityStudio.UnityEngine;
 using UnityStudio.UnityEngine.Animation;
+using UnityStudio.Utilities;
 
 namespace MillionDanceView {
     internal static class ResHelper {
@@ -32,7 +33,7 @@ namespace MillionDanceView {
         }
 
         [CanBeNull]
-        public static Mesh LoadMesh() {
+        public static Mesh LoadBodyMesh() {
             Mesh mesh = null;
 
             using (var fileStream = File.Open(BodyModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
@@ -51,6 +52,31 @@ namespace MillionDanceView {
             }
 
             return mesh;
+        }
+
+        [CanBeNull]
+        public static Mesh LoadHeadMesh() {
+            var meshList = new List<Mesh>();
+
+            using (var fileStream = File.Open(HeadModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                using (var bundle = new BundleFile(fileStream, false)) {
+                    foreach (var assetFile in bundle.AssetFiles) {
+                        foreach (var preloadData in assetFile.PreloadDataList) {
+                            if (preloadData.KnownType != KnownClassID.Mesh) {
+                                continue;
+                            }
+
+                            var mesh = preloadData.LoadAsMesh();
+
+                            meshList.Add(mesh);
+                        }
+                    }
+                }
+            }
+
+            var result = CompositeMesh.FromMeshes(meshList);
+
+            return result;
         }
 
         [NotNull, ItemNotNull]
@@ -94,10 +120,32 @@ namespace MillionDanceView {
         }
 
         [CanBeNull]
-        public static Avatar LoadAvatar() {
+        public static Avatar LoadBodyAvatar() {
             Avatar avatar = null;
 
             using (var fileStream = File.Open(BodyModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                using (var bundle = new BundleFile(fileStream, false)) {
+                    foreach (var assetFile in bundle.AssetFiles) {
+                        foreach (var preloadData in assetFile.PreloadDataList) {
+                            if (preloadData.KnownType != KnownClassID.Avatar) {
+                                continue;
+                            }
+
+                            avatar = preloadData.LoadAsAvatar();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return avatar;
+        }
+
+        [CanBeNull]
+        public static Avatar LoadHeadAvatar() {
+            Avatar avatar = null;
+
+            using (var fileStream = File.Open(HeadModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                 using (var bundle = new BundleFile(fileStream, false)) {
                     foreach (var assetFile in bundle.AssetFiles) {
                         foreach (var preloadData in assetFile.PreloadDataList) {
@@ -157,6 +205,7 @@ namespace MillionDanceView {
         }
 
         private const string BodyModelFilePath = "Resources/cb_ss001_015siz.unity3d";
+        private const string HeadModelFilePath = "Resources/ch_ss001_015siz.unity3d";
         private const string SongResourceName = "hzwend";
         private const string DancerPosition = "01";
         private const string DanceDataFilePath = "Resources/dan_" + SongResourceName + "_" + DancerPosition + ".imo.unity3d";

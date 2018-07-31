@@ -26,13 +26,8 @@ namespace MillionDanceView.Internal {
             LocalRotation = initialRotation;
         }
 
-        public BoneNode([CanBeNull] BoneNode parent, int index, [NotNull] string path, Vector3 initialPosition, Quaternion initialRotation, Matrix4 bindPoseInverse)
-            : this(parent, index, path, initialPosition, initialRotation) {
-            //_bindingPoseInverse = bindPoseInverse;
-        }
-
         [CanBeNull]
-        public BoneNode Parent { get; }
+        public BoneNode Parent { get; internal set; }
 
         /// <summary>
         /// Index in bone list.
@@ -71,11 +66,9 @@ namespace MillionDanceView.Internal {
 
         public Matrix4 SkinMatrix => _skinMatrix;
 
-        public Vector3 InitialPosition { get; }
+        public Vector3 InitialPosition { get; internal set; }
 
-        internal Vector3 InitialPositionWorld { get; set; }
-
-        public Quaternion InitialRotation { get; }
+        public Quaternion InitialRotation { get; internal set; }
 
         public override string ToString() {
             var parent = Parent;
@@ -87,6 +80,8 @@ namespace MillionDanceView.Internal {
             }
         }
 
+        internal Vector3 InitialPositionWorld { get; set; }
+
         internal void AddChild([NotNull] BoneNode node) {
             if (!_children.Contains(node)) {
                 _children.Add(node);
@@ -97,8 +92,8 @@ namespace MillionDanceView.Internal {
             return _children.Remove(node);
         }
 
-        internal void Initialize() {
-            if (_isInitialized) {
+        internal void Initialize(bool forced = false) {
+            if (!forced && _isInitialized) {
                 return;
             }
 
@@ -111,7 +106,7 @@ namespace MillionDanceView.Internal {
 
             _localMatrix = CreateTransformMatrix(t, q);
 
-            if (_bindingPoseInverse == null) {
+            if (forced || _bindingPoseInverse == null) {
                 _worldMatrix = ComputeWorldMatrix();
                 _bindingPoseInverse = _worldMatrix.Inverted();
             } else {

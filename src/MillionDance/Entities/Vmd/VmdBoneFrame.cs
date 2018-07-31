@@ -7,7 +7,18 @@ namespace MillionDance.Entities.Vmd {
         internal VmdBoneFrame(int frameIndex, [NotNull] string name)
             : base(frameIndex) {
             Name = name;
-            Interpolation = new byte[4, 4, 4];
+
+            var interpolation = new byte[4, 4, 4];
+
+            for (var i = 0; i < 4; ++i) {
+                for (var j = 0; j < 4; ++j) {
+                    for (var k = 0; k < 4; ++k) {
+                        interpolation[i, j, k] = 127;
+                    }
+                }
+            }
+
+            Interpolation = interpolation;
         }
 
         [NotNull]

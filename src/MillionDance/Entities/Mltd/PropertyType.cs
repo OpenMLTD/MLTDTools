@@ -1,6 +1,7 @@
 ﻿namespace MillionDance.Entities.Mltd {
     internal enum PropertyType {
 
+        General,
         AngleX,
         AngleY,
         AngleZ,

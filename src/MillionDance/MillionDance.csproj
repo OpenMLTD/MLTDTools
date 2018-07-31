@@ -53,8 +53,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utilities\ArrayCache.cs" />
+    <Compile Include="Utilities\BoneUtils.cs" />
+    <Compile Include="Core\ConversionConfig.cs" />
+    <Compile Include="DisposableBase.cs" />
     <Compile Include="Entities\Extensions\CurveExtension.cs" />
-    <Compile Include="Entities\Internal\Animation.cs" />
+    <Compile Include="Entities\Internal\BodyAnimation.cs" />
+    <Compile Include="Entities\Internal\BoneNode.cs" />
     <Compile Include="Entities\Internal\KeyFrame.cs" />
     <Compile Include="Entities\Mltd\Curve.cs" />
     <Compile Include="Entities\Mltd\CharacterImasMotionAsset.cs" />
@@ -111,12 +116,19 @@
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Extensions\BinaryReaderExtensions.cs" />
     <Compile Include="Extensions\BinaryWriterExtensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\QuaternionExtensions.cs" />
-    <Compile Include="PmxReader.cs" />
+    <Compile Include="Extensions\UnityStudioExtensions.cs" />
+    <Compile Include="Extensions\Vector3Extensions.cs" />
+    <Compile Include="Core\PmxCreator.cs" />
+    <Compile Include="Core\PmxReader.cs" />
+    <Compile Include="Core\PmxWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VmdCreator.cs" />
-    <Compile Include="VmdWriter.cs" />
+    <Compile Include="Utilities\RotationDebug.cs" />
+    <Compile Include="Core\UnityRotation.cs" />
+    <Compile Include="Core\VmdCreator.cs" />
+    <Compile Include="Core\VmdWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config" />

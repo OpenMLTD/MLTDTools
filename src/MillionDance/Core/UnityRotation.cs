@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using MillionDanceView.Extensions;
 using OpenTK;
 
-namespace MillionDanceView {
+namespace MillionDance.Core {
     internal static class UnityRotation {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -16,31 +15,11 @@ namespace MillionDanceView {
             return EulerRad(new Vector3(x, y, z));
         }
 
-        /// <summary>
-        /// Creates a Unity-like quaternion from Euler angles in degrees.
-        /// </summary>
-        /// <param name="angles">Angles in degrees.</param>
-        /// <remarks>
-        /// Created quaternion is in Unity's rotation representation. The value must be converted using
-        /// <see cref="QuaternionExtensions.FixCoordSystem"/> in order to use in OpenTK.
-        /// See https://gist.github.com/aeroson/043001ca12fe29ee911e#gistcomment-2191151 for discussion.
-        /// </remarks>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Quaternion EulerDeg(Vector3 angles) {
             return EulerRad(angles * Deg2Rad);
         }
 
-        /// <summary>
-        /// Creates a Unity-like quaternion from Euler angles in radians.
-        /// </summary>
-        /// <param name="angles"></param>
-        /// <remarks>
-        /// Created quaternion is in Unity's rotation representation. The value must be converted using
-        /// <see cref="QuaternionExtensions.FixCoordSystem"/> in order to use in OpenTK.
-        /// See https://gist.github.com/aeroson/043001ca12fe29ee911e#gistcomment-2191151 for discussion.
-        /// </remarks>
-        /// <returns></returns>
         public static Quaternion EulerRad(Vector3 angles) {
             var pitchOver2 = angles.Y / 2;
             var yawOver2 = angles.X / 2;

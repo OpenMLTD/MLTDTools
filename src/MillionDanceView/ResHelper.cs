@@ -56,7 +56,6 @@ namespace MillionDanceView {
         [NotNull, ItemNotNull]
         public static IReadOnlyList<BoneNode> BuildBoneHierachy([NotNull] Avatar avatar, [NotNull] Mesh mesh) {
             var boneList = new List<BoneNode>();
-            var affectingBoneCount = mesh.BindPose.Length;
 
             for (var i = 0; i < avatar.AvatarSkeleton.Nodes.Length; i++) {
                 var n = avatar.AvatarSkeleton.Nodes[i];
@@ -73,14 +72,7 @@ namespace MillionDanceView {
 
                 var initialPose = avatar.AvatarSkeletonPose.Transforms[boneIndex];
 
-                BoneNode bone;
-
-                if (i < affectingBoneCount) {
-                    var inv = mesh.BindPose[i].ToOpenTK();
-                    bone = new BoneNode(parent, i, bonePath, initialPose.Translation.ToOpenTK(), initialPose.Rotation.ToOpenTK(), inv);
-                } else {
-                    bone = new BoneNode(parent, i, bonePath, initialPose.Translation.ToOpenTK(), initialPose.Rotation.ToOpenTK());
-                }
+                var bone = new BoneNode(parent, i, bonePath, initialPose.Translation.ToOpenTK(), initialPose.Rotation.ToOpenTK());
 
                 boneList.Add(bone);
             }

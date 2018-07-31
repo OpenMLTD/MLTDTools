@@ -47,7 +47,7 @@ namespace MillionDance.Entities.Pmx {
 
         public float AppendRatio { get; internal set; } = 1;
 
-        public BoneFlags Flags { get; internal set; } = BoneFlags.Enabled | BoneFlags.Visible | BoneFlags.Rotation;
+        public BoneFlags Flags { get; internal set; } = BoneFlags.Enabled | BoneFlags.Visible;
 
         [CanBeNull]
         public PmxIK IK { get; internal set; }

@@ -12,16 +12,16 @@ namespace MillionDance.Entities.Pmx {
         public string NameEnglish { get; internal set; }
 
         [NotNull]
-        public string TextureFileName { get; internal set; }
+        public string TextureFileName { get; internal set; } = string.Empty;
 
         [NotNull]
-        public string SphereTextureFileName { get; internal set; }
+        public string SphereTextureFileName { get; internal set; } = string.Empty;
 
         [NotNull]
-        public string ToonTextureFileName { get; internal set; }
+        public string ToonTextureFileName { get; internal set; } = string.Empty;
 
         [NotNull]
-        public string MemoTextureFileName { get; internal set; }
+        public string MemoTextureFileName { get; internal set; } = string.Empty;
 
         public Vector4 Diffuse { get; internal set; }
 

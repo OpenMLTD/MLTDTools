@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using MillionDance.Entities.Mltd;
 
@@ -6,9 +7,24 @@ namespace MillionDance.Entities.Extensions {
     internal static class CurveExtension {
 
         public static PropertyType GetPropertyType([NotNull] this Curve curve) {
-            var s = curve.Attributes[0].Substring(14); // - "property_type "
+            var index = -1;
+
+            for (var i = 0; i < curve.Attributes.Length; ++i) {
+                if (curve.Attributes[i].StartsWith("property_type ")) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index < 0) {
+                throw new KeyNotFoundException();
+            }
+
+            var s = curve.Attributes[index].Substring(14); // - "property_type "
 
             switch (s) {
+                case "General":
+                    return PropertyType.General;
                 case "AngleX":
                     return PropertyType.AngleX;
                 case "AngleY":
@@ -27,7 +43,20 @@ namespace MillionDance.Entities.Extensions {
         }
 
         public static KeyType GetKeyType([NotNull] this Curve curve) {
-            var s = curve.Attributes[1].Substring(9); // - "key_type "
+            var index = -1;
+
+            for (var i = 0; i < curve.Attributes.Length; ++i) {
+                if (curve.Attributes[i].StartsWith("key_type ")) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index < 0) {
+                throw new KeyNotFoundException();
+            }
+
+            var s = curve.Attributes[index].Substring(9); // - "key_type "
 
             switch (s) {
                 case "Const":
@@ -36,9 +65,28 @@ namespace MillionDance.Entities.Extensions {
                     return KeyType.Discrete;
                 case "FullFrame":
                     return KeyType.FullFrame;
+                case "FCurve":
+                    return KeyType.FCurve;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(s), s, null);
             }
+        }
+
+        public static string GetPropertyName([NotNull] this Curve curve) {
+            var index = -1;
+
+            for (var i = 0; i < curve.Attributes.Length; ++i) {
+                if (curve.Attributes[i].StartsWith("property_name ")) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index < 0) {
+                throw new KeyNotFoundException();
+            }
+
+            return curve.Attributes[index].Substring(14); // - "property_name "
         }
 
     }

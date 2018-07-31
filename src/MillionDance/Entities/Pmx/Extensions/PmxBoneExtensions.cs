@@ -10,6 +10,25 @@ namespace MillionDance.Entities.Pmx.Extensions {
             return (bone.Flags & flags) != 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetFlag([NotNull] this PmxBone bone, BoneFlags flags, bool set) {
+            if (set) {
+                SetFlag(bone, flags);
+            } else {
+                ClearFlag(bone, flags);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SetFlag([NotNull] this PmxBone bone, BoneFlags flags) {
+            bone.Flags |= flags;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ClearFlag([NotNull] this PmxBone bone, BoneFlags flags) {
+            bone.Flags &= ~flags;
+        }
+
         // Set to binding pose ("T" pose)
         public static void SetToBindingPose([NotNull] this PmxBone bone) {
             if (bone.IsTransformCalculated) {

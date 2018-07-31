@@ -96,7 +96,7 @@ namespace MillionDanceView.Internal {
 
         public bool Enabled { get; set; } = true;
 
-        public bool Visible { get; set; } = false;
+        public bool Visible { get; set; } = true;
 
         protected override void Dispose(bool disposing) {
             _vertexBuffer?.Dispose();

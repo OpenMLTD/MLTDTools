@@ -225,7 +225,7 @@ namespace MillionDanceView {
             } while (false);
 #endif
 
-            _animation = Animation.CreateFrom(_danceData);
+            _animation = BodyAnimation.CreateFrom(_danceData);
 
 #if DEBUG
             do {
@@ -313,7 +313,7 @@ namespace MillionDanceView {
 
         private IReadOnlyList<BoneNode> _boneList;
         private CharacterImasMotionAsset _danceData;
-        private Animation _animation;
+        private BodyAnimation _animation;
         private Avatar _avatar;
         private Mesh _mesh;
 
@@ -321,7 +321,7 @@ namespace MillionDanceView {
 
         private Vector2 _lastMousePos;
         private bool _trackingMouse;
-        private bool _invertMouseX = true;
+        private bool _invertMouseX;
         private bool _invertMouseY;
 
         private readonly Camera _camera = new Camera();

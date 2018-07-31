@@ -6,9 +6,9 @@ using MillionDance.Entities.Extensions;
 using MillionDance.Entities.Mltd;
 
 namespace MillionDance.Entities.Internal {
-    public sealed class Animation {
+    public sealed class BodyAnimation {
 
-        private Animation([NotNull, ItemNotNull] IReadOnlyList<KeyFrame> keyFrames, float duration, int boneCount) {
+        private BodyAnimation([NotNull, ItemNotNull] IReadOnlyList<KeyFrame> keyFrames, float duration, int boneCount) {
             KeyFrames = keyFrames;
             Duration = duration;
             BoneCount = boneCount;
@@ -20,7 +20,7 @@ namespace MillionDance.Entities.Internal {
 
         public int BoneCount { get; }
 
-        public static Animation CreateFrom([NotNull] CharacterImasMotionAsset dance) {
+        public static BodyAnimation CreateFrom([NotNull] CharacterImasMotionAsset dance) {
             var curves = dance.Curves;
 
             var frameCount = curves.Max(curve => curve.Values.Length);
@@ -264,7 +264,7 @@ namespace MillionDance.Entities.Internal {
                 return string.Compare(f1.Path, f2.Path, StringComparison.Ordinal);
             });
 
-            return new Animation(totalList.ToArray(), dance.Duration, frameDict.Count);
+            return new BodyAnimation(totalList.ToArray(), dance.Duration, frameDict.Count);
         }
 
     }

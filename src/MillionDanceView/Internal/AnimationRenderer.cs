@@ -21,7 +21,7 @@ using Vector3 = OpenTK.Vector3;
 namespace MillionDanceView.Internal {
     internal sealed class AnimationRenderer : DisposableBase, IUpdateable, IDrawable {
 
-        public AnimationRenderer([NotNull] Game game, [NotNull] Mesh mesh, [NotNull] Avatar avatar, [NotNull] Animation animation, [NotNull, ItemNotNull] IReadOnlyList<BoneNode> boneList) {
+        public AnimationRenderer([NotNull] Game game, [NotNull] Mesh mesh, [NotNull] Avatar avatar, [NotNull] BodyAnimation animation, [NotNull, ItemNotNull] IReadOnlyList<BoneNode> boneList) {
             _game = game;
             _mesh = mesh;
             _avatar = avatar;
@@ -229,7 +229,7 @@ namespace MillionDanceView.Internal {
 
         private readonly Mesh _mesh;
         private readonly Avatar _avatar;
-        private readonly Animation _animation;
+        private readonly BodyAnimation _animation;
         private readonly IReadOnlyList<BoneNode> _boneList;
 
         private readonly PosNorm[] _originalVertices;

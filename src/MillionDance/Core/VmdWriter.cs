@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using MillionDance.Entities.Vmd;
 using MillionDance.Extensions;
 
-namespace MillionDance {
+namespace MillionDance.Core {
     public sealed class VmdWriter : IDisposable {
 
         public VmdWriter([NotNull] Stream stream) {

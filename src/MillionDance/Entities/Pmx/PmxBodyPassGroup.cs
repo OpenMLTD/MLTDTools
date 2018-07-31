@@ -21,6 +21,16 @@ namespace MillionDance.Entities.Pmx {
             return g;
         }
 
+        public ushort ToFlagBits() {
+            ushort result = 0;
+
+            for (var i = 0; i < FlagsCount; ++i) {
+                result |= (ushort)(Flags[i] ? (1 << i) : 0);
+            }
+
+            return result;
+        }
+
     }
 }
 

@@ -11,7 +11,7 @@ using MillionDance.Entities.Pmx.Extensions;
 using MillionDance.Extensions;
 using OpenTK;
 
-namespace MillionDance {
+namespace MillionDance.Core {
     // https://github.com/anydream/Pmx2Fbx/blob/master/PmxLib/PmxReader.h
     // https://github.com/benikabocha/saba/tree/master/src/Saba/Model/MMD
     // https://gist.github.com/felixjones/f8a06bd48f9da9a4539f
@@ -570,7 +570,7 @@ namespace MillionDance {
         }
         #endregion
 
-        private NodeElement ReadNoteElement() {
+        private NodeElement ReadNodeElement() {
             var nodeElement = new NodeElement();
 
             nodeElement.ElementType = (ElementType)_reader.ReadByte();
@@ -600,7 +600,7 @@ namespace MillionDance {
             var elements = new NodeElement[elementCount];
 
             for (var i = 0; i < elementCount; ++i) {
-                elements[i] = ReadNoteElement();
+                elements[i] = ReadNodeElement();
             }
 
             node.Elements = elements;

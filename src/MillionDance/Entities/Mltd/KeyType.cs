@@ -3,7 +3,8 @@
 
         Const,
         Discrete,
-        FullFrame
+        FullFrame,
+        FCurve
 
     }
 }

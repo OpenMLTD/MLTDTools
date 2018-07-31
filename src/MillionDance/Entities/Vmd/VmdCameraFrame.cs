@@ -7,10 +7,10 @@ namespace MillionDance.Entities.Vmd {
         internal VmdCameraFrame(int frameIndex)
             : base(frameIndex) {
             Interpolation = new byte[6, 4];
-            Unknown = new byte[3];
+            Unknown = new byte[1];
         }
 
-        public float Distance { get; internal set; }
+        public float Length { get; internal set; }
 
         public Vector3 Position { get; internal set; }
 
@@ -19,7 +19,7 @@ namespace MillionDance.Entities.Vmd {
         [NotNull]
         public byte[,] Interpolation { get; }
 
-        public float FieldOfView { get; internal set; }
+        public uint FieldOfView { get; internal set; }
 
         [NotNull]
         public byte[] Unknown { get; }

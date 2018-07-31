@@ -14,14 +14,16 @@ namespace MillionDance.Entities.Internal {
             BoneCount = boneCount;
         }
 
+        [NotNull, ItemNotNull]
         public IReadOnlyList<KeyFrame> KeyFrames { get; }
 
         public float Duration { get; }
 
         public int BoneCount { get; }
 
-        public static BodyAnimation CreateFrom([NotNull] CharacterImasMotionAsset dance) {
-            var curves = dance.Curves;
+        [NotNull]
+        public static BodyAnimation CreateFrom([NotNull] CharacterImasMotionAsset danceMotion) {
+            var curves = danceMotion.Curves;
 
             var frameCount = curves.Max(curve => curve.Values.Length);
             var frameDict = new Dictionary<string, List<KeyFrame>>();
@@ -264,7 +266,7 @@ namespace MillionDance.Entities.Internal {
                 return string.Compare(f1.Path, f2.Path, StringComparison.Ordinal);
             });
 
-            return new BodyAnimation(totalList.ToArray(), dance.Duration, frameDict.Count);
+            return new BodyAnimation(totalList.ToArray(), danceMotion.Duration, frameDict.Count);
         }
 
     }

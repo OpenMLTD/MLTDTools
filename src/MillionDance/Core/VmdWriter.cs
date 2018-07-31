@@ -95,7 +95,7 @@ namespace MillionDance.Core {
 
         private void WriteCameraFrame([NotNull] VmdCameraFrame frame) {
             _writer.Write(frame.FrameIndex);
-            _writer.Write(frame.Distance);
+            _writer.Write(frame.Length);
             _writer.Write(frame.Position);
             _writer.Write(frame.Orientation);
             WriteMultidimArray(frame.Interpolation);

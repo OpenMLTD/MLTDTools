@@ -20,7 +20,8 @@ namespace MillionDance {
             }
 
             var (dan, _, _) = LoadDance();
-            var vmd = VmdCreator.FromDanceData(dan, avatar, newPmx);
+            var cam = LoadCamera();
+            var vmd = VmdCreator.CreateFrom(dan, cam, avatar, newPmx);
 
             using (var w = new VmdWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\out.vmd", FileMode.Create, FileAccess.Write, FileShare.Write))) {
                 w.Write(vmd);
@@ -67,6 +68,37 @@ namespace MillionDance {
             }
 
             return avatar;
+        }
+
+        private static CharacterImasMotionAsset LoadCamera() {
+            CharacterImasMotionAsset cam = null;
+
+            using (var fileStream = File.Open("Resources/cam_" + SongName + ".imo.unity3d", FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                using (var bundle = new BundleFile(fileStream, false)) {
+                    foreach (var assetFile in bundle.AssetFiles) {
+                        foreach (var preloadData in assetFile.PreloadDataList) {
+                            if (preloadData.KnownType != KnownClassID.MonoBehaviour) {
+                                continue;
+                            }
+
+                            var behaviour = preloadData.LoadAsMonoBehaviour(true);
+
+                            if (behaviour.Name != "cam_" + SongName + "_cam.imo") {
+                                continue;
+                            }
+
+                            behaviour = preloadData.LoadAsMonoBehaviour(false);
+
+                            var ser = new MonoBehaviourSerializer();
+                            cam = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return cam;
         }
 
         private static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDance() {

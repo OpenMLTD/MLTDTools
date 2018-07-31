@@ -22,7 +22,19 @@ namespace MillionDance.Core {
     public static class VmdCreator {
 
         [NotNull]
-        public static VmdMotion FromDanceData([NotNull] CharacterImasMotionAsset dance, [NotNull] Avatar avatar, [NotNull] PmxModel pmx) {
+        public static VmdMotion CreateFrom([NotNull] CharacterImasMotionAsset bodyMotion, [NotNull] CharacterImasMotionAsset cameraMotion, [NotNull] Avatar avatar, [NotNull] PmxModel mltdPmxModel) {
+            var boneFrames = CreateBodyFrames(bodyMotion, avatar, mltdPmxModel);
+            var cameraFrames = CreateCameraFrames(cameraMotion);
+
+            const string modelName = "MODEL_00";
+
+            var vmd = new VmdMotion(modelName, boneFrames, ArrayCache.Empty<VmdFacialFrame>(), cameraFrames, ArrayCache.Empty<VmdLightFrame>(), null);
+
+            return vmd;
+        }
+
+        [NotNull, ItemNotNull]
+        private static IReadOnlyList<VmdBoneFrame> CreateBodyFrames([NotNull] CharacterImasMotionAsset bodyMotion, [NotNull] Avatar avatar, [NotNull] PmxModel pmx) {
             var mltdHierarchy = BoneUtils.BuildBoneHierarchy(avatar);
             var pmxHierarchy = BoneUtils.BuildBoneHierarchy(pmx);
 
@@ -36,7 +48,7 @@ namespace MillionDance.Core {
                 pmxBone.Initialize();
             }
 
-            var animation = BodyAnimation.CreateFrom(dance);
+            var animation = BodyAnimation.CreateFrom(bodyMotion);
             var boneCount = mltdHierarchy.Count;
             var animatedBoneCount = animation.BoneCount;
             var keyFrameCount = animation.KeyFrames.Count;
@@ -136,11 +148,109 @@ namespace MillionDance.Core {
                 }
             }
 
-            const string modelName = "MODEL_00";
+            return boneFrameList;
+        }
 
-            var vmd = new VmdMotion(modelName, boneFrameList, ArrayCache.Empty<VmdFacialFrame>(), ArrayCache.Empty<VmdCameraFrame>(), ArrayCache.Empty<VmdLightFrame>(), null);
+        [NotNull, ItemNotNull]
+        private static IReadOnlyList<VmdCameraFrame> CreateCameraFrames([NotNull] CharacterImasMotionAsset cameraMotion) {
+            var animation = CameraAnimation.CreateFrom(cameraMotion);
+            var animationFrameCount = animation.CameraFrames.Count;
 
-            return vmd;
+            var cameraFrameList = new List<VmdCameraFrame>();
+
+            for (var i = 0; i < animationFrameCount; ++i) {
+#if TRANSFORM_60FPS_TO_30FPS
+                if (i % 2 == 1) {
+                    continue;
+                }
+#endif
+
+#if TRANSFORM_60FPS_TO_30FPS
+                var frameIndex = i / 2;
+#else
+                var frameIndex = i;
+#endif
+
+                var frame = animation.CameraFrames[i];
+                var vmdFrame = new VmdCameraFrame(frameIndex);
+
+                var posOrig = new Vector3(frame.PositionX, frame.PositionY, frame.PositionZ);
+
+                var pos = posOrig.FixUnityToOpenTK();
+
+                Debug.Print("@{0}: {1}", frame.Time, pos.ToString());
+
+#if SCALE_TO_VMD_SIZE
+                pos = pos * ConversionConfig.ScaleUnityToMmd;
+                posOrig *= ConversionConfig.ScaleUnityToMmd;
+#endif
+
+                vmdFrame.Position = pos;
+
+                var targetOrig = new Vector3(frame.TargetX, frame.TargetY, frame.TargetZ);
+
+                var target = targetOrig.FixUnityToOpenTK();
+
+#if SCALE_TO_VMD_SIZE
+                target = target * ConversionConfig.ScaleUnityToMmd;
+                targetOrig *= ConversionConfig.ScaleUnityToMmd;
+#endif
+
+                var delta = target - pos;
+                var distance = delta.Length;
+
+                vmdFrame.Length = -distance;
+
+                delta.Normalize();
+
+                var qx = (float)Math.Asin(delta.X);
+                var qy = (float)Math.Asin(delta.Y);
+                //var qz = (float)Math.Asin(delta.Z);
+                var qz = 0f;
+
+                //var qx = delta.X;
+                //var qy = delta.Y;
+                //var qz = delta.Z;
+
+                qx += MathHelper.DegreesToRadians(frame.AngleX);
+                qy += MathHelper.DegreesToRadians(frame.AngleY);
+                qz += MathHelper.DegreesToRadians(frame.AngleZ);
+
+                vmdFrame.Orientation = new Vector3(qx, qy, qz);
+
+                //var qx = (float)Math.Asin(delta.X / distance);
+                //var qy = (float)Math.Asin(delta.Y / distance);
+                //var qz = (float)Math.Asin(delta.Z / distance);
+
+                //var rot = UnityRotation.EulerDeg(qx, qy, qz);
+                //var q = rot.DecomposeRad();
+
+                //float qqx = q.X, qqy = q.Y, qqz = q.Z;
+
+                //vmdFrame.Orientation = new Vector3(qqx, qqy, qqz);
+
+                //-----------
+
+                //Debug.Print("({0}, {1}, {2})", MathHelper.RadiansToDegrees(qx), MathHelper.RadiansToDegrees(qy), MathHelper.RadiansToDegrees(qz));
+
+                //var rot = UnityRotation.EulerDeg(frame.AngleX, frame.AngleY, frame.AngleZ);
+                //var q = rot.DecomposeRad();
+                //var qd = rot.DecomposeDeg();
+
+                //Debug.Print(qd.ToString());
+
+                //var qx = q.X;
+                //var qy = q.Y;
+                //var qz = q.Z;
+
+                //vmdFrame.Orientation = new Vector3(qx, qy, qz);
+
+                vmdFrame.FieldOfView = 15;
+
+                cameraFrameList.Add(vmdFrame);
+            }
+
+            return cameraFrameList;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

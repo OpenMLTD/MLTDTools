@@ -32,7 +32,7 @@ namespace MillionDance.Utilities {
         }
 
         [NotNull, ItemNotNull]
-        public static IReadOnlyList<BoneNode> BuildBoneHierarchy([NotNull] Avatar avatar) {
+        public static IReadOnlyList<BoneNode> BuildBoneHierarchy([NotNull] Avatar avatar, bool fixKubi = true) {
             var boneList = new List<BoneNode>();
 
             for (var i = 0; i < avatar.AvatarSkeleton.Nodes.Length; i++) {
@@ -68,6 +68,42 @@ namespace MillionDance.Utilities {
 #endif
 
             foreach (var bone in boneList) {
+                bone.Initialize();
+            }
+
+            if (fixKubi) {
+                // Fix "KUBI" (neck) bone's parent
+                var kubiParent = boneList.SingleOrDefault(bn => bn.Path == "MODEL_00/BASE/MUNE1/MUNE2/KUBI");
+                var kubiBone = boneList.SingleOrDefault(bn => bn.Path == "KUBI");
+
+                Debug.Assert(kubiParent != null);
+                Debug.Assert(kubiBone != null);
+
+                kubiParent.AddChild(kubiBone);
+
+                Debug.Assert(kubiBone.Parent != null);
+
+                // Don't forget to remove it from its old parent (or it will be updated twice from two parents).
+                // The original parents and grandparents of KUBI are not needed; they are just like model anchors and shouldn't be animated.
+                // See decompiled model for more information.
+                kubiBone.Parent.RemoveChild(kubiBone);
+
+                kubiBone.Parent = kubiParent;
+
+                // Set its new initial parameters.
+                // Since the two bones (KUBI and MODEL_00/BASE/MUNE1/MUNE2/KUBI) actually share the exact same transforms,
+                // set its local transform to identity (t=0, q=0).
+                kubiBone.InitialPosition = Vector3.Zero;
+                kubiBone.InitialRotation = Quaternion.Identity;
+                kubiBone.LocalPosition = Vector3.Zero;
+                kubiBone.LocalRotation = Quaternion.Identity;
+
+                foreach (var bone in boneList) {
+                    bone.Initialize(true);
+                }
+            }
+
+            foreach (var bone in boneList) {
                 var level = 0;
                 var parent = bone.Parent;
 
@@ -77,10 +113,6 @@ namespace MillionDance.Utilities {
                 }
 
                 bone.Level = level;
-            }
-
-            foreach (var bone in boneList) {
-                bone.Initialize();
             }
 
             return boneList;

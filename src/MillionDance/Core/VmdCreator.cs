@@ -22,9 +22,21 @@ namespace MillionDance.Core {
     public static class VmdCreator {
 
         [NotNull]
-        public static VmdMotion CreateFrom([NotNull] CharacterImasMotionAsset bodyMotion, [NotNull] CharacterImasMotionAsset cameraMotion, [NotNull] Avatar avatar, [NotNull] PmxModel mltdPmxModel) {
-            var boneFrames = CreateBodyFrames(bodyMotion, avatar, mltdPmxModel);
-            var cameraFrames = CreateCameraFrames(cameraMotion);
+        public static VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] CharacterImasMotionAsset cameraMotion, [NotNull] Avatar avatar, [NotNull] PmxModel mltdPmxModel) {
+            IReadOnlyList<VmdBoneFrame> boneFrames;
+            IReadOnlyList<VmdCameraFrame> cameraFrames;
+
+            if (bodyMotion != null) {
+                boneFrames = CreateBodyFrames(bodyMotion, avatar, mltdPmxModel);
+            } else {
+                boneFrames = ArrayCache.Empty<VmdBoneFrame>();
+            }
+
+            if (cameraMotion != null) {
+                cameraFrames = CreateCameraFrames(cameraMotion);
+            } else {
+                cameraFrames = ArrayCache.Empty<VmdCameraFrame>();
+            }
 
             const string modelName = "MODEL_00";
 

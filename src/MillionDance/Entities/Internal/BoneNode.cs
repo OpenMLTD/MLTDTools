@@ -34,7 +34,7 @@ namespace MillionDance.Entities.Internal {
         }
 
         [CanBeNull]
-        public BoneNode Parent { get; }
+        public BoneNode Parent { get; internal set; }
 
         /// <summary>
         /// Index in bone list.
@@ -78,11 +78,9 @@ namespace MillionDance.Entities.Internal {
 
         public Matrix4 SkinMatrix => _skinMatrix;
 
-        public Vector3 InitialPosition { get; }
+        public Vector3 InitialPosition { get; internal set; }
 
-        internal Vector3 InitialPositionWorld { get; set; }
-
-        public Quaternion InitialRotation { get; }
+        public Quaternion InitialRotation { get; internal set; }
 
         public override string ToString() {
             var parent = Parent;
@@ -93,6 +91,8 @@ namespace MillionDance.Entities.Internal {
                 return $"Bone \"{Path}\"";
             }
         }
+
+        internal Vector3 InitialPositionWorld { get; set; }
 
         internal Matrix4 BindingPoseInverse => _bindingPoseInverse.Value;
 
@@ -108,8 +108,8 @@ namespace MillionDance.Entities.Internal {
             return _children.Remove(node);
         }
 
-        internal void Initialize() {
-            if (_isInitialized) {
+        internal void Initialize(bool forced = false) {
+            if (!forced && _isInitialized) {
                 return;
             }
 
@@ -122,7 +122,7 @@ namespace MillionDance.Entities.Internal {
 
             _localMatrix = CreateTransformMatrix(t, q);
 
-            if (_bindingPoseInverse == null) {
+            if (forced || _bindingPoseInverse == null) {
                 _worldMatrix = ComputeWorldMatrix();
                 _bindingPose = _worldMatrix;
                 _bindingPoseInverse = _worldMatrix.Inverted();

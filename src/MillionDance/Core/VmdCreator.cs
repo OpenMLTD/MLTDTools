@@ -88,6 +88,20 @@ namespace MillionDance.Core {
                         throw new ArgumentException("Bone not found.");
                     }
 
+                    BoneNode transferredBone = null;
+
+                    foreach (var kv in BoneAttachmentMap) {
+                        if (kv.Key == mltdBoneName) {
+                            transferredBone = mltdHierarchy.SingleOrDefault(bone => bone.Name == kv.Value);
+
+                            if (transferredBone == null) {
+                                throw new ArgumentException();
+                            }
+
+                            break;
+                        }
+                    }
+
                     if (keyFrame.HasPositions) {
                         var x = keyFrame.PositionX.Value;
                         var y = keyFrame.PositionY.Value;
@@ -102,6 +116,10 @@ namespace MillionDance.Core {
 #endif
 
                         targetBone.LocalPosition = t;
+
+                        //if (transferredBone != null) {
+                        //    transferredBone.LocalPosition = t;
+                        //}
                     }
 
                     if (keyFrame.HasRotations) {
@@ -114,6 +132,10 @@ namespace MillionDance.Core {
                         q = q.FixUnityToOpenTK();
 
                         targetBone.LocalRotation = q;
+
+                        if (transferredBone != null) {
+                            transferredBone.LocalRotation = q;
+                        }
                     }
                 }
 
@@ -190,7 +212,9 @@ namespace MillionDance.Core {
 
                 var pos = posOrig.FixUnityToOpenTK();
 
-                Debug.Print("@{0}: {1}", frame.Time, pos.ToString());
+                if (i == 0) {
+                    Debug.Print("Pos @{0}: {1}", frame.Time, pos.ToString());
+                }
 
 #if SCALE_TO_VMD_SIZE
                 pos = pos * ConversionConfig.ScaleUnityToMmd;
@@ -203,59 +227,40 @@ namespace MillionDance.Core {
 
                 var target = targetOrig.FixUnityToOpenTK();
 
+                if (i == 0) {
+                    Debug.Print("Tgt @{0}: {1}", frame.Time, target.ToString());
+                }
+
 #if SCALE_TO_VMD_SIZE
                 target = target * ConversionConfig.ScaleUnityToMmd;
                 targetOrig *= ConversionConfig.ScaleUnityToMmd;
 #endif
 
                 var delta = target - pos;
-                var distance = delta.Length;
 
-                vmdFrame.Length = -distance;
+                //delta = -delta;
 
-                delta.Normalize();
+                vmdFrame.Length = -delta.Length;
 
-                var qx = (float)Math.Asin(delta.X);
-                var qy = (float)Math.Asin(delta.Y);
+                var qy = (float)Math.Atan2(delta.X, delta.Z);
+                var qx = (float)Math.Atan2(delta.Y, delta.Z);
                 //var qz = (float)Math.Asin(delta.Z);
                 var qz = 0f;
-
-                //var qx = delta.X;
-                //var qy = delta.Y;
-                //var qz = delta.Z;
 
                 qx += MathHelper.DegreesToRadians(frame.AngleX);
                 qy += MathHelper.DegreesToRadians(frame.AngleY);
                 qz += MathHelper.DegreesToRadians(frame.AngleZ);
 
+                qy = -qy;
+
+                //var r = UnityRotation.EulerRad(qx, -qy, qz);
+                //var r2 = r.DecomposeRad();
+
+                //qx = r2.X;
+                //qy = r2.Y;
+                //qz = r2.Z;
+
                 vmdFrame.Orientation = new Vector3(qx, qy, qz);
-
-                //var qx = (float)Math.Asin(delta.X / distance);
-                //var qy = (float)Math.Asin(delta.Y / distance);
-                //var qz = (float)Math.Asin(delta.Z / distance);
-
-                //var rot = UnityRotation.EulerDeg(qx, qy, qz);
-                //var q = rot.DecomposeRad();
-
-                //float qqx = q.X, qqy = q.Y, qqz = q.Z;
-
-                //vmdFrame.Orientation = new Vector3(qqx, qqy, qqz);
-
-                //-----------
-
-                //Debug.Print("({0}, {1}, {2})", MathHelper.RadiansToDegrees(qx), MathHelper.RadiansToDegrees(qy), MathHelper.RadiansToDegrees(qz));
-
-                //var rot = UnityRotation.EulerDeg(frame.AngleX, frame.AngleY, frame.AngleZ);
-                //var q = rot.DecomposeRad();
-                //var qd = rot.DecomposeDeg();
-
-                //Debug.Print(qd.ToString());
-
-                //var qx = q.X;
-                //var qy = q.Y;
-                //var qz = q.Z;
-
-                //vmdFrame.Orientation = new Vector3(qx, qy, qz);
 
                 vmdFrame.FieldOfView = 15;
 
@@ -283,6 +288,11 @@ namespace MillionDance.Core {
                 return $"Bone #{key.GetHashCode():x8}";
             }
         }
+
+        private static readonly IReadOnlyDictionary<string, string> BoneAttachmentMap = new Dictionary<string, string> {
+            //["MODEL_00/BASE/MUNE1/MUNE2/KUBI"] = "KUBI",
+            ["MODEL_00/BASE/MUNE1/MUNE2/KUBI/ATAMA"] = "KUBI/ATAMA"
+        };
 
     }
 }

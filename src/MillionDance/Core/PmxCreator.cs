@@ -16,7 +16,7 @@ using Vector4 = OpenTK.Vector4;
 namespace MillionDance.Core {
     public static class PmxCreator {
 
-        public static PmxModel Create([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodySubMeshCount, [NotNull] string texturePrefix) {
+        public static PmxModel Create([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, [NotNull] int bodyMeshVertexCount, [NotNull] string texturePrefix) {
             var model = new PmxModel();
 
             model.Name = "ミリシタ モデル00";
@@ -37,8 +37,18 @@ namespace MillionDance.Core {
                 vertex.Position = position.ToOpenTK().FixUnityToOpenTK() * ConversionConfig.ScaleUnityToMmd;
                 vertex.Normal = normal.ToOpenTK().FixUnityToOpenTK();
 
-                // Invert UV!
-                vertex.UV = new OpenTK.Vector2(uv.X, 1 - uv.Y);
+                OpenTK.Vector2 fixedUv;
+
+                // Body, then head.
+                if (i < bodyMeshVertexCount) {
+                    // Invert UV!
+                    fixedUv = new OpenTK.Vector2(uv.X, 1 - uv.Y);
+                } else {
+                    fixedUv = uv.ToOpenTK();
+                }
+
+
+                vertex.UV = fixedUv;
 
                 vertex.EdgeScale = 1.0f;
 

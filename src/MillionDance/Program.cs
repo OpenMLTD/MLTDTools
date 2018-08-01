@@ -21,7 +21,7 @@ namespace MillionDance {
             var combinedAvatar = CompositeAvatar.FromAvatars(bodyAvatar, headAvatar);
             var combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
 
-            var newPmx = PmxCreator.Create(combinedAvatar, combinedMesh, bodyMesh.SubMeshes.Count, @"tex\mltd_tex");
+            var newPmx = PmxCreator.Create(combinedAvatar, combinedMesh, bodyMesh.VertexCount, @"tex\mltd_tex");
 
             using (var w = new PmxWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\mayu_gen.pmx", FileMode.Create, FileAccess.Write, FileShare.Write))) {
                 w.Write(newPmx);

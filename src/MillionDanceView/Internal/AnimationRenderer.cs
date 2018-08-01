@@ -198,6 +198,20 @@ namespace MillionDanceView.Internal {
                     throw new ApplicationException($"Invalid bone path: {altPath}");
                 }
 
+                BoneNode transferredBone = null;
+
+                foreach (var kv in BoneAttachmentMap) {
+                    if (kv.Key == altPath) {
+                        transferredBone = _headBoneList.SingleOrDefault(b => b.Path == kv.Value);
+
+                        if (transferredBone == null) {
+                            throw new ArgumentException();
+                        }
+
+                        break;
+                    }
+                }
+
                 if (frame.HasPositions) {
                     var x = frame.PositionX.Value;
                     var y = frame.PositionY.Value;
@@ -208,6 +222,10 @@ namespace MillionDanceView.Internal {
                     t = t.FixCoordSystem();
 
                     bone.LocalPosition = t;
+
+                    //if (transferredBone != null) {
+                    //    transferredBone.LocalPosition = t;
+                    //}
                 }
 
                 if (frame.HasRotations) {
@@ -216,6 +234,10 @@ namespace MillionDanceView.Internal {
                     q = q.FixCoordSystem();
 
                     bone.LocalRotation = q;
+
+                    if (transferredBone != null) {
+                        transferredBone.LocalRotation = q;
+                    }
                 }
             }
 #endif
@@ -289,6 +311,11 @@ namespace MillionDanceView.Internal {
             public Vector3 Normal;
 
         }
+
+        private static readonly IReadOnlyDictionary<string, string> BoneAttachmentMap = new Dictionary<string, string> {
+            //["MODEL_00/BASE/MUNE1/MUNE2/KUBI"] = "KUBI",
+            ["MODEL_00/BASE/MUNE1/MUNE2/KUBI/ATAMA"] = "KUBI/ATAMA"
+        };
 
         private readonly Mesh _bodyMesh;
         private readonly Avatar _bodyAvatar;

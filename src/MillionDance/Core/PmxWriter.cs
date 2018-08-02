@@ -36,7 +36,7 @@ namespace MillionDance.Core {
 
         private PmxFormatVersion MajorVersion { get; } = PmxFormatVersion.Version2;
 
-        private float DetailedVersion { get; } = 2.1f;
+        private float DetailedVersion { get; } = 2.0f;
 
         private PmxStringEncoding StringEncoding { get; } = PmxStringEncoding.Utf16;
 

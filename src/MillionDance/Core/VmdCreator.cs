@@ -85,7 +85,8 @@ namespace MillionDance.Core {
                     var targetBone = mltdHierarchy.SingleOrDefault(bone => bone.Name == mltdBoneName);
 
                     if (targetBone == null) {
-                        throw new ArgumentException("Bone not found.");
+                        //throw new ArgumentException("Bone not found.");
+                        continue; // Shika doesn't have the "POSITION" bone.
                     }
 
                     BoneNode transferredBone = null;
@@ -273,7 +274,7 @@ namespace MillionDance.Core {
             const float sensorSize = 15; // unit: mm, as the unit of MLTD camera frame is also mm
             var fovRad = 2 * (float)Math.Atan((sensorSize / 2) / focalLength);
             var fovDeg = MathHelper.RadiansToDegrees(fovRad);
-            
+
             return fovDeg;
         }
 

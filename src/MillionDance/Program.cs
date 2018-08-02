@@ -21,9 +21,9 @@ namespace MillionDance {
             var combinedAvatar = CompositeAvatar.FromAvatars(bodyAvatar, headAvatar);
             var combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
 
-            var newPmx = PmxCreator.Create(combinedAvatar, combinedMesh, bodyMesh.VertexCount, @"tex\mltd_tex");
+            var newPmx = PmxCreator.Create(combinedAvatar, combinedMesh, bodyMesh.VertexCount, @"tex\mltd_tex_" + AvatarName);
 
-            using (var w = new PmxWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\mayu_gen.pmx", FileMode.Create, FileAccess.Write, FileShare.Write))) {
+            using (var w = new PmxWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\" + AvatarName + "_gen.pmx", FileMode.Create, FileAccess.Write, FileShare.Write))) {
                 w.Write(newPmx);
             }
 
@@ -32,7 +32,7 @@ namespace MillionDance {
             var vmd = VmdCreator.CreateFrom(dan, cam, combinedAvatar, newPmx);
             //var vmd = VmdCreator.CreateFrom(dan, null, combinedAvatar, newPmx);
 
-            using (var w = new VmdWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\out.vmd", FileMode.Create, FileAccess.Write, FileShare.Write))) {
+            using (var w = new VmdWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\out_" + AvatarName + ".vmd", FileMode.Create, FileAccess.Write, FileShare.Write))) {
                 w.Write(vmd);
             }
         }
@@ -196,7 +196,7 @@ namespace MillionDance {
             return (dan, apa, apg);
         }
 
-        private const string AvatarName = "ss001_015siz";
+        private const string AvatarName = "gs001_201xxx";
         private const string SongName = "hmt001";
         private const string SongPosition = "01";
 

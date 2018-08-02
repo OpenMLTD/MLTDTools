@@ -40,6 +40,7 @@ namespace MillionDance.Core {
                 OpenTK.Vector2 fixedUv;
 
                 // Body, then head.
+                // TODO: For heads, inverting/flipping is different among models?
                 if (i < bodyMeshVertexCount) {
                     // Invert UV!
                     fixedUv = new OpenTK.Vector2(uv.X, 1 - uv.Y);

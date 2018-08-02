@@ -137,13 +137,19 @@ namespace MillionDance.Entities.Internal {
                     var curTime = curve.Values[i * 4];
                     var curValue = curve.Values[i * 4 + 1];
                     var nextValue = curve.Values[(i + 1) * 4 + 1];
+                    var tan1 = curve.Values[i * 4 + 3];
+                    var tan2 = curve.Values[(i + 1) * 4 + 2];
 
                     // suspect:
                     // +2: tan(in)
                     // +3: tan(out)
 
+                    var dt = nextTime - curTime;
+                    var t = (time - curTime) / dt;
+
                     // TODO: use F-curve interpolation.
-                    return Lerp(curValue, nextValue, (time - curTime) / (nextTime - curTime));
+                    //return Lerp(curValue, nextValue, t);
+                    return ComputeFCurveNaive(curValue, nextValue, tan1, tan2, dt, t);
                 } else {
                     return curve.Values[i * 4 + 1];
                 }
@@ -181,6 +187,56 @@ namespace MillionDance.Entities.Internal {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static float Lerp(float from, float to, float t) {
             return from * (1 - t) + to * t;
+        }
+
+        // https://developer.blender.org/diffusion/B/browse/master/source/blender/blenkernel/intern/fcurve.c;e50a3dd4c4e9a9898df31e444d1002770b4efb9c$2212
+
+        // Key: some mathematics
+        // See http://luthuli.cs.uiuc.edu/~daf/courses/cs-419/Week-12/Interpolation-2013.pdf pg. 26
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float ComputeFCurveNaive(float value1, float value2, float tan1, float tan2, float dt, float t) {
+            bool isInf1 = float.IsInfinity(tan1), isInf2 = float.IsInfinity(tan2);
+
+            //float factor = Math.Abs(value2 - value1);
+            //float factor = value2 - value1;
+            //float factor = dt;
+            //float factor = 1;
+            //float factor = 2; // funny effect when playing Blooming Star at "きらめきに憧れで　胸で"
+            //float factor = 3; // too large
+
+            float factor = value2 - value1;
+
+            if (isInf1) {
+                if (isInf2) {
+                    return Lerp(value1, value2, t);
+                } else {
+                    var cp = value2 - tan2 / 3 * factor;
+                    return Bezier(value1, cp, value2, t);
+                }
+            } else {
+                if (isInf2) {
+                    var cp = value1 + tan1 / 3 * factor;
+                    return Bezier(value1, cp, value2, t);
+                } else {
+                    var cp1 = value1 + tan1 / 3 * factor;
+                    var cp2 = value2 - tan2 / 3 * factor;
+                    return Bezier(value1, cp1, cp2, value2, t);
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float Bezier(float p1, float cp, float p2, float t) {
+            return (1 - t) * (1 - t) * p1 + 2 * t * (1 - t) * cp + t * t * p2;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float Bezier(float p1, float cp1, float cp2, float p2, float t) {
+            var tt = 1 - t;
+            var tt2 = tt * tt;
+            var t2 = t * t;
+
+            return tt * tt2 * p1 + 3 * tt2 * t * cp1 + 3 * tt * t2 * cp2 + t * t2 * p2;
         }
 
     }

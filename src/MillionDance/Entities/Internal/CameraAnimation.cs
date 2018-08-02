@@ -201,10 +201,16 @@ namespace MillionDance.Entities.Internal {
             //float factor = value2 - value1;
             //float factor = dt;
             //float factor = 1;
-            //float factor = 2; // funny effect when playing Blooming Star at "きらめきに憧れで　胸で"
+            //float factor = 2; // funny effect when playing Blooming Star at "きらめきに憧れて　胸で"
             //float factor = 3; // too large
 
-            float factor = value2 - value1;
+            // There should be another parameter to specify the exact location tuple (time, value) is,
+            // for example handle length. From differentiation we know the tangents of the control
+            // points. So here variable "factor" means a mutiplication factor, which is similar to
+            // handle length. We use this to compute the location of one or two control points.
+            // For F-curve editing (and why I guess like above), see Blender's manual:
+            // https://docs.blender.org/manual/en/dev/editors/graph_editor/fcurves/introduction.html
+            float factor = dt;
 
             if (isInf1) {
                 if (isInf2) {

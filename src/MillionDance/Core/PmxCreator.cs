@@ -175,7 +175,7 @@ namespace MillionDance.Core {
                 material.EdgeColor = new Vector4(0, 0, 0, 1);
                 material.EdgeSize = 1.0f;
                 // TODO: The right way: reading textures' path ID and do the mapping.
-                material.TextureFileName = $"{texturePrefix}_{i:00}.png";
+                material.TextureFileName = $"{texturePrefix}{i:00}.png";
 
                 material.Flags = MaterialFlags.Shadow | MaterialFlags.SelfShadow;
 

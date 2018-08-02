@@ -21,11 +21,21 @@ namespace MillionDance {
             var combinedAvatar = CompositeAvatar.FromAvatars(bodyAvatar, headAvatar);
             var combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
 
-            var newPmx = PmxCreator.Create(combinedAvatar, combinedMesh, bodyMesh.VertexCount, @"tex\mltd_tex_" + AvatarName);
+            // ss001_015siz -> 015ss001
+            // Note: PMD allows max 19 characters in texture file names.
+            // In the format below, textures will be named like:
+            // tex\015ss001_01.png
+            // which is at the limit.
+            var texPrefix = AvatarName.Substring(6, 3) + AvatarName.Substring(0, 5);
+            texPrefix = @"tex\" + texPrefix + "_";
+
+            var newPmx = PmxCreator.Create(combinedAvatar, combinedMesh, bodyMesh.VertexCount, texPrefix);
 
             using (var w = new PmxWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\" + AvatarName + "_gen.pmx", FileMode.Create, FileAccess.Write, FileShare.Write))) {
                 w.Write(newPmx);
             }
+
+            return;
 
             var (dan, _, _) = LoadDance();
             var cam = LoadCamera();
@@ -196,7 +206,7 @@ namespace MillionDance {
             return (dan, apa, apg);
         }
 
-        private const string AvatarName = "gs001_201xxx";
+        private const string AvatarName = "ss001_015siz";
         private const string SongName = "hmt001";
         private const string SongPosition = "01";
 

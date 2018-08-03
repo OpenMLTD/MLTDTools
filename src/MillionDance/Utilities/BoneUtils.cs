@@ -171,11 +171,12 @@ namespace MillionDance.Utilities {
         public static readonly IReadOnlyDictionary<string, string> BoneNameMap;
 
         public static readonly IReadOnlyDictionary<string, string> BonePathMap = new Dictionary<string, string> {
-            ["POSITION"] = "操作中心",
-            ["POSITION/SCALE_POINT"] = "全ての親",
-            ["MODEL_00"] = "センター",
-            ["MODEL_00/BODY_SCALE/BASE"] = "グルーブ",
-            ["MODEL_00/BODY_SCALE/BASE/KOSHI"] = "腰",
+            [""] = "操作中心",
+            ["POSITION"] = "全ての親",
+            ["POSITION/SCALE_POINT"] = "センター",
+            ["MODEL_00"] = "グルーブ",
+            ["MODEL_00/BODY_SCALE/BASE"] = "腰",
+            ["MODEL_00/BODY_SCALE/BASE/KOSHI"] = "下半身",
             ["MODEL_00/BODY_SCALE/BASE/KOSHI/MOMO_L"] = "左足",
             ["MODEL_00/BODY_SCALE/BASE/KOSHI/MOMO_L/HIZA_L"] = "左ひざ",
             ["MODEL_00/BODY_SCALE/BASE/KOSHI/MOMO_L/HIZA_L/ASHI_L"] = "左足首",

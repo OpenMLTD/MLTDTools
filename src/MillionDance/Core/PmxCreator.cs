@@ -1,5 +1,9 @@
-﻿using System;
+﻿#define SCALE_TO_MMD_SIZE
+//#undef SCALE_TO_MMD_SIZE
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -16,7 +20,7 @@ using Vector4 = OpenTK.Vector4;
 namespace MillionDance.Core {
     public static class PmxCreator {
 
-        public static PmxModel Create([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, [NotNull] int bodyMeshVertexCount, [NotNull] string texturePrefix) {
+        public static PmxModel Create([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount, [NotNull] string texturePrefix) {
             var model = new PmxModel();
 
             model.Name = "ミリシタ モデル00";
@@ -27,162 +31,388 @@ namespace MillionDance.Core {
             var vertexCount = combinedMesh.VertexCount;
             var vertices = new PmxVertex[vertexCount];
 
-            for (var i = 0; i < vertexCount; ++i) {
-                var vertex = new PmxVertex();
+            do {
+                for (var i = 0; i < vertexCount; ++i) {
+                    var vertex = new PmxVertex();
 
-                var position = combinedMesh.Vertices[i];
-                var normal = combinedMesh.Normals[i];
-                var uv = combinedMesh.UV1[i];
+                    var position = combinedMesh.Vertices[i];
+                    var normal = combinedMesh.Normals[i];
+                    var uv = combinedMesh.UV1[i];
 
-                vertex.Position = position.ToOpenTK().FixUnityToOpenTK() * ConversionConfig.ScaleUnityToMmd;
-                vertex.Normal = normal.ToOpenTK().FixUnityToOpenTK();
+                    vertex.Position = position.ToOpenTK().FixUnityToOpenTK();
 
-                OpenTK.Vector2 fixedUv;
+#if SCALE_TO_MMD_SIZE
+                    vertex.Position = vertex.Position * ConversionConfig.ScaleUnityToMmd;
+#endif
 
-                // Body, then head.
-                // TODO: For heads, inverting/flipping is different among models?
-                if (i < bodyMeshVertexCount) {
-                    // Invert UV!
-                    fixedUv = new OpenTK.Vector2(uv.X, 1 - uv.Y);
-                } else {
-                    fixedUv = uv.ToOpenTK();
-                }
+                    vertex.Normal = normal.ToOpenTK().FixUnityToOpenTK();
 
+                    OpenTK.Vector2 fixedUv;
 
-                vertex.UV = fixedUv;
-
-                vertex.EdgeScale = 1.0f;
-
-                var skin = combinedMesh.Skin[i];
-                var affectiveInfluenceCount = skin.Count(inf => inf != null);
-
-                switch (affectiveInfluenceCount) {
-                    case 1:
-                        vertex.Deformation = Deformation.Bdef1;
-                        break;
-                    case 2:
-                        vertex.Deformation = Deformation.Bdef2;
-                        break;
-                    case 3:
-                        throw new NotSupportedException();
-                    case 4:
-                        vertex.Deformation = Deformation.Bdef4;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(affectiveInfluenceCount));
-                }
-
-                for (var j = 0; j < affectiveInfluenceCount; ++j) {
-                    var boneId = combinedMesh.BoneNameHashes[skin[j].BoneIndex];
-                    var realBoneIndex = combinedAvatar.AvatarSkeleton.NodeIDs.FindIndex(boneId);
-
-                    if (realBoneIndex < 0) {
-                        throw new ArgumentOutOfRangeException(nameof(realBoneIndex));
+                    // Body, then head.
+                    // TODO: For heads, inverting/flipping is different among models?
+                    // e.g. ss001_015siz can be processed via the method below; gs001_201xxx's head UVs are not inverted but some are flipped.
+                    if (i < bodyMeshVertexCount) {
+                        // Invert UV!
+                        fixedUv = new OpenTK.Vector2(uv.X, 1 - uv.Y);
+                    } else {
+                        fixedUv = uv.ToOpenTK();
                     }
 
-                    vertex.BoneWeights[j].BoneIndex = realBoneIndex;
-                    vertex.BoneWeights[j].Weight = skin[j].Weight;
+
+                    vertex.UV = fixedUv;
+
+                    vertex.EdgeScale = 1.0f;
+
+                    var skin = combinedMesh.Skin[i];
+                    var affectiveInfluenceCount = skin.Count(inf => inf != null);
+
+                    switch (affectiveInfluenceCount) {
+                        case 1:
+                            vertex.Deformation = Deformation.Bdef1;
+                            break;
+                        case 2:
+                            vertex.Deformation = Deformation.Bdef2;
+                            break;
+                        case 3:
+                            throw new NotSupportedException();
+                        case 4:
+                            vertex.Deformation = Deformation.Bdef4;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(affectiveInfluenceCount));
+                    }
+
+                    for (var j = 0; j < affectiveInfluenceCount; ++j) {
+                        var boneId = combinedMesh.BoneNameHashes[skin[j].BoneIndex];
+                        var realBoneIndex = combinedAvatar.AvatarSkeleton.NodeIDs.FindIndex(boneId);
+
+                        if (realBoneIndex < 0) {
+                            throw new ArgumentOutOfRangeException(nameof(realBoneIndex));
+                        }
+
+                        vertex.BoneWeights[j].BoneIndex = realBoneIndex;
+                        vertex.BoneWeights[j].Weight = skin[j].Weight;
+                    }
+
+                    vertices[i] = vertex;
                 }
 
-                vertices[i] = vertex;
-            }
+                model.Vertices = vertices;
+            } while (false);
 
-            model.Vertices = vertices;
+            do {
+                var indicies = new int[combinedMesh.Indices.Count];
 
-            var indicies = new int[combinedMesh.Indices.Count];
-
-            for (var i = 0; i < indicies.Length; ++i) {
-                indicies[i] = unchecked((int)combinedMesh.Indices[i]);
-            }
-
-            model.FaceTriangles = indicies;
-
-            var boneCount = combinedAvatar.AvatarSkeleton.NodeIDs.Length;
-            var bones = new PmxBone[boneCount];
-
-            var hierachy = BoneUtils.BuildBoneHierarchy(combinedAvatar);
-
-            for (var i = 0; i < bones.Length; ++i) {
-                var bone = new PmxBone();
-                var transform = combinedAvatar.AvatarSkeletonPose.Transforms[i];
-                var boneNode = hierachy[i];
-
-                string pmxBoneName;
-                var mltdBoneName = boneNode.Path;
-
-                if (BoneUtils.BoneNameMap.ContainsKey(mltdBoneName)) {
-                    pmxBoneName = BoneUtils.BoneNameMap[mltdBoneName];
-                } else {
-                    // Prevent the name exceeding max length (15 bytes)
-                    pmxBoneName = $"Bone #{mltdBoneName.GetHashCode():x8}";
+                for (var i = 0; i < indicies.Length; ++i) {
+                    indicies[i] = unchecked((int)combinedMesh.Indices[i]);
                 }
 
-                bone.Name = pmxBoneName;
-                bone.NameEnglish = BoneUtils.TranslateBoneName(pmxBoneName);
+                model.FaceTriangles = indicies;
+            } while (false);
 
-                // PMX's bone positions are in world coordinate system.
-                // Unity's are in local coords.
-                bone.InitialPosition = boneNode.InitialPositionWorld;
-                bone.CurrentPosition = bone.InitialPosition;
+            do {
+                var boneCount = combinedAvatar.AvatarSkeleton.NodeIDs.Length;
+                var bones = new List<PmxBone>(boneCount);
 
-                bone.ParentIndex = boneNode.Parent?.Index ?? -1;
-                bone.BoneIndex = i;
+                var hierachy = BoneUtils.BuildBoneHierarchy(combinedAvatar);
 
-                var singleDirectChild = boneNode.GetDirectSingleChild();
+                for (var i = 0; i < boneCount; ++i) {
+                    var bone = new PmxBone();
+                    var transform = combinedAvatar.AvatarSkeletonPose.Transforms[i];
+                    var boneNode = hierachy[i];
 
-                if (singleDirectChild != null) {
-                    bone.SetFlag(BoneFlags.ToBone);
-                    bone.To_Bone = singleDirectChild.Index;
-                } else {
-                    // TODO: Fix this; it should point to a world position.
-                    bone.To_Offset = transform.Translation.ToOpenTK().FixUnityToOpenTK();
+                    string pmxBoneName;
+                    var mltdBoneName = boneNode.Path;
+
+                    if (BoneUtils.BoneNameMap.ContainsKey(mltdBoneName)) {
+                        pmxBoneName = BoneUtils.BoneNameMap[mltdBoneName];
+                    } else {
+                        // Prevent the name exceeding max length (15 bytes)
+                        pmxBoneName = $"Bone #{mltdBoneName.GetHashCode():x8}";
+                    }
+
+                    bone.Name = pmxBoneName;
+                    bone.NameEnglish = BoneUtils.TranslateBoneName(pmxBoneName);
+
+                    // PMX's bone positions are in world coordinate system.
+                    // Unity's are in local coords.
+                    bone.InitialPosition = boneNode.InitialPositionWorld;
+                    bone.CurrentPosition = bone.InitialPosition;
+
+                    bone.ParentIndex = boneNode.Parent?.Index ?? -1;
+                    bone.BoneIndex = i;
+
+                    var singleDirectChild = boneNode.GetDirectSingleChild();
+
+                    if (singleDirectChild != null) {
+                        bone.SetFlag(BoneFlags.ToBone);
+                        bone.To_Bone = singleDirectChild.Index;
+                    } else {
+                        // TODO: Fix this; it should point to a world position.
+                        bone.To_Offset = transform.Translation.ToOpenTK().FixUnityToOpenTK();
+                    }
+
+                    // No use. This is just a flag to specify more details to rotation/translation limitation.
+                    //bone.SetFlag(BoneFlags.LocalFrame);
+                    bone.InitialRotation = transform.Rotation.ToOpenTK().FixUnityToOpenTK();
+                    bone.CurrentRotation = bone.InitialRotation;
+
+                    //bone.Level = boneNode.Level;
+                    bone.Level = 0;
+
+                    if (MovableBoneNames.Contains(mltdBoneName)) {
+                        bone.SetFlag(BoneFlags.Rotation | BoneFlags.Translation);
+                    } else {
+                        bone.SetFlag(BoneFlags.Rotation);
+                    }
+
+                    if (IsNameGeneratedName(boneNode.Path)) {
+                        bone.ClearFlag(BoneFlags.Visible);
+                    }
+
+                    bones.Add(bone);
                 }
 
-                // No use. This is just a flag to specify more details to rotation/translation limitation.
-                //bone.SetFlag(BoneFlags.LocalFrame);
-                bone.InitialRotation = transform.Rotation.ToOpenTK().FixUnityToOpenTK();
-                bone.CurrentRotation = bone.InitialRotation;
+                // Add master (全ての親) and center (センター), recompute bone hierarchy.
+                do {
+                    PmxBone master = new PmxBone(), center = new PmxBone();
 
-                //bone.Level = boneNode.Level;
-                bone.Level = 0;
+                    master.Name = "全ての親";
+                    master.NameEnglish = "master";
+                    center.Name = "センター";
+                    center.NameEnglish = "center";
 
-                if (MovableBoneNames.Contains(mltdBoneName)) {
-                    bone.SetFlag(BoneFlags.Rotation | BoneFlags.Translation);
-                } else {
-                    bone.SetFlag(BoneFlags.Rotation);
+                    master.ParentIndex = 0; // "" bone
+                    center.ParentIndex = 1; // "master" bone
+
+                    master.CurrentPosition = master.InitialPosition = Vector3.Zero;
+                    center.CurrentPosition = center.InitialPosition = Vector3.Zero;
+
+                    master.SetFlag(BoneFlags.Translation | BoneFlags.Rotation);
+                    center.SetFlag(BoneFlags.Translation | BoneFlags.Rotation);
+
+                    bones.Insert(1, master);
+                    bones.Insert(2, center);
+
+                    //// Fix "MODEL_00" bone
+
+                    //do {
+                    //    var model00 = bones.Find(b => b.Name == "グルーブ");
+
+                    //    if (model00 == null) {
+                    //        throw new ArgumentException("MODEL_00 mapped bone is not found.");
+                    //    }
+
+                    //    model00.ParentIndex = 2; // "center" bone
+                    //} while (false);
+
+                    const int numBonesAdded = 2;
+
+                    // Fix vertices and other bones
+                    foreach (var vertex in vertices) {
+                        foreach (var boneWeight in vertex.BoneWeights) {
+                            if (boneWeight.BoneIndex == 0 && boneWeight.Weight <= 0) {
+                                continue;
+                            }
+
+                            if (boneWeight.BoneIndex >= 1) {
+                                boneWeight.BoneIndex += numBonesAdded;
+                            }
+                        }
+                    }
+
+                    for (var i = numBonesAdded + 1; i < bones.Count; ++i) {
+                        var bone = bones[i];
+
+                        bone.ParentIndex += numBonesAdded;
+
+                        if (bone.HasFlag(BoneFlags.ToBone)) {
+                            bone.To_Bone += numBonesAdded;
+                        }
+                    }
+                } while (false);
+
+                // Add IK bones.
+                do {
+                    PmxBone[] CreateLegIK(string leftRightJp, string leftRightEn) {
+                        var startBoneCount = bones.Count;
+
+                        PmxBone ikParent = new PmxBone(), ikBone = new PmxBone();
+
+                        ikParent.Name = leftRightJp + "足IK親";
+                        ikParent.NameEnglish = "leg IKP_" + leftRightEn;
+                        ikBone.Name = leftRightJp + "足ＩＫ";
+                        ikBone.NameEnglish = "leg IK_" + leftRightEn;
+
+                        PmxBone master;
+
+                        do {
+                            master = bones.Find(b => b.Name == "全ての親");
+
+                            if (master == null) {
+                                throw new ArgumentException("Missing master bone.");
+                            }
+                        } while (false);
+
+                        ikParent.ParentIndex = bones.IndexOf(master);
+                        ikBone.ParentIndex = startBoneCount; // IKP
+                        ikParent.SetFlag(BoneFlags.ToBone);
+                        ikBone.SetFlag(BoneFlags.ToBone);
+                        ikParent.To_Bone = startBoneCount + 1; // IK
+                        ikBone.To_Bone = -1;
+
+                        PmxBone ankle, knee, leg;
+
+                        do {
+                            var ankleName = leftRightJp + "足首";
+                            ankle = bones.Find(b => b.Name == ankleName);
+                            var kneeName = leftRightJp + "ひざ";
+                            knee = bones.Find(b => b.Name == kneeName);
+                            var legName = leftRightJp + "足";
+                            leg = bones.Find(b => b.Name == legName);
+
+                            if (ankle == null) {
+                                throw new ArgumentException("Missing ankle bone.");
+                            }
+
+                            if (knee == null) {
+                                throw new ArgumentException("Missing knee bone.");
+                            }
+
+                            if (leg == null) {
+                                throw new ArgumentException("Missing leg bone.");
+                            }
+                        } while (false);
+
+                        ikBone.CurrentPosition = ikBone.InitialPosition = ankle.InitialPosition;
+                        ikParent.CurrentPosition = ikParent.InitialPosition = new Vector3(ikBone.InitialPosition.X, 0, ikBone.InitialPosition.Z);
+
+                        ikParent.SetFlag(BoneFlags.Translation | BoneFlags.Rotation);
+                        ikBone.SetFlag(BoneFlags.Translation | BoneFlags.Rotation | BoneFlags.IK);
+
+                        var ik = new PmxIK();
+
+                        ik.LoopCount = 10;
+                        ik.AngleLimit = 114.5916f;
+                        ik.TargetBoneIndex = bones.IndexOf(ankle);
+
+                        var links = new IKLink[2];
+
+                        links[0] = new IKLink();
+                        links[0].BoneIndex = bones.IndexOf(knee);
+                        links[0].IsLimited = true;
+                        links[0].LowerBound = new Vector3(-180, 0, 0);
+                        links[0].UpperBound = new Vector3(-0.5f, 0, 0);
+                        links[1] = new IKLink();
+                        links[1].BoneIndex = bones.IndexOf(leg);
+
+                        ik.Links = links;
+                        ikBone.IK = ik;
+
+                        return new[] {
+                            ikParent, ikBone
+                        };
+                    }
+
+                    PmxBone[] CreateToeIK(string leftRightJp, string leftRightEn) {
+                        PmxBone ikParent, ikBone = new PmxBone();
+
+                        do {
+                            var parentName = leftRightJp + "足ＩＫ";
+
+                            ikParent = bones.Find(b => b.Name == parentName);
+
+                            Debug.Assert(ikParent != null, nameof(ikParent) + " != null");
+                        } while (false);
+
+                        ikBone.Name = leftRightJp + "つま先ＩＫ";
+                        ikBone.NameEnglish = "toe IK_" + leftRightEn;
+
+                        ikBone.ParentIndex = bones.IndexOf(ikParent);
+
+                        ikBone.SetFlag(BoneFlags.ToBone);
+                        ikBone.To_Bone = -1;
+
+                        PmxBone toe, ankle;
+
+                        do {
+                            var toeName = leftRightJp + "つま先";
+                            toe = bones.Find(b => b.Name == toeName);
+                            var ankleName = leftRightJp + "足首";
+                            ankle = bones.Find(b => b.Name == ankleName);
+
+                            if (toe == null) {
+                                throw new ArgumentException("Missing toe bone.");
+                            }
+
+                            if (ankle == null) {
+                                throw new ArgumentException("Missing ankle bone.");
+                            }
+                        } while (false);
+
+                        ikBone.CurrentPosition = ikBone.InitialPosition = toe.InitialPosition;
+                        ikBone.SetFlag(BoneFlags.Translation | BoneFlags.Rotation | BoneFlags.IK);
+
+                        var ik = new PmxIK();
+
+                        ik.LoopCount = 10;
+                        ik.AngleLimit = 114.5916f;
+                        ik.TargetBoneIndex = bones.IndexOf(toe);
+
+                        var links = new IKLink[1];
+
+                        links[0] = new IKLink();
+                        links[0].BoneIndex = bones.IndexOf(ankle);
+
+                        ik.Links = links.ToArray();
+                        ikBone.IK = ik;
+
+                        return new[] {
+                            ikBone
+                        };
+                    }
+
+                    var leftLegIK = CreateLegIK("左", "L");
+                    var rightLegIK = CreateLegIK("右", "R");
+
+                    bones.AddRange(leftLegIK);
+                    bones.AddRange(rightLegIK);
+
+                    var leftToeIK = CreateToeIK("左", "L");
+                    var rightToeIK = CreateToeIK("右", "R");
+
+                    bones.AddRange(leftToeIK);
+                    bones.AddRange(rightToeIK);
+                } while (false);
+
+                model.Bones = bones.ToArray();
+            } while (false);
+
+            do {
+                var materialCount = combinedMesh.SubMeshes.Count;
+                var materials = new PmxMaterial[materialCount];
+
+                for (var i = 0; i < materialCount; ++i) {
+                    var material = new PmxMaterial();
+
+                    material.NameEnglish = material.Name = $"Mat #{i:00}";
+                    material.AppliedFaceVertexCount = (int)combinedMesh.SubMeshes[i].IndexCount;
+                    material.Ambient = Vector3.One;
+                    material.Diffuse = Vector4.One;
+                    material.Specular = Vector3.Zero;
+                    material.EdgeColor = new Vector4(0, 0, 0, 1);
+                    material.EdgeSize = 1.0f;
+                    // TODO: The right way: reading textures' path ID and do the mapping.
+                    material.TextureFileName = $"{texturePrefix}{i:00}.png";
+
+                    material.Flags = MaterialFlags.Shadow | MaterialFlags.SelfShadow;
+
+                    materials[i] = material;
                 }
 
-                if (IsNameGeneratedName(boneNode.Path)) {
-                    bone.ClearFlag(BoneFlags.Visible);
-                }
-
-                bones[i] = bone;
-            }
-
-            model.Bones = bones;
-
-            var materialCount = combinedMesh.SubMeshes.Count;
-            var materials = new PmxMaterial[materialCount];
-
-            for (var i = 0; i < materialCount; ++i) {
-                var material = new PmxMaterial();
-
-                material.NameEnglish = material.Name = $"Mat #{i:00}";
-                material.AppliedFaceVertexCount = (int)combinedMesh.SubMeshes[i].IndexCount;
-                material.Ambient = Vector3.One;
-                material.Diffuse = Vector4.One;
-                material.Specular = Vector3.Zero;
-                material.EdgeColor = new Vector4(0, 0, 0, 1);
-                material.EdgeSize = 1.0f;
-                // TODO: The right way: reading textures' path ID and do the mapping.
-                material.TextureFileName = $"{texturePrefix}{i:00}.png";
-
-                material.Flags = MaterialFlags.Shadow | MaterialFlags.SelfShadow;
-
-                materials[i] = material;
-            }
-
-            model.Materials = materials;
+                model.Materials = materials;
+            } while (false);
 
             return model;
         }
@@ -211,6 +441,7 @@ namespace MillionDance.Core {
             return CompilerGeneratedJointParts.Any(name.Contains);
         }
 
+        [NotNull, ItemNotNull]
         private static readonly ISet<string> MovableBoneNames = new HashSet<string> {
             "",
             "POSITION",
@@ -218,6 +449,7 @@ namespace MillionDance.Core {
             "MODEL_00/BASE"
         };
 
+        [NotNull, ItemNotNull]
         private static readonly ISet<string> CompilerGeneratedJointParts = new HashSet<string> {
             "__rot",
             "__null",

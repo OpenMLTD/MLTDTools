@@ -8,8 +8,6 @@ namespace MillionDance.Entities.Pmx {
         internal IKLink() {
         }
 
-        public int BoneIndex { get; internal set; } = InvalidBoneIndex;
-
         [CanBeNull]
         public PmxBone Bone { get; internal set; }
 
@@ -20,6 +18,8 @@ namespace MillionDance.Entities.Pmx {
         public Vector3 UpperBound { get; internal set; }
 
         public const int InvalidBoneIndex = -1;
+
+        internal int BoneIndex { get; set; } = InvalidBoneIndex;
 
     }
 }

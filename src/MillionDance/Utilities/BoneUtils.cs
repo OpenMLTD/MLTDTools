@@ -172,8 +172,9 @@ namespace MillionDance.Utilities {
 
         public static readonly IReadOnlyDictionary<string, string> BonePathMap = new Dictionary<string, string> {
             [""] = "操作中心",
-            ["POSITION"] = "全ての親",
-            ["POSITION/SCALE_POINT"] = "センター",
+            // We can't keep this; they will cause compatibility issues when we manually fix the master and center bones.
+            //["POSITION"] = "全ての親",
+            //["POSITION/SCALE_POINT"] = "センター",
             ["MODEL_00"] = "グルーブ",
             ["MODEL_00/BODY_SCALE/BASE"] = "腰",
             ["MODEL_00/BODY_SCALE/BASE/KOSHI"] = "下半身",

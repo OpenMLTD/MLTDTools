@@ -189,7 +189,8 @@ namespace MillionDance.Utilities {
             ["MODEL_00/BODY_SCALE/BASE/MUNE1"] = "上半身",
             ["MODEL_00/BODY_SCALE/BASE/MUNE1/MUNE2"] = "上半身2",
             ["MODEL_00/BODY_SCALE/BASE/MUNE1/MUNE2/KUBI"] = "首",
-            ["MODEL_00/BODY_SCALE/BASE/MUNE1/MUNE2/KUBI/ATAMA"] = "頭",
+            //["MODEL_00/BODY_SCALE/BASE/MUNE1/MUNE2/KUBI/ATAMA"] = "頭",
+            ["KUBI/ATAMA"] = "頭", // See VmdCreator.BoneAttachmentMap
             ["MODEL_00/BODY_SCALE/BASE/MUNE1/MUNE2/SAKOTSU_L"] = "左肩",
             ["MODEL_00/BODY_SCALE/BASE/MUNE1/MUNE2/SAKOTSU_L/KATA_L"] = "左腕",
             ["MODEL_00/BODY_SCALE/BASE/MUNE1/MUNE2/SAKOTSU_L/KATA_L/UDE_L"] = "左ひじ",

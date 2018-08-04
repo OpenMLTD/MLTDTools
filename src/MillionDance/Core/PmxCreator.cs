@@ -12,6 +12,7 @@ using MillionDance.Entities.Pmx;
 using MillionDance.Entities.Pmx.Extensions;
 using MillionDance.Extensions;
 using MillionDance.Utilities;
+using OpenTK;
 using UnityStudio.UnityEngine;
 using UnityStudio.UnityEngine.Animation;
 using Vector3 = OpenTK.Vector3;
@@ -294,7 +295,7 @@ namespace MillionDance.Core {
                         var ik = new PmxIK();
 
                         ik.LoopCount = 10;
-                        ik.AngleLimit = 114.5916f;
+                        ik.AngleLimit = MathHelper.DegreesToRadians(114.5916f);
                         ik.TargetBoneIndex = bones.IndexOf(ankle);
 
                         var links = new IKLink[2];
@@ -302,8 +303,8 @@ namespace MillionDance.Core {
                         links[0] = new IKLink();
                         links[0].BoneIndex = bones.IndexOf(knee);
                         links[0].IsLimited = true;
-                        links[0].LowerBound = new Vector3(-180, 0, 0);
-                        links[0].UpperBound = new Vector3(-0.5f, 0, 0);
+                        links[0].LowerBound = new Vector3(MathHelper.DegreesToRadians(-180), 0, 0);
+                        links[0].UpperBound = new Vector3(MathHelper.DegreesToRadians(-0.5f), 0, 0);
                         links[1] = new IKLink();
                         links[1].BoneIndex = bones.IndexOf(leg);
 
@@ -357,7 +358,7 @@ namespace MillionDance.Core {
                         var ik = new PmxIK();
 
                         ik.LoopCount = 10;
-                        ik.AngleLimit = 114.5916f;
+                        ik.AngleLimit = MathHelper.DegreesToRadians(114.5916f);
                         ik.TargetBoneIndex = bones.IndexOf(toe);
 
                         var links = new IKLink[1];

@@ -1,7 +1,0 @@
-{
-    "local_ip": "192.168.1.101",
-    "redirect": [
-        "theaterdays\\.appspot\\.com"
-    ],
-    "upstream_dns": "8.8.8.8"
-}

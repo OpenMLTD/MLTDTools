@@ -47,10 +47,6 @@ Theoretically it can be applied to other Unity games, with a little modification
 
 *Requires OpenGL 4.0+*
 
-**ThankYou**
-
-A DNS forwarder that allows local DNS pollution.
-
 ## Contributing
 
 Contributions are [Welcome!!](https://www.project-imas.com/wiki/Welcome!!)
@@ -58,7 +54,3 @@ Contributions are [Welcome!!](https://www.project-imas.com/wiki/Welcome!!)
 ## License
 
 BSD 3-Clause Clear License
-
-External references:
-
-- `ThankYou` is an adaptation of Lawrence Gripper's [FiddlerDnsForwarder](https://github.com/lawrencegripper/FiddlerDnsForwarder).

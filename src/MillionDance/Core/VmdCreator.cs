@@ -2,6 +2,8 @@
 //#undef TRANSFORM_60FPS_TO_30FPS
 #define SCALE_TO_VMD_SIZE
 //#undef SCALE_TO_VMD_SIZE
+#define APPEND_IK_BONES
+//#undef APPEND_IK_BONES
 
 using System;
 using System.Collections.Generic;
@@ -50,7 +52,11 @@ namespace MillionDance.Core {
             var mltdHierarchy = BoneUtils.BuildBoneHierarchy(avatar);
             var pmxHierarchy = BoneUtils.BuildBoneHierarchy(pmx);
 
+#if APPEND_IK_BONES
+            throw new NotSupportedException("Not supported when appending IK is enabled.");
+#else
             Debug.Assert(mltdHierarchy.Count == pmxHierarchy.Count);
+#endif
 
             foreach (var mltdBone in mltdHierarchy) {
                 mltdBone.Initialize();

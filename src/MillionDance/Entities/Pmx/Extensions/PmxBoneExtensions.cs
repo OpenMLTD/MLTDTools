@@ -61,6 +61,36 @@ namespace MillionDance.Entities.Pmx.Extensions {
             }
         }
 
+        internal static void SetToVmdPose([NotNull] this PmxBone bone, bool forced = false) {
+            if (!forced && bone.IsTransformCalculated) {
+                return;
+            }
+
+            // Ignore append parent.
+
+            bone.CurrentRotation = bone.AnimatedRotation;
+
+            var parent = bone.Parent;
+
+            Vector3 localPosition;
+
+            if (parent == null) {
+                localPosition = bone.AnimatedTranslation + bone.InitialPosition;
+            } else {
+                parent.SetToVmdPose();
+                localPosition = bone.AnimatedTranslation + bone.InitialPosition - parent.InitialPosition;
+            }
+
+            bone.LocalMatrix = CalculateTransform(localPosition, bone.CurrentRotation);
+            bone.WorldMatrix = bone.CalculateWorldMatrix();
+
+            bone.SkinMatrix = bone.BindingPoseMatrixInverse * bone.WorldMatrix;
+
+            bone.CurrentPosition = Vector3.TransformPosition(bone.InitialPosition, bone.SkinMatrix);
+
+            bone.IsTransformCalculated = true;
+        }
+
         internal static void SetInitialRotationFromRotationAxes([NotNull] this PmxBone bone, Vector3 localX, Vector3 localY, Vector3 localZ) {
             var rotationMatrix = new Matrix3(
                 localX.X, localX.Y, localX.Z,

@@ -29,9 +29,9 @@ namespace MillionDance.Entities.Pmx {
 
         public Vector3 Axis { get; internal set; }
 
-        public Quaternion InitialRotation { get; internal set; }
+        public Quaternion InitialRotation { get; internal set; } = Quaternion.Identity;
 
-        public Quaternion CurrentRotation { get; internal set; }
+        public Quaternion CurrentRotation { get; internal set; } = Quaternion.Identity;
 
         public int Level { get; internal set; }
 
@@ -63,7 +63,7 @@ namespace MillionDance.Entities.Pmx {
 
         public Matrix4 SkinMatrix { get; internal set; }
 
-        public bool IsIKSolved { get; set; }
+        public bool IsIKSolved { get; internal set; }
 
         public override string ToString() {
             var description = GetSimpleDescription();
@@ -89,7 +89,7 @@ namespace MillionDance.Entities.Pmx {
 
         internal Vector3 AnimatedTranslation { get; set; }
 
-        internal Quaternion AnimatedRotation { get; set; }
+        internal Quaternion AnimatedRotation { get; set; } = Quaternion.Identity;
 
         private string GetSimpleDescription() {
             return $"Bone \"{Name}\" [{BoneIndex}] (Position: {CurrentPosition}; Rotation: {CurrentRotation})";

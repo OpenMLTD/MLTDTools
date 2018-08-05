@@ -1,4 +1,7 @@
-﻿using System;
+﻿#define SKELETON_FORMAT_MMD
+//#define SKELETON_FORMAT_MLTD
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -171,6 +174,7 @@ namespace MillionDance.Utilities {
         public static readonly IReadOnlyDictionary<string, string> BoneNameMap;
 
         public static readonly IReadOnlyDictionary<string, string> BonePathMap = new Dictionary<string, string> {
+#if SKELETON_FORMAT_MMD
             [""] = "操作中心",
             // We can't keep this; they will cause compatibility issues when we manually fix the master and center bones.
             //["POSITION"] = "全ての親",
@@ -178,6 +182,15 @@ namespace MillionDance.Utilities {
             ["MODEL_00"] = "グルーブ",
             ["MODEL_00/BODY_SCALE/BASE"] = "腰",
             ["MODEL_00/BODY_SCALE/BASE/KOSHI"] = "下半身",
+#elif SKELETON_FORMAT_MLTD
+            ["POSITION"] = "操作中心",
+            ["POSITION/SCALE_POINT"] = "全ての親",
+            ["MODEL_00"] = "センター",
+            ["MODEL_00/BODY_SCALE/BASE"] = "グルーブ",
+            ["MODEL_00/BODY_SCALE/BASE/KOSHI"] = "腰",
+#else
+#error You must choose a skeleton format.
+#endif
             ["MODEL_00/BODY_SCALE/BASE/KOSHI/MOMO_L"] = "左足",
             ["MODEL_00/BODY_SCALE/BASE/KOSHI/MOMO_L/HIZA_L"] = "左ひざ",
             ["MODEL_00/BODY_SCALE/BASE/KOSHI/MOMO_L/HIZA_L/ASHI_L"] = "左足首",
@@ -290,7 +303,14 @@ namespace MillionDance.Utilities {
             ["右中指３"] = "middle3_R",
             ["右親指１"] = "thumb1_R",
             ["右親指２"] = "thumb2_R",
-            ["右親指３"] = "thumb3_R"
+            ["右親指３"] = "thumb3_R",
+            ["下半身"] = "lower body",
+            ["左足IK親"] = "leg IKP_L",
+            ["左足ＩＫ"] = "leg IK_L",
+            ["左つま先ＩＫ"] = "toe IK_L",
+            ["右足IK親"] = "leg IKP_R",
+            ["右足ＩＫ"] = "leg IK_R",
+            ["右つま先ＩＫ"] = "toe IK_R",
         };
 
     }

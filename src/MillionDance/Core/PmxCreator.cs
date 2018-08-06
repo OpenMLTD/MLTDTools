@@ -435,15 +435,13 @@ namespace MillionDance.Core {
                 }
 
                 var leftLegIK = CreateLegIK("左", "L");
-                var rightLegIK = CreateLegIK("右", "R");
-
                 bones.AddRange(leftLegIK);
+                var rightLegIK = CreateLegIK("右", "R");
                 bones.AddRange(rightLegIK);
 
                 var leftToeIK = CreateToeIK("左", "L");
-                var rightToeIK = CreateToeIK("右", "R");
-
                 bones.AddRange(leftToeIK);
+                var rightToeIK = CreateToeIK("右", "R");
                 bones.AddRange(rightToeIK);
             } while (false);
 #endif

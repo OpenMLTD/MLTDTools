@@ -6,6 +6,8 @@
 //#undef APPEND_IK_BONES
 #define FIX_MMD_CENTER_BONES
 //#undef FIX_MMD_CENTER_BONES
+#define APPEND_EYES_BONE
+//#undef APPEND_EYES_BONE
 #define HIDE_UNITY_GENERATED_BONES
 //#undef HIDE_UNITY_GENERATED_BONES
 
@@ -26,6 +28,7 @@ using MillionDance.Utilities;
 using OpenTK;
 using UnityStudio.UnityEngine;
 using UnityStudio.UnityEngine.Animation;
+using UnityStudio.Utilities;
 using Quaternion = OpenTK.Quaternion;
 using Vector3 = OpenTK.Vector3;
 using Vector4 = OpenTK.Vector4;
@@ -47,7 +50,7 @@ namespace MillionDance.Core {
             var indicies = AddIndices(combinedMesh);
             model.FaceTriangles = indicies;
 
-            var bones = AddBones(combinedAvatar, vertices);
+            var bones = AddBones(combinedAvatar, combinedMesh, vertices);
             model.Bones = bones;
 
 #if SKELETON_FORMAT_MMD
@@ -163,7 +166,7 @@ namespace MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<PmxBone> AddBones([NotNull] Avatar combinedAvatar, [NotNull, ItemNotNull] IReadOnlyList<PmxVertex> vertices) {
+        private static IReadOnlyList<PmxBone> AddBones([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, [NotNull, ItemNotNull] IReadOnlyList<PmxVertex> vertices) {
             var boneCount = combinedAvatar.AvatarSkeleton.NodeIDs.Length;
             var bones = new List<PmxBone>(boneCount);
 
@@ -446,6 +449,174 @@ namespace MillionDance.Core {
             } while (false);
 #endif
 
+#if APPEND_EYES_BONE
+            do {
+                (int VertexStart1, int VertexCount1, int VertexStart2, int VertexCount2) FindEyesVerticeRange() {
+                    var meshNameIndex = -1;
+                    var cm = combinedMesh as CompositeMesh;
+
+                    Debug.Assert(cm != null);
+
+                    for (var i = 0; i < cm.Names.Count; i++) {
+                        var meshName = cm.Names[i];
+
+                        if (meshName == "eyes") {
+                            meshNameIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (meshNameIndex < 0) {
+                        throw new ArgumentException("Mesh \"eyes\" is missing.");
+                    }
+
+                    var subMeshMaps = cm.ParentMeshIndices.Enumerate().Where(s => s.Value == meshNameIndex).ToArray();
+
+                    Debug.Assert(subMeshMaps.Length == 2);
+                    Debug.Assert(subMeshMaps[1].Index - subMeshMaps[0].Index == 1);
+
+                    var vertexStart1 = (int)cm.SubMeshes[subMeshMaps[0].Index].FirstVertex;
+                    var vertexCount1 = (int)cm.SubMeshes[subMeshMaps[0].Index].VertexCount;
+                    var vertexStart2 = (int)cm.SubMeshes[subMeshMaps[1].Index].FirstVertex;
+                    var vertexCount2 = (int)cm.SubMeshes[subMeshMaps[1].Index].VertexCount;
+
+                    return (vertexStart1, vertexCount1, vertexStart2, vertexCount2);
+                }
+
+                Vector3 GetEyeBonePosition(int vertexStart, int vertexCount) {
+                    var centerPos = Vector3.Zero;
+                    var leftMostPos = new Vector3(float.MinValue, 0, 0);
+                    var rightMostPos = new Vector3(float.MaxValue, 0, 0);
+                    int leftMostIndex = -1, rightMostIndex = -1;
+
+                    for (var i = vertexStart; i < vertexStart + vertexCount; ++i) {
+                        var pos = vertices[i].Position;
+
+                        centerPos += pos;
+
+                        if (pos.X > leftMostPos.X) {
+                            leftMostPos = pos;
+                            leftMostIndex = i;
+                        }
+
+                        if (pos.X < rightMostPos.X) {
+                            rightMostPos = pos;
+                            rightMostIndex = i;
+                        }
+                    }
+
+                    Debug.Assert(leftMostIndex >= 0);
+                    Debug.Assert(rightMostIndex >= 0);
+
+                    centerPos = centerPos / vertexCount;
+
+                    // "Eyeball". You got the idea?
+                    var leftMostNorm = vertices[leftMostIndex].Normal;
+                    var rightMostNorm = vertices[rightMostIndex].Normal;
+
+                    var k1 = leftMostNorm.Z / leftMostNorm.X;
+                    var k2 = rightMostNorm.Z / rightMostNorm.X;
+                    float x1 = leftMostPos.X, x2 = rightMostPos.X, z1 = leftMostPos.Z, z2 = rightMostPos.Z;
+
+                    var d1 = (z2 - k2 * x2 + k2 * x1 - z1) / (k1 - k2);
+
+                    var x = x1 + d1;
+                    var z = z1 + k1 * d1;
+
+                    return new Vector3(x, centerPos.Y, z);
+                }
+
+                Vector3 GetEyesBonePosition(int vertexStart1, int vertexCount1, int vertexStart2, int vertexCount2) {
+                    var result = new Vector3();
+
+                    for (var i = vertexStart1; i < vertexStart1 + vertexCount1; ++i) {
+                        result += vertices[i].Position;
+                    }
+                    for (var i = vertexStart2; i < vertexStart2 + vertexCount2; ++i) {
+                        result += vertices[i].Position;
+                    }
+
+                    result = result / (vertexCount1 + vertexCount2);
+
+                    return new Vector3(0, result.Y + 0.5f, -0.6f);
+                }
+
+                var (vs1, vc1, vs2, vc2) = FindEyesVerticeRange();
+                PmxBone head;
+
+                do {
+                    head = bones.Find(b => b.Name == "頭");
+
+                    if (head == null) {
+                        throw new ArgumentException("Missing head bone.");
+                    }
+                } while (false);
+
+                var eyes = new PmxBone();
+
+                eyes.Name = "両目";
+                eyes.NameEnglish = "eyes";
+
+                eyes.Parent = head;
+                eyes.ParentIndex = bones.IndexOf(head);
+
+                eyes.CurrentPosition = eyes.InitialPosition = GetEyesBonePosition(vs1, vc1, vs2, vc2);
+
+                eyes.SetFlag(BoneFlags.Visible | BoneFlags.Rotation | BoneFlags.ToBone);
+                eyes.To_Bone = -1;
+
+                bones.Add(eyes);
+
+                PmxBone leftEye = new PmxBone(), rightEye = new PmxBone();
+
+                leftEye.Name = "左目";
+                leftEye.NameEnglish = "eye_L";
+                rightEye.Name = "右目";
+                rightEye.NameEnglish = "eye_R";
+
+                leftEye.Parent = head;
+                leftEye.ParentIndex = bones.IndexOf(head);
+                rightEye.Parent = head;
+                rightEye.ParentIndex = bones.IndexOf(head);
+
+                leftEye.SetFlag(BoneFlags.Visible | BoneFlags.Rotation | BoneFlags.ToBone | BoneFlags.AppendRotation);
+                rightEye.SetFlag(BoneFlags.Visible | BoneFlags.Rotation | BoneFlags.ToBone | BoneFlags.AppendRotation);
+                leftEye.To_Bone = -1;
+                rightEye.To_Bone = -1;
+                leftEye.AppendParent = eyes;
+                rightEye.AppendParent = eyes;
+                leftEye.AppendParentIndex = bones.IndexOf(eyes);
+                rightEye.AppendParentIndex = bones.IndexOf(eyes);
+                leftEye.AppendRatio = 1;
+                rightEye.AppendRatio = 1;
+
+                leftEye.CurrentPosition = leftEye.InitialPosition = GetEyeBonePosition(vs1, vc1);
+                rightEye.CurrentPosition = rightEye.InitialPosition = GetEyeBonePosition(vs2, vc2);
+
+                bones.Add(leftEye);
+                bones.Add(rightEye);
+
+                // Fix vertices
+                {
+                    var leftEyeIndex = bones.IndexOf(leftEye);
+                    var rightEyeIndex = bones.IndexOf(rightEye);
+
+                    for (var i = vs1; i < vs1 + vc1; ++i) {
+                        var skin = vertices[i];
+                        // Eyes are only affected by "KUBI/ATAMA" bone by default. So we only need to set one element's values.
+                        skin.BoneWeights[0].BoneIndex = leftEyeIndex;
+                        Debug.Assert(Math.Abs(skin.BoneWeights[0].Weight - 1) < 0.000001f);
+                    }
+                    for (var i = vs2; i < vs2 + vc2; ++i) {
+                        var skin = vertices[i];
+                        // Eyes are only affected by "KUBI/ATAMA" bone by default. So we only need to set one element's values.
+                        skin.BoneWeights[0].BoneIndex = rightEyeIndex;
+                        Debug.Assert(Math.Abs(skin.BoneWeights[0].Weight - 1) < 0.000001f);
+                    }
+                }
+            } while (false);
+#endif
+
             // Finally, set the indices. The values will be used later.
             for (var i = 0; i < bones.Count; i++) {
                 bones[i].BoneIndex = i;
@@ -696,6 +867,7 @@ namespace MillionDance.Core {
                 "右親指１", "右親指２", "右親指３", "右人指１", "右人指２", "右人指３", "右ダミー", "右中指１", "右中指２", "右中指３", "右薬指１", "右薬指２", "右薬指３", "右小指１", "右小指２", "右小指３"));
             nodes.Add(CreateBoneGroup("体(下)", "Lower Body", "グルーブ", "腰", "下半身"));
             nodes.Add(CreateBoneGroup("足", "Legs", "左足", "左ひざ", "左足首", "左つま先", "右足", "右ひざ", "右足首", "右つま先"));
+            nodes.Add(CreateBoneGroup("その他", "Others", "両目", "左目", "右目"));
 
             return nodes.ToArray();
         }

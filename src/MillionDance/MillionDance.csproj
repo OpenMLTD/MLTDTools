@@ -127,6 +127,7 @@
     <Compile Include="Core\PmxWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\MorphUtils.cs" />
     <Compile Include="Utilities\RotationDebug.cs" />
     <Compile Include="Core\UnityRotation.cs" />
     <Compile Include="Core\VmdCreator.cs" />

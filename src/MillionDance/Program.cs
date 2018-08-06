@@ -206,7 +206,7 @@ namespace MillionDance {
             return (dan, apa, apg);
         }
 
-        private const string AvatarName = "gs001_201xxx";
+        private const string AvatarName = "ss001_015siz";
         private const string SongName = "hmt001";
         private const string SongPosition = "01";
 

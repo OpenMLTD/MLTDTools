@@ -1,5 +1,5 @@
-﻿#define SCALE_TO_MMD_SIZE
-//#undef SCALE_TO_MMD_SIZE
+﻿#define SCALE_TO_PMX_SIZE
+//#undef SCALE_TO_PMX_SIZE
 #define TRANSLATE_BONE_NAMES_TO_MMD
 //#undef TRANSLATE_BONE_NAMES_TO_MMD
 #define APPEND_IK_BONES
@@ -7,7 +7,7 @@
 #define FIX_MMD_CENTER_BONES
 //#undef FIX_MMD_CENTER_BONES
 #define HIDE_UNITY_GENERATED_BONES
-#undef HIDE_UNITY_GENERATED_BONES
+//#undef HIDE_UNITY_GENERATED_BONES
 
 #define SKELETON_FORMAT_MMD
 //#define SKELETON_FORMAT_MLTD
@@ -51,7 +51,9 @@ namespace MillionDance.Core {
             model.Bones = bones;
 
 #if SKELETON_FORMAT_MMD
+#if TRANSLATE_BONE_NAMES_TO_MMD
             FixBonesAndVertices(bones, vertices);
+#endif
 #elif SKELETON_FORMAT_MLTD
 #else
 #error You must choose a skeleton format.
@@ -60,6 +62,9 @@ namespace MillionDance.Core {
             var materials = AddMaterials(combinedMesh, texturePrefix);
             model.Materials = materials;
 
+            var emotionMorphs = AddEmotionMorphs(combinedMesh);
+            model.Morphs = emotionMorphs;
+
             // PMX Editor requires at least one node (root), or it will crash because these code:
             /**
              * this.PXRootNode = new PXNode(base.RootNode);
@@ -67,7 +72,7 @@ namespace MillionDance.Core {
              * this.PXNode.Clear();
              * this.PXNode.Capacity = base.NodeList.Count - 1; // notice this line
              */
-            var nodes = AddNodes(bones);
+            var nodes = AddNodes(bones, emotionMorphs);
             model.Nodes = nodes;
 
             return model;
@@ -87,7 +92,7 @@ namespace MillionDance.Core {
 
                 vertex.Position = position.ToOpenTK().FixUnityToOpenTK();
 
-#if SCALE_TO_MMD_SIZE
+#if SCALE_TO_PMX_SIZE
                 vertex.Position = vertex.Position * ConversionConfig.ScaleUnityToMmd;
 #endif
 
@@ -180,7 +185,7 @@ namespace MillionDance.Core {
                     pmxBoneName = $"Bone #{mltdBoneName.GetHashCode():x8}";
                 }
 #else
-                    pmxBoneName = mltdBoneName;
+                pmxBoneName = mltdBoneName;
 #endif
 
                 bone.Name = pmxBoneName;
@@ -219,9 +224,9 @@ namespace MillionDance.Core {
                 }
 
 #if HIDE_UNITY_GENERATED_BONES
-                    if (IsNameGeneratedName(boneNode.Path)) {
-                        bone.ClearFlag(BoneFlags.Visible);
-                    }
+                if (IsNameGeneratedName(boneNode.Path)) {
+                    bone.ClearFlag(BoneFlags.Visible);
+                }
 #endif
 
                 bones.Add(bone);
@@ -524,7 +529,111 @@ namespace MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<PmxNode> AddNodes([NotNull, ItemNotNull] IReadOnlyList<PmxBone> bones) {
+        private static IReadOnlyList<PmxMorph> AddEmotionMorphs([NotNull] Mesh mesh) {
+            var morphs = new List<PmxMorph>();
+
+            var s = mesh.Shape;
+
+            if (s != null) {
+                Debug.Assert(s.Channels.Count == s.Shapes.Count);
+                Debug.Assert(s.Channels.Count == s.FullWeights.Count);
+
+                var morphCount = s.Channels.Count;
+
+                for (var i = 0; i < morphCount; i++) {
+                    var channel = s.Channels[i];
+                    var shape = s.Shapes[i];
+                    var vertices = s.Vertices;
+                    var morph = new PmxMorph();
+
+                    morph.Name = MorphUtils.LookupMorphName(channel.Name);
+                    morph.NameEnglish = channel.Name;
+
+                    morph.OffsetKind = MorphOffsetKind.Vertex;
+
+                    var offsets = new List<PmxBaseMorph>();
+
+                    for (var j = shape.FirstVertex; j < shape.FirstVertex + shape.VertexCount; ++j) {
+                        var v = vertices[(int)j];
+                        var m = new PmxVertexMorph();
+
+                        var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
+
+#if SCALE_TO_PMX_SIZE
+                        offset = offset * ConversionConfig.ScaleUnityToMmd;
+#endif  
+
+                        m.Index = (int)v.Index;
+                        m.Offset = offset;
+
+                        offsets.Add(m);
+                    }
+
+                    morph.Offsets = offsets.ToArray();
+
+                    morphs.Add(morph);
+                }
+
+                // Now some custom morphs for our model to be compatible with TDA.
+                do {
+                    PmxMorph CreateCompositeMorph(string morphName, params string[] names) {
+                        int FindIndex<T>(IReadOnlyList<T> list, T item) {
+                            var comparer = EqualityComparer<T>.Default;
+
+                            for (var i = 0; i < list.Count; ++i) {
+                                if (comparer.Equals(item, list[i])) {
+                                    return i;
+                                }
+                            }
+
+                            return -1;
+                        }
+
+                        var morph = new PmxMorph();
+
+                        morph.Name = MorphUtils.LookupMorphName(morphName);
+                        morph.NameEnglish = morphName;
+
+                        var offsets = new List<PmxBaseMorph>();
+                        var vertices = s.Vertices;
+
+                        foreach (var channel in names.Select(name => s.Channels.Single(ch => ch.Name == name))) {
+                            var channelIndex = FindIndex(s.Channels, channel);
+                            var shape = s.Shapes[channelIndex];
+
+                            morph.OffsetKind = MorphOffsetKind.Vertex;
+
+                            for (var j = shape.FirstVertex; j < shape.FirstVertex + shape.VertexCount; ++j) {
+                                var v = vertices[(int)j];
+                                var m = new PmxVertexMorph();
+
+                                var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
+
+#if SCALE_TO_PMX_SIZE
+                                offset = offset * ConversionConfig.ScaleUnityToMmd;
+#endif
+
+                                m.Index = (int)v.Index;
+                                m.Offset = offset;
+
+                                offsets.Add(m);
+                            }
+                        }
+
+                        morph.Offsets = offsets.ToArray();
+
+                        return morph;
+                    }
+
+                    morphs.Add(CreateCompositeMorph("blendShape1.E_metoji", "blendShape1.E_metoji_l", "blendShape1.E_metoji_r"));
+                } while (false);
+            }
+
+            return morphs.ToArray();
+        }
+
+        [NotNull, ItemNotNull]
+        private static IReadOnlyList<PmxNode> AddNodes([NotNull, ItemNotNull] IReadOnlyList<PmxBone> bones, [NotNull, ItemNotNull] IReadOnlyList<PmxMorph> morphs) {
             var nodes = new List<PmxNode>();
 
             PmxNode CreateBoneGroup(string groupNameJp, string groupNameEn, params string[] boneNames) {
@@ -553,7 +662,34 @@ namespace MillionDance.Core {
                 return node;
             }
 
+            PmxNode CreateEmotionNode() {
+                var node = new PmxNode();
+
+                node.Name = "表情";
+                node.NameEnglish = "Facial Expressions";
+
+                var elements = new List<NodeElement>();
+
+                var counter = 0;
+
+                foreach (var _ in morphs) {
+                    var elem = new NodeElement();
+
+                    elem.ElementType = ElementType.Morph;
+                    elem.Index = counter;
+
+                    elements.Add(elem);
+
+                    ++counter;
+                }
+
+                node.Elements = elements.ToArray();
+
+                return node;
+            }
+
             nodes.Add(CreateBoneGroup("Root", "Root", "操作中心"));
+            nodes.Add(CreateEmotionNode());
             nodes.Add(CreateBoneGroup("センター", "center", "全ての親", "センター"));
             nodes.Add(CreateBoneGroup("ＩＫ", "IK", "左足IK親", "左足ＩＫ", "左つま先ＩＫ", "右足IK親", "右足ＩＫ", "右つま先ＩＫ"));
             nodes.Add(CreateBoneGroup("体(上)", "Upper Body", "上半身", "上半身2", "首", "頭"));

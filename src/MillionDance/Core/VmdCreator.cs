@@ -1,11 +1,4 @@
-﻿#define TRANSFORM_60FPS_TO_30FPS
-//#undef TRANSFORM_60FPS_TO_30FPS
-#define SCALE_TO_VMD_SIZE
-//#undef SCALE_TO_VMD_SIZE
-#define APPEND_IK_BONES
-//#undef APPEND_IK_BONES
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,20 +14,24 @@ using OpenTK;
 using UnityStudio.UnityEngine.Animation;
 
 namespace MillionDance.Core {
-    public static class VmdCreator {
+    public sealed class VmdCreator {
+
+        public bool UseBoneFrames { get; set; } = true;
+
+        public bool UseCameraFrames { get; set; } = true;
 
         [NotNull]
-        public static VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] CharacterImasMotionAsset cameraMotion, [NotNull] Avatar avatar, [NotNull] PmxModel mltdPmxModel) {
+        public VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] CharacterImasMotionAsset cameraMotion, [NotNull] Avatar avatar, [NotNull] PmxModel mltdPmxModel) {
             IReadOnlyList<VmdBoneFrame> boneFrames;
             IReadOnlyList<VmdCameraFrame> cameraFrames;
 
-            if (bodyMotion != null) {
-                boneFrames = CreateBodyFrames(bodyMotion, avatar, mltdPmxModel);
+            if (UseBoneFrames && bodyMotion != null) {
+                boneFrames = CreateBoneFrames(bodyMotion, avatar, mltdPmxModel);
             } else {
                 boneFrames = ArrayCache.Empty<VmdBoneFrame>();
             }
 
-            if (cameraMotion != null) {
+            if (UseCameraFrames && cameraMotion != null) {
                 cameraFrames = CreateCameraFrames(cameraMotion);
             } else {
                 cameraFrames = ArrayCache.Empty<VmdCameraFrame>();
@@ -48,15 +45,15 @@ namespace MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<VmdBoneFrame> CreateBodyFrames([NotNull] CharacterImasMotionAsset bodyMotion, [NotNull] Avatar avatar, [NotNull] PmxModel pmx) {
+        private static IReadOnlyList<VmdBoneFrame> CreateBoneFrames([NotNull] CharacterImasMotionAsset bodyMotion, [NotNull] Avatar avatar, [NotNull] PmxModel pmx) {
             var mltdHierarchy = BoneUtils.BuildBoneHierarchy(avatar);
             var pmxHierarchy = BoneUtils.BuildBoneHierarchy(pmx);
 
-#if APPEND_IK_BONES
-            throw new NotSupportedException("Not supported when appending IK is enabled.");
-#else
-            Debug.Assert(mltdHierarchy.Count == pmxHierarchy.Count);
-#endif
+            if (ConversionConfig.Current.AppendIKBones || ConversionConfig.Current.AppendEyeBones) {
+                throw new NotSupportedException("Not supported when appending bones is enabled.");
+            } else {
+                Debug.Assert(mltdHierarchy.Count == pmxHierarchy.Count);
+            }
 
             foreach (var mltdBone in mltdHierarchy) {
                 mltdBone.Initialize();
@@ -77,11 +74,11 @@ namespace MillionDance.Core {
             var boneFrameList = new List<VmdBoneFrame>();
 
             for (var i = 0; i < iterationTimes; ++i) {
-#if TRANSFORM_60FPS_TO_30FPS
-                if (i % 2 == 1) {
-                    continue;
+                if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                    if (i % 2 == 1) {
+                        continue;
+                    }
                 }
-#endif
 
                 var keyFrameIndexStart = i * animatedBoneCount;
 
@@ -118,9 +115,9 @@ namespace MillionDance.Core {
 
                         t = t.FixUnityToOpenTK();
 
-#if SCALE_TO_VMD_SIZE
-                        t = t * ConversionConfig.ScaleUnityToMmd;
-#endif
+                        if (ConversionConfig.Current.ScaleToVmdSize) {
+                            t = t * ScalingConfig.ScaleUnityToMmd;
+                        }
 
                         targetBone.LocalPosition = t;
 
@@ -169,11 +166,13 @@ namespace MillionDance.Core {
                         t = t - (pmxBone.InitialPosition - pmxBone.Parent.InitialPosition);
                     }
 
-#if TRANSFORM_60FPS_TO_30FPS
-                    var frameIndex = i / 2;
-#else
-                    var frameIndex = i;
-#endif
+                    int frameIndex;
+
+                    if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                        frameIndex = i / 2;
+                    } else {
+                        frameIndex = i;
+                    }
 
                     var vmdBoneName = GetVmdBoneNameFromBoneName(mltdBone.Path);
                     var boneFrame = new VmdBoneFrame(frameIndex, vmdBoneName);
@@ -200,17 +199,19 @@ namespace MillionDance.Core {
             var cameraFrameList = new List<VmdCameraFrame>();
 
             for (var i = 0; i < animationFrameCount; ++i) {
-#if TRANSFORM_60FPS_TO_30FPS
-                if (i % 2 == 1) {
-                    continue;
+                if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                    if (i % 2 == 1) {
+                        continue;
+                    }
                 }
-#endif
 
-#if TRANSFORM_60FPS_TO_30FPS
-                var frameIndex = i / 2;
-#else
-                var frameIndex = i;
-#endif
+                int frameIndex;
+
+                if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                    frameIndex = i / 2;
+                } else {
+                    frameIndex = i;
+                }
 
                 var frame = animation.CameraFrames[i];
                 var vmdFrame = new VmdCameraFrame(frameIndex);
@@ -219,9 +220,9 @@ namespace MillionDance.Core {
 
                 pos = pos.FixUnityToOpenTK();
 
-#if SCALE_TO_VMD_SIZE
-                pos = pos * ConversionConfig.ScaleUnityToMmd;
-#endif
+                if (ConversionConfig.Current.ScaleToVmdSize) {
+                    pos = pos * ScalingConfig.ScaleUnityToMmd;
+                }
 
                 vmdFrame.Position = pos;
 
@@ -229,9 +230,9 @@ namespace MillionDance.Core {
 
                 target = target.FixUnityToOpenTK();
 
-#if SCALE_TO_VMD_SIZE
-                target = target * ConversionConfig.ScaleUnityToMmd;
-#endif
+                if (ConversionConfig.Current.ScaleToVmdSize) {
+                    target = target * ScalingConfig.ScaleUnityToMmd;
+                }
 
                 var delta = target - pos;
 

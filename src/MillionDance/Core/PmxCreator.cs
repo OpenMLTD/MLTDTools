@@ -1,20 +1,4 @@
-﻿#define SCALE_TO_PMX_SIZE
-//#undef SCALE_TO_PMX_SIZE
-#define TRANSLATE_BONE_NAMES_TO_MMD
-//#undef TRANSLATE_BONE_NAMES_TO_MMD
-#define APPEND_IK_BONES
-//#undef APPEND_IK_BONES
-#define FIX_MMD_CENTER_BONES
-//#undef FIX_MMD_CENTER_BONES
-#define APPEND_EYES_BONE
-//#undef APPEND_EYES_BONE
-#define HIDE_UNITY_GENERATED_BONES
-//#undef HIDE_UNITY_GENERATED_BONES
-
-#define SKELETON_FORMAT_MMD
-//#define SKELETON_FORMAT_MLTD
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -34,9 +18,9 @@ using Vector3 = OpenTK.Vector3;
 using Vector4 = OpenTK.Vector4;
 
 namespace MillionDance.Core {
-    public static class PmxCreator {
+    public sealed class PmxCreator {
 
-        public static PmxModel Create([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount, [NotNull] string texturePrefix) {
+        public PmxModel CreateFrom([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount, [NotNull] string texturePrefix) {
             var model = new PmxModel();
 
             model.Name = "ミリシタ モデル00";
@@ -53,14 +37,14 @@ namespace MillionDance.Core {
             var bones = AddBones(combinedAvatar, combinedMesh, vertices);
             model.Bones = bones;
 
-#if SKELETON_FORMAT_MMD
-#if TRANSLATE_BONE_NAMES_TO_MMD
-            FixBonesAndVertices(bones, vertices);
-#endif
-#elif SKELETON_FORMAT_MLTD
-#else
-#error You must choose a skeleton format.
-#endif
+            if (ConversionConfig.Current.SkeletonFormat == SkeletonFormat.Mmd) {
+                if (ConversionConfig.Current.TranslateBoneNamesToMmd) {
+                    FixBonesAndVertices(bones, vertices);
+                }
+            } else if (ConversionConfig.Current.SkeletonFormat == SkeletonFormat.Mltd) {
+            } else {
+                throw new NotSupportedException("You must choose a skeleton format.");
+            }
 
             var materials = AddMaterials(combinedMesh, texturePrefix);
             model.Materials = materials;
@@ -95,9 +79,9 @@ namespace MillionDance.Core {
 
                 vertex.Position = position.ToOpenTK().FixUnityToOpenTK();
 
-#if SCALE_TO_PMX_SIZE
-                vertex.Position = vertex.Position * ConversionConfig.ScaleUnityToMmd;
-#endif
+                if (ConversionConfig.Current.ScaleToPmxSize) {
+                    vertex.Position = vertex.Position * ScalingConfig.ScaleUnityToMmd;
+                }
 
                 vertex.Normal = normal.ToOpenTK().FixUnityToOpenTK();
 
@@ -180,16 +164,16 @@ namespace MillionDance.Core {
                 string pmxBoneName;
                 var mltdBoneName = boneNode.Path;
 
-#if TRANSLATE_BONE_NAMES_TO_MMD
-                if (BoneUtils.BoneNameMap.ContainsKey(mltdBoneName)) {
-                    pmxBoneName = BoneUtils.BoneNameMap[mltdBoneName];
+                if (ConversionConfig.Current.TranslateBoneNamesToMmd) {
+                    if (BoneUtils.BoneNameMap.ContainsKey(mltdBoneName)) {
+                        pmxBoneName = BoneUtils.BoneNameMap[mltdBoneName];
+                    } else {
+                        // Prevent the name exceeding max length (15 bytes)
+                        pmxBoneName = $"Bone #{mltdBoneName.GetHashCode():x8}";
+                    }
                 } else {
-                    // Prevent the name exceeding max length (15 bytes)
-                    pmxBoneName = $"Bone #{mltdBoneName.GetHashCode():x8}";
+                    pmxBoneName = mltdBoneName;
                 }
-#else
-                pmxBoneName = mltdBoneName;
-#endif
 
                 bone.Name = pmxBoneName;
                 bone.NameEnglish = BoneUtils.TranslateBoneName(pmxBoneName);
@@ -202,7 +186,7 @@ namespace MillionDance.Core {
                 bone.ParentIndex = boneNode.Parent?.Index ?? -1;
                 bone.BoneIndex = i;
 
-                var singleDirectChild = boneNode.GetDirectSingleChild();
+                var singleDirectChild = GetDirectSingleChildOf(boneNode);
 
                 if (singleDirectChild != null) {
                     bone.SetFlag(BoneFlags.ToBone);
@@ -226,18 +210,17 @@ namespace MillionDance.Core {
                     bone.SetFlag(BoneFlags.Rotation);
                 }
 
-#if HIDE_UNITY_GENERATED_BONES
-                if (IsNameGeneratedName(boneNode.Path)) {
-                    bone.ClearFlag(BoneFlags.Visible);
+                if (ConversionConfig.Current.HideUnityGeneratedBones) {
+                    if (IsNameGeneratedName(boneNode.Path)) {
+                        bone.ClearFlag(BoneFlags.Visible);
+                    }
                 }
-#endif
 
                 bones.Add(bone);
             }
 
-#if FIX_MMD_CENTER_BONES
-            // Add master (全ての親) and center (センター), recompute bone hierarchy.
-            do {
+            if (ConversionConfig.Current.FixMmdCenterBones) {
+                // Add master (全ての親) and center (センター), recompute bone hierarchy.
                 PmxBone master = new PmxBone(), center = new PmxBone();
 
                 master.Name = "全ての親";
@@ -293,12 +276,11 @@ namespace MillionDance.Core {
                         bone.To_Bone += numBonesAdded;
                     }
                 }
-            } while (false);
-#endif
+            }
 
-#if APPEND_IK_BONES
-            // Add IK bones.
-            do {
+            if (ConversionConfig.Current.AppendIKBones) {
+                // Add IK bones. 
+
                 PmxBone[] CreateLegIK(string leftRightJp, string leftRightEn) {
                     var startBoneCount = bones.Count;
 
@@ -375,8 +357,8 @@ namespace MillionDance.Core {
                     ikBone.IK = ik;
 
                     return new[] {
-                            ikParent, ikBone
-                        };
+                        ikParent, ikBone
+                    };
                 }
 
                 PmxBone[] CreateToeIK(string leftRightJp, string leftRightEn) {
@@ -433,8 +415,8 @@ namespace MillionDance.Core {
                     ikBone.IK = ik;
 
                     return new[] {
-                            ikBone
-                        };
+                        ikBone
+                    };
                 }
 
                 var leftLegIK = CreateLegIK("左", "L");
@@ -446,11 +428,9 @@ namespace MillionDance.Core {
                 bones.AddRange(leftToeIK);
                 var rightToeIK = CreateToeIK("右", "R");
                 bones.AddRange(rightToeIK);
-            } while (false);
-#endif
+            }
 
-#if APPEND_EYES_BONE
-            do {
+            if (ConversionConfig.Current.AppendEyeBones) {
                 (int VertexStart1, int VertexCount1, int VertexStart2, int VertexCount2) FindEyesVerticeRange() {
                     var meshNameIndex = -1;
                     var cm = combinedMesh as CompositeMesh;
@@ -614,8 +594,7 @@ namespace MillionDance.Core {
                         Debug.Assert(Math.Abs(skin.BoneWeights[0].Weight - 1) < 0.000001f);
                     }
                 }
-            } while (false);
-#endif
+            }
 
             // Finally, set the indices. The values will be used later.
             for (var i = 0; i < bones.Count; i++) {
@@ -728,9 +707,9 @@ namespace MillionDance.Core {
 
                         var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
 
-#if SCALE_TO_PMX_SIZE
-                        offset = offset * ConversionConfig.ScaleUnityToMmd;
-#endif  
+                        if (ConversionConfig.Current.ScaleToPmxSize) {
+                            offset = offset * ScalingConfig.ScaleUnityToMmd;
+                        }
 
                         m.Index = (int)v.Index;
                         m.Offset = offset;
@@ -760,7 +739,12 @@ namespace MillionDance.Core {
 
                         var morph = new PmxMorph();
 
-                        morph.Name = MorphUtils.LookupMorphName(morphName);
+                        if (ConversionConfig.Current.TranslateFacialExpressionNamesToMmd) {
+                            morph.Name = MorphUtils.LookupMorphName(morphName);
+                        } else {
+                            morph.Name = morphName;
+                        }
+
                         morph.NameEnglish = morphName;
 
                         var offsets = new List<PmxBaseMorph>();
@@ -778,9 +762,9 @@ namespace MillionDance.Core {
 
                                 var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
 
-#if SCALE_TO_PMX_SIZE
-                                offset = offset * ConversionConfig.ScaleUnityToMmd;
-#endif
+                                if (ConversionConfig.Current.ScaleToPmxSize) {
+                                    offset = offset * ScalingConfig.ScaleUnityToMmd;
+                                }
 
                                 m.Index = (int)v.Index;
                                 m.Offset = offset;
@@ -873,7 +857,7 @@ namespace MillionDance.Core {
         }
 
         [CanBeNull]
-        private static BoneNode GetDirectSingleChild([NotNull] this BoneNode b) {
+        private static BoneNode GetDirectSingleChildOf([NotNull]   BoneNode b) {
             var l = new List<BoneNode>();
 
             foreach (var c in b.Children) {

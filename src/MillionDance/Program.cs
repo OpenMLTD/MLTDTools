@@ -12,6 +12,10 @@ using UnityStudio.Utilities;
 namespace MillionDance {
     internal static class Program {
 
+        private const bool WritePmx = true;
+        private const bool CreateVmd = true;
+        private const bool WriteVmd = true;
+
         private static void Main() {
             var bodyAvatar = LoadBodyAvatar();
             var bodyMesh = LoadBodyMesh();
@@ -29,21 +33,32 @@ namespace MillionDance {
             var texPrefix = AvatarName.Substring(6, 3) + AvatarName.Substring(0, 5);
             texPrefix = @"tex\" + texPrefix + "_";
 
-            var newPmx = PmxCreator.Create(combinedAvatar, combinedMesh, bodyMesh.VertexCount, texPrefix);
+            var pmxCreator = new PmxCreator();
 
-            using (var w = new PmxWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\" + AvatarName + "_gen.pmx", FileMode.Create, FileAccess.Write, FileShare.Write))) {
-                w.Write(newPmx);
+            var newPmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMesh.VertexCount, texPrefix);
+
+            if (WritePmx) {
+                using (var w = new PmxWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\" + AvatarName + "_gen.pmx", FileMode.Create, FileAccess.Write, FileShare.Write))) {
+                    w.Write(newPmx);
+                }
             }
 
-            return;
+            if (CreateVmd) {
+                var (dan, _, _) = LoadDance();
+                var cam = LoadCamera();
 
-            var (dan, _, _) = LoadDance();
-            var cam = LoadCamera();
-            var vmd = VmdCreator.CreateFrom(dan, cam, combinedAvatar, newPmx);
-            //var vmd = VmdCreator.CreateFrom(dan, null, combinedAvatar, newPmx);
+                var vmdCreator = new VmdCreator {
+                    UseBoneFrames = true,
+                    UseCameraFrames = true
+                };
 
-            using (var w = new VmdWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\out_" + AvatarName + ".vmd", FileMode.Create, FileAccess.Write, FileShare.Write))) {
-                w.Write(vmd);
+                var vmd = vmdCreator.CreateFrom(dan, cam, combinedAvatar, newPmx);
+
+                if (WriteVmd) {
+                    using (var w = new VmdWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\out_" + AvatarName + ".vmd", FileMode.Create, FileAccess.Write, FileShare.Write))) {
+                        w.Write(vmd);
+                    }
+                }
             }
         }
 
@@ -206,7 +221,7 @@ namespace MillionDance {
             return (dan, apa, apg);
         }
 
-        private const string AvatarName = "ss001_015siz";
+        private const string AvatarName = "gs001_201xxx";
         private const string SongName = "hmt001";
         private const string SongPosition = "01";
 

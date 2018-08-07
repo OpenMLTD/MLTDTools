@@ -397,7 +397,10 @@ namespace MillionDance.Core {
             // Facial expression
             {
                 var expControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression).ToArray();
-                var eyeClosed = false;
+
+                Debug.Assert(expControls.Length > 0);
+
+                var eyeClosed = expControls[0].EyeClosed;
 
                 // Note that here we don't process blinkings (which happens in MLTD)
                 for (var i = 0; i < expControls.Length; i++) {
@@ -406,8 +409,6 @@ namespace MillionDance.Core {
 
                     const float eyeBlinkTime = 0.1f;
                     const float faceTransitionTime = 0.1333333f;
-
-                    eyeClosed = exp.EyeClosed;
 
                     var eyesClosedRatio = exp.EyeClosed ? 1.0f : 0.0f;
 
@@ -450,6 +451,8 @@ namespace MillionDance.Core {
                             }
                         }
                     }
+
+                    eyeClosed = exp.EyeClosed;
                 }
             }
 

@@ -1,4 +1,4 @@
-﻿namespace OpenMLTD.ScenarioEdit.Entities {
+﻿namespace MillionDance.Entities.Mltd {
     public enum ScenarioDataType {
 
         Invalid = 0,
@@ -9,8 +9,7 @@
         Type12 = 12,
         Type14 = 14,
         LipSync = 43,
-        // not sure
-        SetEyeState = 45,
+        FacialExpression = 45,
         SetLightColor = 51,
         Type53 = 53,
         Type54 = 54,

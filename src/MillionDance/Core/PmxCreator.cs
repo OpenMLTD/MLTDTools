@@ -694,8 +694,15 @@ namespace MillionDance.Core {
                     var vertices = s.Vertices;
                     var morph = new PmxMorph();
 
-                    morph.Name = MorphUtils.LookupMorphName(channel.Name);
-                    morph.NameEnglish = channel.Name;
+                    var morphName = channel.Name.Substring(12); // - "blendShape1."
+
+                    if (ConversionConfig.Current.TranslateFacialExpressionNamesToMmd) {
+                        morph.Name = MorphUtils.LookupMorphName(morphName);
+                    } else {
+                        morph.Name = morphName;
+                    }
+
+                    morph.NameEnglish = morphName;
 
                     morph.OffsetKind = MorphOffsetKind.Vertex;
 
@@ -724,7 +731,7 @@ namespace MillionDance.Core {
 
                 // Now some custom morphs for our model to be compatible with TDA.
                 do {
-                    PmxMorph CreateCompositeMorph(string morphName, params string[] names) {
+                    PmxMorph CreateCompositeMorph(string mltdTruncMorphName, params string[] truncNames) {
                         int FindIndex<T>(IReadOnlyList<T> list, T item) {
                             var comparer = EqualityComparer<T>.Default;
 
@@ -740,17 +747,20 @@ namespace MillionDance.Core {
                         var morph = new PmxMorph();
 
                         if (ConversionConfig.Current.TranslateFacialExpressionNamesToMmd) {
-                            morph.Name = MorphUtils.LookupMorphName(morphName);
+                            morph.Name = MorphUtils.LookupMorphName(mltdTruncMorphName);
                         } else {
-                            morph.Name = morphName;
+                            morph.Name = mltdTruncMorphName;
                         }
 
-                        morph.NameEnglish = morphName;
+                        morph.NameEnglish = mltdTruncMorphName;
 
                         var offsets = new List<PmxBaseMorph>();
                         var vertices = s.Vertices;
 
-                        foreach (var channel in names.Select(name => s.Channels.Single(ch => ch.Name == name))) {
+                        foreach (var channel in truncNames.Select(name => {
+                            var fullMorphName = "blendShape1." + name;
+                            return s.Channels.Single(ch => ch.Name == fullMorphName);
+                        })) {
                             var channelIndex = FindIndex(s.Channels, channel);
                             var shape = s.Shapes[channelIndex];
 
@@ -778,7 +788,7 @@ namespace MillionDance.Core {
                         return morph;
                     }
 
-                    morphs.Add(CreateCompositeMorph("blendShape1.E_metoji", "blendShape1.E_metoji_l", "blendShape1.E_metoji_r"));
+                    morphs.Add(CreateCompositeMorph("E_metoji", "E_metoji_l", "E_metoji_r"));
                 } while (false);
             }
 

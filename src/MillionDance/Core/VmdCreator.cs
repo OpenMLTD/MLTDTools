@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,32 +15,52 @@ using OpenTK;
 using UnityStudio.UnityEngine.Animation;
 
 namespace MillionDance.Core {
-    public sealed class VmdCreator {
+    public sealed partial class VmdCreator {
 
-        public bool UseBoneFrames { get; set; } = true;
+        public bool ProcessBoneFrames { get; set; } = true;
 
-        public bool UseCameraFrames { get; set; } = true;
+        public bool ProcessCameraFrames { get; set; } = true;
+
+        public bool ProcessFacialFrames { get; set; } = true;
+
+        public bool ProcessLightFrames { get; set; } = true;
 
         [NotNull]
-        public VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] CharacterImasMotionAsset cameraMotion, [NotNull] Avatar avatar, [NotNull] PmxModel mltdPmxModel) {
+        public VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [NotNull] Avatar avatar, [NotNull] PmxModel mltdPmxModel,
+            [CanBeNull] CharacterImasMotionAsset cameraMotion,
+            [CanBeNull] ScenarioObject scenarioObject, int songPosition) {
             IReadOnlyList<VmdBoneFrame> boneFrames;
             IReadOnlyList<VmdCameraFrame> cameraFrames;
+            IReadOnlyList<VmdFacialFrame> facialFrames;
+            IReadOnlyList<VmdLightFrame> lightFrames;
 
-            if (UseBoneFrames && bodyMotion != null) {
+            if (ProcessBoneFrames && bodyMotion != null) {
                 boneFrames = CreateBoneFrames(bodyMotion, avatar, mltdPmxModel);
             } else {
-                boneFrames = ArrayCache.Empty<VmdBoneFrame>();
+                boneFrames = EmptyArray.Of<VmdBoneFrame>();
             }
 
-            if (UseCameraFrames && cameraMotion != null) {
+            if (ProcessCameraFrames && cameraMotion != null) {
                 cameraFrames = CreateCameraFrames(cameraMotion);
             } else {
-                cameraFrames = ArrayCache.Empty<VmdCameraFrame>();
+                cameraFrames = EmptyArray.Of<VmdCameraFrame>();
+            }
+
+            if (ProcessFacialFrames && scenarioObject != null) {
+                facialFrames = CreateFacialFrames(scenarioObject, songPosition);
+            } else {
+                facialFrames = EmptyArray.Of<VmdFacialFrame>();
+            }
+
+            if (ProcessLightFrames && scenarioObject != null) {
+                lightFrames = CreateLightFrames(scenarioObject);
+            } else {
+                lightFrames = EmptyArray.Of<VmdLightFrame>();
             }
 
             const string modelName = "MODEL_00";
 
-            var vmd = new VmdMotion(modelName, boneFrames, ArrayCache.Empty<VmdFacialFrame>(), cameraFrames, ArrayCache.Empty<VmdLightFrame>(), null);
+            var vmd = new VmdMotion(modelName, boneFrames, facialFrames, cameraFrames, lightFrames, null);
 
             return vmd;
         }
@@ -272,6 +293,195 @@ namespace MillionDance.Core {
             }
 
             return cameraFrameList;
+        }
+
+        [NotNull, ItemNotNull]
+        private static IReadOnlyList<VmdFacialFrame> CreateFacialFrames([NotNull] ScenarioObject scenarioObject, int songPosition) {
+            VmdFacialFrame CreateFacialFrame(float time, string mltdTruncMorphName, float value) {
+                var n = (int)(time * 60.0f);
+                int frameIndex;
+
+                if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                    frameIndex = n / 2;
+                } else {
+                    frameIndex = n;
+                }
+
+                string expressionName;
+
+                if (ConversionConfig.Current.TranslateFacialExpressionNamesToMmd) {
+                    expressionName = MorphUtils.LookupMorphName(mltdTruncMorphName);
+                } else {
+                    expressionName = mltdTruncMorphName;
+                }
+
+                var frame = new VmdFacialFrame(frameIndex, expressionName);
+                frame.Weight = value;
+
+                return frame;
+            }
+
+            var facialFrameList = new List<VmdFacialFrame>();
+
+            // Lip motion
+            {
+                var lipSyncControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.LipSync).ToArray();
+
+                Debug.Assert(lipSyncControls.Length > 0);
+                Debug.Assert(lipSyncControls[0].Param == 54);
+                Debug.Assert(lipSyncControls[lipSyncControls.Length - 1].Param == 54);
+
+                const float lipTransitionTime = 0.2f;
+                float lastLipSyncTime = 0;
+
+                for (var i = 0; i < lipSyncControls.Length; i++) {
+                    var sync = lipSyncControls[i];
+                    var currentTime = (float)sync.AbsoluteTime;
+                    var hasNext = i < lipSyncControls.Length - 1;
+
+                    var nextTime = hasNext ? (float)lipSyncControls[i + 1].AbsoluteTime : 0.0f;
+
+                    switch (sync.Param) {
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 50:
+                            Debug.Assert(hasNext);
+
+                            string morphName;
+
+                            switch (sync.Param) {
+                                case 0:
+                                    morphName = "M_a";
+                                    break;
+                                case 1:
+                                    morphName = "M_i";
+                                    break;
+                                case 2:
+                                    morphName = "M_u";
+                                    break;
+                                case 3:
+                                    morphName = "M_e";
+                                    break;
+                                case 4:
+                                    morphName = "M_o";
+                                    break;
+                                case 50:
+                                    morphName = "M_n";
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException("Not possible.");
+                            }
+
+                            facialFrameList.Add(CreateFacialFrame(currentTime - lipTransitionTime, morphName, 0));
+                            facialFrameList.Add(CreateFacialFrame(currentTime, morphName, 1));
+                            facialFrameList.Add(CreateFacialFrame(nextTime - lipTransitionTime, morphName, 1));
+                            facialFrameList.Add(CreateFacialFrame(nextTime, morphName, 0));
+                            break;
+                        case 54:
+                            facialFrameList.Add(CreateFacialFrame(currentTime, "M_a", 0));
+                            facialFrameList.Add(CreateFacialFrame(currentTime, "M_i", 0));
+                            facialFrameList.Add(CreateFacialFrame(currentTime, "M_u", 0));
+                            facialFrameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
+                            facialFrameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
+                            facialFrameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(sync.Param), sync.Param, null);
+                    }
+                }
+            }
+
+            // Facial expression
+            {
+                var expControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression).ToArray();
+                var eyeClosed = false;
+
+                // Note that here we don't process blinkings (which happens in MLTD)
+                for (var i = 0; i < expControls.Length; i++) {
+                    var exp = expControls[i];
+                    var currentTime = (float)exp.AbsoluteTime;
+
+                    const float eyeBlinkTime = 0.1f;
+                    const float faceTransitionTime = 0.1333333f;
+
+                    eyeClosed = exp.EyeClosed;
+
+                    var eyesClosedRatio = exp.EyeClosed ? 1.0f : 0.0f;
+
+                    facialFrameList.Add(CreateFacialFrame(currentTime, "E_metoji_r", eyesClosedRatio));
+                    facialFrameList.Add(CreateFacialFrame(currentTime, "E_metoji_l", eyesClosedRatio));
+
+                    if (i > 0) {
+                        if (expControls[i - 1].EyeClosed != exp.EyeClosed) {
+                            facialFrameList.Add(CreateFacialFrame(currentTime - eyeBlinkTime, "E_metoji_r", 1 - eyesClosedRatio));
+                            facialFrameList.Add(CreateFacialFrame(currentTime - eyeBlinkTime, "E_metoji_l", 1 - eyesClosedRatio));
+                        }
+                    }
+
+                    var expressionKey = (FacialExpression)exp.Param;
+
+                    if (FacialExpressionTable.ContainsKey(expressionKey)) {
+                        foreach (var kv in FacialExpressionTable[expressionKey]) {
+                            if ((kv.Key != "E_metoji_r" && kv.Key != "E_metoji_l") || !eyeClosed) {
+                                facialFrameList.Add(CreateFacialFrame(currentTime, kv.Key, kv.Value));
+                            }
+                        }
+                    } else {
+                        Debug.Print("Warning: facial expression key not found: {0}", exp.Param);
+                    }
+
+                    if (i > 0) {
+                        if (expControls[i - 1].Param != exp.Param) {
+                            var lastExpressionKey = (FacialExpression)expControls[i - 1].Param;
+
+                            if (FacialExpressionTable.ContainsKey(lastExpressionKey)) {
+                                foreach (var kv in FacialExpressionTable[lastExpressionKey]) {
+                                    // TODO: Actually we should do a more thorough analysis, because in this time window the eye CAN be opened again so we actually need these values.
+                                    // But whatever. This case is rare. Fix it in the future.
+                                    if ((kv.Key != "E_metoji_r" && kv.Key != "E_metoji_l") || !eyeClosed) {
+                                        facialFrameList.Add(CreateFacialFrame(currentTime - faceTransitionTime, kv.Key, kv.Value));
+                                    }
+                                }
+                            } else {
+                                Debug.Print("Warning: facial expression key not found: {0}", expControls[i - 1].Param);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return facialFrameList;
+        }
+
+        [NotNull, ItemNotNull]
+        private static IReadOnlyList<VmdLightFrame> CreateLightFrames([NotNull] ScenarioObject scenarioObject) {
+            var lightFrameList = new List<VmdLightFrame>();
+            var lightControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.SetLightColor).ToArray();
+
+            foreach (var lightControl in lightControls) {
+                var n = (int)((float)lightControl.AbsoluteTime * 60.0f);
+                int frameIndex;
+
+                if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                    frameIndex = n / 2;
+                } else {
+                    frameIndex = n;
+                }
+
+                var frame = new VmdLightFrame(frameIndex);
+
+                frame.Position = new Vector3(0.5f, -1f, -0.5f);
+
+                var c = lightControl.Color;
+                frame.Color = new Vector3(c.R, c.G, c.B);
+
+                lightFrameList.Add(frame);
+            }
+
+            return lightFrameList;
         }
 
         // https://photo.stackexchange.com/questions/41273/how-to-calculate-the-fov-in-degrees-from-focal-length-or-distance

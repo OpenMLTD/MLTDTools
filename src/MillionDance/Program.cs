@@ -46,13 +46,16 @@ namespace MillionDance {
             if (CreateVmd) {
                 var (dan, _, _) = LoadDance();
                 var cam = LoadCamera();
+                var scenario = LoadScenario();
 
                 var vmdCreator = new VmdCreator {
-                    UseBoneFrames = true,
-                    UseCameraFrames = true
+                    ProcessBoneFrames = true,
+                    ProcessCameraFrames = true,
+                    ProcessFacialFrames = true,
+                    ProcessLightFrames = false
                 };
 
-                var vmd = vmdCreator.CreateFrom(dan, cam, combinedAvatar, newPmx);
+                var vmd = vmdCreator.CreateFrom(dan, combinedAvatar, newPmx, cam, scenario, SongPosition);
 
                 if (WriteVmd) {
                     using (var w = new VmdWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\out_" + AvatarName + ".vmd", FileMode.Create, FileAccess.Write, FileShare.Write))) {
@@ -183,9 +186,14 @@ namespace MillionDance {
         private static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDance() {
             CharacterImasMotionAsset dan = null, apa = null, apg = null;
 
+            var fileName = $"Resources/dan_{SongName}_{SongPosition:00}.imo.unity3d";
+            var danName = $"dan_{SongName}_{SongPosition:00}_dan.imo";
+            var apaName = $"dan_{SongName}_{SongPosition:00}_apa.imo";
+            var apgName = $"dan_{SongName}_{SongPosition:00}_apg.imo";
+
             var ser = new MonoBehaviourSerializer();
 
-            using (var fileStream = File.Open("Resources/dan_" + SongName + "_" + SongPosition + ".imo.unity3d", FileMode.Open, FileAccess.Read, FileShare.Read)) {
+            using (var fileStream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                 using (var bundle = new BundleFile(fileStream, false)) {
                     foreach (var assetFile in bundle.AssetFiles) {
                         foreach (var preloadData in assetFile.PreloadDataList) {
@@ -195,19 +203,15 @@ namespace MillionDance {
 
                             var behaviour = preloadData.LoadAsMonoBehaviour(true);
 
-                            switch (behaviour.Name) {
-                                case "dan_" + SongName + "_" + SongPosition + "_dan.imo":
-                                    behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                    dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                                    break;
-                                case "dan_" + SongName + "_" + SongPosition + "_apa.imo":
-                                    behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                    apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                                    break;
-                                case "dan_" + SongName + "_" + SongPosition + "_apg.imo":
-                                    behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                    apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                                    break;
+                            if (behaviour.Name == danName) {
+                                behaviour = preloadData.LoadAsMonoBehaviour(false);
+                                dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                            } else if (behaviour.Name == apaName) {
+                                behaviour = preloadData.LoadAsMonoBehaviour(false);
+                                apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                            } else if (behaviour.Name == apgName) {
+                                behaviour = preloadData.LoadAsMonoBehaviour(false);
+                                apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                             }
 
                             if (dan != null && apa != null && apg != null) {
@@ -221,9 +225,39 @@ namespace MillionDance {
             return (dan, apa, apg);
         }
 
+        public static ScenarioObject LoadScenario() {
+            ScenarioObject result = null;
+
+            using (var fileStream = File.Open("Resources/scrobj_" + SongName + ".unity3d", FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                using (var bundle = new BundleFile(fileStream, false)) {
+                    foreach (var asset in bundle.AssetFiles) {
+                        foreach (var preloadData in asset.PreloadDataList) {
+                            if (preloadData.KnownType != KnownClassID.MonoBehaviour) {
+                                continue;
+                            }
+
+                            var behaviour = preloadData.LoadAsMonoBehaviour(true);
+
+                            if (!behaviour.Name.EndsWith("scenario_sobj")) {
+                                continue;
+                            }
+
+                            behaviour = preloadData.LoadAsMonoBehaviour(false);
+
+                            var serializer = new MonoBehaviourSerializer();
+                            result = serializer.Deserialize<ScenarioObject>(behaviour);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
         private const string AvatarName = "gs001_201xxx";
         private const string SongName = "hmt001";
-        private const string SongPosition = "01";
+        private const int SongPosition = 1;
 
     }
 }

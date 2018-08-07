@@ -56,9 +56,16 @@
     <Compile Include="Core\ConversionConfig.cs" />
     <Compile Include="Core\MotionFormat.cs" />
     <Compile Include="Core\SkeletonFormat.cs" />
+    <Compile Include="Core\VmdCreator.FacialExpressions.cs" />
     <Compile Include="Entities\Internal\CameraAnimation.cs" />
     <Compile Include="Entities\Internal\CameraFrame.cs" />
-    <Compile Include="Utilities\ArrayCache.cs" />
+    <Compile Include="Entities\Mltd\ColorRGBA.cs" />
+    <Compile Include="Entities\Mltd\EventScenarioData.cs" />
+    <Compile Include="Entities\Mltd\ScenarioDataType.cs" />
+    <Compile Include="Entities\Mltd\ScenarioObject.cs" />
+    <Compile Include="Entities\Mltd\TexTargetName.cs" />
+    <Compile Include="Entities\Mltd\VjParam.cs" />
+    <Compile Include="Utilities\EmptyArray.cs" />
     <Compile Include="Utilities\BoneUtils.cs" />
     <Compile Include="Core\ScalingConfig.cs" />
     <Compile Include="DisposableBase.cs" />

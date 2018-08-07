@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 
 namespace MillionDance.Utilities {
-    internal static class ArrayCache {
+    internal static class EmptyArray {
 
-        public static T[] Empty<T>() {
+        public static T[] Of<T>() {
             var t = typeof(T);
 
             Array arr;

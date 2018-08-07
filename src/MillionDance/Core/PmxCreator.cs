@@ -37,13 +37,15 @@ namespace MillionDance.Core {
             var bones = AddBones(combinedAvatar, combinedMesh, vertices);
             model.Bones = bones;
 
-            if (ConversionConfig.Current.SkeletonFormat == SkeletonFormat.Mmd) {
-                if (ConversionConfig.Current.TranslateBoneNamesToMmd) {
-                    FixBonesAndVertices(bones, vertices);
+            if (ConversionConfig.Current.FixTdaBindingPose) {
+                if (ConversionConfig.Current.SkeletonFormat == SkeletonFormat.Mmd) {
+                    if (ConversionConfig.Current.TranslateBoneNamesToMmd) {
+                        FixBonesAndVertices(bones, vertices);
+                    }
+                } else if (ConversionConfig.Current.SkeletonFormat == SkeletonFormat.Mltd) {
+                } else {
+                    throw new NotSupportedException("You must choose a skeleton format.");
                 }
-            } else if (ConversionConfig.Current.SkeletonFormat == SkeletonFormat.Mltd) {
-            } else {
-                throw new NotSupportedException("You must choose a skeleton format.");
             }
 
             var materials = AddMaterials(combinedMesh, texturePrefix);

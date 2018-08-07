@@ -16,6 +16,8 @@
 
         public bool FixMmdCenterBones { get; private set; }
 
+        public bool FixTdaBindingPose { get; private set; }
+
         public bool AppendEyeBones { get; private set; }
 
         public bool HideUnityGeneratedBones { get; private set; }
@@ -36,11 +38,12 @@
             TranslateBoneNamesToMmd = true,
             AppendIKBones = false,
             FixMmdCenterBones = false,
+            FixTdaBindingPose = false,
             AppendEyeBones = false,
             HideUnityGeneratedBones = true,
             SkeletonFormat = SkeletonFormat.Mltd,
             TranslateFacialExpressionNamesToMmd = true,
-            Transform60FpsTo30Fps = true,
+            Transform60FpsTo30Fps = false,
             ScaleToVmdSize = true
         };
 
@@ -50,6 +53,7 @@
             TranslateBoneNamesToMmd = true,
             AppendIKBones = true,
             FixMmdCenterBones = true,
+            FixTdaBindingPose = true,
             AppendEyeBones = true,
             HideUnityGeneratedBones = true,
             SkeletonFormat = SkeletonFormat.Mmd,

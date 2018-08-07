@@ -660,15 +660,15 @@ namespace MillionDance.Core {
 
                 material.NameEnglish = material.Name = $"Mat #{i:00}";
                 material.AppliedFaceVertexCount = (int)combinedMesh.SubMeshes[i].IndexCount;
-                material.Ambient = Vector3.One;
+                material.Ambient = new Vector3(0.5f, 0.5f, 0.5f);
                 material.Diffuse = Vector4.One;
                 material.Specular = Vector3.Zero;
-                material.EdgeColor = new Vector4(0, 0, 0, 1);
+                material.EdgeColor = new Vector4(0.3f, 0.3f, 0.3f, 0.8f);
                 material.EdgeSize = 1.0f;
                 // TODO: The right way: reading textures' path ID and do the mapping.
                 material.TextureFileName = $"{texturePrefix}{i:00}.png";
 
-                material.Flags = MaterialFlags.Shadow | MaterialFlags.SelfShadow;
+                material.Flags = MaterialFlags.Shadow | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap | MaterialFlags.CullNone | MaterialFlags.Edge;
 
                 materials[i] = material;
             }

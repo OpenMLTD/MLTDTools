@@ -32,7 +32,7 @@ namespace MillionDance.Utilities {
             ["M_shinken"] = "Λ",
             ["M_wide"] = "口大",
             //["M_up"] = "",
-            ["M_n2"] = "Λ",
+            //["M_n2"] = "Λ",
             //["M_down"] = "",
             ["M_odoroki"] = "□", // TDA
             ["M_narrow"] = "口小",

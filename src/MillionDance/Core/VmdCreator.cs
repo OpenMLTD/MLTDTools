@@ -401,6 +401,7 @@ namespace MillionDance.Core {
                 Debug.Assert(expControls.Length > 0);
 
                 var eyeClosed = expControls[0].EyeClosed;
+                float nextEyeOpeningTime = -1, nextEyeClosingTime = -1;
 
                 // Note that here we don't process blinkings (which happens in MLTD)
                 for (var i = 0; i < expControls.Length; i++) {
@@ -462,7 +463,7 @@ namespace MillionDance.Core {
         [NotNull, ItemNotNull]
         private static IReadOnlyList<VmdLightFrame> CreateLightFrames([NotNull] ScenarioObject scenarioObject) {
             var lightFrameList = new List<VmdLightFrame>();
-            var lightControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.SetLightColor).ToArray();
+            var lightControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.LightColor).ToArray();
 
             foreach (var lightControl in lightControls) {
                 var n = (int)((float)lightControl.AbsoluteTime * 60.0f);

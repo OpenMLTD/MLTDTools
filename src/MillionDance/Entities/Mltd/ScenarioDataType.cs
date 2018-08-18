@@ -10,7 +10,7 @@
         Type14 = 14,
         LipSync = 43,
         FacialExpression = 45,
-        SetLightColor = 51,
+        LightColor = 51,
         Type53 = 53,
         Type54 = 54,
         Type55 = 55,

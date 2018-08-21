@@ -3,9 +3,13 @@
 namespace MillionDance.Entities.Pmx {
     public abstract class PmxBaseBody : IPmxNamedObject {
 
-        public string Name { get; internal set; }
+        protected PmxBaseBody() {
+            PassGroup = PmxBodyPassGroup.FromFlagBits(0);
+        }
 
-        public string NameEnglish { get; internal set; }
+        public string Name { get; internal set; } = string.Empty;
+
+        public string NameEnglish { get; internal set; } = string.Empty;
 
         public int MaterialIndex { get; internal set; }
 

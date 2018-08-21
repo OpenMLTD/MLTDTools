@@ -645,13 +645,13 @@ namespace MillionDance.Core {
             joint.BodyIndex1 = _reader.ReadVarLenIntAsInt32(RigidBodyElementSize);
             joint.BodyIndex2 = _reader.ReadVarLenIntAsInt32(RigidBodyElementSize);
             joint.Position = _reader.ReadVector3();
-            joint.RotationAngles = _reader.ReadVector3();
-            joint.LimitMoveLower = _reader.ReadVector3();
-            joint.LimitMoveUpper = _reader.ReadVector3();
-            joint.LimitAngleLower = _reader.ReadVector3();
-            joint.LimitAngleUpper = _reader.ReadVector3();
-            joint.SpConst_Move = _reader.ReadVector3();
-            joint.SpConst_Rotate = _reader.ReadVector3();
+            joint.Rotation = _reader.ReadVector3();
+            joint.LowerTranslationLimit = _reader.ReadVector3();
+            joint.UpperTranslationLimit = _reader.ReadVector3();
+            joint.LowerRotationLimit = _reader.ReadVector3();
+            joint.UpperRotationLimit = _reader.ReadVector3();
+            joint.TranslationSpringConstants = _reader.ReadVector3();
+            joint.RotationSpringConstants = _reader.ReadVector3();
 
             return joint;
         }

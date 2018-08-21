@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using MillionDance.Utilities;
 
 namespace MillionDance.Entities.Pmx {
     public sealed class PmxMorph : IPmxNamedObject {
@@ -7,16 +8,16 @@ namespace MillionDance.Entities.Pmx {
         internal PmxMorph() {
         }
 
-        public string Name { get; internal set; }
+        public string Name { get; internal set; } = string.Empty;
 
-        public string NameEnglish { get; internal set; }
+        public string NameEnglish { get; internal set; } = string.Empty;
 
         public int Panel { get; internal set; }
 
         public MorphOffsetKind OffsetKind { get; internal set; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<PmxBaseMorph> Offsets { get; internal set; }
+        public IReadOnlyList<PmxBaseMorph> Offsets { get; internal set; } = EmptyArray.Of<PmxBaseMorph>();
 
     }
 }

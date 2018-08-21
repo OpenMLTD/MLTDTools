@@ -89,6 +89,30 @@ namespace MillionDance.Core {
             var animatedBoneCount = animation.BoneCount;
             var keyFrameCount = animation.KeyFrames.Count;
 
+            do {
+                void MarkNamedBone(string name) {
+                    var bone = pmx.Bones.FirstOrDefault(b => b.Name == name);
+
+                    if (bone != null) {
+                        bone.IsMltdKeyBone = true;
+                    } else {
+                        Debug.Print("Warning: trying to mark bone {0} as MLTD key bone but the bone is missing from the model.", name);
+                    }
+                }
+
+                var names1 = animation.KeyFrames.Take(animatedBoneCount)
+                    .Select(kf => kf.Path).ToArray();
+                var names = names1.Select(BoneUtils.GetVmdBoneNameFromBonePath).ToArray();
+                // Mark MLTD key bones.
+                foreach (var name in names) {
+                    MarkNamedBone(name);
+                }
+
+                // Special cases
+                MarkNamedBone("KUBI");
+                MarkNamedBone("頭");
+            } while (false);
+
             Debug.Assert(keyFrameCount % animatedBoneCount == 0, "keyFrameCount % animatedBoneCount == 0");
 
             var iterationTimes = keyFrameCount / animatedBoneCount;
@@ -169,8 +193,18 @@ namespace MillionDance.Core {
                 }
 
                 for (var j = 0; j < boneCount; ++j) {
-                    var mltdBone = mltdHierarchy[j];
                     var pmxBone = pmxHierarchy[j];
+                    var mltdBone = mltdHierarchy[j];
+
+                    {
+                        var pb = pmx.Bones.FirstOrDefault(b => b.Name == pmxBone.Name);
+
+                        Debug.Assert(pb != null);
+
+                        if (!pb.IsMltdKeyBone) {
+                            continue;
+                        }
+                    }
 
                     var skinMatrix = mltdBone.SkinMatrix;
                     var mPmxBindingPose = pmxBone.BindingPose;
@@ -195,7 +229,7 @@ namespace MillionDance.Core {
                         frameIndex = i;
                     }
 
-                    var vmdBoneName = GetVmdBoneNameFromBoneName(mltdBone.Path);
+                    var vmdBoneName = BoneUtils.GetVmdBoneNameFromBoneName(mltdBone.Path);
                     var boneFrame = new VmdBoneFrame(frameIndex, vmdBoneName);
 
                     boneFrame.Position = t;
@@ -497,25 +531,6 @@ namespace MillionDance.Core {
             var fovDeg = MathHelper.RadiansToDegrees(fovRad);
 
             return fovDeg;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GetVmdBoneNameFromBonePath([NotNull] string mltdBonePath) {
-            return GetBoneName(BoneUtils.BonePathMap, mltdBonePath);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GetVmdBoneNameFromBoneName([NotNull] string mltdBoneName) {
-            return GetBoneName(BoneUtils.BoneNameMap, mltdBoneName);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GetBoneName([NotNull] IReadOnlyDictionary<string, string> nameDict, [NotNull] string key) {
-            if (nameDict.ContainsKey(key)) {
-                return nameDict[key];
-            } else {
-                return $"Bone #{key.GetHashCode():x8}";
-            }
         }
 
         private static readonly IReadOnlyDictionary<string, string> BoneAttachmentMap = new Dictionary<string, string> {

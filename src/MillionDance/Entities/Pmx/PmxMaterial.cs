@@ -7,9 +7,9 @@ namespace MillionDance.Entities.Pmx {
         internal PmxMaterial() {
         }
 
-        public string Name { get; internal set; }
+        public string Name { get; internal set; } = string.Empty;
 
-        public string NameEnglish { get; internal set; }
+        public string NameEnglish { get; internal set; } = string.Empty;
 
         [NotNull]
         public string TextureFileName { get; internal set; } = string.Empty;

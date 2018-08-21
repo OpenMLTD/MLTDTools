@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using MillionDance.Entities.Mltd.Sway;
+using OpenTK;
 
 namespace MillionDance.Entities.Pmx {
     public sealed class PmxRigidBody : PmxBaseBody {
@@ -27,6 +28,8 @@ namespace MillionDance.Entities.Pmx {
         public float Friction { get; internal set; }
 
         public KineticMode KineticMode { get; internal set; }
+
+        internal CoordSystemPart Part { get; set; }
 
     }
 }

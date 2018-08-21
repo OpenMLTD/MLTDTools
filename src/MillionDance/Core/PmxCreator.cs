@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using MillionDance.Entities.Internal;
+using MillionDance.Entities.Mltd.Sway;
 using MillionDance.Entities.Pmx;
 using MillionDance.Entities.Pmx.Extensions;
 using MillionDance.Extensions;
@@ -18,9 +18,10 @@ using Vector3 = OpenTK.Vector3;
 using Vector4 = OpenTK.Vector4;
 
 namespace MillionDance.Core {
-    public sealed class PmxCreator {
+    public sealed partial class PmxCreator {
 
-        public PmxModel CreateFrom([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount, [NotNull] string texturePrefix) {
+        public PmxModel CreateFrom([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount, [NotNull] string texturePrefix,
+            [NotNull] SwayController bodySway, [NotNull] SwayController headSway) {
             var model = new PmxModel();
 
             model.Name = "ミリシタ モデル00";
@@ -40,7 +41,7 @@ namespace MillionDance.Core {
             if (ConversionConfig.Current.FixTdaBindingPose) {
                 if (ConversionConfig.Current.SkeletonFormat == SkeletonFormat.Mmd) {
                     if (ConversionConfig.Current.TranslateBoneNamesToMmd) {
-                        FixBonesAndVertices(bones, vertices);
+                        FixTdaBonesAndVertices(bones, vertices);
                     }
                 } else if (ConversionConfig.Current.SkeletonFormat == SkeletonFormat.Mltd) {
                 } else {
@@ -63,6 +64,10 @@ namespace MillionDance.Core {
              */
             var nodes = AddNodes(bones, emotionMorphs);
             model.Nodes = nodes;
+
+            if (ConversionConfig.Current.ImportPhysics) {
+                (model.RigidBodies, model.Joints) = Physics.ImportPhysics(bones, bodySway, headSway);
+            }
 
             return model;
         }
@@ -163,19 +168,7 @@ namespace MillionDance.Core {
                 var transform = combinedAvatar.AvatarSkeletonPose.Transforms[i];
                 var boneNode = hierachy[i];
 
-                string pmxBoneName;
-                var mltdBoneName = boneNode.Path;
-
-                if (ConversionConfig.Current.TranslateBoneNamesToMmd) {
-                    if (BoneUtils.BoneNameMap.ContainsKey(mltdBoneName)) {
-                        pmxBoneName = BoneUtils.BoneNameMap[mltdBoneName];
-                    } else {
-                        // Prevent the name exceeding max length (15 bytes)
-                        pmxBoneName = $"Bone #{mltdBoneName.GetHashCode():x8}";
-                    }
-                } else {
-                    pmxBoneName = mltdBoneName;
-                }
+                var pmxBoneName = BoneUtils.GetPmxBoneName(boneNode.Path);
 
                 bone.Name = pmxBoneName;
                 bone.NameEnglish = BoneUtils.TranslateBoneName(pmxBoneName);
@@ -206,14 +199,14 @@ namespace MillionDance.Core {
                 //bone.Level = boneNode.Level;
                 bone.Level = 0;
 
-                if (MovableBoneNames.Contains(mltdBoneName)) {
+                if (BoneUtils.IsBoneMovable(boneNode.Path)) {
                     bone.SetFlag(BoneFlags.Rotation | BoneFlags.Translation);
                 } else {
                     bone.SetFlag(BoneFlags.Rotation);
                 }
 
                 if (ConversionConfig.Current.HideUnityGeneratedBones) {
-                    if (IsNameGeneratedName(boneNode.Path)) {
+                    if (BoneUtils.IsNameGenerated(boneNode.Path)) {
                         bone.ClearFlag(BoneFlags.Visible);
                     }
                 }
@@ -606,10 +599,10 @@ namespace MillionDance.Core {
             return bones.ToArray();
         }
 
-        // Change T-pose to A-pose
-        private static void FixBonesAndVertices([NotNull, ItemNotNull] IReadOnlyList<PmxBone> bones, [NotNull, ItemNotNull] IReadOnlyList<PmxVertex> vertices) {
-            var defRotRight = Quaternion.FromEulerAngles(0, 0, MathHelper.DegreesToRadians(37.5f));
-            var defRotLeft = Quaternion.FromEulerAngles(0, 0, MathHelper.DegreesToRadians(-37.5f));
+        // Change standard T-pose to TDA T-pose
+        private static void FixTdaBonesAndVertices([NotNull, ItemNotNull] IReadOnlyList<PmxBone> bones, [NotNull, ItemNotNull] IReadOnlyList<PmxVertex> vertices) {
+            var defRotRight = Quaternion.FromEulerAngles(0, 0, MathHelper.DegreesToRadians(34.5f));
+            var defRotLeft = Quaternion.FromEulerAngles(0, 0, MathHelper.DegreesToRadians(-34.5f));
 
             var leftArm = bones.SingleOrDefault(b => b.Name == "左腕");
             var rightArm = bones.SingleOrDefault(b => b.Name == "右腕");
@@ -869,11 +862,11 @@ namespace MillionDance.Core {
         }
 
         [CanBeNull]
-        private static BoneNode GetDirectSingleChildOf([NotNull]   BoneNode b) {
+        private static BoneNode GetDirectSingleChildOf([NotNull] BoneNode b) {
             var l = new List<BoneNode>();
 
             foreach (var c in b.Children) {
-                var isGenerated = IsNameGeneratedName(c.Path);
+                var isGenerated = BoneUtils.IsNameGenerated(c.Path);
 
                 if (!isGenerated) {
                     l.Add(c);
@@ -886,28 +879,6 @@ namespace MillionDance.Core {
                 return null;
             }
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsNameGeneratedName([NotNull] string name) {
-            return CompilerGeneratedJointParts.Any(name.Contains);
-        }
-
-        [NotNull, ItemNotNull]
-        private static readonly ISet<string> MovableBoneNames = new HashSet<string> {
-            "",
-            "POSITION",
-            "MODEL_00",
-            "MODEL_00/BASE"
-        };
-
-        [NotNull, ItemNotNull]
-        private static readonly ISet<string> CompilerGeneratedJointParts = new HashSet<string> {
-            "__rot",
-            "__null",
-            "__const",
-            "__twist",
-            "__slerp"
-        };
 
     }
 }

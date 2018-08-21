@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using MillionDance.Core;
 using MillionDance.Entities.Mltd;
+using MillionDance.Entities.Mltd.Sway;
 using UnityStudio.Extensions;
 using UnityStudio.Models;
 using UnityStudio.Serialization;
@@ -13,7 +15,7 @@ namespace MillionDance {
     internal static class Program {
 
         private const bool WritePmx = true;
-        private const bool CreateVmd = true;
+        private const bool CreateVmd = false;
         private const bool WriteVmd = true;
 
         private static void Main() {
@@ -21,6 +23,7 @@ namespace MillionDance {
             var bodyMesh = LoadBodyMesh();
             var headAvatar = LoadHeadAvatar();
             var headMesh = LoadHeadMesh();
+            var (bodySway, headSway) = LoadSwayControllers();
 
             var combinedAvatar = CompositeAvatar.FromAvatars(bodyAvatar, headAvatar);
             var combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
@@ -35,7 +38,7 @@ namespace MillionDance {
 
             var pmxCreator = new PmxCreator();
 
-            var newPmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMesh.VertexCount, texPrefix);
+            var newPmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMesh.VertexCount, texPrefix, bodySway, headSway);
 
             if (WritePmx) {
                 using (var w = new PmxWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\" + AvatarName + "_gen.pmx", FileMode.Create, FileAccess.Write, FileShare.Write))) {
@@ -225,7 +228,7 @@ namespace MillionDance {
             return (dan, apa, apg);
         }
 
-        public static ScenarioObject LoadScenario() {
+        private static ScenarioObject LoadScenario() {
             ScenarioObject result = null;
 
             using (var fileStream = File.Open("Resources/scrobj_" + SongName + ".unity3d", FileMode.Open, FileAccess.Read, FileShare.Read)) {
@@ -253,6 +256,49 @@ namespace MillionDance {
             }
 
             return result;
+        }
+
+        private static (SwayController Body, SwayController Head) LoadSwayControllers() {
+            SwayController LoadSwayController(string filePath) {
+                SwayController result = null;
+
+                using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                    using (var bundle = new BundleFile(fileStream, false)) {
+                        foreach (var assetFile in bundle.AssetFiles) {
+                            foreach (var preloadData in assetFile.PreloadDataList) {
+                                if (preloadData.KnownType != KnownClassID.TextAsset) {
+                                    continue;
+                                }
+
+                                var textAsset = preloadData.LoadAsTextAsset(true);
+
+                                if (!textAsset.Name.EndsWith("_sway")) {
+                                    continue;
+                                }
+
+                                textAsset = preloadData.LoadAsTextAsset(false);
+
+                                var text = textAsset.GetString();
+
+                                Debug.Assert(!string.IsNullOrWhiteSpace(text));
+
+                                result = SwayController.Parse(text);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return result;
+            }
+
+            var body = LoadSwayController("Resources/cb_" + AvatarName + ".unity3d");
+            var head = LoadSwayController("Resources/ch_" + AvatarName + ".unity3d");
+
+            SwayController.FixSwayReferences(body, head);
+
+            return (Body: body, Head: head);
         }
 
         private const string AvatarName = "gs001_201xxx";

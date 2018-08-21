@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Core\ConversionConfig.cs" />
     <Compile Include="Core\MotionFormat.cs" />
+    <Compile Include="Core\PmxCreator.Physics.cs" />
     <Compile Include="Core\SkeletonFormat.cs" />
     <Compile Include="Core\VmdCreator.FacialExpressions.cs" />
     <Compile Include="Entities\Internal\CameraAnimation.cs" />
@@ -63,8 +64,19 @@
     <Compile Include="Entities\Mltd\EventScenarioData.cs" />
     <Compile Include="Entities\Mltd\ScenarioDataType.cs" />
     <Compile Include="Entities\Mltd\ScenarioObject.cs" />
+    <Compile Include="Entities\Mltd\Sway\CollidingAxis.cs" />
+    <Compile Include="Entities\Mltd\Sway\CoordSystemPart.cs" />
+    <Compile Include="Entities\Mltd\Sway\PlaneAxis.cs" />
+    <Compile Include="Entities\Mltd\Sway\RefParam.cs" />
+    <Compile Include="Entities\Mltd\Sway\SwayBase.cs" />
+    <Compile Include="Entities\Mltd\Sway\SwayBone.cs" />
+    <Compile Include="Entities\Mltd\Sway\SwayCollider.cs" />
+    <Compile Include="Entities\Mltd\Sway\ColliderType.cs" />
+    <Compile Include="Entities\Mltd\Sway\SwayController.cs" />
+    <Compile Include="Entities\Mltd\Sway\SwayManager.cs" />
     <Compile Include="Entities\Mltd\TexTargetName.cs" />
     <Compile Include="Entities\Mltd\VjParam.cs" />
+    <Compile Include="Entities\Pmx\Extensions\PmxPassGroupExtensions.cs" />
     <Compile Include="Utilities\EmptyArray.cs" />
     <Compile Include="Utilities\BoneUtils.cs" />
     <Compile Include="Core\ScalingConfig.cs" />

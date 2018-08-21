@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using MillionDance.Utilities;
 
 namespace MillionDance.Entities.Pmx {
     public sealed class PmxSoftBody : PmxBaseBody {
@@ -26,10 +27,10 @@ namespace MillionDance.Entities.Pmx {
         public SoftBodyMaterialConfig MaterialConfig { get; } = new SoftBodyMaterialConfig();
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<BodyAnchor> BodyAnchors { get; internal set; }
+        public IReadOnlyList<BodyAnchor> BodyAnchors { get; internal set; } = EmptyArray.Of<BodyAnchor>();
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<VertexPin> VertexPins { get; internal set; }
+        public IReadOnlyList<VertexPin> VertexPins { get; internal set; } = EmptyArray.Of<VertexPin>();
 
     }
 }

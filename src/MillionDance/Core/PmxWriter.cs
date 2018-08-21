@@ -511,13 +511,13 @@ namespace MillionDance.Core {
             _writer.WriteInt32AsVarLenInt(joint.BodyIndex1, RigidBodyElementSize);
             _writer.WriteInt32AsVarLenInt(joint.BodyIndex2, RigidBodyElementSize);
             _writer.Write(joint.Position);
-            _writer.Write(joint.RotationAngles);
-            _writer.Write(joint.LimitMoveLower);
-            _writer.Write(joint.LimitMoveUpper);
-            _writer.Write(joint.LimitAngleLower);
-            _writer.Write(joint.LimitAngleUpper);
-            _writer.Write(joint.SpConst_Move);
-            _writer.Write(joint.SpConst_Rotate);
+            _writer.Write(joint.Rotation);
+            _writer.Write(joint.LowerTranslationLimit);
+            _writer.Write(joint.UpperTranslationLimit);
+            _writer.Write(joint.LowerRotationLimit);
+            _writer.Write(joint.UpperRotationLimit);
+            _writer.Write(joint.TranslationSpringConstants);
+            _writer.Write(joint.RotationSpringConstants);
         }
 
         private void WritePmxSoftBody([NotNull] PmxSoftBody body) {

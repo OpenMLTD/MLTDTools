@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using MillionDance.Utilities;
 
 namespace MillionDance.Entities.Pmx {
     public sealed class PmxNode : IPmxNamedObject {
@@ -7,12 +8,12 @@ namespace MillionDance.Entities.Pmx {
         internal PmxNode() {
         }
 
-        public string Name { get; internal set; }
+        public string Name { get; internal set; } = string.Empty;
 
-        public string NameEnglish { get; internal set; }
+        public string NameEnglish { get; internal set; } = string.Empty;
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<NodeElement> Elements { get; internal set; }
+        public IReadOnlyList<NodeElement> Elements { get; internal set; } = EmptyArray.Of<NodeElement>();
 
         internal bool IsSystemNode { get; set; }
 

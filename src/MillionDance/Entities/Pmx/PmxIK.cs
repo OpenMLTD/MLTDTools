@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using MillionDance.Utilities;
 
 namespace MillionDance.Entities.Pmx {
     public sealed class PmxIK {
@@ -20,7 +21,7 @@ namespace MillionDance.Entities.Pmx {
         public float AngleLimit { get; internal set; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<IKLink> Links { get; internal set; }
+        public IReadOnlyList<IKLink> Links { get; internal set; } = EmptyArray.Of<IKLink>();
 
     }
 }

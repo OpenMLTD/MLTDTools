@@ -26,6 +26,8 @@
 
         public bool TranslateFacialExpressionNamesToMmd { get; private set; }
 
+        public bool ImportPhysics { get; private set; }
+
         // VMD
 
         public bool Transform60FpsTo30Fps { get; private set; }
@@ -43,7 +45,8 @@
             HideUnityGeneratedBones = true,
             SkeletonFormat = SkeletonFormat.Mltd,
             TranslateFacialExpressionNamesToMmd = true,
-            Transform60FpsTo30Fps = false,
+            ImportPhysics = true,
+            Transform60FpsTo30Fps = true,
             ScaleToVmdSize = true
         };
 
@@ -58,6 +61,7 @@
             HideUnityGeneratedBones = true,
             SkeletonFormat = SkeletonFormat.Mmd,
             TranslateFacialExpressionNamesToMmd = true,
+            ImportPhysics = true,
             Transform60FpsTo30Fps = true,
             ScaleToVmdSize = true
         };

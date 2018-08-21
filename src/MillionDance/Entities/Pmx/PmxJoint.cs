@@ -6,9 +6,9 @@ namespace MillionDance.Entities.Pmx {
         internal PmxJoint() {
         }
 
-        public string Name { get; internal set; }
+        public string Name { get; internal set; } = string.Empty;
 
-        public string NameEnglish { get; internal set; }
+        public string NameEnglish { get; internal set; } = string.Empty;
 
         public JointKind Kind { get; internal set; }
 
@@ -18,19 +18,19 @@ namespace MillionDance.Entities.Pmx {
 
         public Vector3 Position { get; internal set; }
 
-        public Vector3 RotationAngles { get; internal set; }
+        public Vector3 Rotation { get; internal set; }
 
-        public Vector3 LimitMoveLower { get; internal set; }
+        public Vector3 LowerTranslationLimit { get; internal set; }
 
-        public Vector3 LimitMoveUpper { get; internal set; }
+        public Vector3 UpperTranslationLimit { get; internal set; }
 
-        public Vector3 LimitAngleLower { get; internal set; }
+        public Vector3 LowerRotationLimit { get; internal set; }
 
-        public Vector3 LimitAngleUpper { get; internal set; }
+        public Vector3 UpperRotationLimit { get; internal set; }
 
-        public Vector3 SpConst_Move { get; internal set; }
+        public Vector3 TranslationSpringConstants { get; internal set; }
 
-        public Vector3 SpConst_Rotate { get; internal set; }
+        public Vector3 RotationSpringConstants { get; internal set; }
 
     }
 }

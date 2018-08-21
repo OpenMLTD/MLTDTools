@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using MillionDance.Core;
 using MillionDance.Entities.Internal;
@@ -31,7 +32,7 @@ namespace MillionDance.Utilities {
                 string boneName;
 
                 if (kv.Key.Contains("BODY_SCALE/")) {
-                    boneName = kv.Key.Replace("BODY_SCALE/", string.Empty);
+                    boneName = kv.Key.Replace("BODY_SCALE/", String.Empty);
                 } else {
                     boneName = kv.Key;
                 }
@@ -172,6 +173,7 @@ namespace MillionDance.Utilities {
             return boneList;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TranslateBoneName([NotNull] string nameJp) {
             if (NameJpToEn.ContainsKey(nameJp)) {
                 return NameJpToEn[nameJp];
@@ -180,9 +182,102 @@ namespace MillionDance.Utilities {
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetPmxBoneName([NotNull] string mltdBoneName) {
+            return GetBoneNameFromDict(BoneNameMap, mltdBoneName);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetVmdBoneNameFromBonePath([NotNull] string mltdBonePath) {
+            return GetBoneNameFromDict(BonePathMap, mltdBonePath);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetVmdBoneNameFromBoneName([NotNull] string mltdBoneName) {
+            return GetBoneNameFromDict(BoneNameMap, mltdBoneName);
+        }
+
         public static IReadOnlyDictionary<string, string> BoneNameMap { get; }
 
         public static IReadOnlyDictionary<string, string> BonePathMap { get; }
+
+        private static string GetBoneNameFromDict([NotNull] IReadOnlyDictionary<string, string> dict, [NotNull] string mltdBoneName) {
+            string pmxBoneName;
+
+            if (ConversionConfig.Current.TranslateBoneNamesToMmd) {
+                if (dict.ContainsKey(mltdBoneName)) {
+                    pmxBoneName = dict[mltdBoneName];
+                } else {
+                    pmxBoneName = mltdBoneName.BreakLast('/');
+
+                    // Bone names in MLTD are always ASCII characters so we can simply use string length
+                    // instead of byte length.
+                    if (pmxBoneName.Length > 15) {
+                        // Prevent the name exceeding max length (15 bytes)
+                        pmxBoneName = $"Bone #{mltdBoneName.GetHashCode():x8}";
+                    }
+                }
+            } else {
+                pmxBoneName = mltdBoneName;
+            }
+
+            return pmxBoneName;
+        }
+
+        // e.g. "abc/def/ghi",'/' -> "ghi"
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string BreakLast([NotNull] this string str, char ch) {
+            var index = str.LastIndexOf(ch);
+
+            if (index < 0) {
+                return str;
+            }
+
+            if (index == str.Length - 1) {
+                throw new ArgumentException("The string must not end with the breaking character.");
+            }
+
+            return str.Substring(index + 1);
+        }
+
+        // e.g. "abc/def/ghi",'/' -> "ghi"
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string BreakFirst([NotNull] this string str, char ch) {
+            var index = str.LastIndexOf(ch);
+
+            if (index < 0) {
+                return str;
+            }
+
+            return str.Substring(0, index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNameGenerated([NotNull] string mltdBoneName) {
+            return CompilerGeneratedJointParts.Any(mltdBoneName.Contains);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsBoneMovable([NotNull] string mltdBoneName) {
+            return MovableBoneNames.Contains(mltdBoneName);
+        }
+
+        [NotNull, ItemNotNull]
+        private static readonly ISet<string> MovableBoneNames = new HashSet<string> {
+            "",
+            "POSITION",
+            "MODEL_00",
+            "MODEL_00/BASE"
+        };
+
+        [NotNull, ItemNotNull]
+        private static readonly ISet<string> CompilerGeneratedJointParts = new HashSet<string> {
+            "__rot",
+            "__null",
+            "__const",
+            "__twist",
+            "__slerp"
+        };
 
         private static readonly IReadOnlyDictionary<string, string> BonePathMapMltd = new Dictionary<string, string> {
             ["POSITION"] = "操作中心",

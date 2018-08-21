@@ -91,6 +91,8 @@ namespace MillionDance.Entities.Pmx {
 
         internal Quaternion AnimatedRotation { get; set; } = Quaternion.Identity;
 
+        internal bool IsMltdKeyBone { get; set; }
+
         private string GetSimpleDescription() {
             return $"Bone \"{Name}\" [{BoneIndex}] (Position: {CurrentPosition}; Rotation: {CurrentRotation})";
         }

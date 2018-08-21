@@ -46,7 +46,7 @@
             SkeletonFormat = SkeletonFormat.Mltd,
             TranslateFacialExpressionNamesToMmd = true,
             ImportPhysics = true,
-            Transform60FpsTo30Fps = true,
+            Transform60FpsTo30Fps = false,
             ScaleToVmdSize = true
         };
 

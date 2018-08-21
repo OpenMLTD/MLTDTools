@@ -57,6 +57,8 @@
     <Compile Include="Core\MotionFormat.cs" />
     <Compile Include="Core\PmxCreator.Physics.cs" />
     <Compile Include="Core\SkeletonFormat.cs" />
+    <Compile Include="Core\VmdCreator.BoneAnimation.cs" />
+    <Compile Include="Core\VmdCreator.Camera.cs" />
     <Compile Include="Core\VmdCreator.FacialExpressions.cs" />
     <Compile Include="Entities\Internal\CameraAnimation.cs" />
     <Compile Include="Entities\Internal\CameraFrame.cs" />

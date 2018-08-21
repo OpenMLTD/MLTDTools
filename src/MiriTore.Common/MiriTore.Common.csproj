@@ -49,7 +49,7 @@
     <Compile Include="EmptyArray.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="MathHelper.cs" />
+    <Compile Include="MathUtilities.cs" />
     <Compile Include="Mltd\Entities\ColorType.cs" />
     <Compile Include="Mltd\Entities\Course.cs" />
     <Compile Include="Mltd\Entities\FourLevelRank.cs" />

@@ -23,12 +23,16 @@
         /// 使用代码编辑器修改此方法的内容。
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnManifestFilterRegex = new System.Windows.Forms.Button();
             this.btnManifestReset = new System.Windows.Forms.Button();
             this.btnManifestFilterString = new System.Windows.Forms.Button();
             this.txtManifestFilter = new System.Windows.Forms.TextBox();
             this.lvwManifest = new System.Windows.Forms.ListView();
+            this.ctxMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ctxMenuDownloadSelectedAssets = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSelectManifestDatabase = new System.Windows.Forms.Button();
             this.txtManifestDatabasePath = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -40,9 +44,9 @@
             this.btnSelectCostumesDatabase = new System.Windows.Forms.Button();
             this.txtCostumesDatabasePath = new System.Windows.Forms.TextBox();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
-            this.btnManifestFilterRegex = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.ctxMenu.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
@@ -78,6 +82,16 @@
             this.tabPage1.Text = "Manifest";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // btnManifestFilterRegex
+            // 
+            this.btnManifestFilterRegex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnManifestFilterRegex.Location = new System.Drawing.Point(543, 319);
+            this.btnManifestFilterRegex.Name = "btnManifestFilterRegex";
+            this.btnManifestFilterRegex.Size = new System.Drawing.Size(70, 21);
+            this.btnManifestFilterRegex.TabIndex = 9;
+            this.btnManifestFilterRegex.Text = "Regex";
+            this.btnManifestFilterRegex.UseVisualStyleBackColor = true;
+            // 
             // btnManifestReset
             // 
             this.btnManifestReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -112,13 +126,28 @@
             this.lvwManifest.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwManifest.ContextMenuStrip = this.ctxMenu;
             this.lvwManifest.FullRowSelect = true;
+            this.lvwManifest.HideSelection = false;
             this.lvwManifest.Location = new System.Drawing.Point(5, 33);
             this.lvwManifest.Name = "lvwManifest";
             this.lvwManifest.Size = new System.Drawing.Size(684, 279);
             this.lvwManifest.TabIndex = 5;
             this.lvwManifest.UseCompatibleStateImageBehavior = false;
             this.lvwManifest.View = System.Windows.Forms.View.Details;
+            // 
+            // ctxMenu
+            // 
+            this.ctxMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxMenuDownloadSelectedAssets});
+            this.ctxMenu.Name = "ctxMenu";
+            this.ctxMenu.Size = new System.Drawing.Size(247, 26);
+            // 
+            // ctxMenuDownloadSelectedAssets
+            // 
+            this.ctxMenuDownloadSelectedAssets.Name = "ctxMenuDownloadSelectedAssets";
+            this.ctxMenuDownloadSelectedAssets.Size = new System.Drawing.Size(246, 22);
+            this.ctxMenuDownloadSelectedAssets.Text = "&Download Selected Asset(s)...";
             // 
             // btnSelectManifestDatabase
             // 
@@ -232,16 +261,6 @@
             this.txtCostumesDatabasePath.Size = new System.Drawing.Size(611, 21);
             this.txtCostumesDatabasePath.TabIndex = 3;
             // 
-            // btnManifestFilterRegex
-            // 
-            this.btnManifestFilterRegex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnManifestFilterRegex.Location = new System.Drawing.Point(543, 319);
-            this.btnManifestFilterRegex.Name = "btnManifestFilterRegex";
-            this.btnManifestFilterRegex.Size = new System.Drawing.Size(70, 21);
-            this.btnManifestFilterRegex.TabIndex = 9;
-            this.btnManifestFilterRegex.Text = "Regex";
-            this.btnManifestFilterRegex.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -254,6 +273,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.ctxMenu.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
@@ -282,6 +302,8 @@
         private System.Windows.Forms.TextBox txtManifestFilter;
         private System.Windows.Forms.Button btnManifestReset;
         private System.Windows.Forms.Button btnManifestFilterRegex;
+        private System.Windows.Forms.ContextMenuStrip ctxMenu;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuDownloadSelectedAssets;
     }
 }
 

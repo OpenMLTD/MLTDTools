@@ -103,7 +103,7 @@ namespace OpenMLTD.MiriTore {
         public static string GenerateRandomLowerCaseBytesHash(int bytesLength) {
             var bytes = new byte[bytesLength];
 
-            MathHelper.Random.NextBytes(bytes);
+            MathUtilities.Random.NextBytes(bytes);
 
             return string.Join(string.Empty, bytes.Select(b => b.ToString("x2")));
         }

@@ -38,7 +38,7 @@ namespace ManifestExport {
                     writer.WriteLine("Resource name: {0}", asset.ResourceName);
                     writer.WriteLine("Resource hash: {0}", asset.ContentHash);
                     writer.WriteLine("Remote name: {0}", asset.RemoteName);
-                    writer.WriteLine("File size: {0} ({1})", asset.Size, MathHelper.GetHumanReadableFileSize(asset.Size));
+                    writer.WriteLine("File size: {0} ({1})", asset.Size, MathUtilities.GetHumanReadableFileSize(asset.Size));
                 }
             }
         }

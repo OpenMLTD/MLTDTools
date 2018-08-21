@@ -51,6 +51,39 @@ namespace MltdInfoViewer {
             btnManifestFilterString.Click += BtnManifestFilter_Click;
             btnManifestReset.Click += BtnManifestReset_Click;
             btnManifestFilterRegex.Click += BtnManifestFilterRegex_Click;
+            ctxMenuDownloadSelectedAssets.Click += CtxMenuDownloadSelectedAssets_Click;
+        }
+
+        private void CtxMenuDownloadSelectedAssets_Click(object sender, EventArgs e) {
+            var selectedIndices = lvwManifest.SelectedIndices;
+            var selectedIndicesCount = selectedIndices.Count;
+
+            if (selectedIndicesCount <= 0) {
+                return;
+            }
+
+            var assetInfoList = new AssetInfo[selectedIndicesCount];
+
+            for (var i = 0; i < selectedIndices.Count; ++i) {
+                var hash = lvwManifest.Items[selectedIndices[i]].SubItems[2].Text;
+                AssetInfo assetInfo;
+
+                try {
+                    assetInfo = _assetInfoList.Assets.SingleOrDefault(ai => ai.ContentHash == hash);
+                } catch (InvalidOperationException) {
+                    MessageBox.Show($"This should not happen. There are more than one asset having the content hash {hash}.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    continue;
+                }
+
+                if (assetInfo == null) {
+                    MessageBox.Show($"This should not happen. There is no asset having the content hash {hash}.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    continue;
+                }
+
+                assetInfoList[i] = assetInfo;
+            }
+
+            FAssetDownload.ShowDownload(assetInfoList, this);
         }
 
         private void BtnManifestFilterRegex_Click(object sender, EventArgs e) {
@@ -86,7 +119,7 @@ namespace MltdInfoViewer {
                 var lvi = new ListViewItem(assetInfo.ResourceName);
                 lvi.SubItems.Add(assetInfo.RemoteName);
                 lvi.SubItems.Add(assetInfo.ContentHash);
-                var humanReadableSize = MathHelper.GetHumanReadableFileSize(assetInfo.Size);
+                var humanReadableSize = MathUtilities.GetHumanReadableFileSize(assetInfo.Size);
                 lvi.SubItems.Add(humanReadableSize);
 
                 listViewItems.Add(lvi);
@@ -110,7 +143,7 @@ namespace MltdInfoViewer {
                 var lvi = new ListViewItem(assetInfo.ResourceName);
                 lvi.SubItems.Add(assetInfo.RemoteName);
                 lvi.SubItems.Add(assetInfo.ContentHash);
-                var humanReadableSize = MathHelper.GetHumanReadableFileSize(assetInfo.Size);
+                var humanReadableSize = MathUtilities.GetHumanReadableFileSize(assetInfo.Size);
                 lvi.SubItems.Add(humanReadableSize);
                 listViewItems.Add(lvi);
             }
@@ -144,7 +177,7 @@ namespace MltdInfoViewer {
                 var lvi = new ListViewItem(assetInfo.ResourceName);
                 lvi.SubItems.Add(assetInfo.RemoteName);
                 lvi.SubItems.Add(assetInfo.ContentHash);
-                var humanReadableSize = MathHelper.GetHumanReadableFileSize(assetInfo.Size);
+                var humanReadableSize = MathUtilities.GetHumanReadableFileSize(assetInfo.Size);
                 lvi.SubItems.Add(humanReadableSize);
 
                 listViewItems.Add(lvi);

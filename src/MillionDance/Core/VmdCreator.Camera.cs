@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using MillionDance.Entities.Internal;
 using MillionDance.Entities.Mltd;
 using MillionDance.Entities.Vmd;
 using MillionDance.Extensions;
+using MillionDance.Utilities;
 using OpenTK;
 
 namespace MillionDance.Core {
@@ -57,27 +57,33 @@ namespace MillionDance.Core {
 
                 vmdFrame.Length = delta.Length;
 
-                var qy = -(float)Math.Atan2(delta.X, delta.Z);
-                var qx = (float)Math.Atan2(delta.Y, delta.Z);
-                var qz = 0f;
+                var lookAtMatrix = Matrix4.LookAt(pos, target, Vector3.UnitY);
+                var q = lookAtMatrix.ExtractRotation();
 
-                qx += MathHelper.DegreesToRadians(frame.AngleX);
-                qy += MathHelper.DegreesToRadians(frame.AngleY);
-                qz += MathHelper.DegreesToRadians(frame.AngleZ);
+                var rot = q.DecomposeRad();
 
-                if (qx < -MathHelper.PiOver2) {
-                    qx = qx + MathHelper.Pi;
-                } else if (qx > MathHelper.PiOver2) {
-                    qx = MathHelper.Pi - qx;
+                rot.Z = MathHelper.DegreesToRadians(frame.AngleZ);
+
+                rot.Y = MathHelper.Pi - rot.Y;
+
+                if (rot.Y < 0) {
+                    rot.Y += MathHelper.TwoPi;
                 }
 
-                if (qz < -MathHelper.PiOver2) {
-                    qz = qz + MathHelper.Pi;
-                } else if (qz > MathHelper.PiOver2) {
-                    qz = MathHelper.Pi - qz;
+                if (delta.Z < 0) {
+                    rot.Y = -(MathHelper.Pi + rot.Y);
                 }
 
-                vmdFrame.Orientation = new Vector3(qx, qy, qz);
+                if (rot.X < -MathHelper.PiOver2) {
+                    rot.X = rot.X + MathHelper.Pi;
+                } else if (rot.X > MathHelper.PiOver2) {
+                    rot.X = -(MathHelper.Pi - rot.X);
+                }
+
+                rot.X = -rot.X;
+                rot.Y -= MathHelper.Pi;
+
+                vmdFrame.Orientation = rot;
 
                 // VMD does not have good support for animated FOV. So here just use a constant to avoid "jittering".
                 // The drawback is, some effects (like the first zooming cut in Shooting Stars) will not be able to achieve.

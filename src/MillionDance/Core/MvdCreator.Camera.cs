@@ -68,12 +68,12 @@ namespace MillionDance.Core {
                         target = target * ScalingConfig.ScaleUnityToVmd;
                     }
 
-                    var lookAtMatrix = Matrix4.LookAt(pos, target, Vector3.UnitY);
-                    var q = lookAtMatrix.ExtractRotation();
-
                     var delta = target - pos;
 
                     mvdFrame.Distance = delta.Length;
+
+                    var lookAtMatrix = Matrix4.LookAt(pos, target, Vector3.UnitY);
+                    var q = lookAtMatrix.ExtractRotation();
 
                     var rot = q.DecomposeRad();
 

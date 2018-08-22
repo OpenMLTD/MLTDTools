@@ -15,8 +15,10 @@ namespace MillionDance {
     internal static class Program {
 
         private const bool WritePmx = true;
-        private const bool CreateVmd = false;
-        private const bool WriteVmd = true;
+        private const bool CreateDanceVmd = false;
+        private const bool WriteDanceVmd = false;
+        private const bool CreateCameraVmd = true;
+        private const bool WriteCameraVmd = true;
 
         private static void Main() {
             var bodyAvatar = LoadBodyAvatar();
@@ -41,28 +43,52 @@ namespace MillionDance {
             var newPmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMesh.VertexCount, texPrefix, bodySway, headSway);
 
             if (WritePmx) {
-                using (var w = new PmxWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\" + AvatarName + "_gen.pmx", FileMode.Create, FileAccess.Write, FileShare.Write))) {
+                var pmxFileName = $@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\mayu\{AvatarName}_gen.pmx";
+                using (var w = new PmxWriter(File.Open(pmxFileName, FileMode.Create, FileAccess.Write, FileShare.Write))) {
                     w.Write(newPmx);
                 }
             }
 
-            if (CreateVmd) {
+            if (CreateDanceVmd) {
                 var (dan, _, _) = LoadDance();
-                var cam = LoadCamera();
                 var scenario = LoadScenario();
 
                 var vmdCreator = new VmdCreator {
                     ProcessBoneFrames = true,
-                    ProcessCameraFrames = true,
+                    ProcessCameraFrames = false,
                     ProcessFacialFrames = true,
                     ProcessLightFrames = false
                 };
 
-                var vmd = vmdCreator.CreateFrom(dan, combinedAvatar, newPmx, cam, scenario, SongPosition);
+                var danceVmd = vmdCreator.CreateFrom(dan, combinedAvatar, newPmx, null, scenario, SongPosition);
 
-                if (WriteVmd) {
-                    using (var w = new VmdWriter(File.Open(@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\out_" + AvatarName + ".vmd", FileMode.Create, FileAccess.Write, FileShare.Write))) {
-                        w.Write(vmd);
+                if (WriteDanceVmd) {
+                    var danceVmdFileName = $@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\{SongName}_{SongPosition:00}-{AvatarName}.vmd";
+                    using (var w = new VmdWriter(File.Open(danceVmdFileName, FileMode.Create, FileAccess.Write, FileShare.Write))) {
+                        w.Write(danceVmd);
+                    }
+                }
+            }
+
+            if (CreateCameraVmd) {
+                var cam = LoadCamera();
+
+                var creator = new MvdCreator {
+                    ProcessBoneFrames = false,
+                    ProcessCameraFrames = true,
+                    ProcessFacialFrames = false,
+                    ProcessLightFrames = false
+                };
+
+                creator.ProcessBoneFrames = false;
+                creator.ProcessCameraFrames = true;
+
+                var cameraVmd = creator.CreateFrom(null, null, null, cam, null, SongPosition);
+
+                if (WriteCameraVmd) {
+                    var cameraVmdFileName = $@"C:\Users\MIC\Desktop\MikuMikuMoving64_v1275\te\{SongName}_cam.mvd";
+                    using (var w = new MvdWriter(File.Open(cameraVmdFileName, FileMode.Create, FileAccess.Write, FileShare.Write))) {
+                        w.Write(cameraVmd);
                     }
                 }
             }
@@ -302,8 +328,8 @@ namespace MillionDance {
         }
 
         private const string AvatarName = "gs001_201xxx";
-        private const string SongName = "hmt001";
-        private const int SongPosition = 1;
+        private const string SongName = "jiburi";
+        private const int SongPosition = 4;
 
     }
 }

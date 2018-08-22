@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using JetBrains.Annotations;
+using MillionDance.Entities.Mvd;
 using OpenTK;
 
 namespace MillionDance.Extensions {
@@ -29,6 +30,13 @@ namespace MillionDance.Extensions {
             writer.Write(quaternion.Y);
             writer.Write(quaternion.Z);
             writer.Write(quaternion.W);
+        }
+
+        public static void Write([NotNull] this BinaryWriter writer, [NotNull] InterpolationPair interpolation) {
+            writer.Write((byte)interpolation.PointA.X);
+            writer.Write((byte)interpolation.PointA.Y);
+            writer.Write((byte)interpolation.PointB.X);
+            writer.Write((byte)interpolation.PointB.Y);
         }
 
         public static void WriteInt32AsVarLenInt([NotNull] this BinaryWriter writer, int value, int size, bool unsignedUnderUInt16 = false) {

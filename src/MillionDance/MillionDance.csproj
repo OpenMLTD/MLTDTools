@@ -55,6 +55,9 @@
   <ItemGroup>
     <Compile Include="Core\ConversionConfig.cs" />
     <Compile Include="Core\MotionFormat.cs" />
+    <Compile Include="Core\MvdCreator.Camera.cs" />
+    <Compile Include="Core\MvdCreator.cs" />
+    <Compile Include="Core\MvdWriter.cs" />
     <Compile Include="Core\PmxCreator.Physics.cs" />
     <Compile Include="Core\SkeletonFormat.cs" />
     <Compile Include="Core\VmdCreator.BoneAnimation.cs" />
@@ -78,6 +81,16 @@
     <Compile Include="Entities\Mltd\Sway\SwayManager.cs" />
     <Compile Include="Entities\Mltd\TexTargetName.cs" />
     <Compile Include="Entities\Mltd\VjParam.cs" />
+    <Compile Include="Entities\Mvd\InterpolationPair.cs" />
+    <Compile Include="Entities\Mvd\MvdBaseFrame.cs" />
+    <Compile Include="Entities\Mvd\MvdBaseMotion.cs" />
+    <Compile Include="Entities\Mvd\MvdCameraFrame.cs" />
+    <Compile Include="Entities\Mvd\MvdCameraMotion.cs" />
+    <Compile Include="Entities\Mvd\MvdCameraObject.cs" />
+    <Compile Include="Entities\Mvd\MvdCameraPropertyFrame.cs" />
+    <Compile Include="Entities\Mvd\MvdModelObject.cs" />
+    <Compile Include="Entities\Mvd\MvdMotion.cs" />
+    <Compile Include="Entities\OpenTK\Vector2i.cs" />
     <Compile Include="Entities\Pmx\Extensions\PmxPassGroupExtensions.cs" />
     <Compile Include="Utilities\EmptyArray.cs" />
     <Compile Include="Utilities\BoneUtils.cs" />

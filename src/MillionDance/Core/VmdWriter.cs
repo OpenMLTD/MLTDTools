@@ -6,18 +6,21 @@ using MillionDance.Entities.Vmd;
 using MillionDance.Extensions;
 
 namespace MillionDance.Core {
-    public sealed class VmdWriter : IDisposable {
+    public sealed class VmdWriter : DisposableBase {
 
         public VmdWriter([NotNull] Stream stream) {
             _writer = new BinaryWriter(stream);
         }
 
-        public void Dispose() {
-            _writer?.Dispose();
-        }
-
         public void Write([NotNull] VmdMotion motion) {
             WriteMotion(motion);
+        }
+
+        protected override void Dispose(bool disposing) {
+            _writer?.Dispose();
+            _writer = null;
+
+            base.Dispose(disposing);
         }
 
         private void WriteMotion([NotNull] VmdMotion motion) {
@@ -149,7 +152,7 @@ namespace MillionDance.Core {
 
         private static readonly Encoding ShiftJisEncoding = Encoding.GetEncoding("Shift-JIS");
 
-        private readonly BinaryWriter _writer;
+        private BinaryWriter _writer;
 
     }
 }

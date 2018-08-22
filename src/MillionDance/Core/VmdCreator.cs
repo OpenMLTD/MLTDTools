@@ -20,7 +20,7 @@ namespace MillionDance.Core {
         public bool ProcessLightFrames { get; set; } = true;
 
         [NotNull]
-        public VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [NotNull] Avatar avatar, [NotNull] PmxModel mltdPmxModel,
+        public VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] Avatar avatar, [CanBeNull] PmxModel mltdPmxModel,
             [CanBeNull] CharacterImasMotionAsset cameraMotion,
             [CanBeNull] ScenarioObject scenarioObject, int songPosition) {
             IReadOnlyList<VmdBoneFrame> boneFrames;
@@ -28,7 +28,7 @@ namespace MillionDance.Core {
             IReadOnlyList<VmdFacialFrame> facialFrames;
             IReadOnlyList<VmdLightFrame> lightFrames;
 
-            if (ProcessBoneFrames && bodyMotion != null) {
+            if (ProcessBoneFrames && (bodyMotion != null && avatar != null && mltdPmxModel != null)) {
                 boneFrames = CreateBoneFrames(bodyMotion, avatar, mltdPmxModel);
             } else {
                 boneFrames = EmptyArray.Of<VmdBoneFrame>();

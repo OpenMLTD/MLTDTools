@@ -129,7 +129,7 @@ namespace MillionDance.Core {
                                 var offset = MapTranslation(collider.Offset, part, collider.Axis);
 
                                 if (ConversionConfig.Current.ScaleToPmxSize) {
-                                    offset = offset * ScalingConfig.ScaleUnityToMmd;
+                                    offset = offset * ScalingConfig.ScaleUnityToPmx;
                                 }
 
                                 body.Position = correspondingBone.InitialPosition + offset;
@@ -144,7 +144,7 @@ namespace MillionDance.Core {
                     }
 
                     if (ConversionConfig.Current.ScaleToPmxSize) {
-                        body.BoundingBoxSize = body.BoundingBoxSize * ScalingConfig.ScaleUnityToMmd;
+                        body.BoundingBoxSize = body.BoundingBoxSize * ScalingConfig.ScaleUnityToPmx;
                     }
 
                     bodies.Add(body);
@@ -268,7 +268,7 @@ namespace MillionDance.Core {
                     }
 
                     if (ConversionConfig.Current.ScaleToPmxSize) {
-                        body.BoundingBoxSize = body.BoundingBoxSize * ScalingConfig.ScaleUnityToMmd;
+                        body.BoundingBoxSize = body.BoundingBoxSize * ScalingConfig.ScaleUnityToPmx;
                     }
 
                     bodies.Add(body);
@@ -391,7 +391,7 @@ namespace MillionDance.Core {
                     }
 
                     if (ConversionConfig.Current.ScaleToPmxSize) {
-                        body.BoundingBoxSize = body.BoundingBoxSize * ScalingConfig.ScaleUnityToMmd;
+                        body.BoundingBoxSize = body.BoundingBoxSize * ScalingConfig.ScaleUnityToPmx;
                     }
 
                     bodies.Add(body);

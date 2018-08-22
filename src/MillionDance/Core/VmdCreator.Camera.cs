@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using MillionDance.Entities.Internal;
 using MillionDance.Entities.Mltd;
@@ -41,7 +40,7 @@ namespace MillionDance.Core {
                 pos = pos.FixUnityToOpenTK();
 
                 if (ConversionConfig.Current.ScaleToVmdSize) {
-                    pos = pos * ScalingConfig.ScaleUnityToMmd;
+                    pos = pos * ScalingConfig.ScaleUnityToVmd;
                 }
 
                 vmdFrame.Position = pos;
@@ -51,7 +50,7 @@ namespace MillionDance.Core {
                 target = target.FixUnityToOpenTK();
 
                 if (ConversionConfig.Current.ScaleToVmdSize) {
-                    target = target * ScalingConfig.ScaleUnityToMmd;
+                    target = target * ScalingConfig.ScaleUnityToVmd;
                 }
 
                 var delta = target - pos;
@@ -92,17 +91,6 @@ namespace MillionDance.Core {
             }
 
             return cameraFrameList;
-        }
-
-        // https://photo.stackexchange.com/questions/41273/how-to-calculate-the-fov-in-degrees-from-focal-length-or-distance
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float FocalLengthToFov(float focalLength) {
-            // By experiments, MLTD seems to use a 15mm or 16mm camera.
-            const float sensorSize = 15; // unit: mm, as the unit of MLTD camera frame is also mm
-            var fovRad = 2 * (float)Math.Atan((sensorSize / 2) / focalLength);
-            var fovDeg = MathHelper.RadiansToDegrees(fovRad);
-
-            return fovDeg;
         }
 
     }

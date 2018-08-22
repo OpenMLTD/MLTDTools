@@ -62,7 +62,7 @@ namespace MillionDance.Utilities {
 
                 var initialPose = avatar.AvatarSkeletonPose.Transforms[boneIndex];
 
-                var t = initialPose.Translation.ToOpenTK() * ScalingConfig.ScaleUnityToMmd;
+                var t = initialPose.Translation.ToOpenTK() * ScalingConfig.ScaleUnityToPmx;
                 var q = initialPose.Rotation.ToOpenTK();
 
                 var bone = new BoneNode(parent, i, bonePath, t, q);

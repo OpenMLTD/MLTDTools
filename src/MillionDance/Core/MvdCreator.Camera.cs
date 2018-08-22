@@ -5,6 +5,7 @@ using MillionDance.Entities.Internal;
 using MillionDance.Entities.Mltd;
 using MillionDance.Entities.Mvd;
 using MillionDance.Extensions;
+using MillionDance.Utilities;
 using OpenTK;
 
 namespace MillionDance.Core {
@@ -12,7 +13,6 @@ namespace MillionDance.Core {
 
         [NotNull, ItemNotNull]
         private static IReadOnlyList<MvdCameraMotion> CreateCameraMotions([NotNull] CharacterImasMotionAsset cameraMotion) {
-            const string modelName = "MODEL_00";
             const string cameraName = "カメラ00"; // Localization error (Mr. mogg, please!), MUST NOT USE "Camera00"!
 
             MvdCameraObject CreateCamera() {
@@ -55,7 +55,7 @@ namespace MillionDance.Core {
                     pos = pos.FixUnityToOpenTK();
 
                     if (ConversionConfig.Current.ScaleToVmdSize) {
-                        pos = pos * ScalingConfig.ScaleUnityToMmd;
+                        pos = pos * ScalingConfig.ScaleUnityToVmd;
                     }
 
                     mvdFrame.Position = pos;
@@ -65,37 +65,41 @@ namespace MillionDance.Core {
                     target = target.FixUnityToOpenTK();
 
                     if (ConversionConfig.Current.ScaleToVmdSize) {
-                        target = target * ScalingConfig.ScaleUnityToMmd;
+                        target = target * ScalingConfig.ScaleUnityToVmd;
                     }
+
+                    var lookAtMatrix = Matrix4.LookAt(pos, target, Vector3.UnitY);
+                    var q = lookAtMatrix.ExtractRotation();
 
                     var delta = target - pos;
 
                     mvdFrame.Distance = delta.Length;
 
-                    var qy = MathHelper.Pi - (float)Math.Atan2(delta.X, delta.Z);
-                    var qx = -(float)Math.Atan2(delta.Y, delta.Z);
-                    var qz = 0f;
+                    var rot = q.DecomposeRad();
 
-                    qx += MathHelper.DegreesToRadians(frame.AngleX);
-                    qy += MathHelper.DegreesToRadians(frame.AngleY);
-                    qz += MathHelper.DegreesToRadians(frame.AngleZ);
+                    rot.Z = MathHelper.DegreesToRadians(frame.AngleZ);
 
-                    if (qx < -MathHelper.PiOver2) {
-                        qx = qx + MathHelper.Pi;
-                    } else if (qx > MathHelper.PiOver2) {
-                        qx = MathHelper.Pi - qx;
+                    rot.Y = MathHelper.Pi - rot.Y;
+
+                    if (rot.Y < 0) {
+                        rot.Y += MathHelper.TwoPi;
                     }
 
-                    if (qz < -MathHelper.PiOver2) {
-                        qz = qz + MathHelper.Pi;
-                    } else if (qz > MathHelper.PiOver2) {
-                        qz = MathHelper.Pi - qz;
+                    if (delta.Z < 0) {
+                        rot.Y = -(MathHelper.Pi + rot.Y);
                     }
 
-                    mvdFrame.Rotation = new Vector3(qx, qy, qz);
+                    rot.Z = -rot.Z;
 
-                    // VMD does not have good support for animated FOV. So here just use a constant to avoid "jittering".
-                    // The drawback is, some effects (like the first zooming cut in Shooting Stars) will not be able to achieve.
+                    if (rot.X < -MathHelper.PiOver2) {
+                        rot.X = rot.X + MathHelper.Pi;
+                    } else if (rot.X > MathHelper.PiOver2) {
+                        rot.X = -(MathHelper.Pi - rot.X);
+                    }
+
+                    mvdFrame.Rotation = rot;
+
+                    // MVD has good support of dynamic FOV. So here we can animate its value.
                     var fov = FocalLengthToFov(frame.FocalLength);
                     mvdFrame.FieldOfView = MathHelper.DegreesToRadians(fov);
 
@@ -128,7 +132,7 @@ namespace MillionDance.Core {
             // https://photo.stackexchange.com/questions/41273/how-to-calculate-the-fov-in-degrees-from-focal-length-or-distance
             float FocalLengthToFov(float focalLength) {
                 // By experiments, MLTD seems to use a 15mm or 16mm camera.
-                const float sensorSize = 15; // unit: mm, as the unit of MLTD camera frame is also mm
+                const float sensorSize = 12; // unit: mm, as the unit of MLTD camera frame is also mm
                 var fovRad = 2 * (float)Math.Atan((sensorSize / 2) / focalLength);
                 var fovDeg = MathHelper.RadiansToDegrees(fovRad);
 

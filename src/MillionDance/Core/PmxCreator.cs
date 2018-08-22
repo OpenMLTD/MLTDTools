@@ -87,7 +87,7 @@ namespace MillionDance.Core {
                 vertex.Position = position.ToOpenTK().FixUnityToOpenTK();
 
                 if (ConversionConfig.Current.ScaleToPmxSize) {
-                    vertex.Position = vertex.Position * ScalingConfig.ScaleUnityToMmd;
+                    vertex.Position = vertex.Position * ScalingConfig.ScaleUnityToPmx;
                 }
 
                 vertex.Normal = normal.ToOpenTK().FixUnityToOpenTK();
@@ -710,7 +710,7 @@ namespace MillionDance.Core {
                         var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
 
                         if (ConversionConfig.Current.ScaleToPmxSize) {
-                            offset = offset * ScalingConfig.ScaleUnityToMmd;
+                            offset = offset * ScalingConfig.ScaleUnityToPmx;
                         }
 
                         m.Index = (int)v.Index;
@@ -768,7 +768,7 @@ namespace MillionDance.Core {
                                 var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
 
                                 if (ConversionConfig.Current.ScaleToPmxSize) {
-                                    offset = offset * ScalingConfig.ScaleUnityToMmd;
+                                    offset = offset * ScalingConfig.ScaleUnityToPmx;
                                 }
 
                                 m.Index = (int)v.Index;

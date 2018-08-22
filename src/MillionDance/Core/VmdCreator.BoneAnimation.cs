@@ -111,7 +111,7 @@ namespace MillionDance.Core {
                         t = t.FixUnityToOpenTK();
 
                         if (ConversionConfig.Current.ScaleToVmdSize) {
-                            t = t * ScalingConfig.ScaleUnityToMmd;
+                            t = t * ScalingConfig.ScaleUnityToPmx;
                         }
 
                         targetBone.LocalPosition = t;

@@ -130,6 +130,7 @@ namespace MltdInfoViewer {
             btnAbort.Enabled = true;
 
             ShowProgress(_downloadedAssetCount, _assetInfoList.Count);
+            ShowProgress(true);
 
             var wc = new WebClient();
 
@@ -208,6 +209,7 @@ namespace MltdInfoViewer {
                 var readableTotalSize = MathUtilities.GetHumanReadableFileSize(assetTotalSize);
 
                 lblEntryStats.Text = $"{_assetInfoList.Count} asset(s) / {readableTotalSize}";
+                lblEntryStats.Visible = true;
             }
 
             pgbProgress.Maximum = _assetInfoList.Count;

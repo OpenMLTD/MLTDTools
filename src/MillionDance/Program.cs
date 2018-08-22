@@ -94,7 +94,7 @@ namespace MillionDance {
             }
         }
 
-        public static Mesh LoadBodyMesh() {
+        private static Mesh LoadBodyMesh() {
             Mesh mesh = null;
 
             using (var fileStream = File.Open("Resources/cb_" + AvatarName + ".unity3d", FileMode.Open, FileAccess.Read, FileShare.Read)) {
@@ -136,7 +136,7 @@ namespace MillionDance {
             return avatar;
         }
 
-        public static Mesh LoadHeadMesh() {
+        private static Mesh LoadHeadMesh() {
             var meshList = new List<Mesh>();
 
             using (var fileStream = File.Open("Resources/ch_" + AvatarName + ".unity3d", FileMode.Open, FileAccess.Read, FileShare.Read)) {
@@ -329,7 +329,7 @@ namespace MillionDance {
 
         private const string AvatarName = "gs001_201xxx";
         private const string SongName = "jiburi";
-        private const int SongPosition = 4;
+        private const int SongPosition = 1;
 
     }
 }

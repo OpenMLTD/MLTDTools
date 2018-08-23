@@ -17,8 +17,8 @@ namespace MillionDance {
         private const bool WritePmx = true;
         private const bool CreateDanceVmd = false;
         private const bool WriteDanceVmd = false;
-        private const bool CreateCameraVmd = true;
-        private const bool WriteCameraVmd = true;
+        private const bool CreateCameraVmd = false;
+        private const bool WriteCameraVmd = false;
 
         private static void Main() {
             var bodyAvatar = LoadBodyAvatar();
@@ -329,7 +329,7 @@ namespace MillionDance {
 
         private const string AvatarName = "gs001_201xxx";
         private const string SongName = "jiburi";
-        private const int SongPosition = 1;
+        private const int SongPosition = 1; // 1..5
 
     }
 }

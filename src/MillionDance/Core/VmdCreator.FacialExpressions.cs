@@ -128,7 +128,7 @@ namespace MillionDance.Core {
 
             // Facial expression
             {
-                var expControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression).ToArray();
+                var expControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == songPosition - 1).ToArray();
 
                 Debug.Assert(expControls.Length > 0);
 
@@ -138,7 +138,6 @@ namespace MillionDance.Core {
                     var currentTime = (float)exp.AbsoluteTime;
 
                     const float eyeBlinkTime = 0.1f;
-                    const float faceTransitionTime = 0.1333333f;
 
                     var eyesClosedRatio = exp.EyeClosed ? 1.0f : 0.0f;
 
@@ -152,35 +151,46 @@ namespace MillionDance.Core {
                         }
                     }
 
-                    var expressionKey = (FacialExpression)exp.Param;
+                    do {
+                        var expressionKey = (FacialExpression)exp.Param;
 
-                    if (FacialExpressionTable.ContainsKey(expressionKey)) {
+                        if (!FacialExpressionTable.ContainsKey(expressionKey)) {
+                            Debug.Print("Warning: facial expression key {0} not found, using default emotion instead.", exp.Param);
+
+                            expressionKey = FacialExpression.Default;
+                        }
+
+                        const float faceTransitionTime = 0.1333333f;
+
                         foreach (var kv in FacialExpressionTable[expressionKey]) {
                             if ((kv.Key != "E_metoji_r" && kv.Key != "E_metoji_l")) {
                                 facialFrameList.Add(CreateFacialFrame(currentTime, kv.Key, kv.Value));
                             }
                         }
-                    } else {
-                        Debug.Print("Warning: facial expression key not found: {0}", exp.Param);
-                    }
 
-                    if (i > 0) {
-                        if (expControls[i - 1].Param != exp.Param) {
-                            var lastExpressionKey = (FacialExpression)expControls[i - 1].Param;
+                        if (i > 0) {
+                            if (expControls[i - 1].Param != exp.Param) {
+                                var lastExpressionKey = (FacialExpression)expControls[i - 1].Param;
 
-                            if (FacialExpressionTable.ContainsKey(lastExpressionKey)) {
+                                if (!FacialExpressionTable.ContainsKey(lastExpressionKey)) {
+                                    Debug.Print("Warning: facial expression key {0} not found, using default emotion instead.", expControls[i - 1].Param);
+
+                                    lastExpressionKey = FacialExpression.Default;
+                                }
+
+                                var expectedTransitionStartTime = currentTime - faceTransitionTime;
+
                                 foreach (var kv in FacialExpressionTable[lastExpressionKey]) {
                                     // TODO: Actually we should do a more thorough analysis, because in this time window the eye CAN be opened again so we actually need these values.
                                     // But whatever. This case is rare. Fix it in the future.
                                     if ((kv.Key != "E_metoji_r" && kv.Key != "E_metoji_l")) {
-                                        facialFrameList.Add(CreateFacialFrame(currentTime - faceTransitionTime, kv.Key, kv.Value));
+                                        facialFrameList.Add(CreateFacialFrame(expectedTransitionStartTime, kv.Key, kv.Value));
                                     }
                                 }
-                            } else {
-                                Debug.Print("Warning: facial expression key not found: {0}", expControls[i - 1].Param);
+
                             }
                         }
-                    }
+                    } while (false);
                 }
             }
 
@@ -192,7 +202,8 @@ namespace MillionDance.Core {
             Default = 0,
             VeryMildSmile = 1,
             StaringFarAway = 3,
-            Happy = 5
+            Happy = 5,
+            RightEyeWink = 26 // Used in 自分REST@RT, the famous wink
 
         }
 
@@ -306,6 +317,34 @@ namespace MillionDance.Core {
                 ["E_metoji_l"] = 0,
                 ["E_wink_r"] = 1.0f,
                 ["E_wink_l"] = 1.0f,
+                ["E_open_r"] = 0,
+                ["E_open_l"] = 0,
+                ["EL_wide"] = 0,
+                ["EL_up"] = 0,
+            },
+            [FacialExpression.RightEyeWink] = new Dictionary<string, float> {
+                ["M_egao"] = 0,
+                ["M_shinken"] = 0,
+                ["M_wide"] = 0,
+                ["M_up"] = 0,
+                ["M_n2"] = 0,
+                ["M_down"] = 0,
+                ["M_odoroki"] = 0,
+                ["M_narrow"] = 0,
+                ["B_v_r"] = 0,
+                ["B_v_l"] = 0,
+                ["B_hati_r"] = 0,
+                ["B_hati_l"] = 0,
+                ["B_agari_r"] = 0,
+                ["B_agari_l"] = 0,
+                ["B_odoroki_r"] = 0,
+                ["B_odoroki_l"] = 0,
+                ["B_down"] = 0,
+                ["B_yori"] = 0,
+                ["E_metoji_r"] = 0,
+                ["E_metoji_l"] = 0,
+                ["E_wink_r"] = 1,
+                ["E_wink_l"] = 0,
                 ["E_open_r"] = 0,
                 ["E_open_l"] = 0,
                 ["EL_wide"] = 0,

@@ -1,17 +1,36 @@
-﻿namespace MillionDance.Core {
+﻿using System.Runtime.CompilerServices;
+
+namespace MillionDance.Core {
     internal static class ScalingConfig {
 
         // Character height, in meters.
         // Setting this value to character's real height can affect how tall the exported model is. Useful for height comparison. XD
-        public const float CharacterHeight = 1.58f;
+        public static float CharacterHeight { get; } = 1.58f;
 
-        public const float ScalePmxToUnity = 0.08f / (CharacterHeight / StandardCharacterHeight);
-        public const float ScaleUnityToPmx = 1 / ScalePmxToUnity;
+        public static float ScalePmxToUnity {
+            get {
+                if (ConversionConfig.Current.ApplyPmxCharacterHeight) {
+                    return DefaultScaleMmdToUnity / (CharacterHeight / StandardCharacterHeight);
+                } else {
+                    return DefaultScaleMmdToUnity;
+                }
+            }
+        }
 
-        public const float ScaleVmdToUnity = 0.08f;
-        public const float ScaleUnityToVmd = 1 / ScaleVmdToUnity;
+        public static float ScaleUnityToPmx {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => 1 / ScalePmxToUnity;
+        }
+
+        public static float ScaleVmdToUnity { get; } = DefaultScaleMmdToUnity;
+
+        public static float ScaleUnityToVmd {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => 1 / ScaleVmdToUnity;
+        }
 
         private const float StandardCharacterHeight = 1.6f;
+        private const float DefaultScaleMmdToUnity = 0.08f;
 
     }
 }

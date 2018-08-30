@@ -10,6 +10,8 @@
 
         public bool ScaleToPmxSize { get; private set; }
 
+        public bool ApplyPmxCharacterHeight { get; private set; }
+
         public bool TranslateBoneNamesToMmd { get; private set; }
 
         public bool AppendIKBones { get; private set; }
@@ -37,6 +39,7 @@
         private static readonly ConversionConfig UseMltdMotion = new ConversionConfig {
             MotionFormat = MotionFormat.Mltd,
             ScaleToPmxSize = true,
+            ApplyPmxCharacterHeight = true,
             TranslateBoneNamesToMmd = true,
             AppendIKBones = false,
             FixMmdCenterBones = false,
@@ -53,6 +56,7 @@
         private static readonly ConversionConfig UseMmdMotion = new ConversionConfig {
             MotionFormat = MotionFormat.Mmd,
             ScaleToPmxSize = true,
+            ApplyPmxCharacterHeight = true,
             TranslateBoneNamesToMmd = true,
             AppendIKBones = true,
             FixMmdCenterBones = true,

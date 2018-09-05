@@ -36,7 +36,7 @@ WIP
 
 **MillionDance**
 
-WIP. Interop between MLTD motion and VMD.
+Exports models, character and camera motions to MMD equivalents. (alpha)
 
 **MLTD Dance Viewer**
 

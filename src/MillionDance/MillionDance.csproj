@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8A36E44E-4CF7-48A6-874C-FC770D02D874}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>MillionDance</RootNamespace>
     <AssemblyName>MillionDance</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -42,9 +42,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationHelper.cs" />
     <Compile Include="Core\ConversionConfig.cs" />
     <Compile Include="Core\MotionFormat.cs" />
     <Compile Include="Core\MvdCreator.Camera.cs" />
@@ -92,6 +95,16 @@
     <Compile Include="Entities\Mvd\MvdMotion.cs" />
     <Compile Include="Entities\OpenTK\Vector2i.cs" />
     <Compile Include="Entities\Pmx\Extensions\PmxPassGroupExtensions.cs" />
+    <Compile Include="FMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FMain.Designer.cs">
+      <DependentUpon>FMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FMain.Working.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ResourceLoader.cs" />
     <Compile Include="Utilities\EmptyArray.cs" />
     <Compile Include="Utilities\BoneUtils.cs" />
     <Compile Include="Core\ScalingConfig.cs" />
@@ -180,6 +193,10 @@
       <Name>UnityStudio</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="FMain.resx">
+      <DependentUpon>FMain.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

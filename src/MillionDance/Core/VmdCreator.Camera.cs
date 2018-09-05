@@ -11,7 +11,7 @@ namespace MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<VmdCameraFrame> CreateCameraFrames([NotNull] CharacterImasMotionAsset cameraMotion) {
+        private static IReadOnlyList<VmdCameraFrame> CreateCameraFrames([NotNull] CharacterImasMotionAsset cameraMotion, uint fixedFov) {
             var animation = CameraAnimation.CreateFrom(cameraMotion);
             var animationFrameCount = animation.CameraFrames.Count;
 
@@ -90,8 +90,7 @@ namespace MillionDance.Core {
                 //var fov = FocalLengthToFov(frame.FocalLength);
                 //vmdFrame.FieldOfView = (uint)fov;
 
-                const uint constFov = 20;
-                vmdFrame.FieldOfView = constFov;
+                vmdFrame.FieldOfView = fixedFov;
 
                 cameraFrameList.Add(vmdFrame);
             }

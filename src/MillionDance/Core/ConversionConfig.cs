@@ -1,40 +1,37 @@
 ﻿namespace MillionDance.Core {
     internal sealed class ConversionConfig {
 
-        private ConversionConfig() {
-        }
-
-        public MotionFormat MotionFormat { get; private set; }
+        public MotionFormat MotionFormat { get; internal set; }
 
         // PMX
 
-        public bool ScaleToPmxSize { get; private set; }
+        public bool ScaleToPmxSize { get; internal set; }
 
-        public bool ApplyPmxCharacterHeight { get; private set; }
+        public bool ApplyPmxCharacterHeight { get; internal set; }
 
-        public bool TranslateBoneNamesToMmd { get; private set; }
+        public bool TranslateBoneNamesToMmd { get; internal set; }
 
-        public bool AppendIKBones { get; private set; }
+        public bool AppendIKBones { get; internal set; }
 
-        public bool FixMmdCenterBones { get; private set; }
+        public bool FixMmdCenterBones { get; internal set; }
 
-        public bool FixTdaBindingPose { get; private set; }
+        public bool FixTdaBindingPose { get; internal set; }
 
-        public bool AppendEyeBones { get; private set; }
+        public bool AppendEyeBones { get; internal set; }
 
-        public bool HideUnityGeneratedBones { get; private set; }
+        public bool HideUnityGeneratedBones { get; internal set; }
 
-        public SkeletonFormat SkeletonFormat { get; private set; }
+        public SkeletonFormat SkeletonFormat { get; internal set; }
 
-        public bool TranslateFacialExpressionNamesToMmd { get; private set; }
+        public bool TranslateFacialExpressionNamesToMmd { get; internal set; }
 
-        public bool ImportPhysics { get; private set; }
+        public bool ImportPhysics { get; internal set; }
 
         // VMD
 
-        public bool Transform60FpsTo30Fps { get; private set; }
+        public bool Transform60FpsTo30Fps { get; internal set; }
 
-        public bool ScaleToVmdSize { get; private set; }
+        public bool ScaleToVmdSize { get; internal set; }
 
         private static readonly ConversionConfig UseMltdMotion = new ConversionConfig {
             MotionFormat = MotionFormat.Mltd,
@@ -70,7 +67,7 @@
             ScaleToVmdSize = true
         };
 
-        public static ConversionConfig Current { get; } = UseMltdMotion;
+        public static ConversionConfig Current { get; internal set; } = UseMltdMotion;
 
     }
 }

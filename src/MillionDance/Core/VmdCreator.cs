@@ -19,6 +19,8 @@ namespace MillionDance.Core {
 
         public bool ProcessLightFrames { get; set; } = true;
 
+        public uint FixedFov { get; set; } = 20;
+
         [NotNull]
         public VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] Avatar avatar, [CanBeNull] PmxModel mltdPmxModel,
             [CanBeNull] CharacterImasMotionAsset cameraMotion,
@@ -35,7 +37,7 @@ namespace MillionDance.Core {
             }
 
             if (ProcessCameraFrames && cameraMotion != null) {
-                cameraFrames = CreateCameraFrames(cameraMotion);
+                cameraFrames = CreateCameraFrames(cameraMotion, FixedFov);
             } else {
                 cameraFrames = EmptyArray.Of<VmdCameraFrame>();
             }

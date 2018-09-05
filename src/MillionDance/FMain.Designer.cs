@@ -591,9 +591,9 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(17, 45);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(125, 12);
+            this.label8.Size = new System.Drawing.Size(107, 12);
             this.label8.TabIndex = 9;
-            this.label8.Text = "Character animation:";
+            this.label8.Text = "Character motion:";
             // 
             // btnOutputModel
             // 

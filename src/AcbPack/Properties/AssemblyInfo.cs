@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("AcbPack")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("OpenMLTD")]
 [assembly: AssemblyProduct("AcbPack")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("Copyright © 2018 OpenMLTD")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

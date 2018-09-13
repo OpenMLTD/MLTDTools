@@ -1,7 +1,7 @@
 ﻿using DereTore.Exchange.Archive.ACB;
 using DereTore.Exchange.Archive.ACB.Serialization;
 
-namespace OpenMLTD.AcbPack.Mltd {
+namespace OpenMLTD.MLTDTools.Applications.AcbPack.Mltd {
     public sealed class SequenceTable : UtfRowBase {
 
         [UtfField(0, ColumnStorage.Constant)]

@@ -56,6 +56,9 @@
     <Compile Include="FAssetDownload.Designer.cs">
       <DependentUpon>FAssetDownload.cs</DependentUpon>
     </Compile>
+    <Compile Include="FolderBrowser2.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

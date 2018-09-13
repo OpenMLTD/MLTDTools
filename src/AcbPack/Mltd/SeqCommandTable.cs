@@ -1,6 +1,6 @@
 ﻿using DereTore.Exchange.Archive.ACB.Serialization;
 
-namespace OpenMLTD.AcbPack.Mltd {
+namespace OpenMLTD.MLTDTools.Applications.AcbPack.Mltd {
     [UtfTable("SequenceCommand")]
     public sealed class SeqCommandTable : UtfRowBase {
 

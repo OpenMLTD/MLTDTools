@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{20A50E38-1013-41C9-9FE9-3D390DACAB90}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>OpenMLTD.AcbPack</RootNamespace>
+    <RootNamespace>OpenMLTD.MLTDTools.Applications.AcbPack</RootNamespace>
     <AssemblyName>AcbPack</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

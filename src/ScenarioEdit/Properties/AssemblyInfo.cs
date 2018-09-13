@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ScenarioEdit")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("OpenMLTD")]
 [assembly: AssemblyProduct("ScenarioEdit")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("Copyright © 2018 OpenMLTD")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -2,9 +2,9 @@
 using System.IO;
 using DereTore.Exchange.Archive.ACB.Serialization;
 using DereTore.Exchange.Audio.HCA;
-using OpenMLTD.AcbPack.Mltd;
+using OpenMLTD.MLTDTools.Applications.AcbPack.Mltd;
 
-namespace OpenMLTD.AcbPack {
+namespace OpenMLTD.MLTDTools.Applications.AcbPack {
     internal static class Program {
 
         [STAThread]

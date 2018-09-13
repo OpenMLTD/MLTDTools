@@ -2,6 +2,16 @@
 
 Tools for [THE iDOLM@STER Million Live! Theater Days](https://millionlive.idolmaster.jp/theaterdays/) (MiriShita/ミリシタ). A sister project of [OpenCGSS/DereTore](https://github.com/OpenCGSS/DereTore).
 
+[![AppVeyor](https://img.shields.io/appveyor/ci/hozuki/mltdtools.svg)](https://ci.appveyor.com/project/hozuki/mltdtools)
+[![GitHub contributors](https://img.shields.io/github/contributors/OpenMLTD/MLTDTools.svg)](https://github.com/OpenMLTD/MLTDTools/graphs/contributors)
+[![Libraries.io for GitHub](https://img.shields.io/librariesio/github/OpenMLTD/MLTDTools.svg)](https://github.com/OpenMLTD/MLTDTools)
+[![Github All Releases](https://img.shields.io/github/downloads/OpenMLTD/MLTDTools/total.svg)](https://github.com/OpenMLTD/MLTDTools/releases)
+
+**Downloads:**
+
+- [Nightly build](https://ci.appveyor.com/api/projects/hozuki/mltdtools/artifacts/miritore-appveyor-x86.zip) (Windows)
+- [Releases](https://github.com/OpenMLTD/MLTDTools/releases)
+
 This repository:
 
 - contains some common tools to explore possibilities.

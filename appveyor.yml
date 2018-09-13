@@ -1,0 +1,48 @@
+# https://www.appveyor.com/docs/appveyor-yml/
+
+version: 0.1.0.{build}
+image: Visual Studio 2017
+platform:
+  - AnyCPU
+configuration:
+  - Release
+environment:
+  EnableNuGetPackageRestore: true
+  Release_Suffix: -alpha
+  NuGet_API_Key:
+    secure: izZ+2u3Vp3ykQNtVQqYtsmP4SoCO3vZ0gUp4zFCRsa0pBNgdkX354tc7VItMD5yh
+before_build:
+  - cmd: nuget update -self
+  - cmd: git submodule update --init --recursive
+  - cmd: npm install
+  - cmd: npm install -g marked
+  - ps: .\scripts\nuget_restore.ps1
+build_script:
+  - cmd: msbuild ./MLTDTools.sln /p:Configuration=Release /verbosity:minimal /p:nowarn="1574,1591"
+after_build:
+  - cmd: marked ./README.md -o ./README.html
+  - ps: .\scripts\pack_artifacts.ps1 -ZipName miritore.zip
+  - cmd: 7z a miritore.zip %APPVEYOR_BUILD_FOLDER%\README.html
+  #- cmd: 7z a miritore.zip -r docs\licenses\*
+  - cmd: copy miritore.zip miritore-appveyor-latest.zip
+  - cmd: copy miritore.zip miritore-appveyor-v%APPVEYOR_BUILD_VERSION%%RELEASE_SUFFIX%.zip
+test: off
+artifacts:
+  - path: miritore-appveyor-v%APPVEYOR_BUILD_VERSION%%RELEASE_SUFFIX%.zip
+    name: WithVersion
+  - path: miritore-appveyor-latest.zip
+    name: Static
+  - path: '*.nupkg'
+    name: 'NuGet Packages'
+deploy:
+  - provider: GitHub
+    description: MLTDTools
+    auth_token:
+      secure: u+MFjjY665AT4PHJ2bFMINBLnnnwSj1jLnNeFZoWfeYbomTNSPOmdahffmZa+dRH
+    artifact: /miritore.+\.zip/
+    draft: false
+    prerelease: true
+    on:
+      appveyor_repo_tag: true
+after_deploy:
+  #- cmd: node scripts\appveyor_deploy_nuget.js

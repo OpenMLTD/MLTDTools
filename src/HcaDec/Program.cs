@@ -29,7 +29,7 @@ namespace OpenMLTD.MLTDTools.Applications.HcaDec {
             }
 
             if (!succeeded) {
-                var helpText = CommandLine.Text.HelpText.AutoBuild(parsedResult);
+                var helpText = CommandLine.Text.HelpText.AutoBuild(parsedResult, null, null);
                 helpText.AddPreOptionsLine(" ");
                 helpText.AddPreOptionsLine("Usage: hcadec <input HCA> [options]");
                 Console.Error.WriteLine(helpText);

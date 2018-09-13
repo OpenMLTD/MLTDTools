@@ -18,7 +18,7 @@ before_build:
   - cmd: npm install -g marked
   - ps: .\scripts\nuget_restore.ps1
 build_script:
-  - cmd: msbuild ./MLTDTools.sln /p:Configuration=Release /verbosity:minimal /p:nowarn="1574,1591"
+  - cmd: msbuild ./src/MLTDTools.sln /p:Configuration=Release /verbosity:minimal /p:nowarn="1574,1591"
 after_build:
   - cmd: marked ./README.md -o ./README.html
   - ps: .\scripts\pack_artifacts.ps1 -ZipName miritore.zip

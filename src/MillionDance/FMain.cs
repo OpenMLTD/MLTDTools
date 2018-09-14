@@ -206,18 +206,18 @@ namespace MillionDance {
                 }
 
                 if (chkGenerateCharAnim.Checked) {
-                    if (!Regex.IsMatch(txtInputDance.Text, @"dan_[a-z]{3}\d{3}_0[12345]\.imo\.unity3d$", RegexOptions.CultureInvariant)) {
+                    if (!Regex.IsMatch(txtInputDance.Text, @"dan_[a-z0-9]{6}_0[12345]\.imo\.unity3d$", RegexOptions.CultureInvariant)) {
                         Alert($"File \"{txtInputDance.Text}\" does not look like a dance data file from the game.");
                         return false;
                     }
 
-                    if (!Regex.IsMatch(txtInputFacialExpression.Text, @"scrobj_[a-z]{3}\d{3}\.unity3d$", RegexOptions.CultureInvariant)) {
+                    if (!Regex.IsMatch(txtInputFacialExpression.Text, @"scrobj_[a-z0-9]{6}\.unity3d$", RegexOptions.CultureInvariant)) {
                         Alert($"File \"{txtInputFacialExpression.Text}\" does not look like a mixed data file from the game containing facial expressions.");
                         return false;
                     }
                 }
 
-                if (!Regex.IsMatch(txtInputCamera.Text, @"cam_[a-z]{3}\d{3}\.imo\.unity3d$", RegexOptions.CultureInvariant)) {
+                if (!Regex.IsMatch(txtInputCamera.Text, @"cam_[a-z0-9]{6}\.imo\.unity3d$", RegexOptions.CultureInvariant)) {
                     Alert($"File \"{txtInputCamera.Text}\" does not look like a camera data file from the game.");
                     return false;
                 }
@@ -403,7 +403,6 @@ namespace MillionDance {
         }
 
         private (string Result, bool OK) SelectSaveFile([NotNull] string filter) {
-            sfd.CheckFileExists = true;
             sfd.DereferenceLinks = true;
             sfd.FileName = string.Empty;
             sfd.Filter = filter;

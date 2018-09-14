@@ -40,6 +40,8 @@ namespace MillionDance {
 
             Debug.Assert(InvokeRequired);
 
+            Log("Worker started.");
+
             try {
                 var p = (InputParams)state;
 
@@ -198,7 +200,7 @@ namespace MillionDance {
 
             Log("Done.");
 
-            EnableMainControls(true);
+            Invoke(() => EnableMainControls(true));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

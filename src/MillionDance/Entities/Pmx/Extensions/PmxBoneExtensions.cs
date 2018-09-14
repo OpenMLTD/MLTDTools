@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using OpenTK;
 
-namespace MillionDance.Entities.Pmx.Extensions {
+namespace OpenMLTD.MillionDance.Entities.Pmx.Extensions {
     internal static class PmxBoneExtensions {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

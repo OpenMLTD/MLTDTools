@@ -4,10 +4,10 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using JetBrains.Annotations;
-using MillionDance.Entities.Mvd;
-using MillionDance.Extensions;
+using OpenMLTD.MillionDance.Entities.Mvd;
+using OpenMLTD.MillionDance.Extensions;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     public sealed class MvdWriter : DisposableBase {
 
         public MvdWriter([NotNull] Stream stream) {

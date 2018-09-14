@@ -1,7 +1,7 @@
-﻿using MillionDance.Entities.Mltd.Sway;
+﻿using OpenMLTD.MillionDance.Entities.Mltd.Sway;
 using OpenTK;
 
-namespace MillionDance.Entities.Pmx {
+namespace OpenMLTD.MillionDance.Entities.Pmx {
     public sealed class PmxRigidBody : PmxBaseBody {
 
         internal PmxRigidBody() {

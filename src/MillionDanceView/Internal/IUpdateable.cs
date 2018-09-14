@@ -1,4 +1,4 @@
-﻿namespace MillionDanceView.Internal {
+﻿namespace OpenMLTD.MillionDance.Viewer.Internal {
     internal interface IUpdateable {
 
         void Update();

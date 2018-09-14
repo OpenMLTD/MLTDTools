@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using OpenTK;
 
-namespace MillionDance.Entities.Mvd {
+namespace OpenMLTD.MillionDance.Entities.Mvd {
     public sealed class MvdCameraFrame : MvdBaseFrame {
 
         internal MvdCameraFrame(long frameNumber)

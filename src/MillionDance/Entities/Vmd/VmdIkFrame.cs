@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace MillionDance.Entities.Vmd {
+namespace OpenMLTD.MillionDance.Entities.Vmd {
     public sealed class VmdIkFrame : VmdBaseFrame {
 
         internal VmdIkFrame(int frameIndex, [NotNull, ItemNotNull] IReadOnlyList<IkControl> ikControls)

@@ -1,7 +1,7 @@
 ﻿using OpenTK;
 using UnityStudio.UnityEngine;
 
-namespace MillionDanceView.Extensions {
+namespace OpenMLTD.MillionDance.Viewer.Extensions {
     internal static class Matrix4x4Extensions {
 
         public static Matrix4 ToOpenTK(this Matrix4x4 m) {

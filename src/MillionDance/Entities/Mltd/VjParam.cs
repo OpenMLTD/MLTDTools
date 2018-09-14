@@ -1,7 +1,7 @@
 ﻿using UnityStudio.Serialization;
 using UnityStudio.Serialization.Naming;
 
-namespace MillionDance.Entities.Mltd {
+namespace OpenMLTD.MillionDance.Entities.Mltd {
     [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public sealed class VjParam {
 

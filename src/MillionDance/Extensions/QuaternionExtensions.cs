@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace MillionDance.Extensions {
+namespace OpenMLTD.MillionDance.Extensions {
     internal static class QuaternionExtensions {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

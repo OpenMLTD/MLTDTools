@@ -1,4 +1,4 @@
-﻿namespace MillionDance.Core {
+﻿namespace OpenMLTD.MillionDance.Core {
     internal enum SkeletonFormat {
 
         Mmd,

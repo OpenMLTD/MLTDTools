@@ -4,14 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
-using MillionDance.Core;
-using MillionDance.Entities.Internal;
-using MillionDance.Entities.Pmx;
-using MillionDance.Extensions;
+using OpenMLTD.MillionDance.Core;
+using OpenMLTD.MillionDance.Entities.Internal;
+using OpenMLTD.MillionDance.Entities.Pmx;
+using OpenMLTD.MillionDance.Extensions;
 using OpenTK;
 using UnityStudio.UnityEngine.Animation;
 
-namespace MillionDance.Utilities {
+namespace OpenMLTD.MillionDance.Utilities {
     internal static class BoneUtils {
 
         static BoneUtils() {

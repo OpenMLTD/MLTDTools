@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace MillionDance.Entities.Vmd {
+namespace OpenMLTD.MillionDance.Entities.Vmd {
     public sealed class IkControl {
 
         internal IkControl([NotNull] string name) {

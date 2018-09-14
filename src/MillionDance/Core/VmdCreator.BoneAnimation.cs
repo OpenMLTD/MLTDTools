@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using MillionDance.Entities.Internal;
-using MillionDance.Entities.Mltd;
-using MillionDance.Entities.Pmx;
-using MillionDance.Entities.Vmd;
-using MillionDance.Extensions;
-using MillionDance.Utilities;
+using OpenMLTD.MillionDance.Entities.Internal;
+using OpenMLTD.MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Entities.Pmx;
+using OpenMLTD.MillionDance.Entities.Vmd;
+using OpenMLTD.MillionDance.Extensions;
+using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 using UnityStudio.UnityEngine.Animation;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]

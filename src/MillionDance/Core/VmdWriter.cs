@@ -2,10 +2,10 @@
 using System.IO;
 using System.Text;
 using JetBrains.Annotations;
-using MillionDance.Entities.Vmd;
-using MillionDance.Extensions;
+using OpenMLTD.MillionDance.Entities.Vmd;
+using OpenMLTD.MillionDance.Extensions;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     public sealed class VmdWriter : DisposableBase {
 
         public VmdWriter([NotNull] Stream stream) {

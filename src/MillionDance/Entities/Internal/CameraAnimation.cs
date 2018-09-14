@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
-using MillionDance.Entities.Extensions;
-using MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Entities.Extensions;
+using OpenMLTD.MillionDance.Entities.Mltd;
 
-namespace MillionDance.Entities.Internal {
+namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class CameraAnimation {
 
         private CameraAnimation([NotNull, ItemNotNull] CameraFrame[] frames, float duration) {

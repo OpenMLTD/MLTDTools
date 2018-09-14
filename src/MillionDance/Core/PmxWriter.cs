@@ -6,12 +6,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using MillionDance.Entities.Pmx;
-using MillionDance.Entities.Pmx.Extensions;
-using MillionDance.Extensions;
+using OpenMLTD.MillionDance.Entities.Pmx;
+using OpenMLTD.MillionDance.Entities.Pmx.Extensions;
+using OpenMLTD.MillionDance.Extensions;
 using OpenTK;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     internal sealed class PmxWriter : DisposableBase {
 
         public PmxWriter([NotNull] Stream stream) {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
-using MillionDance.Extensions;
+using OpenMLTD.MillionDance.Extensions;
 using OpenTK;
 
-namespace MillionDance.Entities.Internal {
+namespace OpenMLTD.MillionDance.Entities.Internal {
     internal sealed class BoneNode {
 
         public BoneNode([CanBeNull] BoneNode parent, int index, [NotNull] string path, Vector3 initialPosition, Quaternion initialRotation) {

@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 
-namespace MillionDance.Entities.Vmd {
+namespace OpenMLTD.MillionDance.Entities.Vmd {
     public sealed class VmdLightFrame : VmdBaseFrame {
 
         internal VmdLightFrame(int frameIndex)

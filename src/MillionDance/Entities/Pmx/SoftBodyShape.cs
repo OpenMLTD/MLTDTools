@@ -1,4 +1,4 @@
-﻿namespace MillionDance.Entities.Pmx {
+﻿namespace OpenMLTD.MillionDance.Entities.Pmx {
     public enum SoftBodyShape {
 
         TriangleMesh = 0,

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace MillionDance.Entities.Internal {
+namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class KeyFrame {
 
         public KeyFrame(int frameIndex, [NotNull] string path) {

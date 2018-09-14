@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using JetBrains.Annotations;
-using MillionDance.Entities.Mltd;
-using MillionDanceView.Extensions;
-using MillionDanceView.Internal;
-using MillionDanceView.ObjectGL;
+using OpenMLTD.MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Viewer.Extensions;
+using OpenMLTD.MillionDance.Viewer.Internal;
+using OpenMLTD.MillionDance.Viewer.ObjectGL;
 using OpenTK.Graphics.OpenGL4;
 using UnityStudio.Extensions;
 using UnityStudio.Models;
@@ -15,7 +15,7 @@ using UnityStudio.UnityEngine;
 using UnityStudio.UnityEngine.Animation;
 using UnityStudio.Utilities;
 
-namespace MillionDanceView {
+namespace OpenMLTD.MillionDance.Viewer {
     internal static class ResHelper {
 
         [NotNull]

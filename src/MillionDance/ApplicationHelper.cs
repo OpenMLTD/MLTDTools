@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace MillionDance {
+namespace OpenMLTD.MillionDance {
     internal static class ApplicationHelper {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

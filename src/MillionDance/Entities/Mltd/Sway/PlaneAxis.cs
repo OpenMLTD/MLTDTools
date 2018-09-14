@@ -1,4 +1,4 @@
-﻿namespace MillionDance.Entities.Mltd.Sway {
+﻿namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
     public enum PlaneAxis {
 
         Invalid = 0,

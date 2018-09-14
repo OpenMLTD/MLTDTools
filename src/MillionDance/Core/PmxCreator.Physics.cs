@@ -4,13 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
-using MillionDance.Entities.Mltd.Sway;
-using MillionDance.Entities.Pmx;
-using MillionDance.Entities.Pmx.Extensions;
-using MillionDance.Utilities;
+using OpenMLTD.MillionDance.Entities.Mltd.Sway;
+using OpenMLTD.MillionDance.Entities.Pmx;
+using OpenMLTD.MillionDance.Entities.Pmx.Extensions;
+using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     partial class PmxCreator {
 
         private static class Physics {

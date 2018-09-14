@@ -4,11 +4,11 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using JetBrains.Annotations;
-using MillionDance.Core;
-using MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Core;
+using OpenMLTD.MillionDance.Entities.Mltd;
 using UnityStudio.Utilities;
 
-namespace MillionDance {
+namespace OpenMLTD.MillionDance {
     partial class FMain {
 
         private void DoWork(object state) {

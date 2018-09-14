@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Entities.Mltd;
 
-namespace MillionDance.Entities.Extensions {
+namespace OpenMLTD.MillionDance.Entities.Extensions {
     internal static class CurveExtension {
 
         public static PropertyType GetPropertyType([NotNull] this Curve curve) {

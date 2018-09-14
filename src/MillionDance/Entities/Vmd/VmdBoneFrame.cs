@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using OpenTK;
 
-namespace MillionDance.Entities.Vmd {
+namespace OpenMLTD.MillionDance.Entities.Vmd {
     public sealed class VmdBoneFrame : VmdBaseFrame {
 
         internal VmdBoneFrame(int frameIndex, [NotNull] string name)

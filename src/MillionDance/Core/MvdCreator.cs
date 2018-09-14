@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using MillionDance.Entities.Mltd;
-using MillionDance.Entities.Mvd;
-using MillionDance.Entities.Pmx;
-using MillionDance.Utilities;
+using OpenMLTD.MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Entities.Mvd;
+using OpenMLTD.MillionDance.Entities.Pmx;
+using OpenMLTD.MillionDance.Utilities;
 using UnityStudio.UnityEngine.Animation;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     public sealed partial class MvdCreator {
 
         public bool ProcessBoneFrames { get; set; } = true;

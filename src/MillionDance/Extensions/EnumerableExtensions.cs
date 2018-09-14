@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace MillionDance.Extensions {
+namespace OpenMLTD.MillionDance.Extensions {
     internal static class EnumerableExtensions {
 
         public static IEnumerable<(int Index, T Value)> Enumerate<T>([NotNull] this IEnumerable<T> e) {

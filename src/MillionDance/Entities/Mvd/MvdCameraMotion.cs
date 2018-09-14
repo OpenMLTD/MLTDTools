@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace MillionDance.Entities.Mvd {
+namespace OpenMLTD.MillionDance.Entities.Mvd {
     public sealed class MvdCameraMotion : MvdBaseMotion {
 
         internal MvdCameraMotion([NotNull] MvdCameraObject camera, [NotNull, ItemNotNull] IReadOnlyList<MvdCameraFrame> cameraFrames, [NotNull, ItemNotNull] IReadOnlyList<MvdCameraPropertyFrame> cameraPropertyFrames) {

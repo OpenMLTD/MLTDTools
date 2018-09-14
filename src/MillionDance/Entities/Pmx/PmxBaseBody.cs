@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace MillionDance.Entities.Pmx {
+namespace OpenMLTD.MillionDance.Entities.Pmx {
     public abstract class PmxBaseBody : IPmxNamedObject {
 
         protected PmxBaseBody() {

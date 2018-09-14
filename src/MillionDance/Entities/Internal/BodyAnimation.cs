@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using MillionDance.Entities.Extensions;
-using MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Entities.Extensions;
+using OpenMLTD.MillionDance.Entities.Mltd;
 
-namespace MillionDance.Entities.Internal {
+namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class BodyAnimation {
 
         private BodyAnimation([NotNull, ItemNotNull] IReadOnlyList<KeyFrame> keyFrames, float duration, int boneCount) {

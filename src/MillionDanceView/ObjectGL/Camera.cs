@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK;
 
-namespace MillionDanceView.ObjectGL {
+namespace OpenMLTD.MillionDance.Viewer.ObjectGL {
     public sealed class Camera {
 
         public Camera() {

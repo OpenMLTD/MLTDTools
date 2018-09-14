@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using OpenTK;
 
-namespace MillionDance.Entities.Pmx {
+namespace OpenMLTD.MillionDance.Entities.Pmx {
     public sealed class PmxBone : IPmxNamedObject {
 
         internal PmxBone() {

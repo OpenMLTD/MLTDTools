@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using MillionDanceView.ObjectGL;
-using MillionDanceView.Programs;
+using OpenMLTD.MillionDance.Viewer.ObjectGL;
+using OpenMLTD.MillionDance.Viewer.Programs;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using Vector3 = OpenTK.Vector3;
 
-namespace MillionDanceView.Internal {
+namespace OpenMLTD.MillionDance.Viewer.Internal {
     public sealed class BoneDebugger : DisposableBase, IUpdateable, IDrawable {
 
         public BoneDebugger([NotNull, ItemNotNull] IReadOnlyList<BoneNode> boneList, [NotNull] SimpleColor simpleColor) {

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace MillionDanceView.Extensions {
+namespace OpenMLTD.MillionDance.Viewer.Extensions {
     internal static class ArrayExtensions {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

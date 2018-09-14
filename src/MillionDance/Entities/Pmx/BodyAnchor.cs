@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace MillionDance.Entities.Pmx {
+namespace OpenMLTD.MillionDance.Entities.Pmx {
     public sealed class BodyAnchor : IComparable<BodyAnchor>, IEquatable<BodyAnchor> {
 
         internal BodyAnchor() {

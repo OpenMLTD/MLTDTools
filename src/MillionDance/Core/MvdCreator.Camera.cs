@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using MillionDance.Entities.Internal;
-using MillionDance.Entities.Mltd;
-using MillionDance.Entities.Mvd;
-using MillionDance.Extensions;
-using MillionDance.Utilities;
+using OpenMLTD.MillionDance.Entities.Internal;
+using OpenMLTD.MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Entities.Mvd;
+using OpenMLTD.MillionDance.Extensions;
+using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     partial class MvdCreator {
 
         [NotNull, ItemNotNull]

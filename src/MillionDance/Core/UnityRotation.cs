@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using OpenTK;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     internal static class UnityRotation {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace MillionDanceView.ObjectGL {
+namespace OpenMLTD.MillionDance.Viewer.ObjectGL {
     public class OpenGLException : ApplicationException {
 
         public OpenGLException() {

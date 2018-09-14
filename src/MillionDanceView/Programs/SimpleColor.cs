@@ -1,8 +1,8 @@
-﻿using MillionDanceView.ObjectGL;
+﻿using OpenMLTD.MillionDance.Viewer.ObjectGL;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
-namespace MillionDanceView.Programs {
+namespace OpenMLTD.MillionDance.Viewer.Programs {
     public sealed class SimpleColor : Program {
 
         private SimpleColor() {

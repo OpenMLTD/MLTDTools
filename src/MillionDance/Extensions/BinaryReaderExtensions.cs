@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using JetBrains.Annotations;
 using OpenTK;
 
-namespace MillionDance.Extensions {
+namespace OpenMLTD.MillionDance.Extensions {
     internal static class BinaryReaderExtensions {
 
         public static Vector2 ReadVector2([NotNull] this BinaryReader reader) {

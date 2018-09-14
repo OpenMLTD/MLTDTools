@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using MillionDance.Entities.Internal;
-using MillionDance.Entities.Mltd;
-using MillionDanceView.Internal;
-using MillionDanceView.ObjectGL;
-using MillionDanceView.Programs;
+using OpenMLTD.MillionDance.Entities.Internal;
+using OpenMLTD.MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Viewer.Internal;
+using OpenMLTD.MillionDance.Viewer.ObjectGL;
+using OpenMLTD.MillionDance.Viewer.Programs;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
@@ -19,7 +19,7 @@ using Vector2 = OpenTK.Vector2;
 using Vector3 = OpenTK.Vector3;
 using Vector4 = OpenTK.Vector4;
 
-namespace MillionDanceView {
+namespace OpenMLTD.MillionDance.Viewer {
     public sealed class RenderForm : GameWindow {
 
         public RenderForm() {

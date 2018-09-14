@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MillionDance.Utilities {
+namespace OpenMLTD.MillionDance.Utilities {
     internal static class EmptyArray {
 
         public static T[] Of<T>() {

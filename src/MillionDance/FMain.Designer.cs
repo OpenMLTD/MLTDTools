@@ -1,4 +1,4 @@
-﻿namespace MillionDance {
+﻿namespace OpenMLTD.MillionDance {
     partial class FMain {
         /// <summary>
         /// Required designer variable.

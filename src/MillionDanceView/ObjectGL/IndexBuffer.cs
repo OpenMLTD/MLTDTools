@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using OpenTK.Graphics.OpenGL4;
 
-namespace MillionDanceView.ObjectGL {
+namespace OpenMLTD.MillionDance.Viewer.ObjectGL {
     public sealed class IndexBuffer : DisposableBase, IGLObject {
 
         public IndexBuffer() {

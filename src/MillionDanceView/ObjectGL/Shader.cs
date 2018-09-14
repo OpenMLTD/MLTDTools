@@ -3,7 +3,7 @@ using System.Diagnostics;
 using JetBrains.Annotations;
 using OpenTK.Graphics.OpenGL4;
 
-namespace MillionDanceView.ObjectGL {
+namespace OpenMLTD.MillionDance.Viewer.ObjectGL {
     public sealed class Shader : DisposableBase {
 
         private Shader(int shader, ShaderType shaderType) {

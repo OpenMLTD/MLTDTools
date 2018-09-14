@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 
-namespace MillionDanceView {
+namespace OpenMLTD.MillionDance.Viewer {
     internal static class EntryPoint {
 
         private static void Main() {

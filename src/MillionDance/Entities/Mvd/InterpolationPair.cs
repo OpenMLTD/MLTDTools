@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
-using OpenTK;
+using OpenMLTD.MillionDance.Entities.OpenTK;
 
-namespace MillionDance.Entities.Mvd {
+namespace OpenMLTD.MillionDance.Entities.Mvd {
     [NotNull]
     public sealed class InterpolationPair {
 

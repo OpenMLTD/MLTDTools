@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace MillionDance {
+namespace OpenMLTD.MillionDance {
     internal static class Program {
 
         [STAThread]

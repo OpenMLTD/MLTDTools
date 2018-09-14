@@ -1,4 +1,4 @@
-﻿namespace MillionDance.Entities.Mvd {
+﻿namespace OpenMLTD.MillionDance.Entities.Mvd {
     public sealed class MvdCameraObject : MvdModelObject {
 
         internal MvdCameraObject() {

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace MillionDance.Entities.Pmx.Extensions {
+namespace OpenMLTD.MillionDance.Entities.Pmx.Extensions {
     internal static class PmxPassGroupExtensions {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

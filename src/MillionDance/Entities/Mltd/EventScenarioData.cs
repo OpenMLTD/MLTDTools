@@ -1,10 +1,10 @@
 ﻿using JetBrains.Annotations;
-using MillionDance.Utilities;
+using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 using UnityStudio.Serialization;
 using UnityStudio.Serialization.Naming;
 
-namespace MillionDance.Entities.Mltd {
+namespace OpenMLTD.MillionDance.Entities.Mltd {
     [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public sealed class EventScenarioData {
 

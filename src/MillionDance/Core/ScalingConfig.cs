@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     internal static class ScalingConfig {
 
         // Character height, in meters.

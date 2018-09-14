@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A2039EB5-47FF-475E-A2D8-D72AB85099D5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>MillionDanceView</RootNamespace>
+    <RootNamespace>OpenMLTD.MillionDance.Viewer</RootNamespace>
     <AssemblyName>MillionDanceView</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

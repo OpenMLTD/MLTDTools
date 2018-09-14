@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using MillionDance.Entities.Mltd;
-using MillionDance.Entities.Pmx;
-using MillionDance.Entities.Vmd;
-using MillionDance.Utilities;
+using OpenMLTD.MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Entities.Pmx;
+using OpenMLTD.MillionDance.Entities.Vmd;
+using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 using UnityStudio.UnityEngine.Animation;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     public sealed partial class VmdCreator {
 
         public bool ProcessBoneFrames { get; set; } = true;

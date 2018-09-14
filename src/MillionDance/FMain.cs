@@ -4,9 +4,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using JetBrains.Annotations;
-using MillionDance.Core;
+using OpenMLTD.MillionDance.Core;
 
-namespace MillionDance {
+namespace OpenMLTD.MillionDance {
     public partial class FMain : Form {
 
         internal FMain() {

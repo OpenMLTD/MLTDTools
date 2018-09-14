@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 
-namespace MillionDanceView.ObjectGL {
+namespace OpenMLTD.MillionDance.Viewer.ObjectGL {
     public sealed class VertexArrayObject : DisposableBase {
 
         public VertexArrayObject() {

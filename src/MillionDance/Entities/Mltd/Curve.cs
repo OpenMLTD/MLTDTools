@@ -1,7 +1,7 @@
 ﻿using UnityStudio.Serialization;
 using UnityStudio.Serialization.Naming;
 
-namespace MillionDance.Entities.Mltd {
+namespace OpenMLTD.MillionDance.Entities.Mltd {
     // True name: Imas.Curve
     [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention), ThrowOnUnmatched = false, PopulationStrategy = PopulationStrategy.OptIn)]
     public sealed class Curve {

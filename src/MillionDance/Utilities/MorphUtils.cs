@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace MillionDance.Utilities {
+namespace OpenMLTD.MillionDance.Utilities {
     internal static class MorphUtils {
 
         [NotNull]

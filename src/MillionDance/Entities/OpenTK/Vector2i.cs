@@ -1,5 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
-namespace OpenTK {
+namespace OpenMLTD.MillionDance.Entities.OpenTK {
     // ReSharper disable once InconsistentNaming
     public struct Vector2i {
 

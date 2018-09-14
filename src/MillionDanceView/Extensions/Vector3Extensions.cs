@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using UnityStudio.UnityEngine;
 
-namespace MillionDanceView.Extensions {
+namespace OpenMLTD.MillionDance.Viewer.Extensions {
     internal static class Vector3Extensions {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

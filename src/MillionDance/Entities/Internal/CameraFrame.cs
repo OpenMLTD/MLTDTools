@@ -1,4 +1,4 @@
-﻿namespace MillionDance.Entities.Internal {
+﻿namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class CameraFrame {
 
         internal CameraFrame() {

@@ -9,16 +9,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-using MillionDance.Entities.Internal;
-using MillionDanceView.Extensions;
-using MillionDanceView.ObjectGL;
+using OpenMLTD.MillionDance.Entities.Internal;
+using OpenMLTD.MillionDance.Viewer.Extensions;
+using OpenMLTD.MillionDance.Viewer.ObjectGL;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using UnityStudio.UnityEngine;
 using UnityStudio.UnityEngine.Animation;
 using Vector3 = OpenTK.Vector3;
 
-namespace MillionDanceView.Internal {
+namespace OpenMLTD.MillionDance.Viewer.Internal {
     internal sealed class AnimationRenderer : DisposableBase, IUpdateable, IDrawable {
 
         public AnimationRenderer([NotNull] Game game,

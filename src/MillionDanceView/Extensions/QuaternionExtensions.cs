@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace MillionDanceView.Extensions {
+namespace OpenMLTD.MillionDance.Viewer.Extensions {
     internal static class QuaternionExtensions {
 
         /// <summary>

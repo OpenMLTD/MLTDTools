@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 
-namespace MillionDance.Entities.Mltd.Sway {
+namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
     public sealed class SwayManager : SwayBase {
 
         internal SwayManager() {

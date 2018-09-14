@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using MillionDanceView.Extensions;
+using OpenMLTD.MillionDance.Viewer.Extensions;
 using OpenTK;
 
-namespace MillionDanceView {
+namespace OpenMLTD.MillionDance.Viewer {
     internal static class UnityRotation {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

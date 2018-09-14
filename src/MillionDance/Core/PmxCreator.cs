@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
-using MillionDance.Entities.Internal;
-using MillionDance.Entities.Mltd.Sway;
-using MillionDance.Entities.Pmx;
-using MillionDance.Entities.Pmx.Extensions;
-using MillionDance.Extensions;
-using MillionDance.Utilities;
+using OpenMLTD.MillionDance.Entities.Internal;
+using OpenMLTD.MillionDance.Entities.Mltd.Sway;
+using OpenMLTD.MillionDance.Entities.Pmx;
+using OpenMLTD.MillionDance.Entities.Pmx.Extensions;
+using OpenMLTD.MillionDance.Extensions;
+using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 using UnityStudio.UnityEngine;
 using UnityStudio.UnityEngine.Animation;
@@ -17,7 +17,7 @@ using Quaternion = OpenTK.Quaternion;
 using Vector3 = OpenTK.Vector3;
 using Vector4 = OpenTK.Vector4;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     public sealed partial class PmxCreator {
 
         public PmxModel CreateFrom([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount, [NotNull] string texturePrefix,

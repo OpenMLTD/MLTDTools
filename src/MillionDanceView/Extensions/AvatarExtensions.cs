@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using UnityStudio.UnityEngine.Animation;
 
-namespace MillionDanceView.Extensions {
+namespace OpenMLTD.MillionDance.Viewer.Extensions {
     internal static class AvatarExtensions {
 
         [CanBeNull]

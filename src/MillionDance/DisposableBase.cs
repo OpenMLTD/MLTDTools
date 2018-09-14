@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace MillionDance {
+namespace OpenMLTD.MillionDance {
     public abstract class DisposableBase : IDisposable {
 
         ~DisposableBase() {

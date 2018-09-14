@@ -1,4 +1,4 @@
-﻿namespace MillionDance.Core {
+﻿namespace OpenMLTD.MillionDance.Core {
     internal sealed class ConversionConfig {
 
         public MotionFormat MotionFormat { get; internal set; }

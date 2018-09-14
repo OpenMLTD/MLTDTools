@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using OpenTK;
 
-namespace MillionDance.Entities.Mltd.Sway {
+namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
     public sealed class SwayCollider : SwayBase {
 
         internal SwayCollider() {

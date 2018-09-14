@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using JetBrains.Annotations;
-using MillionDance.Entities.Mltd;
-using MillionDance.Entities.Mltd.Sway;
+using OpenMLTD.MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Entities.Mltd.Sway;
 using UnityStudio.Extensions;
 using UnityStudio.Models;
 using UnityStudio.Serialization;
@@ -11,7 +11,7 @@ using UnityStudio.UnityEngine;
 using UnityStudio.UnityEngine.Animation;
 using UnityStudio.Utilities;
 
-namespace MillionDance {
+namespace OpenMLTD.MillionDance {
     internal static class ResourceLoader {
 
         [CanBeNull]

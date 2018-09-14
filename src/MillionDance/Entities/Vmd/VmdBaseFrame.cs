@@ -1,4 +1,4 @@
-﻿namespace MillionDance.Entities.Vmd {
+﻿namespace OpenMLTD.MillionDance.Entities.Vmd {
     public abstract class VmdBaseFrame {
 
         protected VmdBaseFrame(int frameIndex) {

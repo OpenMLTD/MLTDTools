@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 
-namespace MillionDance.Entities.Pmx {
+namespace OpenMLTD.MillionDance.Entities.Pmx {
     public sealed class PmxJoint : IPmxNamedObject {
 
         internal PmxJoint() {

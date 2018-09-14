@@ -1,11 +1,11 @@
 ﻿using System;
 using JetBrains.Annotations;
-using MillionDanceView.ObjectGL;
-using MillionDanceView.Programs;
+using OpenMLTD.MillionDance.Viewer.ObjectGL;
+using OpenMLTD.MillionDance.Viewer.Programs;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
-namespace MillionDanceView.Internal {
+namespace OpenMLTD.MillionDance.Viewer.Internal {
     internal sealed class AxesDebugger : DisposableBase, IUpdateable, IDrawable {
 
         internal AxesDebugger([NotNull] SimpleColor simpleColor) {

@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK;
 
-namespace MillionDance.Utilities {
+namespace OpenMLTD.MillionDance.Utilities {
     public static class RotationDebug {
 
         public static Vector3 DecomposeDeg(this Quaternion q) {

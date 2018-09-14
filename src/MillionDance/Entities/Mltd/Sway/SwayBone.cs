@@ -1,8 +1,8 @@
 ﻿using JetBrains.Annotations;
-using MillionDance.Utilities;
+using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 
-namespace MillionDance.Entities.Mltd.Sway {
+namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
     public sealed class SwayBone : SwayBase {
 
         internal SwayBone() {

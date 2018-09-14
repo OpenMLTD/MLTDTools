@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using MillionDance.Utilities;
+using OpenMLTD.MillionDance.Utilities;
 
-namespace MillionDance.Entities.Pmx {
+namespace OpenMLTD.MillionDance.Entities.Pmx {
     public sealed class PmxNode : IPmxNamedObject {
 
         internal PmxNode() {

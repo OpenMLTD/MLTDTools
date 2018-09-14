@@ -6,12 +6,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using JetBrains.Annotations;
-using MillionDance.Entities.Pmx;
-using MillionDance.Entities.Pmx.Extensions;
-using MillionDance.Extensions;
+using OpenMLTD.MillionDance.Entities.Pmx;
+using OpenMLTD.MillionDance.Entities.Pmx.Extensions;
+using OpenMLTD.MillionDance.Extensions;
 using OpenTK;
 
-namespace MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core {
     // https://github.com/anydream/Pmx2Fbx/blob/master/PmxLib/PmxReader.h
     // https://github.com/benikabocha/saba/tree/master/src/Saba/Model/MMD
     // https://gist.github.com/felixjones/f8a06bd48f9da9a4539f

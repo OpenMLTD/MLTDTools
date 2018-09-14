@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using JetBrains.Annotations;
-using MillionDance.Entities.Mvd;
+using OpenMLTD.MillionDance.Entities.Mvd;
 using OpenTK;
 
-namespace MillionDance.Extensions {
+namespace OpenMLTD.MillionDance.Extensions {
     internal static class BinaryWriterExtensions {
 
         public static void Write([NotNull] this BinaryWriter writer, Vector2 vector) {

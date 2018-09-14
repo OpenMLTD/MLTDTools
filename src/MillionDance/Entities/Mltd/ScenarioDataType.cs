@@ -1,4 +1,4 @@
-﻿namespace MillionDance.Entities.Mltd {
+﻿namespace OpenMLTD.MillionDance.Entities.Mltd {
     public enum ScenarioDataType {
 
         Invalid = 0,

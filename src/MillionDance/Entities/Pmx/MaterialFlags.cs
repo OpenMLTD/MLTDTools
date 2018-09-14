@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MillionDance.Entities.Pmx {
+namespace OpenMLTD.MillionDance.Entities.Pmx {
     [Flags]
     public enum MaterialFlags {
 

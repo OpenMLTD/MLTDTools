@@ -9,7 +9,7 @@ Tools for [THE iDOLM@STER Million Live! Theater Days](https://millionlive.idolma
 
 **Downloads:**
 
-- [Nightly build](https://ci.appveyor.com/api/projects/hozuki/mltdtools/artifacts/miritore-appveyor-x86.zip) (Windows)
+- [Nightly build](https://ci.appveyor.com/api/projects/hozuki/mltdtools/artifacts/miritore-appveyor-latest.zip) (Windows)
 - [Releases](https://github.com/OpenMLTD/MLTDTools/releases)
 
 This repository:

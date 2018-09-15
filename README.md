@@ -5,6 +5,7 @@ Tools for [THE iDOLM@STER Million Live! Theater Days](https://millionlive.idolma
 [![AppVeyor](https://img.shields.io/appveyor/ci/hozuki/mltdtools.svg)](https://ci.appveyor.com/project/hozuki/mltdtools)
 [![GitHub contributors](https://img.shields.io/github/contributors/OpenMLTD/MLTDTools.svg)](https://github.com/OpenMLTD/MLTDTools/graphs/contributors)
 [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/OpenMLTD/MLTDTools.svg)](https://github.com/OpenMLTD/MLTDTools)
+[![GitHub (pre-)release](https://img.shields.io/github/release/OpenMLTD/MLTDTools/all.svg)](https://github.com/OpenMLTD/MLTDTools/releases)
 [![Github All Releases](https://img.shields.io/github/downloads/OpenMLTD/MLTDTools/total.svg)](https://github.com/OpenMLTD/MLTDTools/releases)
 
 **Downloads:**

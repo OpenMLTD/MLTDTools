@@ -195,12 +195,12 @@ namespace OpenMLTD.MillionDance {
                     }
                 }
 
-                if (!Regex.IsMatch(txtInputHead.Text, @"ch_[a-z]{2}\d{3}_\d{3}[a-z]{3}\.unity3d$", RegexOptions.CultureInvariant)) {
+                if (!Regex.IsMatch(txtInputHead.Text, @"ch_[a-z]{2}\d{3}_(?:\d{3}[a-z]{3}|[a-z])\.unity3d$", RegexOptions.CultureInvariant)) {
                     Alert($"File \"{txtInputHead.Text}\" does not look like a character head file from the game.");
                     return false;
                 }
 
-                if (!Regex.IsMatch(txtInputBody.Text, @"cb_[a-z]{2}\d{3}_\d{3}[a-z]{3}\.unity3d$", RegexOptions.CultureInvariant)) {
+                if (!Regex.IsMatch(txtInputBody.Text, @"cb_[a-z]{2}\d{3}_(?:\d{3}[a-z]{3}|[a-z])\.unity3d$", RegexOptions.CultureInvariant)) {
                     Alert($"File \"{txtInputBody.Text}\" does not look like a character body file from the game.");
                     return false;
                 }
@@ -217,21 +217,23 @@ namespace OpenMLTD.MillionDance {
                     }
                 }
 
-                if (!Regex.IsMatch(txtInputCamera.Text, @"cam_[a-z0-9]{6}\.imo\.unity3d$", RegexOptions.CultureInvariant)) {
-                    Alert($"File \"{txtInputCamera.Text}\" does not look like a camera data file from the game.");
-                    return false;
-                }
-
-                if (radOptCamFormatVmd.Checked) {
-                    if (!txtOutputCameraMotion.Text.EndsWith(".vmd", StringComparison.OrdinalIgnoreCase)) {
-                        if (!Confirm("The output camera file name does not ends with \".vmd\". Are you sure to continue?")) {
-                            return false;
-                        }
+                if (chkGenerateCameraMotion.Checked) {
+                    if (!Regex.IsMatch(txtInputCamera.Text, @"cam_[a-z0-9]{6}\.imo\.unity3d$", RegexOptions.CultureInvariant)) {
+                        Alert($"File \"{txtInputCamera.Text}\" does not look like a camera data file from the game.");
+                        return false;
                     }
-                } else if (radOptCamFormatMvd.Checked) {
-                    if (!txtOutputCameraMotion.Text.EndsWith(".mvd", StringComparison.OrdinalIgnoreCase)) {
-                        if (!Confirm("The output camera file name does not ends with \".mvd\". Are you sure to continue?")) {
-                            return false;
+
+                    if (radOptCamFormatVmd.Checked) {
+                        if (!txtOutputCameraMotion.Text.EndsWith(".vmd", StringComparison.OrdinalIgnoreCase)) {
+                            if (!Confirm("The output camera file name does not ends with \".vmd\". Are you sure to continue?")) {
+                                return false;
+                            }
+                        }
+                    } else if (radOptCamFormatMvd.Checked) {
+                        if (!txtOutputCameraMotion.Text.EndsWith(".mvd", StringComparison.OrdinalIgnoreCase)) {
+                            if (!Confirm("The output camera file name does not ends with \".mvd\". Are you sure to continue?")) {
+                                return false;
+                            }
                         }
                     }
                 }

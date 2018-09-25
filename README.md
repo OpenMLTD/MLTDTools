@@ -19,7 +19,7 @@ This repository:
 - does not serve as a card/event/CG/commu database. If you want that please visit [ミリシタDB](http://imas.gamedbs.jp/mlth/).
 - DOES NOT PROVIDE TOOLS FOR YOU TO CHEAT. **Cheating is not fun at all. It must be punished.**
 
-For the Unity project for resource generation, please visit [PlatiumTheater](https://github.com/OpenMLTD/PlatiumTheater).
+For the Unity project for resource generation, please visit [PlatinumTheater](https://github.com/OpenMLTD/PlatinumTheater).
 
 ## Details
 

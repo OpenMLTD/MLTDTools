@@ -5,7 +5,7 @@ namespace OpenMLTD.MillionDance.Core {
 
         // Character height, in meters.
         // Setting this value to character's real height can affect how tall the exported model is. Useful for height comparison. XD
-        public static float CharacterHeight { get; } = 1.58f;
+        public static float CharacterHeight { get; set; } = 1.6f;
 
         public static float ScalePmxToUnity {
             get {

@@ -28,6 +28,9 @@
             this.chkGenerateCharAnim = new System.Windows.Forms.CheckBox();
             this.chkGenerateModel = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnInputFacialExpression = new System.Windows.Forms.Button();
+            this.txtInputFacialExpression = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.btnInputCamera = new System.Windows.Forms.Button();
             this.txtInputCamera = new System.Windows.Forms.TextBox();
             this.btnInputDance = new System.Windows.Forms.Button();
@@ -57,6 +60,15 @@
             this.radOptMotionSourceMltd = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.cboOptSongPosition = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtOptFixedFov = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.radOptCamFormatMvd = new System.Windows.Forms.RadioButton();
+            this.radOptCamFormatVmd = new System.Windows.Forms.RadioButton();
+            this.label10 = new System.Windows.Forms.Label();
             this.chkOptScaleVmd = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.radOptAnimFrameRate30 = new System.Windows.Forms.RadioButton();
@@ -74,29 +86,19 @@
             this.label7 = new System.Windows.Forms.Label();
             this.txtLog = new System.Windows.Forms.TextBox();
             this.btnGo = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.radOptCamFormatVmd = new System.Windows.Forms.RadioButton();
-            this.radOptCamFormatMvd = new System.Windows.Forms.RadioButton();
-            this.label11 = new System.Windows.Forms.Label();
-            this.txtOptFixedFov = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.btnInputFacialExpression = new System.Windows.Forms.Button();
-            this.txtInputFacialExpression = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.cboOptSongPosition = new System.Windows.Forms.ComboBox();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
+            this.txtOptCharHeight = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -170,6 +172,31 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Input Files";
+            // 
+            // btnInputFacialExpression
+            // 
+            this.btnInputFacialExpression.Location = new System.Drawing.Point(222, 103);
+            this.btnInputFacialExpression.Name = "btnInputFacialExpression";
+            this.btnInputFacialExpression.Size = new System.Drawing.Size(32, 21);
+            this.btnInputFacialExpression.TabIndex = 14;
+            this.btnInputFacialExpression.Text = "...";
+            this.btnInputFacialExpression.UseVisualStyleBackColor = true;
+            // 
+            // txtInputFacialExpression
+            // 
+            this.txtInputFacialExpression.Location = new System.Drawing.Point(70, 104);
+            this.txtInputFacialExpression.Name = "txtInputFacialExpression";
+            this.txtInputFacialExpression.Size = new System.Drawing.Size(146, 21);
+            this.txtInputFacialExpression.TabIndex = 13;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(17, 107);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(47, 12);
+            this.label13.TabIndex = 12;
+            this.label13.Text = "Facial:";
             // 
             // btnInputCamera
             // 
@@ -283,6 +310,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label15);
+            this.tabPage1.Controls.Add(this.txtOptCharHeight);
             this.tabPage1.Controls.Add(this.chkOptImportPhysics);
             this.tabPage1.Controls.Add(this.chkOptTranslateFacialExpressionNames);
             this.tabPage1.Controls.Add(this.chkOptHideUnityGenBones);
@@ -475,6 +504,98 @@
             this.tabPage2.Text = "Motions";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // cboOptSongPosition
+            // 
+            this.cboOptSongPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboOptSongPosition.FormattingEnabled = true;
+            this.cboOptSongPosition.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"});
+            this.cboOptSongPosition.Location = new System.Drawing.Point(78, 114);
+            this.cboOptSongPosition.Name = "cboOptSongPosition";
+            this.cboOptSongPosition.Size = new System.Drawing.Size(107, 20);
+            this.cboOptSongPosition.TabIndex = 9;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(7, 117);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(59, 12);
+            this.label14.TabIndex = 8;
+            this.label14.Text = "Position:";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(141, 90);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(23, 12);
+            this.label12.TabIndex = 7;
+            this.label12.Text = "deg";
+            // 
+            // txtOptFixedFov
+            // 
+            this.txtOptFixedFov.Enabled = false;
+            this.txtOptFixedFov.Location = new System.Drawing.Point(78, 87);
+            this.txtOptFixedFov.Name = "txtOptFixedFov";
+            this.txtOptFixedFov.Size = new System.Drawing.Size(60, 21);
+            this.txtOptFixedFov.TabIndex = 6;
+            this.txtOptFixedFov.Text = "20";
+            this.txtOptFixedFov.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(7, 90);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(65, 12);
+            this.label11.TabIndex = 5;
+            this.label11.Text = "Fixed FOV:";
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.radOptCamFormatMvd);
+            this.panel3.Controls.Add(this.radOptCamFormatVmd);
+            this.panel3.Location = new System.Drawing.Point(102, 57);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(301, 24);
+            this.panel3.TabIndex = 4;
+            // 
+            // radOptCamFormatMvd
+            // 
+            this.radOptCamFormatMvd.AutoSize = true;
+            this.radOptCamFormatMvd.Checked = true;
+            this.radOptCamFormatMvd.Location = new System.Drawing.Point(150, 3);
+            this.radOptCamFormatMvd.Name = "radOptCamFormatMvd";
+            this.radOptCamFormatMvd.Size = new System.Drawing.Size(125, 16);
+            this.radOptCamFormatMvd.TabIndex = 6;
+            this.radOptCamFormatMvd.TabStop = true;
+            this.radOptCamFormatMvd.Text = "MVD (dynamic FOV)";
+            this.radOptCamFormatMvd.UseVisualStyleBackColor = true;
+            // 
+            // radOptCamFormatVmd
+            // 
+            this.radOptCamFormatVmd.AutoSize = true;
+            this.radOptCamFormatVmd.Location = new System.Drawing.Point(3, 3);
+            this.radOptCamFormatVmd.Name = "radOptCamFormatVmd";
+            this.radOptCamFormatVmd.Size = new System.Drawing.Size(113, 16);
+            this.radOptCamFormatVmd.TabIndex = 5;
+            this.radOptCamFormatVmd.Text = "VMD (fixed FOV)";
+            this.radOptCamFormatVmd.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(7, 62);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(89, 12);
+            this.label10.TabIndex = 3;
+            this.label10.Text = "Camera format:";
+            // 
             // chkOptScaleVmd
             // 
             this.chkOptScaleVmd.AutoSize = true;
@@ -639,121 +760,23 @@
             this.btnGo.Text = "&Go";
             this.btnGo.UseVisualStyleBackColor = true;
             // 
-            // label10
+            // txtOptCharHeight
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(7, 62);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(89, 12);
-            this.label10.TabIndex = 3;
-            this.label10.Text = "Camera format:";
+            this.txtOptCharHeight.Location = new System.Drawing.Point(174, 49);
+            this.txtOptCharHeight.Name = "txtOptCharHeight";
+            this.txtOptCharHeight.Size = new System.Drawing.Size(58, 21);
+            this.txtOptCharHeight.TabIndex = 22;
+            this.txtOptCharHeight.Text = "1.60";
+            this.txtOptCharHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // panel3
+            // label15
             // 
-            this.panel3.Controls.Add(this.radOptCamFormatMvd);
-            this.panel3.Controls.Add(this.radOptCamFormatVmd);
-            this.panel3.Location = new System.Drawing.Point(102, 57);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(301, 24);
-            this.panel3.TabIndex = 4;
-            // 
-            // radOptCamFormatVmd
-            // 
-            this.radOptCamFormatVmd.AutoSize = true;
-            this.radOptCamFormatVmd.Location = new System.Drawing.Point(3, 3);
-            this.radOptCamFormatVmd.Name = "radOptCamFormatVmd";
-            this.radOptCamFormatVmd.Size = new System.Drawing.Size(113, 16);
-            this.radOptCamFormatVmd.TabIndex = 5;
-            this.radOptCamFormatVmd.Text = "VMD (fixed FOV)";
-            this.radOptCamFormatVmd.UseVisualStyleBackColor = true;
-            // 
-            // radOptCamFormatMvd
-            // 
-            this.radOptCamFormatMvd.AutoSize = true;
-            this.radOptCamFormatMvd.Checked = true;
-            this.radOptCamFormatMvd.Location = new System.Drawing.Point(150, 3);
-            this.radOptCamFormatMvd.Name = "radOptCamFormatMvd";
-            this.radOptCamFormatMvd.Size = new System.Drawing.Size(125, 16);
-            this.radOptCamFormatMvd.TabIndex = 6;
-            this.radOptCamFormatMvd.TabStop = true;
-            this.radOptCamFormatMvd.Text = "MVD (dynamic FOV)";
-            this.radOptCamFormatMvd.UseVisualStyleBackColor = true;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(7, 90);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(65, 12);
-            this.label11.TabIndex = 5;
-            this.label11.Text = "Fixed FOV:";
-            // 
-            // txtOptFixedFov
-            // 
-            this.txtOptFixedFov.Enabled = false;
-            this.txtOptFixedFov.Location = new System.Drawing.Point(78, 87);
-            this.txtOptFixedFov.Name = "txtOptFixedFov";
-            this.txtOptFixedFov.Size = new System.Drawing.Size(60, 21);
-            this.txtOptFixedFov.TabIndex = 6;
-            this.txtOptFixedFov.Text = "20";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(141, 90);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(23, 12);
-            this.label12.TabIndex = 7;
-            this.label12.Text = "deg";
-            // 
-            // btnInputFacialExpression
-            // 
-            this.btnInputFacialExpression.Location = new System.Drawing.Point(222, 103);
-            this.btnInputFacialExpression.Name = "btnInputFacialExpression";
-            this.btnInputFacialExpression.Size = new System.Drawing.Size(32, 21);
-            this.btnInputFacialExpression.TabIndex = 14;
-            this.btnInputFacialExpression.Text = "...";
-            this.btnInputFacialExpression.UseVisualStyleBackColor = true;
-            // 
-            // txtInputFacialExpression
-            // 
-            this.txtInputFacialExpression.Location = new System.Drawing.Point(70, 104);
-            this.txtInputFacialExpression.Name = "txtInputFacialExpression";
-            this.txtInputFacialExpression.Size = new System.Drawing.Size(146, 21);
-            this.txtInputFacialExpression.TabIndex = 13;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(17, 107);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(47, 12);
-            this.label13.TabIndex = 12;
-            this.label13.Text = "Facial:";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(7, 117);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(59, 12);
-            this.label14.TabIndex = 8;
-            this.label14.Text = "Position:";
-            // 
-            // cboOptSongPosition
-            // 
-            this.cboOptSongPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboOptSongPosition.FormattingEnabled = true;
-            this.cboOptSongPosition.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5"});
-            this.cboOptSongPosition.Location = new System.Drawing.Point(78, 114);
-            this.cboOptSongPosition.Name = "cboOptSongPosition";
-            this.cboOptSongPosition.Size = new System.Drawing.Size(107, 20);
-            this.cboOptSongPosition.TabIndex = 9;
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(237, 52);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(11, 12);
+            this.label15.TabIndex = 23;
+            this.label15.Text = "m";
             // 
             // FMain
             // 
@@ -782,12 +805,12 @@
             this.panel1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -860,5 +883,7 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.OpenFileDialog ofd;
         private System.Windows.Forms.SaveFileDialog sfd;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox txtOptCharHeight;
     }
 }

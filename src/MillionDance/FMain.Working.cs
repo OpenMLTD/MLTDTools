@@ -47,6 +47,12 @@ namespace OpenMLTD.MillionDance {
 
                 ConversionConfig.Current = PrepareConversionConfig(p);
 
+                if (p.IdolHeight <= 0) {
+                    throw new ArgumentOutOfRangeException(nameof(p.IdolHeight), "Invalid idol height.");
+                }
+
+                ScalingConfig.CharacterHeight = p.IdolHeight;
+
                 do {
                     var bodyAvatar = ResourceLoader.LoadBodyAvatar(p.InputBody);
                     if (bodyAvatar == null) {
@@ -232,6 +238,7 @@ namespace OpenMLTD.MillionDance {
             public MotionFormat MotionSource { get; set; }
             public bool ScalePmx { get; set; }
             public bool ConsiderIdolHeight { get; set; }
+            public float IdolHeight { get; set; }
             public bool TranslateBoneNames { get; set; }
             public bool AppendLegIkBones { get; set; }
             public bool FixCenterBones { get; set; }

@@ -28,6 +28,15 @@ namespace OpenMLTD.MillionDance {
             radOptMotionSourceMltd.CheckedChanged -= RadOptMotionSourceMltd_CheckedChanged;
             radOptCamFormatVmd.CheckedChanged -= RadOptCamFormatVmd_CheckedChanged;
             btnGo.Click -= BtnGo_Click;
+            btnInputHead.Click -= BtnInputHead_Click;
+            btnInputBody.Click -= BtnInputBody_Click;
+            btnInputDance.Click -= BtnInputDance_Click;
+            btnInputFacialExpression.Click -= BtnInputFacialExpression_Click;
+            btnInputCamera.Click -= BtnInputCamera_Click;
+            btnOutputModel.Click -= BtnOutputModel_Click;
+            btnOutputCharAnim.Click -= BtnOutputCharAnim_Click;
+            btnOutputCameraMotion.Click -= BtnOutputCameraMotion_Click;
+            chkOptApplyCharHeight.CheckedChanged -= ChkOptApplyCharHeight_CheckedChanged;
         }
 
         private void RegisterEventHandlers() {
@@ -46,6 +55,13 @@ namespace OpenMLTD.MillionDance {
             btnOutputModel.Click += BtnOutputModel_Click;
             btnOutputCharAnim.Click += BtnOutputCharAnim_Click;
             btnOutputCameraMotion.Click += BtnOutputCameraMotion_Click;
+            chkOptApplyCharHeight.CheckedChanged += ChkOptApplyCharHeight_CheckedChanged;
+        }
+
+        private void ChkOptApplyCharHeight_CheckedChanged(object sender, EventArgs e) {
+            var b = chkOptApplyCharHeight.Checked;
+            txtOptCharHeight.Enabled = b;
+            label15.Enabled = b;
         }
 
         private void BtnOutputCameraMotion_Click(object sender, EventArgs e) {
@@ -161,6 +177,12 @@ namespace OpenMLTD.MillionDance {
                     }
                 }
 
+                if (chkOptApplyCharHeight.Checked) {
+                    if (!float.TryParse(txtOptCharHeight.Text, out var height) || height <= 0.1f) {
+                        Alert("Please enter a valid idol height.");
+                    }
+                }
+
                 if (chkGenerateCharAnim.Checked) {
                     if (!File.Exists(txtInputDance.Text)) {
                         Alert($"Dance data \"{txtInputDance.Text}\" does not exist.");
@@ -261,6 +283,7 @@ namespace OpenMLTD.MillionDance {
                 ip.MotionSource = radOptMotionSourceMltd.Checked ? MotionFormat.Mltd : MotionFormat.Mmd;
                 ip.ScalePmx = chkOptScalePmx.Checked;
                 ip.ConsiderIdolHeight = chkOptApplyCharHeight.Checked;
+                ip.IdolHeight = ip.ConsiderIdolHeight ? Convert.ToSingle(txtOptCharHeight.Text) : 0;
                 ip.TranslateBoneNames = chkOptTranslateBoneNames.Checked;
                 ip.AppendLegIkBones = chkOptAppendLegIKBones.Checked;
                 ip.FixCenterBones = chkOptFixCenterBones.Checked;
@@ -305,6 +328,7 @@ namespace OpenMLTD.MillionDance {
         private void RadOptCamFormatVmd_CheckedChanged(object sender, EventArgs e) {
             var b = radOptCamFormatVmd.Checked;
             txtOptFixedFov.Enabled = b;
+            label12.Enabled = b;
         }
 
         private void RadOptMotionSourceMltd_CheckedChanged(object sender, EventArgs e) {

@@ -49,6 +49,12 @@ WIP
 
 Exports models, character and camera motions to MMD equivalents. (alpha)
 
+Note:
+
+Ouput data tested in [MikuMikuMoving](https://sites.google.com/site/mikumikumovingeng/) (MMM) but not [MikuMikuDance](http://www.geocities.jp/higuchuu4/index_e.htm) (MMD) because the number of frames is huge.
+It is suggested to use MMM for enhanced performance. Also, some conversion seems to fail only when the output is used with MMD; maybe I'll
+investigate this issue some day.
+
 **MLTD Dance Viewer**
 
 A simple viewer for MLTD dancing data, which allows directly reading model and motion

@@ -29,7 +29,7 @@ namespace OpenMLTD.MillionDance.Core {
             get => 1 / ScaleVmdToUnity;
         }
 
-        private const float StandardCharacterHeight = 1.6f;
+        internal const float StandardCharacterHeight = 1.6f;
         private const float DefaultScaleMmdToUnity = 0.08f;
 
     }

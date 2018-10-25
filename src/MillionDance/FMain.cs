@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -147,6 +148,13 @@ namespace OpenMLTD.MillionDance {
 
         private void FMain_Load(object sender, EventArgs e) {
             cboOptSongPosition.SelectedIndex = 0;
+
+            // globalization: Decimal point affects parsing result. Bear in mind.
+            // In custom numeric format string, the "." means decimal point, which will be correctly translated to target culture.
+            var defaultCharHeightStr = ScalingConfig.StandardCharacterHeight.ToString("0.00", GlobalizationHelper.Culture);
+
+            label16.Text = $"(standard = {defaultCharHeightStr})";
+            txtOptCharHeight.Text = defaultCharHeightStr;
         }
 
         private void BtnGo_Click(object sender, EventArgs e) {
@@ -193,8 +201,24 @@ namespace OpenMLTD.MillionDance {
                 }
 
                 if (chkOptApplyCharHeight.Checked) {
-                    if (!float.TryParse(txtOptCharHeight.Text, out var height) || height <= 0.1f) {
+                    if (!float.TryParse(txtOptCharHeight.Text, NumberStyles.Float, GlobalizationHelper.Culture, out var height) || height <= 0.1f) {
                         Alert("Please enter a valid idol height.");
+                    }
+
+                    if (height < 1.0f || 2.0f < height) {
+                        var heightStr = height.ToString(GlobalizationHelper.Culture);
+                        // Don't mind multiple string concatenations. It only executes once. :D
+                        var message = "You entered a strange value for idol height." +
+                                      " This may be caused by the differences of decimal point among countries." +
+                                      " A wrong value may let this program generate wrong mesh and bones for the model." +
+                                      Environment.NewLine + Environment.NewLine +
+                                      $"The number in the numeric format of your culture ({GlobalizationHelper.Culture.DisplayName}) is: {heightStr}" +
+                                      Environment.NewLine + Environment.NewLine +
+                                      "Are you sure that you entered a correct value?";
+
+                        if (!Confirm(message)) {
+                            return false;
+                        }
                     }
                 }
 
@@ -226,8 +250,11 @@ namespace OpenMLTD.MillionDance {
                 }
 
                 if (radOptCamFormatVmd.Checked) {
-                    if (!uint.TryParse(txtOptFixedFov.Text, out _)) {
-                        Alert($"FOV value \"{txtOptFixedFov.Text}\" is not a valid positive integer.");
+                    // globalization: The type is uint32 so only thousand separator appears. In either way,
+                    // it will raise a parse error if the user does not conform the UI locale (e.g. input
+                    // "12,345" in French locale, or "12.345" in US locale).
+                    if (!uint.TryParse(txtOptFixedFov.Text, NumberStyles.Integer, GlobalizationHelper.Culture, out _)) {
+                        Alert($"FOV value \"{txtOptFixedFov.Text}\" should be a valid positive integer.");
                         return false;
                     }
                 }

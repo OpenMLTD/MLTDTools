@@ -137,7 +137,7 @@ namespace OpenMLTD.MillionDance.Core {
             } else if (bytes.Length == expectedLength) {
                 result = bytes;
             } else {
-                throw new ArgumentOutOfRangeException($"The string is too long. Should be at most {expectedLength} bytes.");
+                throw new ArgumentOutOfRangeException(nameof(str), str, $"The string is too long. Should be at most {expectedLength} bytes.");
             }
 
             _writer.Write(result);

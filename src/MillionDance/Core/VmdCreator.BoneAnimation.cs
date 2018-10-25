@@ -21,7 +21,7 @@ namespace OpenMLTD.MillionDance.Core {
             var pmxHierarchy = BoneUtils.BuildBoneHierarchy(pmx);
 
             if (ConversionConfig.Current.AppendIKBones || ConversionConfig.Current.AppendEyeBones) {
-                throw new NotSupportedException("Not supported when appending bones is enabled.");
+                throw new NotSupportedException("Character motion frames generation (from MLTD) is not supported when appending bones (eyes and/or IK) is enabled.");
             } else {
                 Debug.Assert(mltdHierarchy.Count == pmxHierarchy.Count);
             }

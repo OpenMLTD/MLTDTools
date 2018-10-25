@@ -45,7 +45,7 @@ namespace OpenMLTD.MillionDance.Core {
                     }
                 } else if (ConversionConfig.Current.SkeletonFormat == SkeletonFormat.Mltd) {
                 } else {
-                    throw new NotSupportedException("You must choose a skeleton format.");
+                    throw new NotSupportedException("You must choose a motion source to determine skeleton format.");
                 }
             }
 

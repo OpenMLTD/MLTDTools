@@ -160,7 +160,7 @@ namespace OpenMLTD.MillionDance.Core {
                 var bytes = encoding.GetBytes(str);
 
                 if (bytes.Length > length) {
-                    throw new ArgumentOutOfRangeException("The string to write is too long.");
+                    throw new ArgumentOutOfRangeException(nameof(str), str, "The string to write is too long.");
                 }
 
                 arr = new byte[length];

@@ -334,6 +334,11 @@ namespace OpenMLTD.MillionDance {
         private void RadOptMotionSourceMltd_CheckedChanged(object sender, EventArgs e) {
             var b = radOptMotionSourceMltd.Checked;
 
+            chkOptAppendLegIKBones.Enabled = !b;
+            chkOptFixCenterBones.Enabled = !b;
+            chkOptConvertToTdaPose.Enabled = !b;
+            chkOptAppendEyeBones.Enabled = !b;
+
             chkOptAppendLegIKBones.Checked = !b;
             chkOptFixCenterBones.Checked = !b;
             chkOptConvertToTdaPose.Checked = !b;
@@ -358,6 +363,12 @@ namespace OpenMLTD.MillionDance {
             btnInputDance.Enabled = b;
             txtInputFacialExpression.Enabled = b;
             btnInputFacialExpression.Enabled = b;
+
+            if (!radOptMotionSourceMltd.Checked) {
+                radOptMotionSourceMltd.Checked = true;
+            }
+
+            radOptMotionSourceMmd.Enabled = !b;
 
             ValidateHasAtLeastOneTask();
         }

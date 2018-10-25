@@ -45,6 +45,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label15 = new System.Windows.Forms.Label();
+            this.txtOptCharHeight = new System.Windows.Forms.TextBox();
             this.chkOptImportPhysics = new System.Windows.Forms.CheckBox();
             this.chkOptTranslateFacialExpressionNames = new System.Windows.Forms.CheckBox();
             this.chkOptHideUnityGenBones = new System.Windows.Forms.CheckBox();
@@ -88,8 +90,6 @@
             this.btnGo = new System.Windows.Forms.Button();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
-            this.txtOptCharHeight = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -332,6 +332,24 @@
             this.tabPage1.Text = "Model";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(237, 52);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(11, 12);
+            this.label15.TabIndex = 23;
+            this.label15.Text = "m";
+            // 
+            // txtOptCharHeight
+            // 
+            this.txtOptCharHeight.Location = new System.Drawing.Point(174, 49);
+            this.txtOptCharHeight.Name = "txtOptCharHeight";
+            this.txtOptCharHeight.Size = new System.Drawing.Size(58, 21);
+            this.txtOptCharHeight.TabIndex = 22;
+            this.txtOptCharHeight.Text = "1.60";
+            this.txtOptCharHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // chkOptImportPhysics
             // 
             this.chkOptImportPhysics.AutoSize = true;
@@ -371,6 +389,7 @@
             // chkOptAppendEyeBones
             // 
             this.chkOptAppendEyeBones.AutoSize = true;
+            this.chkOptAppendEyeBones.Enabled = false;
             this.chkOptAppendEyeBones.Location = new System.Drawing.Point(8, 161);
             this.chkOptAppendEyeBones.Name = "chkOptAppendEyeBones";
             this.chkOptAppendEyeBones.Size = new System.Drawing.Size(120, 16);
@@ -381,6 +400,7 @@
             // chkOptConvertToTdaPose
             // 
             this.chkOptConvertToTdaPose.AutoSize = true;
+            this.chkOptConvertToTdaPose.Enabled = false;
             this.chkOptConvertToTdaPose.Location = new System.Drawing.Point(8, 139);
             this.chkOptConvertToTdaPose.Name = "chkOptConvertToTdaPose";
             this.chkOptConvertToTdaPose.Size = new System.Drawing.Size(282, 16);
@@ -391,6 +411,7 @@
             // chkOptFixCenterBones
             // 
             this.chkOptFixCenterBones.AutoSize = true;
+            this.chkOptFixCenterBones.Enabled = false;
             this.chkOptFixCenterBones.Location = new System.Drawing.Point(8, 117);
             this.chkOptFixCenterBones.Name = "chkOptFixCenterBones";
             this.chkOptFixCenterBones.Size = new System.Drawing.Size(120, 16);
@@ -401,6 +422,7 @@
             // chkOptAppendLegIKBones
             // 
             this.chkOptAppendLegIKBones.AutoSize = true;
+            this.chkOptAppendLegIKBones.Enabled = false;
             this.chkOptAppendLegIKBones.Location = new System.Drawing.Point(8, 95);
             this.chkOptAppendLegIKBones.Name = "chkOptAppendLegIKBones";
             this.chkOptAppendLegIKBones.Size = new System.Drawing.Size(138, 16);
@@ -456,6 +478,7 @@
             // radOptMotionSourceMmd
             // 
             this.radOptMotionSourceMmd.AutoSize = true;
+            this.radOptMotionSourceMmd.Enabled = false;
             this.radOptMotionSourceMmd.Location = new System.Drawing.Point(86, 3);
             this.radOptMotionSourceMmd.Name = "radOptMotionSourceMmd";
             this.radOptMotionSourceMmd.Size = new System.Drawing.Size(41, 16);
@@ -759,24 +782,6 @@
             this.btnGo.TabIndex = 5;
             this.btnGo.Text = "&Go";
             this.btnGo.UseVisualStyleBackColor = true;
-            // 
-            // txtOptCharHeight
-            // 
-            this.txtOptCharHeight.Location = new System.Drawing.Point(174, 49);
-            this.txtOptCharHeight.Name = "txtOptCharHeight";
-            this.txtOptCharHeight.Size = new System.Drawing.Size(58, 21);
-            this.txtOptCharHeight.TabIndex = 22;
-            this.txtOptCharHeight.Text = "1.60";
-            this.txtOptCharHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(237, 52);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(11, 12);
-            this.label15.TabIndex = 23;
-            this.label15.Text = "m";
             // 
             // FMain
             // 

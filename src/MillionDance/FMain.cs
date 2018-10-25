@@ -37,6 +37,7 @@ namespace OpenMLTD.MillionDance {
             btnOutputCharAnim.Click -= BtnOutputCharAnim_Click;
             btnOutputCameraMotion.Click -= BtnOutputCameraMotion_Click;
             chkOptApplyCharHeight.CheckedChanged -= ChkOptApplyCharHeight_CheckedChanged;
+            chkOptScalePmx.CheckedChanged -= ChkOptScalePmx_CheckedChanged;
         }
 
         private void RegisterEventHandlers() {
@@ -56,6 +57,19 @@ namespace OpenMLTD.MillionDance {
             btnOutputCharAnim.Click += BtnOutputCharAnim_Click;
             btnOutputCameraMotion.Click += BtnOutputCameraMotion_Click;
             chkOptApplyCharHeight.CheckedChanged += ChkOptApplyCharHeight_CheckedChanged;
+            chkOptScalePmx.CheckedChanged += ChkOptScalePmx_CheckedChanged;
+        }
+
+        private void ChkOptScalePmx_CheckedChanged(object sender, EventArgs e) {
+            var b = chkOptScalePmx.Checked;
+
+            chkOptApplyCharHeight.Enabled = b;
+
+            var b2 = chkOptApplyCharHeight.Checked;
+
+            txtOptCharHeight.Enabled = b && b2;
+            label15.Enabled = b && b2;
+            label16.Enabled = b && b2;
         }
 
         private void ChkOptApplyCharHeight_CheckedChanged(object sender, EventArgs e) {

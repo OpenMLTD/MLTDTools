@@ -23,7 +23,7 @@ namespace OpenMLTD.MillionDance.Core {
             if (ConversionConfig.Current.AppendIKBones || ConversionConfig.Current.AppendEyeBones) {
                 throw new NotSupportedException("Character motion frames generation (from MLTD) is not supported when appending bones (eyes and/or IK) is enabled.");
             } else {
-                Debug.Assert(mltdHierarchy.Count == pmxHierarchy.Count);
+                Debug.Assert(mltdHierarchy.Count == pmxHierarchy.Count, "Hierarchy number should be equal between MLTD and MMD.");
             }
 
             foreach (var mltdBone in mltdHierarchy) {
@@ -149,7 +149,7 @@ namespace OpenMLTD.MillionDance.Core {
                     {
                         var pb = pmx.Bones.FirstOrDefault(b => b.Name == pmxBone.Name);
 
-                        Debug.Assert(pb != null);
+                        Debug.Assert(pb != null, $"PMX bone with the name \"{pmxBone.Name}\" should exist.");
 
                         if (!pb.IsMltdKeyBone) {
                             continue;

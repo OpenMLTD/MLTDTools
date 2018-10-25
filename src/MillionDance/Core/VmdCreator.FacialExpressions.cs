@@ -42,9 +42,9 @@ namespace OpenMLTD.MillionDance.Core {
             {
                 var lipSyncControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.LipSync).ToArray();
 
-                Debug.Assert(lipSyncControls.Length > 0);
-                Debug.Assert(lipSyncControls[0].Param == 54);
-                Debug.Assert(lipSyncControls[lipSyncControls.Length - 1].Param == 54);
+                Debug.Assert(lipSyncControls.Length > 0, "Lip-sync controls should exist.");
+                Debug.Assert(lipSyncControls[0].Param == 54, "The first control op should be 54.");
+                Debug.Assert(lipSyncControls[lipSyncControls.Length - 1].Param == 54, "The last control op should be 54.");
 
                 const float lipTransitionTime = 0.2f;
                 float lastLipSyncTime = 0;
@@ -63,9 +63,9 @@ namespace OpenMLTD.MillionDance.Core {
                         case 4:
                         case 50:
                             // The whole song ends with a "mouse-closed" (54) op.
-                            Debug.Assert(hasNext);
+                            Debug.Assert(hasNext, "The song should end with control op 54 (mouse closed).");
                             // The whole song starts with a "mouse-closed" (54) op.
-                            Debug.Assert(hasPrev);
+                            Debug.Assert(hasPrev, "The song should start with control op 54 (mouse closed).");
 
                             string morphName;
 
@@ -130,7 +130,7 @@ namespace OpenMLTD.MillionDance.Core {
             {
                 var expControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == songPosition - 1).ToArray();
 
-                Debug.Assert(expControls.Length > 0);
+                Debug.Assert(expControls.Length > 0, "Expression controls should exist.");
 
                 // Note that here we don't process blinkings (which happens in MLTD)
                 for (var i = 0; i < expControls.Length; i++) {
@@ -196,161 +196,6 @@ namespace OpenMLTD.MillionDance.Core {
 
             return facialFrameList;
         }
-
-        private enum FacialExpression {
-
-            Default = 0,
-            VeryMildSmile = 1,
-            StaringFarAway = 3,
-            Happy = 5,
-            RightEyeWink = 26 // Used in 自分REST@RT, the famous wink
-
-        }
-
-        // You can pose and test in PMXE
-        private static readonly IReadOnlyDictionary<FacialExpression, IReadOnlyDictionary<string, float>> FacialExpressionTable = new Dictionary<FacialExpression, IReadOnlyDictionary<string, float>> {
-            [FacialExpression.Default] = new Dictionary<string, float> {
-                ["M_egao"] = 0,
-                ["M_shinken"] = 0,
-                ["M_wide"] = 0,
-                ["M_up"] = 0,
-                ["M_n2"] = 0,
-                ["M_down"] = 0,
-                ["M_odoroki"] = 0,
-                ["M_narrow"] = 0,
-                ["B_v_r"] = 0,
-                ["B_v_l"] = 0,
-                ["B_hati_r"] = 0,
-                ["B_hati_l"] = 0,
-                ["B_agari_r"] = 0,
-                ["B_agari_l"] = 0,
-                ["B_odoroki_r"] = 0,
-                ["B_odoroki_l"] = 0,
-                ["B_down"] = 0,
-                ["B_yori"] = 0,
-                ["E_metoji_r"] = 0,
-                ["E_metoji_l"] = 0,
-                ["E_wink_r"] = 0,
-                ["E_wink_l"] = 0,
-                ["E_open_r"] = 0,
-                ["E_open_l"] = 0,
-                ["EL_wide"] = 0,
-                ["EL_up"] = 0,
-            },
-            // I can't differentiate this with the default expression...
-            [FacialExpression.VeryMildSmile] = new Dictionary<string, float> {
-                ["M_egao"] = 0,
-                ["M_shinken"] = 0,
-                ["M_wide"] = 0,
-                ["M_up"] = 0,
-                ["M_n2"] = 0,
-                ["M_down"] = 0,
-                ["M_odoroki"] = 0,
-                ["M_narrow"] = 0,
-                ["B_v_r"] = 0,
-                ["B_v_l"] = 0,
-                ["B_hati_r"] = 0,
-                ["B_hati_l"] = 0,
-                ["B_agari_r"] = 0,
-                ["B_agari_l"] = 0,
-                ["B_odoroki_r"] = 0,
-                ["B_odoroki_l"] = 0,
-                ["B_down"] = 0,
-                ["B_yori"] = 0,
-                ["E_metoji_r"] = 0,
-                ["E_metoji_l"] = 0,
-                ["E_wink_r"] = 0,
-                ["E_wink_l"] = 0,
-                ["E_open_r"] = 0,
-                ["E_open_l"] = 0,
-                ["EL_wide"] = 0,
-                ["EL_up"] = 0,
-            },
-            [FacialExpression.StaringFarAway] = new Dictionary<string, float> {
-                ["M_egao"] = 0,
-                ["M_shinken"] = 0.32f,
-                ["M_wide"] = 0,
-                ["M_up"] = 0,
-                ["M_n2"] = 0,
-                ["M_down"] = 0,
-                ["M_odoroki"] = 0,
-                ["M_narrow"] = 0,
-                ["B_v_r"] = 0.12f,
-                ["B_v_l"] = 0.12f,
-                ["B_hati_r"] = 0.40f,
-                ["B_hati_l"] = 0.40f,
-                ["B_agari_r"] = 0,
-                ["B_agari_l"] = 0,
-                ["B_odoroki_r"] = 0,
-                ["B_odoroki_l"] = 0,
-                ["B_down"] = 0,
-                ["B_yori"] = 0,
-                ["E_metoji_r"] = 0,
-                ["E_metoji_l"] = 0,
-                ["E_wink_r"] = 0,
-                ["E_wink_l"] = 0,
-                ["E_open_r"] = 0,
-                ["E_open_l"] = 0,
-                ["EL_wide"] = 0,
-                ["EL_up"] = 0,
-            },
-            [FacialExpression.Happy] = new Dictionary<string, float> {
-                ["M_egao"] = 0,
-                ["M_shinken"] = 0,
-                ["M_wide"] = 0,
-                ["M_up"] = 0,
-                ["M_n2"] = 0,
-                ["M_down"] = 0,
-                ["M_odoroki"] = 0,
-                ["M_narrow"] = 0,
-                ["B_v_r"] = 0,
-                ["B_v_l"] = 0,
-                ["B_hati_r"] = 0,
-                ["B_hati_l"] = 0,
-                ["B_agari_r"] = 0,
-                ["B_agari_l"] = 0,
-                ["B_odoroki_r"] = 0,
-                ["B_odoroki_l"] = 0,
-                ["B_down"] = 0,
-                ["B_yori"] = 0,
-                ["E_metoji_r"] = 0,
-                ["E_metoji_l"] = 0,
-                ["E_wink_r"] = 1.0f,
-                ["E_wink_l"] = 1.0f,
-                ["E_open_r"] = 0,
-                ["E_open_l"] = 0,
-                ["EL_wide"] = 0,
-                ["EL_up"] = 0,
-            },
-            [FacialExpression.RightEyeWink] = new Dictionary<string, float> {
-                ["M_egao"] = 0,
-                ["M_shinken"] = 0,
-                ["M_wide"] = 0,
-                ["M_up"] = 0,
-                ["M_n2"] = 0,
-                ["M_down"] = 0,
-                ["M_odoroki"] = 0,
-                ["M_narrow"] = 0,
-                ["B_v_r"] = 0,
-                ["B_v_l"] = 0,
-                ["B_hati_r"] = 0,
-                ["B_hati_l"] = 0,
-                ["B_agari_r"] = 0,
-                ["B_agari_l"] = 0,
-                ["B_odoroki_r"] = 0,
-                ["B_odoroki_l"] = 0,
-                ["B_down"] = 0,
-                ["B_yori"] = 0,
-                ["E_metoji_r"] = 0,
-                ["E_metoji_l"] = 0,
-                ["E_wink_r"] = 1,
-                ["E_wink_l"] = 0,
-                ["E_open_r"] = 0,
-                ["E_open_l"] = 0,
-                ["EL_wide"] = 0,
-                ["EL_up"] = 0,
-            },
-        };
 
     }
 }

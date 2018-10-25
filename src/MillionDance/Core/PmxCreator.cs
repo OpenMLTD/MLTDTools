@@ -430,7 +430,7 @@ namespace OpenMLTD.MillionDance.Core {
                     var meshNameIndex = -1;
                     var cm = combinedMesh as CompositeMesh;
 
-                    Debug.Assert(cm != null);
+                    Debug.Assert(cm != null, nameof(cm) + " != null");
 
                     for (var i = 0; i < cm.Names.Count; i++) {
                         var meshName = cm.Names[i];
@@ -447,8 +447,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                     var subMeshMaps = cm.ParentMeshIndices.Enumerate().Where(s => s.Value == meshNameIndex).ToArray();
 
-                    Debug.Assert(subMeshMaps.Length == 2);
-                    Debug.Assert(subMeshMaps[1].Index - subMeshMaps[0].Index == 1);
+                    Debug.Assert(subMeshMaps.Length == 2, "There should be 2 sub mesh maps.");
+                    Debug.Assert(subMeshMaps[1].Index - subMeshMaps[0].Index == 1, "The first sub mesh map should contain one element.");
 
                     var vertexStart1 = (int)cm.SubMeshes[subMeshMaps[0].Index].FirstVertex;
                     var vertexCount1 = (int)cm.SubMeshes[subMeshMaps[0].Index].VertexCount;
@@ -480,8 +480,8 @@ namespace OpenMLTD.MillionDance.Core {
                         }
                     }
 
-                    Debug.Assert(leftMostIndex >= 0);
-                    Debug.Assert(rightMostIndex >= 0);
+                    Debug.Assert(leftMostIndex >= 0, nameof(leftMostIndex) + " >= 0");
+                    Debug.Assert(rightMostIndex >= 0, nameof(rightMostIndex) + " >= 0");
 
                     centerPos = centerPos / vertexCount;
 
@@ -580,13 +580,13 @@ namespace OpenMLTD.MillionDance.Core {
                         var skin = vertices[i];
                         // Eyes are only affected by "KUBI/ATAMA" bone by default. So we only need to set one element's values.
                         skin.BoneWeights[0].BoneIndex = leftEyeIndex;
-                        Debug.Assert(Math.Abs(skin.BoneWeights[0].Weight - 1) < 0.000001f);
+                        Debug.Assert(Math.Abs(skin.BoneWeights[0].Weight - 1) < 0.000001f, "Total weight in the skin of left eye should be 1.");
                     }
                     for (var i = vs2; i < vs2 + vc2; ++i) {
                         var skin = vertices[i];
                         // Eyes are only affected by "KUBI/ATAMA" bone by default. So we only need to set one element's values.
                         skin.BoneWeights[0].BoneIndex = rightEyeIndex;
-                        Debug.Assert(Math.Abs(skin.BoneWeights[0].Weight - 1) < 0.000001f);
+                        Debug.Assert(Math.Abs(skin.BoneWeights[0].Weight - 1) < 0.000001f, "Total weight in the skin of right eye should be 1.");
                     }
                 }
             }
@@ -678,8 +678,8 @@ namespace OpenMLTD.MillionDance.Core {
             var s = mesh.Shape;
 
             if (s != null) {
-                Debug.Assert(s.Channels.Count == s.Shapes.Count);
-                Debug.Assert(s.Channels.Count == s.FullWeights.Count);
+                Debug.Assert(s.Channels.Count == s.Shapes.Count, "s.Channels.Count == s.Shapes.Count");
+                Debug.Assert(s.Channels.Count == s.FullWeights.Count, "s.Channels.Count == s.FullWeights.Count");
 
                 var morphCount = s.Channels.Count;
 

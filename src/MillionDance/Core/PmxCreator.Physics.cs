@@ -57,7 +57,7 @@ namespace OpenMLTD.MillionDance.Core {
                     var body = new PmxRigidBody();
                     var correspondingBone = bones.FirstOrDefault(o => o.Name == pmxBoneName);
 
-                    Debug.Assert(correspondingBone != null);
+                    Debug.Assert(correspondingBone != null, nameof(correspondingBone) + " != null");
 
                     body.Name = correspondingBone.Name;
                     body.NameEnglish = correspondingBone.NameEnglish;
@@ -195,7 +195,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                     var correspondingBone = bones.FirstOrDefault(o => o.Name == pmxBoneName);
 
-                    Debug.Assert(correspondingBone != null);
+                    Debug.Assert(correspondingBone != null, "Semi-root sway: " + nameof(correspondingBone) + " != null");
 
                     body.BoneIndex = correspondingBone.BoneIndex;
 
@@ -254,7 +254,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                                 var childBone = bones.FirstOrDefault(bo => bo.ParentIndex == correspondingBone.BoneIndex);
 
-                                Debug.Assert(childBone != null);
+                                Debug.Assert(childBone != null, nameof(childBone) + " != null");
 
                                 body.Position = (correspondingBone.InitialPosition + childBone.InitialPosition) / 2;
                             }
@@ -291,13 +291,13 @@ namespace OpenMLTD.MillionDance.Core {
 
                     var correspondingBone = bones.FirstOrDefault(o => o.Name == pmxBoneName);
 
-                    Debug.Assert(correspondingBone != null);
+                    Debug.Assert(correspondingBone != null, "Normal sway: " + nameof(correspondingBone) + " != null");
 
                     switch (part) {
                         case CoordSystemPart.Skirt:
                         case CoordSystemPart.Hair:
                             correspondingBone = bones.FirstOrDefault(b => b.ParentIndex == correspondingBone.BoneIndex);
-                            Debug.Assert(correspondingBone != null);
+                            Debug.Assert(correspondingBone != null, "Normal sway: " + nameof(correspondingBone) + " != null");
                             break;
                         case CoordSystemPart.Accessories:
                         case CoordSystemPart.Breasts:
@@ -374,7 +374,7 @@ namespace OpenMLTD.MillionDance.Core {
                                 } else {
                                     var parentBone = bones.FirstOrDefault(bo => bo.BoneIndex == correspondingBone.ParentIndex);
 
-                                    Debug.Assert(parentBone != null);
+                                    Debug.Assert(parentBone != null, nameof(parentBone) + " != null");
 
                                     var delta = correspondingBone.InitialPosition - parentBone.InitialPosition;
 

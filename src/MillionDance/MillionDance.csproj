@@ -68,6 +68,7 @@
     <Compile Include="Core\VmdCreator.BoneAnimation.cs" />
     <Compile Include="Core\VmdCreator.Camera.cs" />
     <Compile Include="Core\VmdCreator.FacialExpressions.cs" />
+    <Compile Include="Core\VmdCreator.FacialExpressionTable.cs" />
     <Compile Include="Entities\Internal\CameraAnimation.cs" />
     <Compile Include="Entities\Internal\CameraFrame.cs" />
     <Compile Include="Entities\Mltd\ColorRGBA.cs" />

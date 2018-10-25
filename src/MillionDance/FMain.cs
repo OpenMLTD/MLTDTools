@@ -62,6 +62,7 @@ namespace OpenMLTD.MillionDance {
             var b = chkOptApplyCharHeight.Checked;
             txtOptCharHeight.Enabled = b;
             label15.Enabled = b;
+            label16.Enabled = b;
         }
 
         private void BtnOutputCameraMotion_Click(object sender, EventArgs e) {
@@ -329,6 +330,7 @@ namespace OpenMLTD.MillionDance {
             var b = radOptCamFormatVmd.Checked;
             txtOptFixedFov.Enabled = b;
             label12.Enabled = b;
+            label17.Enabled = b;
         }
 
         private void RadOptMotionSourceMltd_CheckedChanged(object sender, EventArgs e) {

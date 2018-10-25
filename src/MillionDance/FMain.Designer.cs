@@ -90,6 +90,8 @@
             this.btnGo = new System.Windows.Forms.Button();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -310,6 +312,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label16);
             this.tabPage1.Controls.Add(this.label15);
             this.tabPage1.Controls.Add(this.txtOptCharHeight);
             this.tabPage1.Controls.Add(this.chkOptImportPhysics);
@@ -357,9 +360,9 @@
             this.chkOptImportPhysics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkOptImportPhysics.Location = new System.Drawing.Point(8, 227);
             this.chkOptImportPhysics.Name = "chkOptImportPhysics";
-            this.chkOptImportPhysics.Size = new System.Drawing.Size(108, 16);
+            this.chkOptImportPhysics.Size = new System.Drawing.Size(246, 16);
             this.chkOptImportPhysics.TabIndex = 21;
-            this.chkOptImportPhysics.Text = "Import physics";
+            this.chkOptImportPhysics.Text = "Import physics (experimental feature)";
             this.chkOptImportPhysics.UseVisualStyleBackColor = true;
             // 
             // chkOptTranslateFacialExpressionNames
@@ -509,6 +512,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label17);
             this.tabPage2.Controls.Add(this.cboOptSongPosition);
             this.tabPage2.Controls.Add(this.label14);
             this.tabPage2.Controls.Add(this.label12);
@@ -554,6 +558,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
+            this.label12.Enabled = false;
             this.label12.Location = new System.Drawing.Point(141, 90);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(23, 12);
@@ -783,6 +788,25 @@
             this.btnGo.Text = "&Go";
             this.btnGo.UseVisualStyleBackColor = true;
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(254, 52);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(107, 12);
+            this.label16.TabIndex = 24;
+            this.label16.Text = "(standard = 1.60)";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Enabled = false;
+            this.label17.Location = new System.Drawing.Point(170, 90);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(89, 12);
+            this.label17.TabIndex = 10;
+            this.label17.Text = "(default = 20)";
+            // 
             // FMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -890,5 +914,7 @@
         private System.Windows.Forms.SaveFileDialog sfd;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox txtOptCharHeight;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
     }
 }

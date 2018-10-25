@@ -9,7 +9,7 @@ namespace OpenMLTD.MillionDance.Core {
             VeryMildSmile = 1,
             StaringFarAway = 3,
             Happy = 5,
-            RightEyeWink = 26 // Used in 自分REST@RT, the famous wink
+            RightEyeWink = 22 // Used in 自分REST@RT, the famous wink
 
         }
 

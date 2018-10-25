@@ -155,7 +155,7 @@ namespace OpenMLTD.MillionDance.Core {
                         var expressionKey = (FacialExpression)exp.Param;
 
                         if (!FacialExpressionTable.ContainsKey(expressionKey)) {
-                            Debug.Print("Warning: facial expression key {0} not found, using default emotion instead.", exp.Param);
+                            Trace.TraceWarning("Facial expression key {0} is not found, using default emotion instead.", exp.Param);
 
                             expressionKey = FacialExpression.Default;
                         }
@@ -173,7 +173,7 @@ namespace OpenMLTD.MillionDance.Core {
                                 var lastExpressionKey = (FacialExpression)expControls[i - 1].Param;
 
                                 if (!FacialExpressionTable.ContainsKey(lastExpressionKey)) {
-                                    Debug.Print("Warning: facial expression key {0} not found, using default emotion instead.", expControls[i - 1].Param);
+                                    Trace.TraceWarning("Facial expression key {0} is not found, using default emotion instead.", expControls[i - 1].Param);
 
                                     lastExpressionKey = FacialExpression.Default;
                                 }

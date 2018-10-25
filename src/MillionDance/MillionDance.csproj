@@ -188,6 +188,9 @@
     <Compile Include="Core\VmdWriter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FMain.TextBoxTracer.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
   </ItemGroup>

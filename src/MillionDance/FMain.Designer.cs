@@ -45,6 +45,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.txtOptCharHeight = new System.Windows.Forms.TextBox();
             this.chkOptImportPhysics = new System.Windows.Forms.CheckBox();
@@ -62,6 +63,7 @@
             this.radOptMotionSourceMltd = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label17 = new System.Windows.Forms.Label();
             this.cboOptSongPosition = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -90,8 +92,7 @@
             this.btnGo = new System.Windows.Forms.Button();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
+            this.btnClearLog = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -335,6 +336,15 @@
             this.tabPage1.Text = "Model";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(254, 52);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(107, 12);
+            this.label16.TabIndex = 24;
+            this.label16.Text = "(standard = 1.60)";
+            // 
             // label15
             // 
             this.label15.AutoSize = true;
@@ -530,6 +540,16 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Motions";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Enabled = false;
+            this.label17.Location = new System.Drawing.Point(170, 90);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(89, 12);
+            this.label17.TabIndex = 10;
+            this.label17.Text = "(default = 20)";
             // 
             // cboOptSongPosition
             // 
@@ -788,30 +808,21 @@
             this.btnGo.Text = "&Go";
             this.btnGo.UseVisualStyleBackColor = true;
             // 
-            // label16
+            // btnClearLog
             // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(254, 52);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(107, 12);
-            this.label16.TabIndex = 24;
-            this.label16.Text = "(standard = 1.60)";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Enabled = false;
-            this.label17.Location = new System.Drawing.Point(170, 90);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(89, 12);
-            this.label17.TabIndex = 10;
-            this.label17.Text = "(default = 20)";
+            this.btnClearLog.Location = new System.Drawing.Point(625, 292);
+            this.btnClearLog.Name = "btnClearLog";
+            this.btnClearLog.Size = new System.Drawing.Size(76, 27);
+            this.btnClearLog.TabIndex = 6;
+            this.btnClearLog.Text = "&Clear Log";
+            this.btnClearLog.UseVisualStyleBackColor = true;
             // 
             // FMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(715, 433);
+            this.Controls.Add(this.btnClearLog);
             this.Controls.Add(this.btnGo);
             this.Controls.Add(this.txtLog);
             this.Controls.Add(this.groupBox3);
@@ -916,5 +927,6 @@
         private System.Windows.Forms.TextBox txtOptCharHeight;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button btnClearLog;
     }
 }

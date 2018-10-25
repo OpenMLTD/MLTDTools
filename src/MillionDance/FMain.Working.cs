@@ -12,10 +12,6 @@ namespace OpenMLTD.MillionDance {
     partial class FMain {
 
         private void DoWork(object state) {
-            void Log(string text) {
-                Invoke(() => this.Log(text));
-            }
-
             ConversionConfig PrepareConversionConfig(InputParams ip) {
                 var cc = new ConversionConfig();
 
@@ -207,12 +203,7 @@ namespace OpenMLTD.MillionDance {
             Log("Done.");
 
             Invoke(() => EnableMainControls(true));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Invoke<T>([NotNull] Action<T> action) {
-            Invoke((Delegate)action);
-        }
+        } 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Invoke([NotNull] Action action) {

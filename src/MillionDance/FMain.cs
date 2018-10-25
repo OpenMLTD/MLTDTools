@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -39,6 +40,7 @@ namespace OpenMLTD.MillionDance {
             btnOutputCameraMotion.Click -= BtnOutputCameraMotion_Click;
             chkOptApplyCharHeight.CheckedChanged -= ChkOptApplyCharHeight_CheckedChanged;
             chkOptScalePmx.CheckedChanged -= ChkOptScalePmx_CheckedChanged;
+            btnClearLog.Click -= BtnClearLog_Click;
         }
 
         private void RegisterEventHandlers() {
@@ -59,6 +61,11 @@ namespace OpenMLTD.MillionDance {
             btnOutputCameraMotion.Click += BtnOutputCameraMotion_Click;
             chkOptApplyCharHeight.CheckedChanged += ChkOptApplyCharHeight_CheckedChanged;
             chkOptScalePmx.CheckedChanged += ChkOptScalePmx_CheckedChanged;
+            btnClearLog.Click += BtnClearLog_Click;
+        }
+
+        private void BtnClearLog_Click(object sender, EventArgs e) {
+            txtLog.ResetText();
         }
 
         private void ChkOptScalePmx_CheckedChanged(object sender, EventArgs e) {
@@ -155,6 +162,8 @@ namespace OpenMLTD.MillionDance {
 
             label16.Text = $"(standard = {defaultCharHeightStr})";
             txtOptCharHeight.Text = defaultCharHeightStr;
+
+            Trace.Listeners.Add(new TextBoxTracer(this));
         }
 
         private void BtnGo_Click(object sender, EventArgs e) {
@@ -427,6 +436,14 @@ namespace OpenMLTD.MillionDance {
         #endregion
 
         private void Log([NotNull] string text) {
+            if (InvokeRequired) {
+                Invoke(() => {
+                    Log(text);
+                });
+
+                return;
+            }
+
             var now = DateTime.Now;
             var timeStr = now.ToString("s");
 
@@ -459,6 +476,7 @@ namespace OpenMLTD.MillionDance {
             groupBox3.Enabled = enabled;
             tabControl1.Enabled = enabled;
             btnGo.Enabled = enabled;
+            btnClearLog.Enabled = enabled;
         }
 
         private (string Result, bool OK) SelectOpenFile([NotNull] string filter) {

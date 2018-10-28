@@ -41,6 +41,7 @@ namespace OpenMLTD.MillionDance {
             chkOptApplyCharHeight.CheckedChanged -= ChkOptApplyCharHeight_CheckedChanged;
             chkOptScalePmx.CheckedChanged -= ChkOptScalePmx_CheckedChanged;
             btnClearLog.Click -= BtnClearLog_Click;
+            btnOptSelectFEMappings.Click -= BtnOptSelectFEMappings_Click;
         }
 
         private void RegisterEventHandlers() {
@@ -62,6 +63,17 @@ namespace OpenMLTD.MillionDance {
             chkOptApplyCharHeight.CheckedChanged += ChkOptApplyCharHeight_CheckedChanged;
             chkOptScalePmx.CheckedChanged += ChkOptScalePmx_CheckedChanged;
             btnClearLog.Click += BtnClearLog_Click;
+            btnOptSelectFEMappings.Click += BtnOptSelectFEMappings_Click;
+        }
+
+        private void BtnOptSelectFEMappings_Click(object sender, EventArgs e) {
+            var (path, ok) = SelectOpenFile("JSON (*.json)|*.json");
+
+            if (!ok) {
+                return;
+            }
+
+            txtOptFEMappings.Text = path;
         }
 
         private void BtnClearLog_Click(object sender, EventArgs e) {
@@ -245,6 +257,11 @@ namespace OpenMLTD.MillionDance {
                     if (!CheckOutputDir(txtOutputCharAnim.Text)) {
                         return false;
                     }
+
+                    if (!File.Exists(txtInputFacialExpression.Text)) {
+                        Alert($"Facial expression mapping file \"{txtOptFEMappings.Text}\" does not exist.");
+                        return false;
+                    }
                 }
 
                 if (chkGenerateCameraMotion.Checked) {
@@ -350,6 +367,8 @@ namespace OpenMLTD.MillionDance {
                 ip.FixedFov = ip.UseMvd ? Convert.ToUInt32(txtOptFixedFov.Text) : 0;
                 ip.SongPosition = cboOptSongPosition.SelectedIndex + 1;
 
+                ip.FacialExpressionMappingFilePath = txtOptFEMappings.Text;
+
                 return ip;
             }
 
@@ -445,7 +464,7 @@ namespace OpenMLTD.MillionDance {
             }
 
             var now = DateTime.Now;
-            var timeStr = now.ToString("s");
+            var timeStr = now.ToString("T");
 
             var log = $"{timeStr} {text}";
 

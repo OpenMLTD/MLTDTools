@@ -152,17 +152,17 @@ namespace OpenMLTD.MillionDance.Core {
                     }
 
                     do {
-                        var expressionKey = (FacialExpression)exp.Param;
+                        var expressionKey = exp.Param;
 
-                        if (!FacialExpressionTable.ContainsKey(expressionKey)) {
+                        if (!ConversionConfig.Current.FacialExpressionMappings.ContainsKey(expressionKey)) {
                             Trace.TraceWarning("Facial expression key {0} is not found, using default emotion instead.", exp.Param);
 
-                            expressionKey = FacialExpression.Default;
+                            expressionKey = 0;
                         }
 
                         const float faceTransitionTime = 0.1333333f;
 
-                        foreach (var kv in FacialExpressionTable[expressionKey]) {
+                        foreach (var kv in ConversionConfig.Current.FacialExpressionMappings[expressionKey]) {
                             if ((kv.Key != "E_metoji_r" && kv.Key != "E_metoji_l")) {
                                 facialFrameList.Add(CreateFacialFrame(currentTime, kv.Key, kv.Value));
                             }
@@ -170,17 +170,17 @@ namespace OpenMLTD.MillionDance.Core {
 
                         if (i > 0) {
                             if (expControls[i - 1].Param != exp.Param) {
-                                var lastExpressionKey = (FacialExpression)expControls[i - 1].Param;
+                                var lastExpressionKey = expControls[i - 1].Param;
 
-                                if (!FacialExpressionTable.ContainsKey(lastExpressionKey)) {
+                                if (!ConversionConfig.Current.FacialExpressionMappings.ContainsKey(lastExpressionKey)) {
                                     Trace.TraceWarning("Facial expression key {0} is not found, using default emotion instead.", expControls[i - 1].Param);
 
-                                    lastExpressionKey = FacialExpression.Default;
+                                    lastExpressionKey = 0;
                                 }
 
                                 var expectedTransitionStartTime = currentTime - faceTransitionTime;
 
-                                foreach (var kv in FacialExpressionTable[lastExpressionKey]) {
+                                foreach (var kv in ConversionConfig.Current.FacialExpressionMappings[lastExpressionKey]) {
                                     // TODO: Actually we should do a more thorough analysis, because in this time window the eye CAN be opened again so we actually need these values.
                                     // But whatever. This case is rare. Fix it in the future.
                                     if ((kv.Key != "E_metoji_r" && kv.Key != "E_metoji_l")) {

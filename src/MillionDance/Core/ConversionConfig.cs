@@ -1,4 +1,7 @@
-﻿namespace OpenMLTD.MillionDance.Core {
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
+
+namespace OpenMLTD.MillionDance.Core {
     internal sealed class ConversionConfig {
 
         public MotionFormat MotionFormat { get; internal set; }
@@ -33,6 +36,20 @@
 
         public bool ScaleToVmdSize { get; internal set; }
 
+        [NotNull]
+        public IReadOnlyDictionary<int, IReadOnlyDictionary<string, float>> FacialExpressionMappings { get; internal set; }
+
+        [NotNull]
+        private static IReadOnlyDictionary<int, IReadOnlyDictionary<string, float>> ConvertDictionary([NotNull] IReadOnlyDictionary<VmdCreator.FacialExpressionKind, IReadOnlyDictionary<string, float>> dict) {
+            var d = new Dictionary<int, IReadOnlyDictionary<string, float>>();
+
+            foreach (var kv in dict) {
+                d[(int)kv.Key] = kv.Value;
+            }
+
+            return d;
+        }
+
         private static readonly ConversionConfig UseMltdMotion = new ConversionConfig {
             MotionFormat = MotionFormat.Mltd,
             ScaleToPmxSize = true,
@@ -47,7 +64,8 @@
             TranslateFacialExpressionNamesToMmd = true,
             ImportPhysics = true,
             Transform60FpsTo30Fps = false,
-            ScaleToVmdSize = true
+            ScaleToVmdSize = true,
+            FacialExpressionMappings = ConvertDictionary(VmdCreator.DefaultFacialExpressionTable)
         };
 
         private static readonly ConversionConfig UseMmdMotion = new ConversionConfig {
@@ -64,7 +82,8 @@
             TranslateFacialExpressionNamesToMmd = true,
             ImportPhysics = true,
             Transform60FpsTo30Fps = true,
-            ScaleToVmdSize = true
+            ScaleToVmdSize = true,
+            FacialExpressionMappings = ConvertDictionary(VmdCreator.DefaultFacialExpressionTable)
         };
 
         public static ConversionConfig Current { get; internal set; } = UseMltdMotion;

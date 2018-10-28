@@ -64,6 +64,10 @@ Theoretically it can be applied to other Unity games, with a little modification
 
 *Requires OpenGL 4.0+*
 
+**Facial Expression Mapping Editor**
+
+A utility to use with MillionDance.
+
 ## Contributing
 
 Contributions are [Welcome!!](https://www.project-imas.com/wiki/Welcome!!)

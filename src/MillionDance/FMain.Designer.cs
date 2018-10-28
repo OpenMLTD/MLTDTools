@@ -93,6 +93,9 @@
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
+            this.label18 = new System.Windows.Forms.Label();
+            this.btnOptSelectFEMappings = new System.Windows.Forms.Button();
+            this.txtOptFEMappings = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -522,6 +525,9 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnOptSelectFEMappings);
+            this.tabPage2.Controls.Add(this.txtOptFEMappings);
+            this.tabPage2.Controls.Add(this.label18);
             this.tabPage2.Controls.Add(this.label17);
             this.tabPage2.Controls.Add(this.cboOptSongPosition);
             this.tabPage2.Controls.Add(this.label14);
@@ -817,6 +823,32 @@
             this.btnClearLog.Text = "&Clear Log";
             this.btnClearLog.UseVisualStyleBackColor = true;
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(7, 143);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(167, 12);
+            this.label18.TabIndex = 11;
+            this.label18.Text = "Facial expression mappings:";
+            // 
+            // btnOptSelectFEMappings
+            // 
+            this.btnOptSelectFEMappings.Location = new System.Drawing.Point(371, 139);
+            this.btnOptSelectFEMappings.Name = "btnOptSelectFEMappings";
+            this.btnOptSelectFEMappings.Size = new System.Drawing.Size(32, 21);
+            this.btnOptSelectFEMappings.TabIndex = 13;
+            this.btnOptSelectFEMappings.Text = "...";
+            this.btnOptSelectFEMappings.UseVisualStyleBackColor = true;
+            // 
+            // txtOptFEMappings
+            // 
+            this.txtOptFEMappings.Location = new System.Drawing.Point(172, 140);
+            this.txtOptFEMappings.Name = "txtOptFEMappings";
+            this.txtOptFEMappings.Size = new System.Drawing.Size(193, 21);
+            this.txtOptFEMappings.TabIndex = 12;
+            this.txtOptFEMappings.Text = "Resources/facial_expr.json";
+            // 
             // FMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -928,5 +960,8 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Button btnClearLog;
+        private System.Windows.Forms.Button btnOptSelectFEMappings;
+        private System.Windows.Forms.TextBox txtOptFEMappings;
+        private System.Windows.Forms.Label label18;
     }
 }

@@ -3,7 +3,7 @@
 namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
-        private enum FacialExpression {
+        internal enum FacialExpressionKind {
 
             Default = 0,
             VeryMildSmile = 1,
@@ -14,8 +14,8 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         // You can pose and test in PMXE
-        private static readonly IReadOnlyDictionary<FacialExpression, IReadOnlyDictionary<string, float>> FacialExpressionTable = new Dictionary<FacialExpression, IReadOnlyDictionary<string, float>> {
-            [FacialExpression.Default] = new Dictionary<string, float> {
+        internal static readonly IReadOnlyDictionary<FacialExpressionKind, IReadOnlyDictionary<string, float>> DefaultFacialExpressionTable = new Dictionary<FacialExpressionKind, IReadOnlyDictionary<string, float>> {
+            [FacialExpressionKind.Default] = new Dictionary<string, float> {
                 ["M_egao"] = 0,
                 ["M_shinken"] = 0,
                 ["M_wide"] = 0,
@@ -44,7 +44,7 @@ namespace OpenMLTD.MillionDance.Core {
                 ["EL_up"] = 0,
             },
             // I can't differentiate this with the default expression...
-            [FacialExpression.VeryMildSmile] = new Dictionary<string, float> {
+            [FacialExpressionKind.VeryMildSmile] = new Dictionary<string, float> {
                 ["M_egao"] = 0,
                 ["M_shinken"] = 0,
                 ["M_wide"] = 0,
@@ -72,7 +72,7 @@ namespace OpenMLTD.MillionDance.Core {
                 ["EL_wide"] = 0,
                 ["EL_up"] = 0,
             },
-            [FacialExpression.StaringFarAway] = new Dictionary<string, float> {
+            [FacialExpressionKind.StaringFarAway] = new Dictionary<string, float> {
                 ["M_egao"] = 0,
                 ["M_shinken"] = 0.32f,
                 ["M_wide"] = 0,
@@ -100,7 +100,7 @@ namespace OpenMLTD.MillionDance.Core {
                 ["EL_wide"] = 0,
                 ["EL_up"] = 0,
             },
-            [FacialExpression.Happy] = new Dictionary<string, float> {
+            [FacialExpressionKind.Happy] = new Dictionary<string, float> {
                 ["M_egao"] = 0,
                 ["M_shinken"] = 0,
                 ["M_wide"] = 0,
@@ -128,7 +128,7 @@ namespace OpenMLTD.MillionDance.Core {
                 ["EL_wide"] = 0,
                 ["EL_up"] = 0,
             },
-            [FacialExpression.RightEyeWink] = new Dictionary<string, float> {
+            [FacialExpressionKind.RightEyeWink] = new Dictionary<string, float> {
                 ["M_egao"] = 0,
                 ["M_shinken"] = 0,
                 ["M_wide"] = 0,

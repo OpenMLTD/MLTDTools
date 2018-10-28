@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows.Forms;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Mltd;
+using OpenMLTD.MLTDTools.Applications.TDFacial.Entities;
 using UnityStudio.Utilities;
 
 namespace OpenMLTD.MillionDance {
@@ -31,10 +35,29 @@ namespace OpenMLTD.MillionDance {
                 cc.Transform60FpsTo30Fps = ip.TransformTo30Fps;
                 cc.ScaleToVmdSize = ip.ScaleVmd;
 
+                {
+                    var mappingsJson = File.ReadAllText(ip.FacialExpressionMappingFilePath, Encoding.UTF8);
+                    var mappingsObj = JsonConvert.DeserializeObject<FacialConfig>(mappingsJson);
+
+                    var dict = new Dictionary<int, IReadOnlyDictionary<string, float>>();
+
+                    foreach (var expr in mappingsObj.Expressions) {
+                        var d2 = new Dictionary<string, float>();
+
+                        foreach (var kv in expr.Data) {
+                            d2[kv.Key] = kv.Value;
+                        }
+
+                        dict[expr.Key] = d2;
+                    }
+
+                    cc.FacialExpressionMappings = dict;
+                }
+
                 return cc;
             }
 
-            Debug.Assert(InvokeRequired);
+            Debug.Assert(InvokeRequired, "The worker procedure should be running on the worker thread.");
 
             Log("Worker started.");
 
@@ -197,13 +220,13 @@ namespace OpenMLTD.MillionDance {
                     } while (false);
                 } while (false);
             } catch (Exception ex) {
-                MessageBox.Show(ex.Message, ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.ToString(), ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             Log("Done.");
 
             Invoke(() => EnableMainControls(true));
-        } 
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Invoke([NotNull] Action action) {
@@ -244,6 +267,8 @@ namespace OpenMLTD.MillionDance {
             public bool UseMvd { get; set; }
             public uint FixedFov { get; set; }
             public int SongPosition { get; set; }
+
+            public string FacialExpressionMappingFilePath { get; set; }
 
         }
 

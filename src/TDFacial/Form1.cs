@@ -78,17 +78,19 @@ namespace OpenMLTD.MLTDTools.Applications.TDFacial {
 
             _config.Expressions.RemoveAt(index);
 
+            UpdateExpressionList();
             UpdateExpressionDataList();
         }
 
         private void BtnExprAdd_Click(object sender, EventArgs e) {
+            FacialExpression exp2;
             var exp = GetSelectedFacialExpression();
 
             if (exp == null) {
-                return;
+                exp2 = new FacialExpression();
+            } else {
+                exp2 = exp.Clone();
             }
-
-            var exp2 = exp.Clone();
 
             // Find the next available key.
             {
@@ -98,7 +100,13 @@ namespace OpenMLTD.MLTDTools.Applications.TDFacial {
                     set.Add(t.Key);
                 }
 
-                var newKey = exp.Key + 1;
+                int newKey;
+
+                if (exp == null) {
+                    newKey = 0;
+                } else {
+                    newKey = exp.Key + 1;
+                }
 
                 while (set.Contains(newKey)) {
                     newKey = newKey + 1;

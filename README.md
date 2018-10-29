@@ -49,7 +49,7 @@ WIP
 
 Exports models, character and camera motions to MMD equivalents. (alpha)
 
-Note:
+[Manual](https://github.com/OpenMLTD/MLTDTools/wiki/MillionDance-Manual)
 
 Ouput data tested in [MikuMikuMoving](https://sites.google.com/site/mikumikumovingeng/) (MMM) but not [MikuMikuDance](http://www.geocities.jp/higuchuu4/index_e.htm) (MMD) because the number of frames is huge.
 It is suggested to use MMM for enhanced performance. Also, some conversion seems to fail only when the output is used with MMD; maybe I'll
@@ -67,6 +67,8 @@ Theoretically it can be applied to other Unity games, with a little modification
 **Facial Expression Mapping Editor**
 
 A utility to use with MillionDance.
+
+[Manual](https://github.com/OpenMLTD/MLTDTools/wiki/TDFacial-Manual)
 
 ## Contributing
 

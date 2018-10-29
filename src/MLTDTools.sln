@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
 		..\.gitmodules = ..\.gitmodules
+		..\appveyor.yml = ..\appveyor.yml
 		..\LICENSE.txt = ..\LICENSE.txt
 		..\README.md = ..\README.md
 	EndProjectSection
@@ -44,6 +45,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MillionDanceView", "MillionDanceView\MillionDanceView.csproj", "{A2039EB5-47FF-475E-A2D8-D72AB85099D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDFacial", "TDFacial\TDFacial.csproj", "{E3565F75-FCFD-4518-9D18-9D1DCB682DEE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A378E499-7414-4366-B3FF-E2267D704E13}"
+	ProjectSection(SolutionItems) = preProject
+		..\scripts\nuget_restore.ps1 = ..\scripts\nuget_restore.ps1
+		..\scripts\pack_artifacts.ps1 = ..\scripts\pack_artifacts.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -255,6 +262,7 @@ Global
 		{8A36E44E-4CF7-48A6-874C-FC770D02D874} = {3ED8CB94-F888-4777-9DA1-B37FB40E0254}
 		{A2039EB5-47FF-475E-A2D8-D72AB85099D5} = {3ED8CB94-F888-4777-9DA1-B37FB40E0254}
 		{E3565F75-FCFD-4518-9D18-9D1DCB682DEE} = {3ED8CB94-F888-4777-9DA1-B37FB40E0254}
+		{A378E499-7414-4366-B3FF-E2267D704E13} = {9D3E097E-CE61-48FE-8183-DD79CCB6081E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBF47D74-8A82-4F43-8D42-04E336207C0F}

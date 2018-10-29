@@ -1,23 +1,24 @@
-param([System.String] $zipName = "miritore.zip")
+param([String]$zipName = "miritore.zip")
 
-$configuration = $env:CONFIGURATION
-$basePath = $env:APPVEYOR_BUILD_FOLDER
+[String]$configuration = $env:CONFIGURATION
+[String]$basePath = $env:APPVEYOR_BUILD_FOLDER
 
 $subPaths = @(
-    [System.String]::Format("src/AcbPack/bin/{0}", $configuration),
-    [System.String]::Format("src/HcaDec/bin/{0}", $configuration),
-    [System.String]::Format("src/ManifestExport/bin/{0}", $configuration),
-    [System.String]::Format("src/MillionDance/bin/{0}", $configuration),
-    [System.String]::Format("src/MillionDanceView/bin/{0}", $configuration),
-    [System.String]::Format("src/MiriTore.Common/bin/{0}", $configuration),
-    [System.String]::Format("src/MiriTore.Logging/bin/{0}", $configuration),
-    [System.String]::Format("src/MltdInfoViewer/bin/{0}", $configuration)#,
-    #[System.String]::Format("src/ScenarioEdit/bin/{0}", $configuration),
+    [String]::Format("src/AcbPack/bin/{0}", $configuration),
+    [String]::Format("src/HcaDec/bin/{0}", $configuration),
+    [String]::Format("src/ManifestExport/bin/{0}", $configuration),
+    [String]::Format("src/MillionDance/bin/{0}", $configuration),
+    [String]::Format("src/MillionDanceView/bin/{0}", $configuration),
+    [String]::Format("src/MiriTore.Common/bin/{0}", $configuration),
+    [String]::Format("src/MiriTore.Logging/bin/{0}", $configuration),
+    [String]::Format("src/MltdInfoViewer/bin/{0}", $configuration),
+    #[String]::Format("src/ScenarioEdit/bin/{0}", $configuration),
+	[String]::Format("src/TDFacial/bin/{0}", $configuration), # remember to include facial_expr.json
 );
 
 foreach ($subPath in $subPaths) {
-    $fullDirPath = [System.IO.Path]::Combine($basePath, $subPath, "*");
+    [String]$fullDirPath = [System.IO.Path]::Combine($basePath, $subPath, "*");
     
-    $scriptBlock = { 7z a $zipName -r $fullDirPath }
+    [ScriptBlock]$scriptBlock = { 7z a $zipName -r $fullDirPath }
     Invoke-Command -ScriptBlock $scriptBlock
 }

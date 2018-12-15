@@ -76,6 +76,7 @@ namespace OpenMLTD.MillionDance.Core {
         private static IReadOnlyList<PmxVertex> AddVertices([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount) {
             var vertexCount = combinedMesh.VertexCount;
             var vertices = new PmxVertex[vertexCount];
+            var skinCount = combinedMesh.Skin.Count;
 
             for (var i = 0; i < vertexCount; ++i) {
                 var vertex = new PmxVertex();
@@ -108,10 +109,12 @@ namespace OpenMLTD.MillionDance.Core {
 
                 vertex.EdgeScale = 1.0f;
 
-                var skin = combinedMesh.Skin[i];
-                var affectiveInfluenceCount = skin.Count(inf => inf != null);
+                var skin = i < skinCount ? combinedMesh.Skin[i] : null;
+                var affectiveInfluenceCount = skin != null ? skin.Count(inf => inf != null) : 0;
 
                 switch (affectiveInfluenceCount) {
+                    case 0:
+                        break;
                     case 1:
                         vertex.Deformation = Deformation.Bdef1;
                         break;
@@ -119,12 +122,12 @@ namespace OpenMLTD.MillionDance.Core {
                         vertex.Deformation = Deformation.Bdef2;
                         break;
                     case 3:
-                        throw new NotSupportedException();
+                        throw new NotSupportedException($"Not supported: vertex #{i} has 3 influences.");
                     case 4:
                         vertex.Deformation = Deformation.Bdef4;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(affectiveInfluenceCount));
+                        throw new ArgumentOutOfRangeException(nameof(affectiveInfluenceCount), "Unsupported number of bones.");
                 }
 
                 for (var j = 0; j < affectiveInfluenceCount; ++j) {

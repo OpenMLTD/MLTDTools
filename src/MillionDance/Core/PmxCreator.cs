@@ -753,9 +753,21 @@ namespace OpenMLTD.MillionDance.Core {
                         var vertices = s.Vertices;
 
                         foreach (var channel in truncNames.Select(name => {
-                            var fullMorphName = "blendShape1." + name;
-                            return s.Channels.Single(ch => ch.Name == fullMorphName);
+                            // name: e.g. "E_metoji_l"
+                            // ch_ex005_016tsu has "blendShape2.E_metoji_l" instead of the common one "blendShape1.E_metoji_l"
+                            // so the old method (string equal to full name) breaks.
+                            var chan = s.Channels.SingleOrDefault(ch => ch.Name.EndsWith(name));
+
+                            if (chan == null) {
+                                Trace.WriteLine($"Warning: required blend channel not found: {name}");
+                            }
+
+                            return chan;
                         })) {
+                            if (channel == null) {
+                                continue;
+                            }
+
                             var channelIndex = FindIndex(s.Channels, channel);
                             var shape = s.Shapes[channelIndex];
 

@@ -76,6 +76,7 @@ namespace OpenMLTD.MillionDance.Core {
         private static IReadOnlyList<PmxVertex> AddVertices([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount) {
             var vertexCount = combinedMesh.VertexCount;
             var vertices = new PmxVertex[vertexCount];
+            // In case that vertex count is more than skin count (ill-formed MLTD models: ch_ex005_022ser)
             var skinCount = combinedMesh.Skin.Count;
 
             for (var i = 0; i < vertexCount; ++i) {
@@ -114,6 +115,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                 switch (affectiveInfluenceCount) {
                     case 0:
+                        // This vertex is static. It is not attached to any bone.
                         break;
                     case 1:
                         vertex.Deformation = Deformation.Bdef1;

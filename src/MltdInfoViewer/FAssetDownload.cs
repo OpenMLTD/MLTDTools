@@ -251,7 +251,7 @@ namespace MltdInfoViewer {
             }
 
             var assetInfo = _assetInfoList[index];
-            var url = $"https://{cboServer.Text}/{txtAssetVersion.Text}/production/{txtUnityAssetVersion.Text}/{platform}/{assetInfo.RemoteName}";
+            var url = $"https://d3k5923sb1sy5k.cloudfront.net/1/production/2017v1/Android/{assetInfo.RemoteName}";
             var uri = new Uri(url);
 
             var localPath = Path.Combine(txtDestinationFolder.Text, assetInfo.ResourceName);

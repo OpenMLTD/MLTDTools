@@ -99,10 +99,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\thirdparty\UnityStudioLib\UnityStudioLib\UnityStudio.csproj">
-      <Project>{97696198-d591-4d31-b468-b19834ebb913}</Project>
-      <Name>UnityStudio</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MiriTore.Common\MiriTore.Common.csproj">
       <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
       <Name>MiriTore.Common</Name>

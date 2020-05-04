@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>OpenMLTD.MillionDance</RootNamespace>
     <AssemblyName>MillionDance</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -201,10 +201,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\thirdparty\UnityStudioLib\UnityStudioLib\UnityStudio.csproj">
-      <Project>{97696198-d591-4d31-b468-b19834ebb913}</Project>
-      <Name>UnityStudio</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TDFacial\TDFacial.csproj">
       <Project>{e3565f75-fcfd-4518-9d18-9d1dcb682dee}</Project>
       <Name>TDFacial</Name>

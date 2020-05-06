@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using AssetStudio.Extended.CompositeModels;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Viewer.Internal;
@@ -12,12 +13,6 @@ using OpenMLTD.MillionDance.Viewer.Programs;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
-using UnityStudio.UnityEngine;
-using UnityStudio.UnityEngine.Animation;
-using Quaternion = OpenTK.Quaternion;
-using Vector2 = OpenTK.Vector2;
-using Vector3 = OpenTK.Vector3;
-using Vector4 = OpenTK.Vector4;
 
 namespace OpenMLTD.MillionDance.Viewer {
     public sealed class RenderForm : GameWindow {
@@ -364,11 +359,11 @@ namespace OpenMLTD.MillionDance.Viewer {
 
         private CharacterImasMotionAsset _danceData;
         private BodyAnimation _animation;
-        private Avatar _bodyAvatar;
-        private Mesh _bodyMesh;
+        private PrettyAvatar _bodyAvatar;
+        private PrettyMesh _bodyMesh;
         private IReadOnlyList<BoneNode> _bodyBoneList;
-        private Avatar _headAvatar;
-        private Mesh _headMesh;
+        private PrettyAvatar _headAvatar;
+        private PrettyMesh _headMesh;
         private IReadOnlyList<BoneNode> _headBoneList;
 
         private Matrix4 _worldMatrix, _projectionMatrix;

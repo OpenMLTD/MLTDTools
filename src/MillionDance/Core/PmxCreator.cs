@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using AssetStudio.Extended.CompositeModels;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mltd.Sway;
@@ -10,17 +11,11 @@ using OpenMLTD.MillionDance.Entities.Pmx.Extensions;
 using OpenMLTD.MillionDance.Extensions;
 using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
-using UnityStudio.UnityEngine;
-using UnityStudio.UnityEngine.Animation;
-using UnityStudio.Utilities;
-using Quaternion = OpenTK.Quaternion;
-using Vector3 = OpenTK.Vector3;
-using Vector4 = OpenTK.Vector4;
 
 namespace OpenMLTD.MillionDance.Core {
     public sealed partial class PmxCreator {
 
-        public PmxModel CreateFrom([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount, [NotNull] string texturePrefix,
+        public PmxModel CreateFrom([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, int bodyMeshVertexCount, [NotNull] string texturePrefix,
             [NotNull] SwayController bodySway, [NotNull] SwayController headSway) {
             var model = new PmxModel();
 
@@ -73,11 +68,11 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<PmxVertex> AddVertices([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, int bodyMeshVertexCount) {
+        private static IReadOnlyList<PmxVertex> AddVertices([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, int bodyMeshVertexCount) {
             var vertexCount = combinedMesh.VertexCount;
             var vertices = new PmxVertex[vertexCount];
             // In case that vertex count is more than skin count (ill-formed MLTD models: ch_ex005_022ser)
-            var skinCount = combinedMesh.Skin.Count;
+            var skinCount = combinedMesh.Skin.Length;
 
             for (var i = 0; i < vertexCount; ++i) {
                 var vertex = new PmxVertex();
@@ -94,14 +89,14 @@ namespace OpenMLTD.MillionDance.Core {
 
                 vertex.Normal = normal.ToOpenTK().FixUnityToOpenTK();
 
-                OpenTK.Vector2 fixedUv;
+                Vector2 fixedUv;
 
                 // Body, then head.
                 // TODO: For heads, inverting/flipping is different among models?
                 // e.g. ss001_015siz can be processed via the method below; gs001_201xxx's head UVs are not inverted but some are flipped.
                 if (i < bodyMeshVertexCount) {
                     // Invert UV!
-                    fixedUv = new OpenTK.Vector2(uv.X, 1 - uv.Y);
+                    fixedUv = new Vector2(uv.X, 1 - uv.Y);
                 } else {
                     fixedUv = uv.ToOpenTK();
                 }
@@ -111,7 +106,7 @@ namespace OpenMLTD.MillionDance.Core {
                 vertex.EdgeScale = 1.0f;
 
                 var skin = i < skinCount ? combinedMesh.Skin[i] : null;
-                var affectiveInfluenceCount = skin != null ? skin.Count(inf => inf != null) : 0;
+                var affectiveInfluenceCount = skin?.Count(influence => influence != null) ?? 0;
 
                 switch (affectiveInfluenceCount) {
                     case 0:
@@ -132,7 +127,11 @@ namespace OpenMLTD.MillionDance.Core {
                         throw new ArgumentOutOfRangeException(nameof(affectiveInfluenceCount), "Unsupported number of bones.");
                 }
 
+                Debug.Assert(skin != null || affectiveInfluenceCount == 0);
+
                 for (var j = 0; j < affectiveInfluenceCount; ++j) {
+                    Debug.Assert(skin != null);
+
                     var boneId = combinedMesh.BoneNameHashes[skin[j].BoneIndex];
                     var realBoneIndex = combinedAvatar.AvatarSkeleton.NodeIDs.FindIndex(boneId);
 
@@ -151,8 +150,8 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull]
-        private static IReadOnlyList<int> AddIndices([NotNull] Mesh combinedMesh) {
-            var indicies = new int[combinedMesh.Indices.Count];
+        private static IReadOnlyList<int> AddIndices([NotNull] CompositeMesh combinedMesh) {
+            var indicies = new int[combinedMesh.Indices.Length];
 
             for (var i = 0; i < indicies.Length; ++i) {
                 indicies[i] = unchecked((int)combinedMesh.Indices[i]);
@@ -162,7 +161,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<PmxBone> AddBones([NotNull] Avatar combinedAvatar, [NotNull] Mesh combinedMesh, [NotNull, ItemNotNull] IReadOnlyList<PmxVertex> vertices) {
+        private static IReadOnlyList<PmxBone> AddBones([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, [NotNull, ItemNotNull] IReadOnlyList<PmxVertex> vertices) {
             var boneCount = combinedAvatar.AvatarSkeleton.NodeIDs.Length;
             var bones = new List<PmxBone>(boneCount);
 
@@ -512,6 +511,7 @@ namespace OpenMLTD.MillionDance.Core {
                     for (var i = vertexStart1; i < vertexStart1 + vertexCount1; ++i) {
                         result += vertices[i].Position;
                     }
+
                     for (var i = vertexStart2; i < vertexStart2 + vertexCount2; ++i) {
                         result += vertices[i].Position;
                     }
@@ -587,6 +587,7 @@ namespace OpenMLTD.MillionDance.Core {
                         skin.BoneWeights[0].BoneIndex = leftEyeIndex;
                         Debug.Assert(Math.Abs(skin.BoneWeights[0].Weight - 1) < 0.000001f, "Total weight in the skin of left eye should be 1.");
                     }
+
                     for (var i = vs2; i < vs2 + vc2; ++i) {
                         var skin = vertices[i];
                         // Eyes are only affected by "KUBI/ATAMA" bone by default. So we only need to set one element's values.
@@ -651,8 +652,8 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<PmxMaterial> AddMaterials([NotNull] Mesh combinedMesh, [NotNull] string texturePrefix) {
-            var materialCount = combinedMesh.SubMeshes.Count;
+        private static IReadOnlyList<PmxMaterial> AddMaterials([NotNull] PrettyMesh combinedMesh, [NotNull] string texturePrefix) {
+            var materialCount = combinedMesh.SubMeshes.Length;
             var materials = new PmxMaterial[materialCount];
 
             for (var i = 0; i < materialCount; ++i) {
@@ -677,16 +678,16 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<PmxMorph> AddEmotionMorphs([NotNull] Mesh mesh) {
+        private static IReadOnlyList<PmxMorph> AddEmotionMorphs([NotNull] PrettyMesh mesh) {
             var morphs = new List<PmxMorph>();
 
             var s = mesh.Shape;
 
             if (s != null) {
-                Debug.Assert(s.Channels.Count == s.Shapes.Count, "s.Channels.Count == s.Shapes.Count");
-                Debug.Assert(s.Channels.Count == s.FullWeights.Count, "s.Channels.Count == s.FullWeights.Count");
+                Debug.Assert(s.Channels.Length == s.Shapes.Length, "s.Channels.Count == s.Shapes.Count");
+                Debug.Assert(s.Channels.Length == s.FullWeights.Length, "s.Channels.Count == s.FullWeights.Count");
 
-                var morphCount = s.Channels.Count;
+                var morphCount = s.Channels.Length;
 
                 for (var i = 0; i < morphCount; i++) {
                     var channel = s.Channels[i];
@@ -757,7 +758,7 @@ namespace OpenMLTD.MillionDance.Core {
                         var offsets = new List<PmxBaseMorph>();
                         var vertices = s.Vertices;
 
-                        foreach (var channel in truncNames.Select(name => {
+                        var matchedChannels = truncNames.Select(name => {
                             // name: e.g. "E_metoji_l"
                             // ch_ex005_016tsu has "blendShape2.E_metoji_l" instead of the common one "blendShape1.E_metoji_l"
                             // so the old method (string equal to full name) breaks.
@@ -768,7 +769,9 @@ namespace OpenMLTD.MillionDance.Core {
                             }
 
                             return chan;
-                        })) {
+                        }).ToArray();
+
+                        foreach (var channel in matchedChannels) {
                             if (channel == null) {
                                 continue;
                             }

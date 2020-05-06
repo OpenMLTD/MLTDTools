@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 
 namespace OpenMLTD.MillionDance.Utilities {
     internal static class EmptyArray {
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [NotNull, ItemNotNull]
         public static T[] Of<T>() {
-            var t = typeof(T);
-
-            Array arr;
-
-            if (EmptyArrays.ContainsKey(t)) {
-                arr = EmptyArrays[t];
-            } else {
-                arr = new T[0];
-                EmptyArrays[t] = arr;
-            }
-
-            return (T[])arr;
+            return EmptyArrayClass<T>.Value;
         }
 
-        private static readonly Dictionary<Type, Array> EmptyArrays = new Dictionary<Type, Array>();
+        private static class EmptyArrayClass<T> {
+
+            [NotNull, ItemNotNull]
+            internal static readonly T[] Value = new T[0];
+
+        }
 
     }
 }

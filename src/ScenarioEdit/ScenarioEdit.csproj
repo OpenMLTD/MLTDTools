@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>OpenMLTD.ScenarioEdit</RootNamespace>
     <AssemblyName>ScenarioEdit</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -94,9 +94,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\thirdparty\UnityStudioLib\UnityStudioLib\UnityStudio.csproj">
-      <Project>{97696198-d591-4d31-b468-b19834ebb913}</Project>
-      <Name>UnityStudio</Name>
+    <ProjectReference Include="..\..\thirdparty\AssetStudio\AssetStudio\AssetStudio.csproj">
+      <Project>{7662f8c2-7bfd-442e-a948-a43b4f7eb06e}</Project>
+      <Name>AssetStudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AssetStudio.Extended.MonoBehaviours\AssetStudio.Extended.MonoBehaviours.csproj">
+      <Project>{45ae5ed2-589b-422b-98f7-48050b3ce3b8}</Project>
+      <Name>AssetStudio.Extended.MonoBehaviours</Name>
     </ProjectReference>
     <ProjectReference Include="..\MiriTore.Common\MiriTore.Common.csproj">
       <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>

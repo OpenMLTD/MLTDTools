@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using AssetStudio.Extended.CompositeModels;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mltd;
@@ -10,13 +11,12 @@ using OpenMLTD.MillionDance.Entities.Vmd;
 using OpenMLTD.MillionDance.Extensions;
 using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
-using UnityStudio.UnityEngine.Animation;
 
 namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<VmdBoneFrame> CreateBoneFrames([NotNull] CharacterImasMotionAsset bodyMotion, [NotNull] Avatar avatar, [NotNull] PmxModel pmx) {
+        private static IReadOnlyList<VmdBoneFrame> CreateBoneFrames([NotNull] CharacterImasMotionAsset bodyMotion, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx) {
             var mltdHierarchy = BoneUtils.BuildBoneHierarchy(avatar);
             var pmxHierarchy = BoneUtils.BuildBoneHierarchy(pmx);
 

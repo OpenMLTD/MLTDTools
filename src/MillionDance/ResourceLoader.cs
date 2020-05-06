@@ -1,108 +1,128 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
+using AssetStudio;
+using AssetStudio.Extended.CompositeModels;
+using AssetStudio.Extended.MonoBehaviours.Serialization;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Entities.Mltd.Sway;
-using UnityStudio.Extensions;
-using UnityStudio.Models;
-using UnityStudio.Serialization;
-using UnityStudio.UnityEngine;
-using UnityStudio.UnityEngine.Animation;
-using UnityStudio.Utilities;
 
 namespace OpenMLTD.MillionDance {
     internal static class ResourceLoader {
 
         [CanBeNull]
-        public static Mesh LoadBodyMesh([NotNull] string filePath) {
-            Mesh mesh = null;
+        public static MeshWrapper LoadBodyMesh([NotNull] string filePath) {
+            MeshWrapper result = null;
 
-            using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Mesh) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
 
-                            mesh = preloadData.LoadAsMesh();
-                            break;
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Mesh) {
+                        continue;
                     }
+
+                    var mesh = obj as Mesh;
+
+                    if (mesh == null) {
+                        throw new ArgumentNullException(nameof(mesh), "Body mesh is null.");
+                    }
+
+                    result = new MeshWrapper(mesh);
+
+                    break;
                 }
             }
 
-            return mesh;
+            return result;
         }
 
         [CanBeNull]
-        public static Avatar LoadBodyAvatar([NotNull] string filePath) {
-            Avatar avatar = null;
+        public static AvatarWrapper LoadBodyAvatar([NotNull] string filePath) {
+            AvatarWrapper result = null;
 
-            using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Avatar) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
 
-                            avatar = preloadData.LoadAsAvatar();
-                            break;
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Avatar) {
+                        continue;
                     }
+
+                    var avatar = obj as Avatar;
+
+                    if (avatar == null) {
+                        throw new ArgumentNullException(nameof(avatar), "Body avatar is null.");
+                    }
+
+                    result = new AvatarWrapper(avatar);
+
+                    break;
                 }
             }
 
-            return avatar;
+            return result;
         }
 
         [CanBeNull]
-        public static Mesh LoadHeadMesh([NotNull] string filePath) {
-            var meshList = new List<Mesh>();
+        public static CompositeMesh LoadHeadMesh([NotNull] string filePath) {
+            var meshList = new List<PrettyMesh>();
 
-            using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Mesh) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
 
-                            var mesh = preloadData.LoadAsMesh();
-
-                            meshList.Add(mesh);
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Mesh) {
+                        continue;
                     }
+
+                    var mesh = obj as Mesh;
+
+                    if (mesh == null) {
+                        throw new ArgumentNullException(nameof(mesh), "One of head meshes is null.");
+                    }
+
+                    var m = new MeshWrapper(mesh);
+                    meshList.Add(m);
                 }
             }
 
-            var compositeMesh = CompositeMesh.FromMeshes(meshList);
+            var result = CompositeMesh.FromMeshes(meshList.ToArray());
 
-            return compositeMesh;
+            return result;
         }
 
         [CanBeNull]
-        public static Avatar LoadHeadAvatar([NotNull] string filePath) {
-            Avatar avatar = null;
+        public static AvatarWrapper LoadHeadAvatar([NotNull] string filePath) {
+            AvatarWrapper result = null;
 
-            using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Avatar) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
 
-                            avatar = preloadData.LoadAsAvatar();
-                            break;
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Avatar) {
+                        continue;
                     }
+
+                    var avatar = obj as Avatar;
+
+                    if (avatar == null) {
+                        throw new ArgumentNullException(nameof(avatar), "Head avatar is null.");
+                    }
+
+                    result = new AvatarWrapper(avatar);
+
+                    break;
                 }
             }
 
-            return avatar;
+            return result;
         }
 
         [CanBeNull]
@@ -111,28 +131,30 @@ namespace OpenMLTD.MillionDance {
 
             const string camEnds = "_cam.imo";
 
-            using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.MonoBehaviour) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
 
-                            var behaviour = preloadData.LoadAsMonoBehaviour(true);
-
-                            if (!behaviour.Name.EndsWith(camEnds)) {
-                                continue;
-                            }
-
-                            behaviour = preloadData.LoadAsMonoBehaviour(false);
-
-                            var ser = new MonoBehaviourSerializer();
-                            cam = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-
-                            break;
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.MonoBehaviour) {
+                        continue;
                     }
+
+                    var behaviour = obj as MonoBehaviour;
+
+                    if (behaviour == null) {
+                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                    }
+
+                    if (!behaviour.m_Name.EndsWith(camEnds)) {
+                        continue;
+                    }
+
+                    var ser = new ScriptableObjectSerializer();
+
+                    cam = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+
+                    break;
                 }
             }
 
@@ -146,33 +168,33 @@ namespace OpenMLTD.MillionDance {
             var apaEnds = $"{songPosition:00}_apa.imo";
             var apgEnds = $"{songPosition:00}_apg.imo";
 
-            var ser = new MonoBehaviourSerializer();
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
 
-            using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.MonoBehaviour) {
-                                continue;
-                            }
+            var ser = new ScriptableObjectSerializer();
 
-                            var behaviour = preloadData.LoadAsMonoBehaviour(true);
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.MonoBehaviour) {
+                        continue;
+                    }
 
-                            if (behaviour.Name.EndsWith(danEnds)) {
-                                behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                            } else if (behaviour.Name.EndsWith(apaEnds)) {
-                                behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                            } else if (behaviour.Name.EndsWith(apgEnds)) {
-                                behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                            }
+                    var behaviour = obj as MonoBehaviour;
 
-                            if (dan != null && apa != null && apg != null) {
-                                break;
-                            }
-                        }
+                    if (behaviour == null) {
+                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                    }
+
+                    if (behaviour.m_Name.EndsWith(danEnds)) {
+                        dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apaEnds)) {
+                        apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apgEnds)) {
+                        apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    }
+
+                    if (dan != null && apa != null && apg != null) {
+                        break;
                     }
                 }
             }
@@ -186,27 +208,30 @@ namespace OpenMLTD.MillionDance {
 
             const string scenarioEnds = "scenario_sobj";
 
-            using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var asset in bundle.AssetFiles) {
-                        foreach (var preloadData in asset.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.MonoBehaviour) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
 
-                            var behaviour = preloadData.LoadAsMonoBehaviour(true);
-
-                            if (!behaviour.Name.EndsWith(scenarioEnds)) {
-                                continue;
-                            }
-
-                            behaviour = preloadData.LoadAsMonoBehaviour(false);
-
-                            var serializer = new MonoBehaviourSerializer();
-                            result = serializer.Deserialize<ScenarioObject>(behaviour);
-                            break;
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.MonoBehaviour) {
+                        continue;
                     }
+
+                    var behaviour = obj as MonoBehaviour;
+
+                    if (behaviour == null) {
+                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                    }
+
+                    if (!behaviour.m_Name.EndsWith(scenarioEnds)) {
+                        continue;
+                    }
+
+                    var ser = new ScriptableObjectSerializer();
+
+                    result = ser.Deserialize<ScenarioObject>(behaviour);
+
+                    break;
                 }
             }
 
@@ -214,40 +239,6 @@ namespace OpenMLTD.MillionDance {
         }
 
         public static (SwayController Body, SwayController Head) LoadSwayControllers([NotNull] string bodyFilePath, [NotNull] string headFilePath) {
-            SwayController LoadSwayController(string filePath) {
-                SwayController result = null;
-
-                using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                    using (var bundle = new BundleFile(fileStream, false)) {
-                        foreach (var assetFile in bundle.AssetFiles) {
-                            foreach (var preloadData in assetFile.PreloadDataList) {
-                                if (preloadData.KnownType != KnownClassID.TextAsset) {
-                                    continue;
-                                }
-
-                                var textAsset = preloadData.LoadAsTextAsset(true);
-
-                                if (!textAsset.Name.EndsWith("_sway")) {
-                                    continue;
-                                }
-
-                                textAsset = preloadData.LoadAsTextAsset(false);
-
-                                var text = textAsset.GetString();
-
-                                Debug.Assert(!string.IsNullOrWhiteSpace(text));
-
-                                result = SwayController.Parse(text);
-
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                return result;
-            }
-
             var body = LoadSwayController(bodyFilePath);
             var head = LoadSwayController(headFilePath);
 
@@ -255,6 +246,47 @@ namespace OpenMLTD.MillionDance {
 
             return (Body: body, Head: head);
         }
+
+        private static SwayController LoadSwayController([NotNull] string filePath) {
+            SwayController result = null;
+
+            const string swayEnds = "_sway";
+
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
+
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.TextAsset) {
+                        continue;
+                    }
+
+                    var textAsset = obj as TextAsset;
+
+                    if (textAsset == null) {
+                        throw new ArgumentNullException(nameof(textAsset), "Sway data is null.");
+                    }
+
+                    if (!textAsset.m_Name.EndsWith(swayEnds)) {
+                        continue;
+                    }
+
+                    var raw = textAsset.m_Script;
+                    var str = Encoding.UTF8.GetString(raw);
+
+                    str = ReplaceNewLine.Replace(str, "\n");
+
+                    result = SwayController.Parse(str);
+
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        [NotNull]
+        private static readonly Regex ReplaceNewLine = new Regex("(?<!\r)\n");
 
     }
 }

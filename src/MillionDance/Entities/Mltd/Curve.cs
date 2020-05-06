@@ -1,18 +1,18 @@
-﻿using UnityStudio.Serialization;
-using UnityStudio.Serialization.Naming;
+﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 
 namespace OpenMLTD.MillionDance.Entities.Mltd {
     // True name: Imas.Curve
-    [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention), ThrowOnUnmatched = false, PopulationStrategy = PopulationStrategy.OptIn)]
+    [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention), ThrowOnUnmatched = false, PopulationStrategy = PopulationStrategy.OptIn)]
     public sealed class Curve {
 
-        [MonoBehaviourProperty]
+        [ScriptableObjectProperty]
         public string Path { get; set; }
 
-        [MonoBehaviourProperty(Name = "attribs")]
+        [ScriptableObjectProperty(Name = "attribs")]
         public string[] Attributes { get; set; }
 
-        [MonoBehaviourProperty]
+        [ScriptableObjectProperty]
         public float[] Values { get; set; }
 
     }

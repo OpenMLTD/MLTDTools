@@ -5,12 +5,12 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
+using AssetStudio.Extended.CompositeModels;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MLTDTools.Applications.TDFacial.Entities;
-using UnityStudio.Utilities;
 
 namespace OpenMLTD.MillionDance {
     partial class FMain {
@@ -73,36 +73,42 @@ namespace OpenMLTD.MillionDance {
                 ScalingConfig.CharacterHeight = p.IdolHeight;
 
                 do {
+                    Log("Loading body avatar...");
                     var bodyAvatar = ResourceLoader.LoadBodyAvatar(p.InputBody);
                     if (bodyAvatar == null) {
                         Log("Failed to load body avatar.");
                         break;
                     }
 
+                    Log("Loading body mesh...");
                     var bodyMesh = ResourceLoader.LoadBodyMesh(p.InputBody);
                     if (bodyMesh == null) {
                         Log("Failed to load body mesh.");
                         break;
                     }
 
+                    Log("Loading head avatar...");
                     var headAvatar = ResourceLoader.LoadHeadAvatar(p.InputHead);
                     if (headAvatar == null) {
                         Log("Failed to load head avatar.");
                         break;
                     }
 
+                    Log("Loading head avatar...");
                     var headMesh = ResourceLoader.LoadHeadMesh(p.InputHead);
                     if (headMesh == null) {
                         Log("Failed to load head mesh.");
                         break;
                     }
 
+                    Log("Loading head/body sway controllers...");
                     var (bodySway, headSway) = ResourceLoader.LoadSwayControllers(p.InputBody, p.InputHead);
                     if (bodySway == null || headSway == null) {
                         Log("Failed to load sway controllers.");
                         break;
                     }
 
+                    Log("Combining avatars and meshes...");
                     var combinedAvatar = CompositeAvatar.FromAvatars(bodyAvatar, headAvatar);
                     var combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
 
@@ -110,12 +116,14 @@ namespace OpenMLTD.MillionDance {
                     ScenarioObject scenario;
 
                     if (p.GenerateCharacterMotion) {
+                        Log("Loading dance motion...");
                         (dance, _, _) = ResourceLoader.LoadDance(p.InputDance, p.SongPosition);
                         if (dance == null) {
                             Log("Failed to load dance data.");
                             break;
                         }
 
+                        Log("Loading lip sync and facial expression...");
                         scenario = ResourceLoader.LoadScenario(p.InputFacialExpression);
                         if (scenario == null) {
                             Log("Failed to load scenario object.");
@@ -129,6 +137,7 @@ namespace OpenMLTD.MillionDance {
                     CharacterImasMotionAsset camera;
 
                     if (p.GenerateCameraMotion) {
+                        Log("Loading camera motion...");
                         camera = ResourceLoader.LoadCamera(p.InputCamera);
                         if (camera == null) {
                             Log("Failed to load camera data.");
@@ -236,36 +245,59 @@ namespace OpenMLTD.MillionDance {
         private sealed class InputParams {
 
             public bool GenerateModel { get; set; }
+
             public bool GenerateCharacterMotion { get; set; }
+
             public bool GenerateCameraMotion { get; set; }
 
             public string InputHead { get; set; }
+
             public string InputBody { get; set; }
+
             public string InputDance { get; set; }
+
             public string InputFacialExpression { get; set; }
+
             public string InputCamera { get; set; }
 
             public string OutputModel { get; set; }
+
             public string OutputCharacterAnimation { get; set; }
+
             public string OutputCamera { get; set; }
 
             public MotionFormat MotionSource { get; set; }
+
             public bool ScalePmx { get; set; }
+
             public bool ConsiderIdolHeight { get; set; }
+
             public float IdolHeight { get; set; }
+
             public bool TranslateBoneNames { get; set; }
+
             public bool AppendLegIkBones { get; set; }
+
             public bool FixCenterBones { get; set; }
+
             public bool ConvertBindingPose { get; set; }
+
             public bool AppendEyeBones { get; set; }
+
             public bool HideUnityGeneratedBones { get; set; }
+
             public bool TranslateFacialExpressionNames { get; set; }
+
             public bool ImportPhysics { get; set; }
 
             public bool TransformTo30Fps { get; set; }
+
             public bool ScaleVmd { get; set; }
+
             public bool UseMvd { get; set; }
+
             public uint FixedFov { get; set; }
+
             public int SongPosition { get; set; }
 
             public string FacialExpressionMappingFilePath { get; set; }

@@ -1,8 +1,8 @@
-﻿using UnityStudio.Serialization;
-using UnityStudio.Serialization.Naming;
+﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 
 namespace OpenMLTD.ScenarioEdit.Entities {
-    [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention))]
+    [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public struct Vector4 {
 
         public float X { get; set; }

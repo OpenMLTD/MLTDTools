@@ -42,30 +42,31 @@ namespace OpenMLTD.MillionDance.Extensions {
         public static void WriteInt32AsVarLenInt([NotNull] this BinaryWriter writer, int value, int size, bool unsignedUnderUInt16 = false) {
             switch (size) {
                 case 1: {
-                        if (unsignedUnderUInt16) {
+                    if (unsignedUnderUInt16) {
+                        writer.Write((byte)value);
+                    } else {
+                        if (value == -1) {
+                            writer.Write(unchecked((byte)-1));
+                        } else {
                             writer.Write((byte)value);
-                        } else {
-                            if (value == -1) {
-                                writer.Write(unchecked((byte)-1));
-                            } else {
-                                writer.Write((byte)value);
-                            }
                         }
+                    }
 
-                        break;
-                    }
+                    break;
+                }
                 case 2: {
-                        if (unsignedUnderUInt16) {
-                            writer.Write((ushort)value);
+                    if (unsignedUnderUInt16) {
+                        writer.Write((ushort)value);
+                    } else {
+                        if (value == -1) {
+                            writer.Write(unchecked((uint)-1));
                         } else {
-                            if (value == -1) {
-                                writer.Write(unchecked((uint)-1));
-                            } else {
-                                writer.Write((ushort)value);
-                            }
+                            writer.Write((ushort)value);
                         }
-                        break;
                     }
+
+                    break;
+                }
                 case 4:
                     writer.Write(value);
                     break;

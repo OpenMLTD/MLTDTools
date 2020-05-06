@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using AssetStudio;
+using AssetStudio.Extended.CompositeModels;
+using AssetStudio.Extended.MonoBehaviours.Serialization;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Viewer.Extensions;
 using OpenMLTD.MillionDance.Viewer.Internal;
 using OpenMLTD.MillionDance.Viewer.ObjectGL;
 using OpenTK.Graphics.OpenGL4;
-using UnityStudio.Extensions;
-using UnityStudio.Models;
-using UnityStudio.Serialization;
-using UnityStudio.UnityEngine;
-using UnityStudio.UnityEngine.Animation;
-using UnityStudio.Utilities;
+using Shader = OpenMLTD.MillionDance.Viewer.ObjectGL.Shader;
 
 namespace OpenMLTD.MillionDance.Viewer {
     internal static class ResHelper {
@@ -33,54 +31,64 @@ namespace OpenMLTD.MillionDance.Viewer {
         }
 
         [CanBeNull]
-        public static Mesh LoadBodyMesh() {
-            Mesh mesh = null;
+        public static PrettyMesh LoadBodyMesh() {
+            MeshWrapper result = null;
 
-            using (var fileStream = File.Open(BodyModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Mesh) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(BodyModelFilePath);
 
-                            mesh = preloadData.LoadAsMesh();
-                            break;
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Mesh) {
+                        continue;
                     }
+
+                    var mesh = obj as Mesh;
+
+                    if (mesh == null) {
+                        throw new ArgumentNullException(nameof(mesh), "Body mesh is null.");
+                    }
+
+                    result = new MeshWrapper(mesh);
+
+                    break;
                 }
             }
 
-            return mesh;
+            return result;
         }
 
         [CanBeNull]
-        public static Mesh LoadHeadMesh() {
-            var meshList = new List<Mesh>();
+        public static PrettyMesh LoadHeadMesh() {
+            var meshList = new List<PrettyMesh>();
 
-            using (var fileStream = File.Open(HeadModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Mesh) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(HeadModelFilePath);
 
-                            var mesh = preloadData.LoadAsMesh();
-
-                            meshList.Add(mesh);
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Mesh) {
+                        continue;
                     }
+
+                    var mesh = obj as Mesh;
+
+                    if (mesh == null) {
+                        throw new ArgumentNullException(nameof(mesh), "One of head meshes is null.");
+                    }
+
+                    var m = new MeshWrapper(mesh);
+                    meshList.Add(m);
                 }
             }
 
-            var result = CompositeMesh.FromMeshes(meshList);
+            var result = CompositeMesh.FromMeshes(meshList.ToArray());
 
             return result;
         }
 
         [NotNull, ItemNotNull]
-        public static IReadOnlyList<BoneNode> BuildBoneHierachy([NotNull] Avatar avatar, [NotNull] Mesh mesh) {
+        public static IReadOnlyList<BoneNode> BuildBoneHierachy([NotNull] PrettyAvatar avatar, [NotNull] PrettyMesh mesh) {
             var boneList = new List<BoneNode>();
 
             for (var i = 0; i < avatar.AvatarSkeleton.Nodes.Length; i++) {
@@ -120,83 +128,95 @@ namespace OpenMLTD.MillionDance.Viewer {
         }
 
         [CanBeNull]
-        public static Avatar LoadBodyAvatar() {
-            Avatar avatar = null;
+        public static PrettyAvatar LoadBodyAvatar() {
+            AvatarWrapper result = null;
 
-            using (var fileStream = File.Open(BodyModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Avatar) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(BodyModelFilePath);
 
-                            avatar = preloadData.LoadAsAvatar();
-                            break;
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Avatar) {
+                        continue;
                     }
+
+                    var avatar = obj as Avatar;
+
+                    if (avatar == null) {
+                        throw new ArgumentNullException(nameof(avatar), "Body avatar is null.");
+                    }
+
+                    result = new AvatarWrapper(avatar);
+
+                    break;
                 }
             }
 
-            return avatar;
+            return result;
         }
 
         [CanBeNull]
-        public static Avatar LoadHeadAvatar() {
-            Avatar avatar = null;
+        public static PrettyAvatar LoadHeadAvatar() {
+            AvatarWrapper result = null;
 
-            using (var fileStream = File.Open(HeadModelFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.Avatar) {
-                                continue;
-                            }
+            var manager = new AssetsManager();
+            manager.LoadFiles(HeadModelFilePath);
 
-                            avatar = preloadData.LoadAsAvatar();
-                            break;
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Avatar) {
+                        continue;
                     }
+
+                    var avatar = obj as Avatar;
+
+                    if (avatar == null) {
+                        throw new ArgumentNullException(nameof(avatar), "Head avatar is null.");
+                    }
+
+                    result = new AvatarWrapper(avatar);
+
+                    break;
                 }
             }
 
-            return avatar;
+            return result;
         }
 
         public static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDance() {
             CharacterImasMotionAsset dan = null, apa = null, apg = null;
 
-            var ser = new MonoBehaviourSerializer();
+            var manager = new AssetsManager();
+            manager.LoadFiles(DanceDataFilePath);
 
-            using (var fileStream = File.Open(DanceDataFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var assetFile in bundle.AssetFiles) {
-                        foreach (var preloadData in assetFile.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.MonoBehaviour) {
-                                continue;
-                            }
+            var ser = new ScriptableObjectSerializer();
 
-                            var behaviour = preloadData.LoadAsMonoBehaviour(true);
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.MonoBehaviour) {
+                        continue;
+                    }
 
-                            switch (behaviour.Name) {
-                                case "dan_" + SongResourceName + "_" + DancerPosition + "_dan.imo":
-                                    behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                    dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                                    break;
-                                case "dan_" + SongResourceName + "_" + DancerPosition + "_apa.imo":
-                                    behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                    apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                                    break;
-                                case "dan_" + SongResourceName + "_" + DancerPosition + "_apg.imo":
-                                    behaviour = preloadData.LoadAsMonoBehaviour(false);
-                                    apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                                    break;
-                            }
+                    var behaviour = obj as MonoBehaviour;
 
-                            if (dan != null && apa != null && apg != null) {
-                                break;
-                            }
-                        }
+                    if (behaviour == null) {
+                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                    }
+
+                    switch (behaviour.m_Name) {
+                        case "dan_" + SongResourceName + "_" + DancerPosition + "_dan.imo":
+                            dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                            break;
+                        case "dan_" + SongResourceName + "_" + DancerPosition + "_apa.imo":
+                            apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                            break;
+                        case "dan_" + SongResourceName + "_" + DancerPosition + "_apg.imo":
+                            apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                            break;
+                    }
+
+                    if (dan != null && apa != null && apg != null) {
+                        break;
                     }
                 }
             }
@@ -205,9 +225,13 @@ namespace OpenMLTD.MillionDance.Viewer {
         }
 
         private const string BodyModelFilePath = "Resources/cb_ss001_015siz.unity3d";
+
         private const string HeadModelFilePath = "Resources/ch_ss001_015siz.unity3d";
+
         private const string SongResourceName = "hzwend";
+
         private const string DancerPosition = "01";
+
         private const string DanceDataFilePath = "Resources/dan_" + SongResourceName + "_" + DancerPosition + ".imo.unity3d";
 
     }

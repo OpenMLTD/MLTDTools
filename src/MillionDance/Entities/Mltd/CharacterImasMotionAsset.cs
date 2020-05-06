@@ -1,24 +1,24 @@
-﻿using UnityStudio.Serialization;
-using UnityStudio.Serialization.Naming;
+﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 
 namespace OpenMLTD.MillionDance.Entities.Mltd {
     // True name: Imas.CharacterImasMotionAsset
-    [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention), ThrowOnUnmatched = false, PopulationStrategy = PopulationStrategy.OptIn)]
+    [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention), ThrowOnUnmatched = false, PopulationStrategy = PopulationStrategy.OptIn)]
     public sealed class CharacterImasMotionAsset {
 
-        [MonoBehaviourProperty]
+        [ScriptableObjectProperty]
         public string Kind { get; set; }
 
-        [MonoBehaviourProperty(Name = "attribs")]
+        [ScriptableObjectProperty(Name = "attribs")]
         public object[] Atrributes { get; set; }
 
-        [MonoBehaviourProperty(Name = "time_length")]
+        [ScriptableObjectProperty(Name = "time_length")]
         public float Duration { get; set; }
 
-        [MonoBehaviourProperty]
+        [ScriptableObjectProperty]
         public string Date { get; set; }
 
-        [MonoBehaviourProperty]
+        [ScriptableObjectProperty]
         public Curve[] Curves { get; set; }
 
     }

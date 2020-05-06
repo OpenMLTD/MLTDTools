@@ -1,8 +1,8 @@
-﻿using UnityStudio.Serialization;
-using UnityStudio.Serialization.Naming;
+﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 
 namespace OpenMLTD.MillionDance.Entities.Mltd {
-    [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention))]
+    [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public sealed class VjParam {
 
         internal VjParam() {
@@ -10,10 +10,10 @@ namespace OpenMLTD.MillionDance.Entities.Mltd {
 
         public bool Use { get; set; }
 
-        [MonoBehaviourProperty(Name = "renderTex")]
+        [ScriptableObjectProperty(Name = "renderTex")]
         public bool RenderTex { get; set; }
 
-        [MonoBehaviourProperty(Name = "col")]
+        [ScriptableObjectProperty(Name = "col")]
         public int Column { get; set; }
 
         public int Row { get; set; }

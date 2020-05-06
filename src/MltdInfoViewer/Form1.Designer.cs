@@ -19,8 +19,8 @@
         #region Windows 窗体设计器生成的代码
 
         /// <summary>
-        /// 设计器支持所需的方法 - 不要修改
-        /// 使用代码编辑器修改此方法的内容。
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
@@ -53,16 +53,14 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
+            this.tabControl1.Location = new System.Drawing.Point(12, 13);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(704, 372);
+            this.tabControl1.Size = new System.Drawing.Size(704, 403);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -77,7 +75,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(696, 346);
+            this.tabPage1.Size = new System.Drawing.Size(696, 377);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Manifest";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -85,9 +83,9 @@
             // btnManifestFilterRegex
             // 
             this.btnManifestFilterRegex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnManifestFilterRegex.Location = new System.Drawing.Point(543, 319);
+            this.btnManifestFilterRegex.Location = new System.Drawing.Point(543, 346);
             this.btnManifestFilterRegex.Name = "btnManifestFilterRegex";
-            this.btnManifestFilterRegex.Size = new System.Drawing.Size(70, 21);
+            this.btnManifestFilterRegex.Size = new System.Drawing.Size(70, 23);
             this.btnManifestFilterRegex.TabIndex = 9;
             this.btnManifestFilterRegex.Text = "Regex";
             this.btnManifestFilterRegex.UseVisualStyleBackColor = true;
@@ -95,9 +93,9 @@
             // btnManifestReset
             // 
             this.btnManifestReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnManifestReset.Location = new System.Drawing.Point(619, 319);
+            this.btnManifestReset.Location = new System.Drawing.Point(619, 346);
             this.btnManifestReset.Name = "btnManifestReset";
-            this.btnManifestReset.Size = new System.Drawing.Size(70, 21);
+            this.btnManifestReset.Size = new System.Drawing.Size(70, 23);
             this.btnManifestReset.TabIndex = 8;
             this.btnManifestReset.Text = "Reset";
             this.btnManifestReset.UseVisualStyleBackColor = true;
@@ -105,41 +103,37 @@
             // btnManifestFilterString
             // 
             this.btnManifestFilterString.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnManifestFilterString.Location = new System.Drawing.Point(467, 319);
+            this.btnManifestFilterString.Location = new System.Drawing.Point(467, 346);
             this.btnManifestFilterString.Name = "btnManifestFilterString";
-            this.btnManifestFilterString.Size = new System.Drawing.Size(70, 21);
+            this.btnManifestFilterString.Size = new System.Drawing.Size(70, 23);
             this.btnManifestFilterString.TabIndex = 7;
             this.btnManifestFilterString.Text = "String";
             this.btnManifestFilterString.UseVisualStyleBackColor = true;
             // 
             // txtManifestFilter
             // 
-            this.txtManifestFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtManifestFilter.Location = new System.Drawing.Point(6, 319);
+            this.txtManifestFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtManifestFilter.Location = new System.Drawing.Point(6, 346);
             this.txtManifestFilter.Name = "txtManifestFilter";
-            this.txtManifestFilter.Size = new System.Drawing.Size(455, 21);
+            this.txtManifestFilter.Size = new System.Drawing.Size(455, 20);
             this.txtManifestFilter.TabIndex = 6;
             // 
             // lvwManifest
             // 
-            this.lvwManifest.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwManifest.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwManifest.ContextMenuStrip = this.ctxMenu;
             this.lvwManifest.FullRowSelect = true;
             this.lvwManifest.HideSelection = false;
-            this.lvwManifest.Location = new System.Drawing.Point(5, 33);
+            this.lvwManifest.Location = new System.Drawing.Point(5, 36);
             this.lvwManifest.Name = "lvwManifest";
-            this.lvwManifest.Size = new System.Drawing.Size(684, 279);
+            this.lvwManifest.Size = new System.Drawing.Size(684, 302);
             this.lvwManifest.TabIndex = 5;
             this.lvwManifest.UseCompatibleStateImageBehavior = false;
             this.lvwManifest.View = System.Windows.Forms.View.Details;
             // 
             // ctxMenu
             // 
-            this.ctxMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ctxMenuDownloadSelectedAssets});
+            this.ctxMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.ctxMenuDownloadSelectedAssets });
             this.ctxMenu.Name = "ctxMenu";
             this.ctxMenu.Size = new System.Drawing.Size(247, 26);
             // 
@@ -152,21 +146,20 @@
             // btnSelectManifestDatabase
             // 
             this.btnSelectManifestDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSelectManifestDatabase.Location = new System.Drawing.Point(622, 6);
+            this.btnSelectManifestDatabase.Location = new System.Drawing.Point(622, 7);
             this.btnSelectManifestDatabase.Name = "btnSelectManifestDatabase";
-            this.btnSelectManifestDatabase.Size = new System.Drawing.Size(70, 21);
+            this.btnSelectManifestDatabase.Size = new System.Drawing.Size(70, 23);
             this.btnSelectManifestDatabase.TabIndex = 4;
             this.btnSelectManifestDatabase.Text = "Select...";
             this.btnSelectManifestDatabase.UseVisualStyleBackColor = true;
             // 
             // txtManifestDatabasePath
             // 
-            this.txtManifestDatabasePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtManifestDatabasePath.Location = new System.Drawing.Point(5, 6);
+            this.txtManifestDatabasePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtManifestDatabasePath.Location = new System.Drawing.Point(5, 7);
             this.txtManifestDatabasePath.Name = "txtManifestDatabasePath";
             this.txtManifestDatabasePath.ReadOnly = true;
-            this.txtManifestDatabasePath.Size = new System.Drawing.Size(611, 21);
+            this.txtManifestDatabasePath.Size = new System.Drawing.Size(611, 20);
             this.txtManifestDatabasePath.TabIndex = 3;
             // 
             // tabPage2
@@ -177,20 +170,18 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(696, 346);
+            this.tabPage2.Size = new System.Drawing.Size(696, 377);
             this.tabPage2.TabIndex = 0;
             this.tabPage2.Text = "Cards";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // lvwCards
             // 
-            this.lvwCards.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwCards.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwCards.FullRowSelect = true;
-            this.lvwCards.Location = new System.Drawing.Point(6, 33);
+            this.lvwCards.Location = new System.Drawing.Point(6, 36);
             this.lvwCards.Name = "lvwCards";
-            this.lvwCards.Size = new System.Drawing.Size(684, 307);
+            this.lvwCards.Size = new System.Drawing.Size(684, 332);
             this.lvwCards.TabIndex = 2;
             this.lvwCards.UseCompatibleStateImageBehavior = false;
             this.lvwCards.View = System.Windows.Forms.View.Details;
@@ -198,21 +189,20 @@
             // btnSelectCardsDatabase
             // 
             this.btnSelectCardsDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSelectCardsDatabase.Location = new System.Drawing.Point(623, 6);
+            this.btnSelectCardsDatabase.Location = new System.Drawing.Point(623, 7);
             this.btnSelectCardsDatabase.Name = "btnSelectCardsDatabase";
-            this.btnSelectCardsDatabase.Size = new System.Drawing.Size(70, 21);
+            this.btnSelectCardsDatabase.Size = new System.Drawing.Size(70, 23);
             this.btnSelectCardsDatabase.TabIndex = 1;
             this.btnSelectCardsDatabase.Text = "Select...";
             this.btnSelectCardsDatabase.UseVisualStyleBackColor = true;
             // 
             // txtCardsDatabasePath
             // 
-            this.txtCardsDatabasePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCardsDatabasePath.Location = new System.Drawing.Point(6, 6);
+            this.txtCardsDatabasePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtCardsDatabasePath.Location = new System.Drawing.Point(6, 7);
             this.txtCardsDatabasePath.Name = "txtCardsDatabasePath";
             this.txtCardsDatabasePath.ReadOnly = true;
-            this.txtCardsDatabasePath.Size = new System.Drawing.Size(611, 21);
+            this.txtCardsDatabasePath.Size = new System.Drawing.Size(611, 20);
             this.txtCardsDatabasePath.TabIndex = 0;
             // 
             // tabPage3
@@ -223,20 +213,18 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(696, 346);
+            this.tabPage3.Size = new System.Drawing.Size(696, 377);
             this.tabPage3.TabIndex = 1;
             this.tabPage3.Text = "Costumes";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // lvwCostumes
             // 
-            this.lvwCostumes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwCostumes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwCostumes.FullRowSelect = true;
-            this.lvwCostumes.Location = new System.Drawing.Point(5, 33);
+            this.lvwCostumes.Location = new System.Drawing.Point(5, 36);
             this.lvwCostumes.Name = "lvwCostumes";
-            this.lvwCostumes.Size = new System.Drawing.Size(684, 307);
+            this.lvwCostumes.Size = new System.Drawing.Size(684, 332);
             this.lvwCostumes.TabIndex = 5;
             this.lvwCostumes.UseCompatibleStateImageBehavior = false;
             this.lvwCostumes.View = System.Windows.Forms.View.Details;
@@ -244,28 +232,27 @@
             // btnSelectCostumesDatabase
             // 
             this.btnSelectCostumesDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSelectCostumesDatabase.Location = new System.Drawing.Point(622, 6);
+            this.btnSelectCostumesDatabase.Location = new System.Drawing.Point(622, 7);
             this.btnSelectCostumesDatabase.Name = "btnSelectCostumesDatabase";
-            this.btnSelectCostumesDatabase.Size = new System.Drawing.Size(70, 21);
+            this.btnSelectCostumesDatabase.Size = new System.Drawing.Size(70, 23);
             this.btnSelectCostumesDatabase.TabIndex = 4;
             this.btnSelectCostumesDatabase.Text = "Select...";
             this.btnSelectCostumesDatabase.UseVisualStyleBackColor = true;
             // 
             // txtCostumesDatabasePath
             // 
-            this.txtCostumesDatabasePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCostumesDatabasePath.Location = new System.Drawing.Point(5, 6);
+            this.txtCostumesDatabasePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtCostumesDatabasePath.Location = new System.Drawing.Point(5, 7);
             this.txtCostumesDatabasePath.Name = "txtCostumesDatabasePath";
             this.txtCostumesDatabasePath.ReadOnly = true;
-            this.txtCostumesDatabasePath.Size = new System.Drawing.Size(611, 21);
+            this.txtCostumesDatabasePath.Size = new System.Drawing.Size(611, 20);
             this.txtCostumesDatabasePath.TabIndex = 3;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(728, 396);
+            this.ClientSize = new System.Drawing.Size(728, 429);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -279,31 +266,31 @@
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
-
         }
+
+        private System.Windows.Forms.Button btnManifestFilterRegex;
+        private System.Windows.Forms.Button btnManifestFilterString;
+        private System.Windows.Forms.Button btnManifestReset;
+        private System.Windows.Forms.Button btnSelectCardsDatabase;
+        private System.Windows.Forms.Button btnSelectCostumesDatabase;
+        private System.Windows.Forms.Button btnSelectManifestDatabase;
+        private System.Windows.Forms.ContextMenuStrip ctxMenu;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuDownloadSelectedAssets;
+        private System.Windows.Forms.ListView lvwCards;
+        private System.Windows.Forms.ListView lvwCostumes;
+        private System.Windows.Forms.ListView lvwManifest;
+        private System.Windows.Forms.OpenFileDialog ofd;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TextBox txtCardsDatabasePath;
+        private System.Windows.Forms.TextBox txtCostumesDatabasePath;
+        private System.Windows.Forms.TextBox txtManifestDatabasePath;
+        private System.Windows.Forms.TextBox txtManifestFilter;
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.Button btnSelectCardsDatabase;
-        private System.Windows.Forms.TextBox txtCardsDatabasePath;
-        private System.Windows.Forms.ListView lvwCards;
-        private System.Windows.Forms.OpenFileDialog ofd;
-        private System.Windows.Forms.ListView lvwCostumes;
-        private System.Windows.Forms.Button btnSelectCostumesDatabase;
-        private System.Windows.Forms.TextBox txtCostumesDatabasePath;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.ListView lvwManifest;
-        private System.Windows.Forms.Button btnSelectManifestDatabase;
-        private System.Windows.Forms.TextBox txtManifestDatabasePath;
-        private System.Windows.Forms.Button btnManifestFilterString;
-        private System.Windows.Forms.TextBox txtManifestFilter;
-        private System.Windows.Forms.Button btnManifestReset;
-        private System.Windows.Forms.Button btnManifestFilterRegex;
-        private System.Windows.Forms.ContextMenuStrip ctxMenu;
-        private System.Windows.Forms.ToolStripMenuItem ctxMenuDownloadSelectedAssets;
     }
 }
 

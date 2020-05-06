@@ -42,31 +42,31 @@ namespace OpenMLTD.MillionDance.Extensions {
         public static int ReadVarLenIntAsInt32([NotNull] this BinaryReader reader, int size, bool unsignedUnderUInt16 = false) {
             switch (size) {
                 case 1: {
-                        var value = reader.ReadByte();
+                    var value = reader.ReadByte();
 
-                        if (unsignedUnderUInt16) {
-                            return value;
+                    if (unsignedUnderUInt16) {
+                        return value;
+                    } else {
+                        if (value == unchecked((byte)-1)) {
+                            return -1;
                         } else {
-                            if (value == unchecked((byte)-1)) {
-                                return -1;
-                            } else {
-                                return value;
-                            }
+                            return value;
                         }
                     }
+                }
                 case 2: {
-                        var value = reader.ReadUInt16();
+                    var value = reader.ReadUInt16();
 
-                        if (unsignedUnderUInt16) {
-                            return value;
+                    if (unsignedUnderUInt16) {
+                        return value;
+                    } else {
+                        if (value == unchecked((ushort)-1)) {
+                            return -1;
                         } else {
-                            if (value == unchecked((ushort)-1)) {
-                                return -1;
-                            } else {
-                                return value;
-                            }
+                            return value;
                         }
                     }
+                }
                 case 4:
                     return reader.ReadInt32();
                 default:

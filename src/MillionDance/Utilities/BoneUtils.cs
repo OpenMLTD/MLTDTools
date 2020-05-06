@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using AssetStudio;
+using AssetStudio.Extended.CompositeModels;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Extensions;
-using OpenTK;
-using UnityStudio.UnityEngine.Animation;
+using Quaternion = OpenTK.Quaternion;
+using Vector3 = OpenTK.Vector3;
 
 namespace OpenMLTD.MillionDance.Utilities {
     internal static class BoneUtils {
@@ -44,11 +46,12 @@ namespace OpenMLTD.MillionDance.Utilities {
         }
 
         [NotNull, ItemNotNull]
-        public static IReadOnlyList<BoneNode> BuildBoneHierarchy([NotNull] Avatar avatar, bool fixKubi = true) {
+        public static IReadOnlyList<BoneNode> BuildBoneHierarchy([NotNull] PrettyAvatar avatar, bool fixKubi = true) {
             var boneList = new List<BoneNode>();
+            var skeletonNodes = avatar.AvatarSkeleton.Nodes;
 
-            for (var i = 0; i < avatar.AvatarSkeleton.Nodes.Length; i++) {
-                var n = avatar.AvatarSkeleton.Nodes[i];
+            for (var i = 0; i < skeletonNodes.Length; i++) {
+                var n = skeletonNodes[i];
 
                 var parent = n.ParentIndex >= 0 ? boneList[n.ParentIndex] : null;
                 var boneId = avatar.AvatarSkeleton.NodeIDs[i];

@@ -131,35 +131,35 @@ namespace OpenMLTD.MillionDance {
         }
 
         private void BtnInputCamera_Click(object sender, EventArgs e) {
-            var (r, ok) = SelectOpenFile("Camera Asset Bundle (cam_*.imo.unity3d)|cam_*.imo.unity3d");
+            var (r, ok) = SelectOpenFile("Camera Asset Bundle (cam_*.unity3d)|cam_*.unity3d");
             if (ok) {
                 txtInputCamera.Text = r;
             }
         }
 
         private void BtnInputFacialExpression_Click(object sender, EventArgs e) {
-            var (r, ok) = SelectOpenFile("ScriptableObject Asset Bundle (scrobj_*.unity3d)|scrobj_*.unity3d");
+            var (r, ok) = SelectOpenFile("Song Control Asset Bundle (scrobj_*.unity3d)|scrobj_*.unity3d");
             if (ok) {
                 txtInputFacialExpression.Text = r;
             }
         }
 
         private void BtnInputDance_Click(object sender, EventArgs e) {
-            var (r, ok) = SelectOpenFile("Dance Asset Bundle (dan_*.imo.unity3d)|dan_*.imo.unity3d");
+            var (r, ok) = SelectOpenFile("Dance Asset Bundle (dan_*.unity3d)|dan_*.unity3d");
             if (ok) {
                 txtInputDance.Text = r;
             }
         }
 
         private void BtnInputBody_Click(object sender, EventArgs e) {
-            var (r, ok) = SelectOpenFile("Character Asset Bundle (cb_*.unity3d)|cb_*.unity3d");
+            var (r, ok) = SelectOpenFile("Character Body Asset Bundle (cb_*.unity3d)|cb_*.unity3d");
             if (ok) {
                 txtInputBody.Text = r;
             }
         }
 
         private void BtnInputHead_Click(object sender, EventArgs e) {
-            var (r, ok) = SelectOpenFile("Character Asset Bundle (ch_*.unity3d)|ch_*.unity3d");
+            var (r, ok) = SelectOpenFile("Character Head Asset Bundle (ch_*.unity3d)|ch_*.unity3d");
             if (ok) {
                 txtInputHead.Text = r;
             }

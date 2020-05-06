@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using AssetStudio;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenMLTD.MiriTore;
 using OpenMLTD.MiriTore.Database;
 using OpenMLTD.MiriTore.Extensions;
 using OpenMLTD.MiriTore.Mltd.Entities;
-using UnityStudio.Extensions;
-using UnityStudio.Models;
+using AssetInfo = OpenMLTD.MiriTore.Database.AssetInfo;
 
 namespace MltdInfoViewer {
     public partial class Form1 : Form {
@@ -244,28 +245,37 @@ namespace MltdInfoViewer {
                     jsonText = File.ReadAllText(filePath);
                     break;
                 case 2: {
-                        using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                            var assetBundle = new BundleFile(fileStream, false);
+                    var manager = new AssetsManager();
+                    manager.LoadFiles(filePath);
 
-                            foreach (var assetFile in assetBundle.AssetFiles) {
-                                foreach (var preloadData in assetFile.PreloadDataList) {
-                                    if (preloadData.KnownType != KnownClassID.TextAsset) {
-                                        continue;
-                                    }
-
-                                    var textAsset = preloadData.LoadAsTextAsset(false);
-
-                                    jsonText = textAsset.GetString();
-                                }
+                    foreach (var assetFile in manager.assetsFileList) {
+                        foreach (var preloadData in assetFile.Objects) {
+                            if (preloadData.type != ClassIDType.TextAsset) {
+                                continue;
                             }
-                        }
 
-                        if (string.IsNullOrWhiteSpace(jsonText)) {
-                            MessageBox.Show("The file selected does not contain costume data.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
+                            var textAsset = preloadData as TextAsset;
+
+                            if (textAsset != null) {
+                                var raw = textAsset.m_Script;
+                                var str = Encoding.UTF8.GetString(raw);
+
+                                str = ReplaceNewLine.Replace(str, Environment.NewLine);
+
+                                jsonText = str;
+                            }
+
+                            break;
                         }
                     }
+
+                    if (string.IsNullOrWhiteSpace(jsonText)) {
+                        MessageBox.Show("The file selected does not contain costume data.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
                     break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(selectedFilterIndex));
             }
@@ -437,6 +447,7 @@ namespace MltdInfoViewer {
 
         private AssetInfoList _assetInfoList;
 
+        private static readonly Regex ReplaceNewLine = new Regex("(?<!\r)\n");
+
     }
 }
-

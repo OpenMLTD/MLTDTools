@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AssetStudio.Extended.CompositeModels;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Entities.Vmd;
 using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
-using UnityStudio.UnityEngine.Animation;
 
 namespace OpenMLTD.MillionDance.Core {
     public sealed partial class VmdCreator {
@@ -22,7 +22,7 @@ namespace OpenMLTD.MillionDance.Core {
         public uint FixedFov { get; set; } = 20;
 
         [NotNull]
-        public VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] Avatar avatar, [CanBeNull] PmxModel mltdPmxModel,
+        public VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel,
             [CanBeNull] CharacterImasMotionAsset cameraMotion,
             [CanBeNull] ScenarioObject scenarioObject, int songPosition) {
             IReadOnlyList<VmdBoneFrame> boneFrames;

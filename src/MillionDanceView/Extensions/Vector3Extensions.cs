@@ -1,17 +1,17 @@
 ﻿using System.Runtime.CompilerServices;
-using UnityStudio.UnityEngine;
+using OpenTK;
 
 namespace OpenMLTD.MillionDance.Viewer.Extensions {
     internal static class Vector3Extensions {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static OpenTK.Vector3 ToOpenTK(this Vector3 vector) {
-            return new OpenTK.Vector3(vector.X, vector.Y, vector.Z);
+        public static Vector3 ToOpenTK(this AssetStudio.Vector3 vector) {
+            return new Vector3(vector.X, vector.Y, vector.Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static OpenTK.Vector3 FixCoordSystem(this OpenTK.Vector3 vector) {
-            return new OpenTK.Vector3(-vector.X, vector.Y, vector.Z);
+        public static Vector3 FixCoordSystem(this Vector3 vector) {
+            return new Vector3(-vector.X, vector.Y, vector.Z);
         }
 
     }

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using AssetStudio;
+using AssetStudio.Extended.MonoBehaviours.Serialization;
 using OpenMLTD.ScenarioEdit.Entities;
-using UnityStudio.Extensions;
-using UnityStudio.Models;
-using UnityStudio.Serialization;
 
 namespace OpenMLTD.ScenarioEdit {
     public partial class Form1 : Form {
@@ -20,7 +18,7 @@ namespace OpenMLTD.ScenarioEdit {
             button1.Click += Button1_Click;
         }
 
-        private void Button1_Click(object sender, System.EventArgs e) {
+        private void Button1_Click(object sender, EventArgs e) {
             ofd.Filter = "Unity3D (*.unity3d)|*.unity3d";
             ofd.CheckFileExists = true;
             ofd.ValidateNames = true;
@@ -41,27 +39,32 @@ namespace OpenMLTD.ScenarioEdit {
             ScenarioObject scenarioObject = null;
 
             try {
-                using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                    using (var bundle = new BundleFile(fileStream, false)) {
-                        foreach (var asset in bundle.AssetFiles) {
-                            foreach (var preloadData in asset.PreloadDataList) {
-                                if (preloadData.KnownType != KnownClassID.MonoBehaviour) {
-                                    continue;
-                                }
+                const string scenarioEnds = "scenario_sobj";
 
-                                var behaviour = preloadData.LoadAsMonoBehaviour(true);
+                var manager = new AssetsManager();
+                manager.LoadFiles(filePath);
 
-                                if (!behaviour.Name.EndsWith("scenario_sobj")) {
-                                    continue;
-                                }
-
-                                behaviour = preloadData.LoadAsMonoBehaviour(false);
-
-                                var serializer = new MonoBehaviourSerializer();
-                                scenarioObject = serializer.Deserialize<ScenarioObject>(behaviour);
-                                break;
-                            }
+                foreach (var assetFile in manager.assetsFileList) {
+                    foreach (var obj in assetFile.Objects) {
+                        if (obj.type != ClassIDType.MonoBehaviour) {
+                            continue;
                         }
+
+                        var behaviour = obj as MonoBehaviour;
+
+                        if (behaviour == null) {
+                            throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                        }
+
+                        if (!behaviour.m_Name.EndsWith(scenarioEnds)) {
+                            continue;
+                        }
+
+                        var ser = new ScriptableObjectSerializer();
+
+                        scenarioObject = ser.Deserialize<ScenarioObject>(behaviour);
+
+                        break;
                     }
                 }
             } catch (Exception ex) {
@@ -80,5 +83,6 @@ namespace OpenMLTD.ScenarioEdit {
                 Debug.Print("Success");
             }
         }
+
     }
 }

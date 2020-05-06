@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
+using AssetStudio;
+using AssetStudio.Extended.MonoBehaviours.Serialization;
 using JetBrains.Annotations;
 using OpenMLTD.ScenarioEdit.Entities;
-using UnityStudio.Extensions;
-using UnityStudio.Models;
-using UnityStudio.Serialization;
 
 namespace OpenMLTD.ScenarioEdit {
 #if DEBUG
@@ -19,27 +15,32 @@ namespace OpenMLTD.ScenarioEdit {
         public static ScenarioObject Load([NotNull] string path) {
             ScenarioObject result = null;
 
-            using (var fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                using (var bundle = new BundleFile(fileStream, false)) {
-                    foreach (var asset in bundle.AssetFiles) {
-                        foreach (var preloadData in asset.PreloadDataList) {
-                            if (preloadData.KnownType != KnownClassID.MonoBehaviour) {
-                                continue;
-                            }
+            const string scenarioEnds = "scenario_sobj";
 
-                            var behaviour = preloadData.LoadAsMonoBehaviour(true);
+            var manager = new AssetsManager();
+            manager.LoadFiles(path);
 
-                            if (!behaviour.Name.EndsWith("scenario_sobj")) {
-                                continue;
-                            }
-
-                            behaviour = preloadData.LoadAsMonoBehaviour(false);
-
-                            var serializer = new MonoBehaviourSerializer();
-                            result = serializer.Deserialize<ScenarioObject>(behaviour);
-                            break;
-                        }
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.MonoBehaviour) {
+                        continue;
                     }
+
+                    var behaviour = obj as MonoBehaviour;
+
+                    if (behaviour == null) {
+                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                    }
+
+                    if (!behaviour.m_Name.EndsWith(scenarioEnds)) {
+                        continue;
+                    }
+
+                    var ser = new ScriptableObjectSerializer();
+
+                    result = ser.Deserialize<ScenarioObject>(behaviour);
+
+                    break;
                 }
             }
 

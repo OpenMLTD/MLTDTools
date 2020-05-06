@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using AssetStudio;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Entities.Mvd;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Utilities;
-using UnityStudio.UnityEngine.Animation;
 
 namespace OpenMLTD.MillionDance.Core {
     public sealed partial class MvdCreator {

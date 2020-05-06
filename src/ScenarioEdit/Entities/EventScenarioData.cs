@@ -1,16 +1,16 @@
-﻿using JetBrains.Annotations;
+﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
+using JetBrains.Annotations;
 using OpenMLTD.MiriTore;
-using UnityStudio.Serialization;
-using UnityStudio.Serialization.Naming;
 
 namespace OpenMLTD.ScenarioEdit.Entities {
-    [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention))]
+    [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public sealed class EventScenarioData {
 
         internal EventScenarioData() {
         }
 
-        [MonoBehaviourProperty(Name = "absTime")]
+        [ScriptableObjectProperty(Name = "absTime")]
         public double AbsoluteTime { get; set; }
 
         public bool Selected { get; set; }
@@ -34,7 +34,7 @@ namespace OpenMLTD.ScenarioEdit.Entities {
         /// <summary>
         /// Lyrics text may contain LF (<code>'\n'</code>), so remember to replace it with <see cref="string.Empty"/>.
         /// </summary>
-        [MonoBehaviourProperty(Name = "str")]
+        [ScriptableObjectProperty(Name = "str")]
         public string Lyrics { get; set; } = string.Empty;
 
         public string Info { get; set; } = string.Empty;
@@ -43,22 +43,22 @@ namespace OpenMLTD.ScenarioEdit.Entities {
 
         public int On2 { get; set; }
 
-        [MonoBehaviourProperty(Name = "col")]
+        [ScriptableObjectProperty(Name = "col")]
         public ColorRGBA Color { get; set; }
 
-        [MonoBehaviourProperty(Name = "col2")]
+        [ScriptableObjectProperty(Name = "col2")]
         public ColorRGBA Color2 { get; set; }
 
-        [MonoBehaviourProperty(Name = "cols")]
+        [ScriptableObjectProperty(Name = "cols")]
         public float[] Colors { get; set; } = EmptyArray.Of<float>();
 
-        [MonoBehaviourProperty(Name = "tex")]
+        [ScriptableObjectProperty(Name = "tex")]
         public object Texture { get; set; } = null;
 
-        [MonoBehaviourProperty(Name = "texInx")]
+        [ScriptableObjectProperty(Name = "texInx")]
         public int TextureIndex { get; set; }
 
-        [MonoBehaviourProperty(Name = "trig")]
+        [ScriptableObjectProperty(Name = "trig")]
         public int Trigger { get; set; }
 
         public float Speed { get; set; } = 1.0f;
@@ -72,37 +72,37 @@ namespace OpenMLTD.ScenarioEdit.Entities {
 
         public bool Addf { get; set; }
 
-        [MonoBehaviourProperty(Name = "eye_x")]
+        [ScriptableObjectProperty(Name = "eye_x")]
         public float EyeX { get; set; }
 
-        [MonoBehaviourProperty(Name = "eye_y")]
+        [ScriptableObjectProperty(Name = "eye_y")]
         public float EyeY { get; set; }
 
         public Vector4[] Formation { get; set; } = EmptyArray.Of<Vector4>();
 
         public bool Appeal { get; set; }
 
-        [MonoBehaviourProperty(Name = "cheeklv")]
+        [ScriptableObjectProperty(Name = "cheeklv")]
         public int CheekLevel { get; set; }
 
-        [MonoBehaviourProperty(Name = "eyeclose")]
+        [ScriptableObjectProperty(Name = "eyeclose")]
         public bool EyeClosed { get; set; }
 
         public bool Talking { get; set; }
 
         public bool Delay { get; set; }
 
-        [MonoBehaviourProperty(Name = "clratio")]
+        [ScriptableObjectProperty(Name = "clratio")]
         public int[] ColorRatio { get; set; } = EmptyArray.Of<int>();
 
-        [MonoBehaviourProperty(Name = "clcols")]
+        [ScriptableObjectProperty(Name = "clcols")]
         public int[] ColorColumns { get; set; } = EmptyArray.Of<int>();
 
-        [MonoBehaviourProperty(Name = "camcut")]
+        [ScriptableObjectProperty(Name = "camcut")]
         public int CameraCut { get; set; }
 
         [CanBeNull]
-        [MonoBehaviourProperty(Name = "vjparam")]
+        [ScriptableObjectProperty(Name = "vjparam")]
         public VjParam VjParam { get; set; }
 
     }

@@ -42,13 +42,54 @@ namespace OpenMLTD.MillionDance.Extensions {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int FindIndex<T>([NotNull, ItemCanBeNull] this T[] array, [CanBeNull] T item) {
-            var comparer = EqualityComparer<T>.Default;
+        public static int FindIndex([NotNull] this int[] array, int item) {
+            var i = 0;
 
-            for (var i = 0; i < array.Length; ++i) {
-                if (comparer.Equals(array[i], item)) {
+            foreach (var n in array) {
+                if (n == item) {
                     return i;
                 }
+
+                i += 1;
+            }
+
+            return -1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FindIndex([NotNull] this uint[] array, uint item) {
+            var i = 0;
+
+            foreach (var n in array) {
+                if (n == item) {
+                    return i;
+                }
+
+                i += 1;
+            }
+
+            return -1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FindIndex<T>([NotNull, ItemCanBeNull] this T[] array, [CanBeNull] T item) {
+            return FindIndex(array, item, null);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FindIndex<T>([NotNull, ItemCanBeNull] this T[] array, [CanBeNull] T item, [CanBeNull] IEqualityComparer<T> comparer) {
+            if (comparer == null) {
+                comparer = EqualityComparer<T>.Default;
+            }
+
+            var i = 0;
+
+            foreach (var obj in array) {
+                if (comparer.Equals(obj, item)) {
+                    return i;
+                }
+
+                i += 1;
             }
 
             return -1;

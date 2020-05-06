@@ -9,7 +9,7 @@ namespace OpenMLTD.MillionDance.Viewer.Extensions {
         /// <param name="q">The original quaternion.</param>
         /// <returns>Created <see cref="OpenTK.Quaternion"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static OpenTK.Quaternion ToOpenTK(this UnityStudio.UnityEngine.Quaternion q) {
+        public static OpenTK.Quaternion ToOpenTK(this AssetStudio.Quaternion q) {
             return new OpenTK.Quaternion(q.X, q.Y, q.Z, q.W);
         }
 

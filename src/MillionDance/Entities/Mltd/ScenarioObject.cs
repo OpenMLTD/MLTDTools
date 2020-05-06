@@ -1,25 +1,25 @@
-﻿using UnityStudio.Serialization;
-using UnityStudio.Serialization.Naming;
+﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 
 namespace OpenMLTD.MillionDance.Entities.Mltd {
-    [MonoBehaviour(NamingConventionType = typeof(CamelCaseNamingConvention))]
+    [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public sealed class ScenarioObject {
 
         public EventScenarioData[] Scenario { get; set; }
 
-        [MonoBehaviourProperty(Name = "texs")]
+        [ScriptableObjectProperty(Name = "texs")]
         public TexTargetName[] Textures { get; set; }
 
-        [MonoBehaviourProperty(Name = "ap_st")]
+        [ScriptableObjectProperty(Name = "ap_st")]
         public EventScenarioData ApSt { get; set; }
 
-        [MonoBehaviourProperty(Name = "ap_post")]
+        [ScriptableObjectProperty(Name = "ap_post")]
         public EventScenarioData ApPose { get; set; }
 
-        [MonoBehaviourProperty(Name = "ap_end")]
+        [ScriptableObjectProperty(Name = "ap_end")]
         public EventScenarioData ApEnd { get; set; }
 
-        [MonoBehaviourProperty(Name = "fine_ev")]
+        [ScriptableObjectProperty(Name = "fine_ev")]
         public EventScenarioData FineEvent { get; set; }
 
     }

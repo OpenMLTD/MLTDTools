@@ -8,22 +8,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using AssetStudio.Extended.CompositeModels;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Viewer.Extensions;
 using OpenMLTD.MillionDance.Viewer.ObjectGL;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
-using UnityStudio.UnityEngine;
-using UnityStudio.UnityEngine.Animation;
-using Vector3 = OpenTK.Vector3;
 
 namespace OpenMLTD.MillionDance.Viewer.Internal {
     internal sealed class AnimationRenderer : DisposableBase, IUpdateable, IDrawable {
 
         public AnimationRenderer([NotNull] Game game,
-            [NotNull] Mesh bodyMesh, [NotNull] Avatar bodyAvatar, [NotNull, ItemNotNull] IReadOnlyList<BoneNode> bodyBoneList,
-            [NotNull] Mesh headMesh, [NotNull] Avatar headAvatar, [NotNull, ItemNotNull] IReadOnlyList<BoneNode> headBoneList,
+            [NotNull] PrettyMesh bodyMesh, [NotNull] PrettyAvatar bodyAvatar, [NotNull, ItemNotNull] IReadOnlyList<BoneNode> bodyBoneList,
+            [NotNull] PrettyMesh headMesh, [NotNull] PrettyAvatar headAvatar, [NotNull, ItemNotNull] IReadOnlyList<BoneNode> headBoneList,
             [NotNull] BodyAnimation animation) {
             _game = game;
             _bodyMesh = bodyMesh;
@@ -35,11 +33,12 @@ namespace OpenMLTD.MillionDance.Viewer.Internal {
             _animation = animation;
 
             #region Body
+
             var bodyVertexBuffer = new VertexBuffer();
             var bodyIndexBuffer = new IndexBuffer();
 
             var bodyVertices = new PosNorm[bodyMesh.Vertices.Length];
-            var bodyIndices = new uint[bodyMesh.Indices.Count];
+            var bodyIndices = new uint[bodyMesh.Indices.Length];
 
             for (var k = 0; k < bodyVertices.Length; ++k) {
                 bodyVertices[k] = new PosNorm {
@@ -60,14 +59,16 @@ namespace OpenMLTD.MillionDance.Viewer.Internal {
 
             _bodyVertexBuffer = bodyVertexBuffer;
             _bodyIndexBuffer = bodyIndexBuffer;
+
             #endregion
 
             #region Head
+
             var headVertexBuffer = new VertexBuffer();
             var headIndexBuffer = new IndexBuffer();
 
             var headVertices = new PosNorm[headMesh.Vertices.Length];
-            var headIndices = new uint[headMesh.Indices.Count];
+            var headIndices = new uint[headMesh.Indices.Length];
 
             for (var k = 0; k < headVertices.Length; ++k) {
                 headVertices[k] = new PosNorm {
@@ -88,6 +89,7 @@ namespace OpenMLTD.MillionDance.Viewer.Internal {
 
             _headVertexBuffer = headVertexBuffer;
             _headIndexBuffer = headIndexBuffer;
+
             #endregion
         }
 
@@ -169,7 +171,7 @@ namespace OpenMLTD.MillionDance.Viewer.Internal {
 
             var keyFrames = _animation.KeyFrames;
 
-#if !STATIC_POSE_DEBUG 
+#if !STATIC_POSE_DEBUG
             var animatedBoneCount = _animation.BoneCount;
             var firstKeyFrameIndex = -1;
             var lastFirstKeyFrameIndex = 0;
@@ -253,7 +255,7 @@ namespace OpenMLTD.MillionDance.Viewer.Internal {
             UpdateVertInternal(origBodyVertices, bodyVertices, bodyAvatar, bodyMesh, _bodyBoneList);
             UpdateVertInternal(origHeadVertices, headVertices, headAvatar, headMesh, _headBoneList);
 
-            void UpdateVertInternal(PosNorm[] origVertices, PosNorm[] vertices, Avatar avatar, Mesh mesh, IReadOnlyList<BoneNode> boneList) {
+            void UpdateVertInternal(PosNorm[] origVertices, PosNorm[] vertices, PrettyAvatar avatar, PrettyMesh mesh, IReadOnlyList<BoneNode> boneList) {
                 var vertexCount = vertices.Length;
 
                 for (var i = 0; i < vertexCount; ++i) {
@@ -317,22 +319,34 @@ namespace OpenMLTD.MillionDance.Viewer.Internal {
             ["MODEL_00/BASE/MUNE1/MUNE2/KUBI/ATAMA"] = "KUBI/ATAMA"
         };
 
-        private readonly Mesh _bodyMesh;
-        private readonly Avatar _bodyAvatar;
+        private readonly PrettyMesh _bodyMesh;
+
+        private readonly PrettyAvatar _bodyAvatar;
+
         private readonly IReadOnlyList<BoneNode> _bodyBoneList;
-        private readonly Mesh _headMesh;
-        private readonly Avatar _headAvatar;
+
+        private readonly PrettyMesh _headMesh;
+
+        private readonly PrettyAvatar _headAvatar;
+
         private readonly IReadOnlyList<BoneNode> _headBoneList;
+
         private readonly BodyAnimation _animation;
 
         private readonly PosNorm[] _originalBodyVertices;
+
         private readonly PosNorm[] _bodyVertices;
+
         private VertexBuffer _bodyVertexBuffer;
+
         private IndexBuffer _bodyIndexBuffer;
 
         private readonly PosNorm[] _originalHeadVertices;
+
         private readonly PosNorm[] _headVertices;
+
         private VertexBuffer _headVertexBuffer;
+
         private IndexBuffer _headIndexBuffer;
 
         private int _lastFrameIndex = -1;

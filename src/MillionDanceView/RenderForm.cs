@@ -249,6 +249,7 @@ namespace OpenMLTD.MillionDance.Viewer {
                 }
             } while (false);
 
+            // TODO: FIXME: new format is not supported here (it's hard-coded) but it is handled in MillionDance.
             (_danceData, _, _) = ResHelper.LoadDance();
 
 #if DEBUG
@@ -263,7 +264,7 @@ namespace OpenMLTD.MillionDance.Viewer {
             } while (false);
 #endif
 
-            _animation = BodyAnimation.CreateFrom(_danceData);
+            _animation = new LegacyBodyAnimationSource(_danceData).Convert();
 
 #if DEBUG
             do {

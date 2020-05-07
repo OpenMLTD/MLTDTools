@@ -112,7 +112,7 @@ namespace OpenMLTD.MillionDance {
                     var combinedAvatar = CompositeAvatar.FromAvatars(bodyAvatar, headAvatar);
                     var combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
 
-                    CharacterImasMotionAsset dance;
+                    IBodyAnimationSource dance;
                     ScenarioObject scenario;
 
                     if (p.GenerateCharacterMotion) {

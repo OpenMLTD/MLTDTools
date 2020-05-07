@@ -5,7 +5,6 @@ using System.Linq;
 using AssetStudio.Extended.CompositeModels;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Internal;
-using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Entities.Vmd;
 using OpenMLTD.MillionDance.Extensions;
@@ -16,7 +15,7 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<VmdBoneFrame> CreateBoneFrames([NotNull] CharacterImasMotionAsset bodyMotion, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx) {
+        private static IReadOnlyList<VmdBoneFrame> CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx) {
             var mltdHierarchy = BoneUtils.BuildBoneHierarchy(avatar);
             var pmxHierarchy = BoneUtils.BuildBoneHierarchy(pmx);
 
@@ -34,7 +33,7 @@ namespace OpenMLTD.MillionDance.Core {
                 pmxBone.Initialize();
             }
 
-            var animation = BodyAnimation.CreateFrom(bodyMotion);
+            var animation = bodyMotionSource.Convert();
             var boneCount = mltdHierarchy.Count;
             var animatedBoneCount = animation.BoneCount;
             var keyFrameCount = animation.KeyFrames.Count;
@@ -68,6 +67,15 @@ namespace OpenMLTD.MillionDance.Core {
             var iterationTimes = keyFrameCount / animatedBoneCount;
             var boneFrameList = new List<VmdBoneFrame>();
 
+            // Reduce memory pressure of allocating new delegates (see mltdHierarchy.FirstOrDefault(...))
+            var boneMatchPredicateCache = new Func<PmxBone, bool>[boneCount];
+
+            for (var j = 0; j < boneCount; j += 1) {
+                var refBone = pmx.Bones[j];
+                boneMatchPredicateCache[j] = bone => bone.Name == refBone.Name;
+            }
+
+            // OK, now perform iterations
             for (var i = 0; i < iterationTimes; ++i) {
                 if (ConversionConfig.Current.Transform60FpsTo30Fps) {
                     if (i % 2 == 1) {
@@ -147,9 +155,15 @@ namespace OpenMLTD.MillionDance.Core {
                     var mltdBone = mltdHierarchy[j];
 
                     {
-                        var pb = pmx.Bones.FirstOrDefault(b => b.Name == pmxBone.Name);
+                        var predicate = boneMatchPredicateCache[j];
+                        var pb = pmx.Bones.FirstOrDefault(predicate);
 
-                        Debug.Assert(pb != null, $"PMX bone with the name \"{pmxBone.Name}\" should exist.");
+#if DEBUG
+                        if (pb == null) {
+                            // Lazy evaluation of the assertion message
+                            Debug.Assert(pb != null, $"PMX bone with the name \"{pmxBone.Name}\" should exist.");
+                        }
+#endif
 
                         if (!pb.IsMltdKeyBone) {
                             continue;

@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="ApplicationHelper.cs" />
     <Compile Include="Core\ConversionConfig.cs" />
+    <Compile Include="Core\IBodyAnimationSource.cs" />
     <Compile Include="Core\MotionFormat.cs" />
     <Compile Include="Core\MvdCreator.Camera.cs" />
     <Compile Include="Core\MvdCreator.cs" />
@@ -70,10 +71,14 @@
     <Compile Include="Core\VmdCreator.Camera.cs" />
     <Compile Include="Core\VmdCreator.FacialExpressions.cs" />
     <Compile Include="Core\VmdCreator.FacialExpressionTable.cs" />
+    <Compile Include="Entities\Extensions\KeyTypeExtension.cs" />
+    <Compile Include="Entities\Extensions\PropertyTypeExtension.cs" />
     <Compile Include="Entities\Internal\CameraAnimation.cs" />
     <Compile Include="Entities\Internal\CameraFrame.cs" />
     <Compile Include="Entities\Mltd\ColorRGBA.cs" />
+    <Compile Include="Entities\Mltd\CompiledBodyAnimationSource.cs" />
     <Compile Include="Entities\Mltd\EventScenarioData.cs" />
+    <Compile Include="Entities\Mltd\LegacyBodyAnimationSource.cs" />
     <Compile Include="Entities\Mltd\ScenarioDataType.cs" />
     <Compile Include="Entities\Mltd\ScenarioObject.cs" />
     <Compile Include="Entities\Mltd\Sway\CollidingAxis.cs" />
@@ -110,6 +115,7 @@
     </Compile>
     <Compile Include="GlobalizationHelper.cs" />
     <Compile Include="ResourceLoader.cs" />
+    <Compile Include="Utilities\AnalysesUtils.cs" />
     <Compile Include="Utilities\EmptyArray.cs" />
     <Compile Include="Utilities\BoneUtils.cs" />
     <Compile Include="Core\ScalingConfig.cs" />

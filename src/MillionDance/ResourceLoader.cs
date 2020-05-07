@@ -6,6 +6,7 @@ using AssetStudio;
 using AssetStudio.Extended.CompositeModels;
 using AssetStudio.Extended.MonoBehaviours.Serialization;
 using JetBrains.Annotations;
+using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Entities.Mltd.Sway;
 
@@ -161,7 +162,65 @@ namespace OpenMLTD.MillionDance {
             return cam;
         }
 
-        public static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDance([NotNull] string filePath, int songPosition) {
+        public static (IBodyAnimationSource, IBodyAnimationSource, IBodyAnimationSource) LoadDance([NotNull] string filePath, int songPosition) {
+            {
+                // First try with legacy bundles
+                var (dan, apa, apg) = LoadDanceLegacy(filePath, songPosition);
+
+                if (dan != null && apa != null && apg != null) {
+                    return (new LegacyBodyAnimationSource(dan), new LegacyBodyAnimationSource(apa), new LegacyBodyAnimationSource(apg));
+                }
+            }
+
+            {
+                // If failed, try the new one (from ~mid 2018?)
+                var (dan, apa, apg) = LoadDanceCompiled(filePath, songPosition);
+
+                if (dan != null && apa != null && apg != null) {
+                    return (new CompiledBodyAnimationSource(dan), new CompiledBodyAnimationSource(apa), new CompiledBodyAnimationSource(apg));
+                }
+            }
+
+            return (null, null, null);
+        }
+
+        [CanBeNull]
+        public static ScenarioObject LoadScenario([NotNull] string filePath) {
+            ScenarioObject result = null;
+
+            const string scenarioEnds = "scenario_sobj";
+
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
+
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.MonoBehaviour) {
+                        continue;
+                    }
+
+                    var behaviour = obj as MonoBehaviour;
+
+                    if (behaviour == null) {
+                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                    }
+
+                    if (!behaviour.m_Name.EndsWith(scenarioEnds)) {
+                        continue;
+                    }
+
+                    var ser = new ScriptableObjectSerializer();
+
+                    result = ser.Deserialize<ScenarioObject>(behaviour);
+
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        private static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDanceLegacy([NotNull] string filePath, int songPosition) {
             CharacterImasMotionAsset dan = null, apa = null, apg = null;
 
             var danEnds = $"{songPosition:00}_dan.imo";
@@ -202,40 +261,43 @@ namespace OpenMLTD.MillionDance {
             return (dan, apa, apg);
         }
 
-        [CanBeNull]
-        public static ScenarioObject LoadScenario([NotNull] string filePath) {
-            ScenarioObject result = null;
+        private static (AnimationClip, AnimationClip, AnimationClip) LoadDanceCompiled([NotNull] string filePath, int songPosition) {
+            AnimationClip dan = null, apa = null, apg = null;
 
-            const string scenarioEnds = "scenario_sobj";
+            var danEnds = $"{songPosition:00}_dan";
+            var apaEnds = $"{songPosition:00}_apa";
+            var apgEnds = $"{songPosition:00}_apg";
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
 
             foreach (var assetFile in manager.assetsFileList) {
                 foreach (var obj in assetFile.Objects) {
-                    if (obj.type != ClassIDType.MonoBehaviour) {
+                    if (obj.type != ClassIDType.AnimationClip) {
                         continue;
                     }
 
-                    var behaviour = obj as MonoBehaviour;
+                    var clip = obj as AnimationClip;
 
-                    if (behaviour == null) {
-                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                    if (clip == null) {
+                        throw new ArgumentNullException(nameof(clip), "One animation clip is null.");
                     }
 
-                    if (!behaviour.m_Name.EndsWith(scenarioEnds)) {
-                        continue;
+                    if (clip.m_Name.EndsWith(danEnds)) {
+                        dan = clip;
+                    } else if (clip.m_Name.EndsWith(apaEnds)) {
+                        apa = clip;
+                    } else if (clip.m_Name.EndsWith(apgEnds)) {
+                        apg = clip;
                     }
 
-                    var ser = new ScriptableObjectSerializer();
-
-                    result = ser.Deserialize<ScenarioObject>(behaviour);
-
-                    break;
+                    if (dan != null && apa != null && apg != null) {
+                        break;
+                    }
                 }
             }
 
-            return result;
+            return (dan, apa, apg);
         }
 
         public static (SwayController Body, SwayController Head) LoadSwayControllers([NotNull] string bodyFilePath, [NotNull] string headFilePath) {
@@ -247,6 +309,7 @@ namespace OpenMLTD.MillionDance {
             return (Body: body, Head: head);
         }
 
+        [NotNull]
         private static SwayController LoadSwayController([NotNull] string filePath) {
             SwayController result = null;
 

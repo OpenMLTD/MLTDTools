@@ -17,6 +17,8 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
         public ScriptableObjectSerializer() {
             _createdTypeConverters = new Dictionary<Type, ISimpleTypeConverter>(10);
             _createdSetters = new Dictionary<(Type, string, ScriptableObjectPropertyAttribute), PropOrField>();
+            _propertyAttributeCache = new Dictionary<PropertyInfo, ScriptableObjectPropertyAttribute>();
+            _fieldAttributeCache = new Dictionary<FieldInfo, ScriptableObjectPropertyAttribute>();
 
             // In old versions(?) Unity serializes booleans as bytes
             WithConverter<ByteToBooleanConverter>();
@@ -260,16 +262,24 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
             PropOrField result;
 
             foreach (var prop in properties) {
-                var mbp = prop.GetCustomAttribute<ScriptableObjectPropertyAttribute>();
-                var propName = !string.IsNullOrEmpty(mbp?.Name) ? mbp.Name : (naming != null ? naming.GetCorrected(prop.Name) : prop.Name);
+                ScriptableObjectPropertyAttribute sopa;
+
+                if (_propertyAttributeCache.ContainsKey(prop)) {
+                    sopa = _propertyAttributeCache[prop];
+                } else {
+                    sopa = prop.GetCustomAttribute<ScriptableObjectPropertyAttribute>();
+                    _propertyAttributeCache[prop] = sopa;
+                }
+
+                var propName = !string.IsNullOrEmpty(sopa?.Name) ? sopa.Name : (naming != null ? naming.GetCorrected(prop.Name) : prop.Name);
 
                 if (propName == name) {
-                    var key = (objectType, propName, mbp);
+                    var key = (objectType, propName, mbp: sopa);
 
                     if (_createdSetters.ContainsKey(key)) {
                         result = _createdSetters[key];
                     } else {
-                        result = new PropOrField(prop, mbp);
+                        result = new PropOrField(prop, sopa);
                         _createdSetters[key] = result;
                     }
 
@@ -278,16 +288,24 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
             }
 
             foreach (var field in fields) {
-                var mbp = field.GetCustomAttribute<ScriptableObjectPropertyAttribute>();
-                var fieldName = !string.IsNullOrEmpty(mbp?.Name) ? mbp.Name : (naming != null ? naming.GetCorrected(field.Name) : field.Name);
+                ScriptableObjectPropertyAttribute sopa;
+
+                if (_fieldAttributeCache.ContainsKey(field)) {
+                    sopa = _fieldAttributeCache[field];
+                } else {
+                    sopa = field.GetCustomAttribute<ScriptableObjectPropertyAttribute>();
+                    _fieldAttributeCache[field] = sopa;
+                }
+
+                var fieldName = !string.IsNullOrEmpty(sopa?.Name) ? sopa.Name : (naming != null ? naming.GetCorrected(field.Name) : field.Name);
 
                 if (fieldName == name) {
-                    var key = (objectType, fieldName, mbp);
+                    var key = (objectType, fieldName, mbp: sopa);
 
                     if (_createdSetters.ContainsKey(key)) {
                         result = _createdSetters[key];
                     } else {
-                        result = new PropOrField(field, mbp);
+                        result = new PropOrField(field, sopa);
                         _createdSetters[key] = result;
                     }
 
@@ -424,6 +442,12 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
 
         [NotNull]
         private readonly Dictionary<(Type, string, ScriptableObjectPropertyAttribute), PropOrField> _createdSetters;
+
+        [NotNull]
+        private readonly Dictionary<PropertyInfo, ScriptableObjectPropertyAttribute> _propertyAttributeCache;
+
+        [NotNull]
+        private readonly Dictionary<FieldInfo, ScriptableObjectPropertyAttribute> _fieldAttributeCache;
 
         [NotNull, ItemNotNull]
         private static readonly string[] FilteredNames = {

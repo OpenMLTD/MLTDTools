@@ -2,7 +2,7 @@
 using OpenTK;
 
 namespace OpenMLTD.MillionDance.Utilities {
-    public static class RotationDebug {
+    internal static class RotationDebug {
 
         public static Vector3 DecomposeDeg(this Quaternion q) {
             return DecomposeRad(q) * Rad2Deg;

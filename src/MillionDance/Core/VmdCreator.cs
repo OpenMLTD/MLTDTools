@@ -22,7 +22,7 @@ namespace OpenMLTD.MillionDance.Core {
         public uint FixedFov { get; set; } = 20;
 
         [NotNull]
-        public VmdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel,
+        public VmdMotion CreateFrom([CanBeNull] IBodyAnimationSource bodyAnimationSource, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel,
             [CanBeNull] CharacterImasMotionAsset cameraMotion,
             [CanBeNull] ScenarioObject scenarioObject, int songPosition) {
             IReadOnlyList<VmdBoneFrame> boneFrames;
@@ -30,8 +30,8 @@ namespace OpenMLTD.MillionDance.Core {
             IReadOnlyList<VmdFacialFrame> facialFrames;
             IReadOnlyList<VmdLightFrame> lightFrames;
 
-            if (ProcessBoneFrames && (bodyMotion != null && avatar != null && mltdPmxModel != null)) {
-                boneFrames = CreateBoneFrames(bodyMotion, avatar, mltdPmxModel);
+            if (ProcessBoneFrames && (bodyAnimationSource != null && avatar != null && mltdPmxModel != null)) {
+                boneFrames = CreateBoneFrames(bodyAnimationSource, avatar, mltdPmxModel);
             } else {
                 boneFrames = EmptyArray.Of<VmdBoneFrame>();
             }

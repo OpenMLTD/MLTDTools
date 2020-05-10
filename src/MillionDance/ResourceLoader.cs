@@ -223,9 +223,9 @@ namespace OpenMLTD.MillionDance {
         private static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDanceLegacy([NotNull] string filePath, int songPosition) {
             CharacterImasMotionAsset dan = null, apa = null, apg = null;
 
-            var danEnds = $"{songPosition:00}_dan.imo";
-            var apaEnds = $"{songPosition:00}_apa.imo";
-            var apgEnds = $"{songPosition:00}_apg.imo";
+            var danComp = $"{songPosition:00}_dan.imo";
+            var apaComp = $"{songPosition:00}_apa.imo";
+            var apgComp = $"{songPosition:00}_apg.imo";
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
@@ -244,11 +244,12 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
                     }
 
-                    if (behaviour.m_Name.EndsWith(danEnds)) {
+                    // Can't use EndsWith() here: some bundles have ".asset" postfixes (alstar_01.imo.unity3d: _apa.imo, _dan_imo.asset, _apg.imo.asset)
+                    if (behaviour.m_Name.Contains(danComp)) {
                         dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                    } else if (behaviour.m_Name.EndsWith(apaEnds)) {
+                    } else if (behaviour.m_Name.Contains(apaComp)) {
                         apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                    } else if (behaviour.m_Name.EndsWith(apgEnds)) {
+                    } else if (behaviour.m_Name.Contains(apgComp)) {
                         apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                     }
 
@@ -264,9 +265,9 @@ namespace OpenMLTD.MillionDance {
         private static (AnimationClip, AnimationClip, AnimationClip) LoadDanceCompiled([NotNull] string filePath, int songPosition) {
             AnimationClip dan = null, apa = null, apg = null;
 
-            var danEnds = $"{songPosition:00}_dan";
-            var apaEnds = $"{songPosition:00}_apa";
-            var apgEnds = $"{songPosition:00}_apg";
+            var danComp = $"{songPosition:00}_dan";
+            var apaComp = $"{songPosition:00}_apa";
+            var apgComp = $"{songPosition:00}_apg";
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
@@ -283,11 +284,11 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentNullException(nameof(clip), "One animation clip is null.");
                     }
 
-                    if (clip.m_Name.EndsWith(danEnds)) {
+                    if (clip.m_Name.Contains(danComp)) {
                         dan = clip;
-                    } else if (clip.m_Name.EndsWith(apaEnds)) {
+                    } else if (clip.m_Name.Contains(apaComp)) {
                         apa = clip;
-                    } else if (clip.m_Name.EndsWith(apgEnds)) {
+                    } else if (clip.m_Name.Contains(apgComp)) {
                         apg = clip;
                     }
 

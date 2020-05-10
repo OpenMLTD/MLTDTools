@@ -186,6 +186,10 @@ namespace OpenMLTD.MillionDance.Viewer {
         public static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDance() {
             CharacterImasMotionAsset dan = null, apa = null, apg = null;
 
+            const string danComp = DancerPosition + "_dan";
+            const string apaComp = DancerPosition + "_apa";
+            const string apgComp = DancerPosition + "_apg";
+
             var manager = new AssetsManager();
             manager.LoadFiles(DanceDataFilePath);
 
@@ -203,16 +207,12 @@ namespace OpenMLTD.MillionDance.Viewer {
                         throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
                     }
 
-                    switch (behaviour.m_Name) {
-                        case "dan_" + SongResourceName + "_" + DancerPosition + "_dan.imo":
-                            dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                            break;
-                        case "dan_" + SongResourceName + "_" + DancerPosition + "_apa.imo":
-                            apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                            break;
-                        case "dan_" + SongResourceName + "_" + DancerPosition + "_apg.imo":
-                            apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                            break;
+                    if (behaviour.m_Name.Contains(danComp)) {
+                        dan = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apaComp)) {
+                        apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apgComp)) {
+                        apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                     }
 
                     if (dan != null && apa != null && apg != null) {

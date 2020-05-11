@@ -15,9 +15,14 @@ $subPaths = @(
     #[String]::Format("src/ScenarioEdit/bin/{0}", $configuration),
 	[String]::Format("src/TDFacial/bin/{0}", $configuration), # remember to include facial_expr.json
     [String]::Format("src/ManifestTools/bin/{0}", $configuration),
+    [String]::Empty
 );
 
 foreach ($subPath in $subPaths) {
+    if ([String]::IsNullOrEmpty($subPath)) {
+        continue
+	}
+
     [String]$fullDirPath = [System.IO.Path]::Combine($basePath, $subPath, "*");
     
     [ScriptBlock]$scriptBlock = { 7z a $zipName -r $fullDirPath }

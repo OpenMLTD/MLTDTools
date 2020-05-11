@@ -8,5 +8,9 @@ namespace OpenMLTD.MiriTore.Extensions {
             return @this.IndexOf(str, comparison) >= 0;
         }
 
+        public static bool Contains([NotNull] this string @this, char ch) {
+            return @this.IndexOf(ch) >= 0;
+        }
+
     }
 }

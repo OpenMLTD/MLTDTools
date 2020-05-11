@@ -13,7 +13,8 @@ $subPaths = @(
     [String]::Format("src/MiriTore.Logging/bin/{0}", $configuration),
     [String]::Format("src/MltdInfoViewer/bin/{0}", $configuration),
     #[String]::Format("src/ScenarioEdit/bin/{0}", $configuration),
-	[String]::Format("src/TDFacial/bin/{0}", $configuration)#, # remember to include facial_expr.json
+	[String]::Format("src/TDFacial/bin/{0}", $configuration), # remember to include facial_expr.json
+    [String]::Format("src/ManifestTools/bin/{0}", $configuration),
 );
 
 foreach ($subPath in $subPaths) {

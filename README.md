@@ -29,17 +29,21 @@ The projects include some utilities to investigate MLTD data structures.
 
 Similar to [AcbMaker](https://github.com/OpenCGSS/DereTore/tree/master/Apps/AcbMaker) in DereTore, but packs live music into MLTD variant of ACB format.
 
-**Hca Decoder**
+**HCA Decoder**
 
 Similar to [Hca2Wav](https://github.com/OpenCGSS/DereTore/tree/master/Apps/Hca2Wav) in DereTore, but uses MLTD's HCA cipher by default.
 
-**Manifest Exporter**
+**Manifest Exporter** (obsolete)
 
-Exports manifest description to a text file.
+Export manifest description to a text file.
 
 **MLTD Information Viewer**
 
-Views resource manifest, card information and costume information from MLTD database files.
+View resource manifest, card information and costume information from MLTD database files.
+
+**Manifest Tools**
+
+A collection of manifest-related utilities: viewing, downloading, diff-ing, exporting, etc.
 
 **Scenario Editor**
 
@@ -47,7 +51,7 @@ WIP
 
 **MillionDance**
 
-Exports models, character and camera motions to MMD equivalents. (alpha)
+Export models, character and camera motions to MMD equivalents. (alpha)
 
 [Manual](https://github.com/OpenMLTD/MLTDTools/wiki/MillionDance-Manual)
 

@@ -29,6 +29,11 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.cboResVersion = new System.Windows.Forms.ComboBox();
+            this.radResManual = new System.Windows.Forms.RadioButton();
+            this.radResLatest = new System.Windows.Forms.RadioButton();
+            this.label6 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.radPlatformIos = new System.Windows.Forms.RadioButton();
             this.radPlatformAndroid = new System.Windows.Forms.RadioButton();
@@ -45,19 +50,14 @@
             this.lblCurrent = new System.Windows.Forms.Label();
             this.btnGo = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.cboResVersion = new System.Windows.Forms.ComboBox();
-            this.radResManual = new System.Windows.Forms.RadioButton();
-            this.radResLatest = new System.Windows.Forms.RadioButton();
-            this.label6 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.btnBrowseFolder = new System.Windows.Forms.Button();
             this.txtSaveToDir = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.lblTotalSize = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,6 +75,56 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(344, 145);
             this.panel1.TabIndex = 0;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.cboResVersion);
+            this.panel3.Controls.Add(this.radResManual);
+            this.panel3.Controls.Add(this.radResLatest);
+            this.panel3.Location = new System.Drawing.Point(124, 56);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(217, 45);
+            this.panel3.TabIndex = 31;
+            // 
+            // cboResVersion
+            // 
+            this.cboResVersion.Enabled = false;
+            this.cboResVersion.FormattingEnabled = true;
+            this.cboResVersion.Location = new System.Drawing.Point(72, 22);
+            this.cboResVersion.Name = "cboResVersion";
+            this.cboResVersion.Size = new System.Drawing.Size(126, 21);
+            this.cboResVersion.TabIndex = 2;
+            // 
+            // radResManual
+            // 
+            this.radResManual.AutoSize = true;
+            this.radResManual.Location = new System.Drawing.Point(3, 23);
+            this.radResManual.Name = "radResManual";
+            this.radResManual.Size = new System.Drawing.Size(63, 17);
+            this.radResManual.TabIndex = 1;
+            this.radResManual.Text = "Specify:";
+            this.radResManual.UseVisualStyleBackColor = true;
+            // 
+            // radResLatest
+            // 
+            this.radResLatest.AutoSize = true;
+            this.radResLatest.Checked = true;
+            this.radResLatest.Location = new System.Drawing.Point(3, 0);
+            this.radResLatest.Name = "radResLatest";
+            this.radResLatest.Size = new System.Drawing.Size(54, 17);
+            this.radResLatest.TabIndex = 0;
+            this.radResLatest.TabStop = true;
+            this.radResLatest.Text = "Latest";
+            this.radResLatest.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(5, 58);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(94, 13);
+            this.label6.TabIndex = 30;
+            this.label6.Text = "Resource Version:";
             // 
             // panel2
             // 
@@ -159,6 +209,8 @@
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
+            this.lvState.FullRowSelect = true;
+            this.lvState.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvState.HideSelection = false;
             this.lvState.Location = new System.Drawing.Point(362, 12);
             this.lvState.Name = "lvState";
@@ -214,56 +266,6 @@
             this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.cboResVersion);
-            this.panel3.Controls.Add(this.radResManual);
-            this.panel3.Controls.Add(this.radResLatest);
-            this.panel3.Location = new System.Drawing.Point(124, 56);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(217, 45);
-            this.panel3.TabIndex = 31;
-            // 
-            // cboResVersion
-            // 
-            this.cboResVersion.Enabled = false;
-            this.cboResVersion.FormattingEnabled = true;
-            this.cboResVersion.Location = new System.Drawing.Point(72, 22);
-            this.cboResVersion.Name = "cboResVersion";
-            this.cboResVersion.Size = new System.Drawing.Size(126, 21);
-            this.cboResVersion.TabIndex = 2;
-            // 
-            // radResManual
-            // 
-            this.radResManual.AutoSize = true;
-            this.radResManual.Location = new System.Drawing.Point(3, 23);
-            this.radResManual.Name = "radResManual";
-            this.radResManual.Size = new System.Drawing.Size(63, 17);
-            this.radResManual.TabIndex = 1;
-            this.radResManual.Text = "Specify:";
-            this.radResManual.UseVisualStyleBackColor = true;
-            // 
-            // radResLatest
-            // 
-            this.radResLatest.AutoSize = true;
-            this.radResLatest.Checked = true;
-            this.radResLatest.Location = new System.Drawing.Point(3, 0);
-            this.radResLatest.Name = "radResLatest";
-            this.radResLatest.Size = new System.Drawing.Size(54, 17);
-            this.radResLatest.TabIndex = 0;
-            this.radResLatest.TabStop = true;
-            this.radResLatest.Text = "Latest";
-            this.radResLatest.UseVisualStyleBackColor = true;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(5, 58);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(94, 13);
-            this.label6.TabIndex = 30;
-            this.label6.Text = "Resource Version:";
             // 
             // panel4
             // 
@@ -330,10 +332,10 @@
             this.Text = "Asset Download";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.ResumeLayout(false);

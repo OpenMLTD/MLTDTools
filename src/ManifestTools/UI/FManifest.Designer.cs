@@ -187,6 +187,7 @@
             this.columnHeader1,
             this.columnHeader2});
             this.lvDownload.FullRowSelect = true;
+            this.lvDownload.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvDownload.HideSelection = false;
             this.lvDownload.Location = new System.Drawing.Point(3, 25);
             this.lvDownload.Name = "lvDownload";

@@ -34,6 +34,7 @@
             // lv
             // 
             this.lv.FullRowSelect = true;
+            this.lv.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lv.HideSelection = false;
             this.lv.Location = new System.Drawing.Point(53, 42);
             this.lv.Name = "lv";

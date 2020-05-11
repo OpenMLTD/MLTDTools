@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using JetBrains.Annotations;
 using OpenMLTD.MiriTore;
@@ -24,12 +26,14 @@ namespace OpenMLTD.ManifestTools.UI {
             Load += FDiff_Load;
             Resize += FDiff_Resize;
             btnDiff.Click += BtnDiff_Click;
+            btnSaveDiff.Click += BtnSaveDiff_Click;
         }
 
         private void UnregisterEventHandlers() {
             Load -= FDiff_Load;
             Resize -= FDiff_Resize;
             btnDiff.Click -= BtnDiff_Click;
+            btnSaveDiff.Click -= BtnSaveDiff_Click;
         }
 
         private void FDiff_Load(object sender, EventArgs e) {
@@ -41,11 +45,43 @@ namespace OpenMLTD.ManifestTools.UI {
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
 
-            ResizeControls();
+            {
+                {
+                    var panelClientSize = panel2.ClientSize;
+
+                    var loc = btnDiff.Location;
+                    var buttonSize = btnDiff.Size;
+
+                    Debug.Assert(buttonSize == btnSaveDiff.Size);
+
+                    const int halfMargin = 4;
+
+                    var center = new Point(panelClientSize.Width / 2, loc.Y);
+
+                    btnDiff.Location = new Point(center.X - btnDiff.Width - halfMargin, center.Y);
+                    btnSaveDiff.Location = new Point(center.X + halfMargin, center.Y);
+                }
+
+                {
+                    var formClientSize = ClientSize;
+
+                    var loc = panel2.Location;
+                    var panelSize = panel2.Size;
+
+                    panel2.Location = new Point((formClientSize.Width - panelSize.Width) / 2, loc.Y);
+                }
+            }
         }
 
         private void FDiff_Resize(object sender, EventArgs e) {
-            ResizeControls();
+            var formClientSize = ClientSize;
+
+            {
+                var loc = panel2.Location;
+                var panelSize = panel2.Size;
+
+                panel2.Location = new Point((formClientSize.Width - panelSize.Width) / 2, loc.Y);
+            }
         }
 
         private void BtnDiff_Click(object sender, EventArgs e) {
@@ -54,21 +90,76 @@ namespace OpenMLTD.ManifestTools.UI {
                 return;
             }
 
+            _diffSources = (comboBox1.Text, comboBox2.Text);
+
             LoadManifestToListView(comboBox1.SelectedIndex, lv1);
             LoadManifestToListView(comboBox2.SelectedIndex, lv2);
 
             Diff(comboBox1.SelectedIndex, comboBox2.SelectedIndex);
+
+            btnSaveDiff.Enabled = true;
         }
 
-        private void ResizeControls() {
-            var size = ClientSize;
-
-            {
-                var loc = btnDiff.Location;
-                var buttonSize = btnDiff.Size;
-
-                btnDiff.Location = new Point((size.Width - buttonSize.Width) / 2, loc.Y);
+        private void BtnSaveDiff_Click(object sender, EventArgs e) {
+            if (_diffs == null) {
+                MessageBox.Show("You have to diff at least once to save the diff.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
+
+            sfd.AddExtension = true;
+            sfd.AutoUpgradeEnabled = true;
+            sfd.DereferenceLinks = true;
+            sfd.Filter = "Text Files (*.txt)|*.txt|All Files (*)|*";
+            sfd.OverwritePrompt = true;
+            sfd.SupportMultiDottedExtensions = true;
+            sfd.ValidateNames = true;
+
+            var r = sfd.ShowDialog(this);
+
+            if (r == DialogResult.Cancel) {
+                return;
+            }
+
+            using (var fileStream = File.Open(sfd.FileName, FileMode.Create, FileAccess.Write, FileShare.Write)) {
+                using (var streamWriter = new StreamWriter(fileStream, MltdConstants.Utf8WithoutBom)) {
+                    streamWriter.WriteLine("# Manifest diff created by MLTD Manifest Tools");
+                    streamWriter.WriteLine("# Source 1 (base): {0}", _diffSources.File1);
+                    streamWriter.WriteLine("# Source 2 (changed): {0}", _diffSources.File2);
+                    streamWriter.WriteLine("# Columns: [state] [resource name] [remote name] [content hash] [size in bytes]");
+                    streamWriter.WriteLine();
+
+                    foreach (var (info, state) in _diffs) {
+                        switch (state) {
+                            case DiffState.Same:
+                                streamWriter.Write('=');
+                                break;
+                            case DiffState.Added:
+                                streamWriter.Write('+');
+                                break;
+                            case DiffState.Removed:
+                                streamWriter.Write('-');
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(state), state, null);
+                        }
+
+                        streamWriter.Write('\t');
+
+                        streamWriter.Write(info.ResourceName);
+                        streamWriter.Write('\t');
+                        streamWriter.Write(info.RemoteName);
+                        streamWriter.Write('\t');
+                        streamWriter.Write(info.ContentHash);
+                        streamWriter.Write('\t');
+                        streamWriter.WriteLine(info.Size.ToString());
+                    }
+
+                    streamWriter.WriteLine();
+                    streamWriter.WriteLine("# End of diff");
+                }
+            }
+
+            MessageBox.Show($"Diff saved to '{sfd.FileName}'.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void LoadManifestToListView(int index, [NotNull] ListView lv) {
@@ -118,6 +209,7 @@ namespace OpenMLTD.ManifestTools.UI {
             }
 
             fullDiff.Sort(CompareInfoAndStateTuple);
+            _diffs = fullDiff.ToArray();
 
             lvDiff.BeginUpdate();
 
@@ -126,7 +218,8 @@ namespace OpenMLTD.ManifestTools.UI {
             var listViewItems = new List<ListViewItem>();
 
             foreach (var (assetInfo, state) in fullDiff) {
-                var lvi = new ListViewItem(assetInfo.ResourceName);
+                var lvi = new ListViewItem();
+                lvi.SubItems.Add(assetInfo.ResourceName);
                 lvi.SubItems.Add(assetInfo.RemoteName);
                 lvi.SubItems.Add(assetInfo.ContentHash);
                 lvi.SubItems.Add(assetInfo.Size.ToString());
@@ -134,9 +227,11 @@ namespace OpenMLTD.ManifestTools.UI {
                 switch (state) {
                     case DiffState.Added:
                         lvi.BackColor = Color.PaleGreen;
+                        lvi.Text = "+";
                         break;
                     case DiffState.Removed:
-                        lvi.BackColor = Color.PaleVioletRed;
+                        lvi.BackColor = Color.LightPink;
+                        lvi.Text = "-";
                         break;
                     case DiffState.Same:
                         break;
@@ -168,6 +263,11 @@ namespace OpenMLTD.ManifestTools.UI {
 
         [NotNull, ItemNotNull]
         private readonly FManifest[] _manifestForms;
+
+        [CanBeNull]
+        private (AssetInfo Info, DiffState State)[] _diffs;
+
+        private (string File1, string File2) _diffSources;
 
         private enum DiffState {
 

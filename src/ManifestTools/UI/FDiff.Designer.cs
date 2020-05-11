@@ -51,10 +51,15 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.btnSaveDiff = new System.Windows.Forms.Button();
             this.btnDiff = new System.Windows.Forms.Button();
+            this.sfd = new System.Windows.Forms.SaveFileDialog();
+            this.columnHeader13 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -103,6 +108,7 @@
             this.columnHeader11,
             this.columnHeader12});
             this.lv2.FullRowSelect = true;
+            this.lv2.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lv2.HideSelection = false;
             this.lv2.Location = new System.Drawing.Point(691, 16);
             this.lv2.Name = "lv2";
@@ -133,11 +139,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lvDiff.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader13,
             this.columnHeader5,
             this.columnHeader6,
             this.columnHeader7,
             this.columnHeader8});
             this.lvDiff.FullRowSelect = true;
+            this.lvDiff.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvDiff.HideSelection = false;
             this.lvDiff.Location = new System.Drawing.Point(347, 16);
             this.lvDiff.Name = "lvDiff";
@@ -167,9 +175,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(691, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(42, 13);
+            this.label3.Size = new System.Drawing.Size(50, 13);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Against";
+            this.label3.Text = "Changed";
             // 
             // label2
             // 
@@ -191,6 +199,7 @@
             this.columnHeader3,
             this.columnHeader4});
             this.lv1.FullRowSelect = true;
+            this.lv1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lv1.HideSelection = false;
             this.lv1.Location = new System.Drawing.Point(3, 16);
             this.lv1.Name = "lv1";
@@ -264,21 +273,44 @@
             this.comboBox1.Size = new System.Drawing.Size(511, 21);
             this.comboBox1.TabIndex = 1;
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.btnSaveDiff);
+            this.panel2.Controls.Add(this.btnDiff);
+            this.panel2.Location = new System.Drawing.Point(401, 5);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(345, 35);
+            this.panel2.TabIndex = 1;
+            // 
+            // btnSaveDiff
+            // 
+            this.btnSaveDiff.Enabled = false;
+            this.btnSaveDiff.Location = new System.Drawing.Point(153, 3);
+            this.btnSaveDiff.Name = "btnSaveDiff";
+            this.btnSaveDiff.Size = new System.Drawing.Size(135, 25);
+            this.btnSaveDiff.TabIndex = 5;
+            this.btnSaveDiff.Text = "&Save Diff...";
+            this.btnSaveDiff.UseVisualStyleBackColor = true;
+            // 
             // btnDiff
             // 
-            this.btnDiff.Location = new System.Drawing.Point(457, 9);
+            this.btnDiff.Location = new System.Drawing.Point(3, 3);
             this.btnDiff.Name = "btnDiff";
             this.btnDiff.Size = new System.Drawing.Size(135, 25);
-            this.btnDiff.TabIndex = 3;
+            this.btnDiff.TabIndex = 4;
             this.btnDiff.Text = "&Diff";
             this.btnDiff.UseVisualStyleBackColor = true;
+            // 
+            // columnHeader13
+            // 
+            this.columnHeader13.Text = "State";
             // 
             // FDiff
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1043, 603);
-            this.Controls.Add(this.btnDiff);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Name = "FDiff";
             this.ShowInTaskbar = false;
@@ -288,6 +320,7 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -317,6 +350,10 @@
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button btnSaveDiff;
         private System.Windows.Forms.Button btnDiff;
+        private System.Windows.Forms.SaveFileDialog sfd;
+        private System.Windows.Forms.ColumnHeader columnHeader13;
     }
 }

@@ -12,6 +12,7 @@ namespace OpenMLTD.ManifestTools {
         private static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Control.CheckForIllegalCrossThreadCalls = false;
             Application.Run(new FMain());
         }
 

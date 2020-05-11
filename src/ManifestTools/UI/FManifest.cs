@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using JetBrains.Annotations;
 using OpenMLTD.MiriTore;
@@ -29,10 +30,6 @@ namespace OpenMLTD.ManifestTools.UI {
 
         private void InitializeControls() {
             var opening = _opening;
-
-            if (opening.IsLocal) {
-                mnuActionDownload.Enabled = false;
-            }
 
             {
                 string formTitle;
@@ -99,6 +96,8 @@ namespace OpenMLTD.ManifestTools.UI {
             ctxRRemove.Click += CtxRRemove_Click;
             ctxRClear.Click += CtxRClear_Click;
             lvDownload.MouseDown += LvDownload_MouseDown;
+            mnuActionExport.Click += MnuActionExport_Click;
+            mnuActionDownload.Click += MnuActionDownload_Click;
         }
 
         private void UnregisterEventHandlers() {
@@ -111,6 +110,8 @@ namespace OpenMLTD.ManifestTools.UI {
             ctxRRemove.Click -= CtxRRemove_Click;
             ctxRClear.Click -= CtxRClear_Click;
             lvDownload.MouseDown -= LvDownload_MouseDown;
+            mnuActionExport.Click -= MnuActionExport_Click;
+            mnuActionDownload.Click -= MnuActionDownload_Click;
         }
 
         private void FManifest_Load(object sender, EventArgs e) {
@@ -185,6 +186,67 @@ namespace OpenMLTD.ManifestTools.UI {
             ctxRRemove.Enabled = lvDownload.SelectedItems.Count > 0;
 
             ctxR.Show(lvDownload, e.Location);
+        }
+
+        private void MnuActionExport_Click(object sender, EventArgs e) {
+            sfd.AddExtension = true;
+            sfd.AutoUpgradeEnabled = true;
+            sfd.DereferenceLinks = true;
+            sfd.Filter = "Text Files (*.txt)|*.txt|All Files (*)|*";
+            sfd.OverwritePrompt = true;
+            sfd.SupportMultiDottedExtensions = true;
+            sfd.ValidateNames = true;
+
+            var r = sfd.ShowDialog(this);
+
+            if (r == DialogResult.Cancel) {
+                return;
+            }
+
+            var manifest = Manifest;
+
+            using (var fileStream = File.Open(sfd.FileName, FileMode.Create, FileAccess.Write, FileShare.Write)) {
+                using (var writer = new StreamWriter(fileStream, MltdConstants.Utf8WithoutBom)) {
+                    writer.WriteLine("Asset count: {0}", manifest.Assets.Count.ToString());
+
+                    foreach (var asset in manifest.Assets) {
+                        writer.WriteLine();
+                        writer.WriteLine("Resource name: {0}", asset.ResourceName);
+                        writer.WriteLine("Resource hash: {0}", asset.ContentHash);
+                        writer.WriteLine("Remote name: {0}", asset.RemoteName);
+                        writer.WriteLine("File size: {0} ({1})", asset.Size.ToString(), MathUtilities.GetHumanReadableFileSize(asset.Size));
+                    }
+                }
+            }
+
+            MessageBox.Show($"Info exported to '{sfd.FileName}'.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void MnuActionDownload_Click(object sender, EventArgs e) {
+            var listItems = lvDownload.Items;
+
+            if (listItems.Count == 0) {
+                return;
+            }
+
+            if (_downloadConfig == null) {
+                const string message = "You are trying to download assets according to a local manifest. You can only perform this when you know the exact details of the manifest (resource version, engine version, platform info, etc.) otherwise it always fails.\nAgain, only proceed if you understand exactly what you are doing. Do you want to continue?";
+                var r = MessageBox.Show(message, ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (r == DialogResult.No) {
+                    return;
+                }
+            }
+
+            var items = new TreeListItem[listItems.Count];
+
+            for (var i = 0; i < items.Length; i += 1) {
+                items[i] = listItems[i].Tag as TreeListItem;
+            }
+
+            using (var f = new FAssetDownload(items, _downloadConfig)) {
+                f.ShowDialog(this);
+            }
         }
 
         [NotNull]

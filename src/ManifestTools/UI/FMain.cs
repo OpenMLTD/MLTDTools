@@ -100,7 +100,7 @@ namespace OpenMLTD.ManifestTools.UI {
 
             var opening = ManifestOpening.Remote(config.ResourceVersion, config.IsLatest);
 
-            var form = new FManifest(assetInfoList, opening, null);
+            var form = new FManifest(assetInfoList, opening, config);
 
             form.MdiParent = this;
 

@@ -45,6 +45,9 @@
             this.lvDownload = new OpenMLTD.ManifestTools.UI.ExplorerListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.sfd = new System.Windows.Forms.SaveFileDialog();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -128,10 +131,12 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.label1);
             this.splitContainer1.Panel1.Controls.Add(this.assetTreeList1);
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.label2);
             this.splitContainer1.Panel2.Controls.Add(this.lvDownload);
             this.splitContainer1.Size = new System.Drawing.Size(973, 590);
             this.splitContainer1.SplitterDistance = 514;
@@ -142,9 +147,9 @@
             this.assetTreeList1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.assetTreeList1.Location = new System.Drawing.Point(3, 3);
+            this.assetTreeList1.Location = new System.Drawing.Point(3, 25);
             this.assetTreeList1.Name = "assetTreeList1";
-            this.assetTreeList1.Size = new System.Drawing.Size(508, 584);
+            this.assetTreeList1.Size = new System.Drawing.Size(508, 562);
             this.assetTreeList1.TabIndex = 0;
             this.assetTreeList1.View = OpenMLTD.ManifestTools.UI.TreeListView.ListView;
             // 
@@ -158,9 +163,9 @@
             this.columnHeader2});
             this.lvDownload.FullRowSelect = true;
             this.lvDownload.HideSelection = false;
-            this.lvDownload.Location = new System.Drawing.Point(3, 3);
+            this.lvDownload.Location = new System.Drawing.Point(3, 25);
             this.lvDownload.Name = "lvDownload";
-            this.lvDownload.Size = new System.Drawing.Size(449, 584);
+            this.lvDownload.Size = new System.Drawing.Size(449, 562);
             this.lvDownload.TabIndex = 0;
             this.lvDownload.UseCompatibleStateImageBehavior = false;
             this.lvDownload.View = System.Windows.Forms.View.Details;
@@ -173,6 +178,24 @@
             // 
             this.columnHeader2.Text = "Size";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Assets";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(102, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Pending Downloads";
+            // 
             // FManifest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -183,7 +206,9 @@
             this.Name = "FManifest";
             this.Text = "Manifest";
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -215,5 +240,8 @@
         private ExplorerListView lvDownload;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.SaveFileDialog sfd;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

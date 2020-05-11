@@ -45,26 +45,28 @@ namespace OpenMLTD.ManifestTools.UI {
         private async void RadResManual_Click(object sender, EventArgs e) {
             cboResVersion.Enabled = true;
 
-            if (cboResVersion.Items.Count == 0) {
-                Enabled = false;
+            if (cboResVersion.Items.Count > 0) {
+                return;
+            }
 
-                try {
-                    var resVersions = await Hime.GetAssetVersions();
+            Enabled = false;
 
-                    foreach (var resVersion in resVersions) {
-                        cboResVersion.Items.Add(resVersion.Version.ToString());
-                    }
+            try {
+                var resVersions = await Hime.GetAssetVersions();
 
-                    if (cboResVersion.Items.Count > 0) {
-                        cboResVersion.SelectedIndex = 0;
-                    }
-                } catch (Exception ex) {
-                    MessageBox.Show(ex.ToString(), ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    radResManual.Enabled = false;
-                    radResLatest.PerformClick();
-                } finally {
-                    Enabled = true;
+                foreach (var resVersion in resVersions) {
+                    cboResVersion.Items.Add(resVersion.Version.ToString());
                 }
+
+                if (cboResVersion.Items.Count > 0) {
+                    cboResVersion.SelectedIndex = 0;
+                }
+            } catch (Exception ex) {
+                MessageBox.Show(ex.ToString(), ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                radResManual.Enabled = false;
+                radResLatest.PerformClick();
+            } finally {
+                Enabled = true;
             }
         }
 

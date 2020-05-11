@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using JetBrains.Annotations;
 using OpenMLTD.ManifestTools.Extensions;
@@ -58,11 +59,6 @@ namespace OpenMLTD.ManifestTools.UI {
             }
         }
 
-        private void LoadManifest() {
-            assetTreeList1.AddItems(Manifest);
-            assetTreeList1.Sort();
-        }
-
         private void AddSelectedItemsToPendingDownloads() {
             var items = assetTreeList1.GetSelectedItems();
             var set = _downloadPendingSet;
@@ -105,6 +101,9 @@ namespace OpenMLTD.ManifestTools.UI {
             mnuActionExport.Click += MnuActionExport_Click;
             mnuActionDownload.Click += MnuActionDownload_Click;
             mnuActionSave.Click += MnuActionSave_Click;
+            btnFilterByText.Click += BtnFilterByText_Click;
+            btnFilterByRegex.Click += BtnFilterByRegex_Click;
+            btnFilterReset.Click += BtnFilterReset_Click;
         }
 
         private void UnregisterEventHandlers() {
@@ -120,10 +119,15 @@ namespace OpenMLTD.ManifestTools.UI {
             mnuActionExport.Click -= MnuActionExport_Click;
             mnuActionDownload.Click -= MnuActionDownload_Click;
             mnuActionSave.Click -= MnuActionSave_Click;
+            btnFilterByText.Click -= BtnFilterByText_Click;
+            btnFilterByRegex.Click -= BtnFilterByRegex_Click;
+            btnFilterReset.Click -= BtnFilterReset_Click;
         }
 
         private void FManifest_Load(object sender, EventArgs e) {
-            LoadManifest();
+            cboFilterField.SelectedIndex = 0;
+            assetTreeList1.AddItems(Manifest);
+            assetTreeList1.Sort();
         }
 
         private void MnuViewList_Click(object sender, EventArgs e) {
@@ -289,6 +293,124 @@ namespace OpenMLTD.ManifestTools.UI {
             MessageBox.Show($"Manifest saved to '{sfd.FileName}'.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void BtnFilterByText_Click(object sender, EventArgs e) {
+            var input = txtFilter.Text;
+
+            if (string.IsNullOrWhiteSpace(input)) {
+                return;
+            }
+
+            var filtered = new List<AssetInfo>();
+            var field = (FilterField)cboFilterField.SelectedIndex;
+
+            foreach (var assetInfo in Manifest.Assets) {
+                switch (field) {
+                    case FilterField.ResourceName: {
+                        if (assetInfo.ResourceName.Contains(input)) {
+                            filtered.Add(assetInfo);
+                        }
+
+                        break;
+                    }
+                    case FilterField.RemoteName: {
+                        if (assetInfo.RemoteName.Contains(input)) {
+                            filtered.Add(assetInfo);
+                        }
+
+                        break;
+                    }
+                    case FilterField.ContentHash: {
+                        if (assetInfo.ContentHash.Contains(input)) {
+                            filtered.Add(assetInfo);
+                        }
+
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(field), field, null);
+                }
+            }
+
+            _isFiltered = true;
+
+            assetTreeList1.Clear();
+
+            if (filtered.Count > 0) {
+                assetTreeList1.AddItems(filtered.ToArray());
+                assetTreeList1.Sort();
+            }
+        }
+
+        private void BtnFilterByRegex_Click(object sender, EventArgs e) {
+            var input = txtFilter.Text;
+
+            if (string.IsNullOrWhiteSpace(input)) {
+                return;
+            }
+
+            Regex regex;
+
+            try {
+                regex = new Regex(input, RegexOptions.CultureInvariant | RegexOptions.ECMAScript);
+            } catch (ArgumentException ex) {
+                var message = $"The input is not a valid regular expression:\n{input}";
+                MessageBox.Show(message, ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var filtered = new List<AssetInfo>();
+            var field = (FilterField)cboFilterField.SelectedIndex;
+
+            foreach (var assetInfo in Manifest.Assets) {
+                switch (field) {
+                    case FilterField.ResourceName: {
+                        if (regex.IsMatch(assetInfo.ResourceName)) {
+                            filtered.Add(assetInfo);
+                        }
+
+                        break;
+                    }
+                    case FilterField.RemoteName: {
+                        if (regex.IsMatch(assetInfo.RemoteName)) {
+                            filtered.Add(assetInfo);
+                        }
+
+                        break;
+                    }
+                    case FilterField.ContentHash: {
+                        if (regex.IsMatch(assetInfo.ContentHash)) {
+                            filtered.Add(assetInfo);
+                        }
+
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(field), field, null);
+                }
+            }
+
+            _isFiltered = true;
+
+            assetTreeList1.Clear();
+
+            if (filtered.Count > 0) {
+                assetTreeList1.AddItems(filtered.ToArray());
+                assetTreeList1.Sort();
+            }
+        }
+
+        private void BtnFilterReset_Click(object sender, EventArgs e) {
+            if (!_isFiltered) {
+                return;
+            }
+
+            _isFiltered = false;
+
+            assetTreeList1.Clear();
+            assetTreeList1.AddItems(Manifest);
+            assetTreeList1.Sort();
+        }
+
         [NotNull]
         private readonly ManifestOpening _opening;
 
@@ -297,6 +419,18 @@ namespace OpenMLTD.ManifestTools.UI {
 
         [NotNull, ItemNotNull]
         private readonly HashSet<TreeListItem> _downloadPendingSet;
+
+        private bool _isFiltered;
+
+        private enum FilterField {
+
+            ResourceName = 0,
+
+            RemoteName = 1,
+
+            ContentHash = 2,
+
+        }
 
     }
 }

@@ -42,6 +42,12 @@
             this.ctxRRemove = new System.Windows.Forms.MenuItem();
             this.ctxRClear = new System.Windows.Forms.MenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.cboFilterField = new System.Windows.Forms.ComboBox();
+            this.btnFilterReset = new System.Windows.Forms.Button();
+            this.btnFilterByRegex = new System.Windows.Forms.Button();
+            this.btnFilterByText = new System.Windows.Forms.Button();
+            this.txtFilter = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.assetTreeList1 = new OpenMLTD.ManifestTools.UI.AssetTreeList();
             this.label2 = new System.Windows.Forms.Label();
@@ -138,6 +144,12 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.cboFilterField);
+            this.splitContainer1.Panel1.Controls.Add(this.btnFilterReset);
+            this.splitContainer1.Panel1.Controls.Add(this.btnFilterByRegex);
+            this.splitContainer1.Panel1.Controls.Add(this.btnFilterByText);
+            this.splitContainer1.Panel1.Controls.Add(this.txtFilter);
+            this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.label1);
             this.splitContainer1.Panel1.Controls.Add(this.assetTreeList1);
             // 
@@ -148,6 +160,69 @@
             this.splitContainer1.Size = new System.Drawing.Size(973, 590);
             this.splitContainer1.SplitterDistance = 514;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // cboFilterField
+            // 
+            this.cboFilterField.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboFilterField.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFilterField.FormattingEnabled = true;
+            this.cboFilterField.Items.AddRange(new object[] {
+            "Local Name",
+            "Remote Name",
+            "Hash"});
+            this.cboFilterField.Location = new System.Drawing.Point(239, 564);
+            this.cboFilterField.Name = "cboFilterField";
+            this.cboFilterField.Size = new System.Drawing.Size(74, 21);
+            this.cboFilterField.TabIndex = 7;
+            // 
+            // btnFilterReset
+            // 
+            this.btnFilterReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFilterReset.Location = new System.Drawing.Point(461, 563);
+            this.btnFilterReset.Name = "btnFilterReset";
+            this.btnFilterReset.Size = new System.Drawing.Size(50, 22);
+            this.btnFilterReset.TabIndex = 6;
+            this.btnFilterReset.Text = "Reset";
+            this.btnFilterReset.UseVisualStyleBackColor = true;
+            // 
+            // btnFilterByRegex
+            // 
+            this.btnFilterByRegex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFilterByRegex.Location = new System.Drawing.Point(390, 563);
+            this.btnFilterByRegex.Name = "btnFilterByRegex";
+            this.btnFilterByRegex.Size = new System.Drawing.Size(65, 22);
+            this.btnFilterByRegex.TabIndex = 5;
+            this.btnFilterByRegex.Text = "By Regex";
+            this.btnFilterByRegex.UseVisualStyleBackColor = true;
+            // 
+            // btnFilterByText
+            // 
+            this.btnFilterByText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFilterByText.Location = new System.Drawing.Point(319, 563);
+            this.btnFilterByText.Name = "btnFilterByText";
+            this.btnFilterByText.Size = new System.Drawing.Size(65, 22);
+            this.btnFilterByText.TabIndex = 4;
+            this.btnFilterByText.Text = "By Text";
+            this.btnFilterByText.UseVisualStyleBackColor = true;
+            // 
+            // txtFilter
+            // 
+            this.txtFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFilter.Location = new System.Drawing.Point(44, 565);
+            this.txtFilter.Name = "txtFilter";
+            this.txtFilter.Size = new System.Drawing.Size(189, 20);
+            this.txtFilter.TabIndex = 3;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 568);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(32, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Filter:";
             // 
             // label1
             // 
@@ -165,7 +240,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.assetTreeList1.Location = new System.Drawing.Point(3, 25);
             this.assetTreeList1.Name = "assetTreeList1";
-            this.assetTreeList1.Size = new System.Drawing.Size(508, 562);
+            this.assetTreeList1.Size = new System.Drawing.Size(508, 534);
             this.assetTreeList1.TabIndex = 0;
             this.assetTreeList1.View = OpenMLTD.ManifestTools.UI.TreeListView.ListView;
             // 
@@ -252,5 +327,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.MenuItem mnuActionSave;
+        private System.Windows.Forms.Button btnFilterReset;
+        private System.Windows.Forms.Button btnFilterByRegex;
+        private System.Windows.Forms.Button btnFilterByText;
+        private System.Windows.Forms.TextBox txtFilter;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cboFilterField;
     }
 }

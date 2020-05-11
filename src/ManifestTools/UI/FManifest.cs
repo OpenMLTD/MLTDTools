@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using JetBrains.Annotations;
+using OpenMLTD.ManifestTools.Extensions;
+using OpenMLTD.ManifestTools.Web.TDAssets;
 using OpenMLTD.MiriTore;
 using OpenMLTD.MiriTore.Database;
 
@@ -30,6 +32,7 @@ namespace OpenMLTD.ManifestTools.UI {
 
         private void InitializeControls() {
             var opening = _opening;
+            var config = _downloadConfig;
 
             {
                 string formTitle;
@@ -42,6 +45,9 @@ namespace OpenMLTD.ManifestTools.UI {
                     if (opening.IsLatest) {
                         formTitle += " (latest)";
                     }
+
+                    var mobilePlatform = config?.Platform ?? UnityMobilePlatform.Unknown;
+                    formTitle += $" - {mobilePlatform.ToStringFast()}";
 
                     if (!string.IsNullOrWhiteSpace(opening.FilePath)) {
                         formTitle += $" [{opening.FilePath}]";

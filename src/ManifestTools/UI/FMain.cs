@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using OpenMLTD.ManifestTools.Web.Matsuri;
 using OpenMLTD.ManifestTools.Web.TDAssets;
 using OpenMLTD.MiriTore;
 using OpenMLTD.MiriTore.Database;
@@ -24,12 +23,14 @@ namespace OpenMLTD.ManifestTools.UI {
             mnuFileOpenLocal.Click += MnuFileOpenLocal_Click;
             mnuFileOpenRemote.Click += MnuFileOpenRemote_Click;
             mnuHelpAbout.Click += MnuHelpAbout_Click;
+            mnuToolsDiff.Click += MnuToolsDiff_Click;
         }
 
         private void UnregisterEventHandlers() {
             mnuFileOpenLocal.Click -= MnuFileOpenLocal_Click;
             mnuFileOpenRemote.Click -= MnuFileOpenRemote_Click;
             mnuHelpAbout.Click -= MnuHelpAbout_Click;
+            mnuToolsDiff.Click -= MnuToolsDiff_Click;
         }
 
         private void MnuFileOpenLocal_Click(object sender, EventArgs e) {
@@ -109,6 +110,28 @@ namespace OpenMLTD.ManifestTools.UI {
 
         private void MnuHelpAbout_Click(object sender, EventArgs e) {
             using (var f = new FAbout()) {
+                f.ShowDialog(this);
+            }
+        }
+
+        private void MnuToolsDiff_Click(object sender, EventArgs e) {
+            var children = MdiChildren;
+
+            if (children.Length < 2) {
+                return;
+            }
+
+            var manifestForms = new FManifest[children.Length];
+
+            for (var i = 0; i < manifestForms.Length; i += 1) {
+                var form = children[i] as FManifest;
+
+                Debug.Assert(form != null);
+
+                manifestForms[i] = form;
+            }
+
+            using (var f = new FDiff(manifestForms)) {
                 f.ShowDialog(this);
             }
         }

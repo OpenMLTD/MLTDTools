@@ -1,10 +1,12 @@
 ﻿namespace OpenMLTD.ManifestTools.Web.TDAssets {
     public enum UnityMobilePlatform {
 
-        Android = 0,
+        Unknown = 0,
+
+        Android = 1,
 
         // ReSharper disable once InconsistentNaming
-        iOS = 1,
+        iOS = 2,
 
     }
 }

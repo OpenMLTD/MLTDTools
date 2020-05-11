@@ -34,6 +34,7 @@
             this.mnuViewTree = new System.Windows.Forms.MenuItem();
             this.mnuAction = new System.Windows.Forms.MenuItem();
             this.mnuActionDownload = new System.Windows.Forms.MenuItem();
+            this.mnuActionSave = new System.Windows.Forms.MenuItem();
             this.mnuActionExport = new System.Windows.Forms.MenuItem();
             this.ctxL = new System.Windows.Forms.ContextMenu();
             this.ctxLAdd = new System.Windows.Forms.MenuItem();
@@ -41,13 +42,13 @@
             this.ctxRRemove = new System.Windows.Forms.MenuItem();
             this.ctxRClear = new System.Windows.Forms.MenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label1 = new System.Windows.Forms.Label();
             this.assetTreeList1 = new OpenMLTD.ManifestTools.UI.AssetTreeList();
+            this.label2 = new System.Windows.Forms.Label();
             this.lvDownload = new OpenMLTD.ManifestTools.UI.ExplorerListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sfd = new System.Windows.Forms.SaveFileDialog();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -84,6 +85,7 @@
             this.mnuAction.Index = 1;
             this.mnuAction.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuActionDownload,
+            this.mnuActionSave,
             this.mnuActionExport});
             this.mnuAction.Text = "&Action";
             // 
@@ -92,9 +94,14 @@
             this.mnuActionDownload.Index = 0;
             this.mnuActionDownload.Text = "&Download...";
             // 
+            // mnuActionSave
+            // 
+            this.mnuActionSave.Index = 1;
+            this.mnuActionSave.Text = "&Save...";
+            // 
             // mnuActionExport
             // 
-            this.mnuActionExport.Index = 1;
+            this.mnuActionExport.Index = 2;
             this.mnuActionExport.Text = "E&xport...";
             // 
             // ctxL
@@ -142,6 +149,15 @@
             this.splitContainer1.SplitterDistance = 514;
             this.splitContainer1.TabIndex = 1;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Assets";
+            // 
             // assetTreeList1
             // 
             this.assetTreeList1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -152,6 +168,15 @@
             this.assetTreeList1.Size = new System.Drawing.Size(508, 562);
             this.assetTreeList1.TabIndex = 0;
             this.assetTreeList1.View = OpenMLTD.ManifestTools.UI.TreeListView.ListView;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(102, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Pending Downloads";
             // 
             // lvDownload
             // 
@@ -177,24 +202,6 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Size";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Assets";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(102, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Pending Downloads";
             // 
             // FManifest
             // 
@@ -243,5 +250,6 @@
         private System.Windows.Forms.SaveFileDialog sfd;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.MenuItem mnuActionSave;
     }
 }

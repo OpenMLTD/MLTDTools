@@ -104,6 +104,7 @@ namespace OpenMLTD.ManifestTools.UI {
             lvDownload.MouseDown += LvDownload_MouseDown;
             mnuActionExport.Click += MnuActionExport_Click;
             mnuActionDownload.Click += MnuActionDownload_Click;
+            mnuActionSave.Click += MnuActionSave_Click;
         }
 
         private void UnregisterEventHandlers() {
@@ -118,6 +119,7 @@ namespace OpenMLTD.ManifestTools.UI {
             lvDownload.MouseDown -= LvDownload_MouseDown;
             mnuActionExport.Click -= MnuActionExport_Click;
             mnuActionDownload.Click -= MnuActionDownload_Click;
+            mnuActionSave.Click -= MnuActionSave_Click;
         }
 
         private void FManifest_Load(object sender, EventArgs e) {
@@ -252,6 +254,36 @@ namespace OpenMLTD.ManifestTools.UI {
 
             using (var f = new FAssetDownload(items, _downloadConfig)) {
                 f.ShowDialog(this);
+            }
+        }
+
+        private void MnuActionSave_Click(object sender, EventArgs e) {
+            sfd.AddExtension = true;
+            sfd.AutoUpgradeEnabled = true;
+            sfd.DereferenceLinks = true;
+            sfd.Filter = "Asset Database (*.data)|*.data";
+            sfd.OverwritePrompt = true;
+            sfd.SupportMultiDottedExtensions = true;
+            sfd.ValidateNames = true;
+
+            if (_downloadConfig != null) {
+                sfd.FileName = _downloadConfig.ManifestAssetName;
+            } else {
+                if (!string.IsNullOrWhiteSpace(_opening.FilePath)) {
+                    sfd.FileName = (new FileInfo(_opening.FilePath)).Name;
+                } else {
+                    sfd.FileName = string.Empty;
+                }
+            }
+
+            var r = sfd.ShowDialog(this);
+
+            if (r == DialogResult.Cancel) {
+                return;
+            }
+
+            using (var fileStream = File.Open(sfd.FileName, FileMode.Create, FileAccess.Write, FileShare.Write)) {
+                Manifest.SaveTo(fileStream, MltdConstants.Utf8WithoutBom);
             }
         }
 

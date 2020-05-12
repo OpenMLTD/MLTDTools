@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace AssetStudio.Extended.CompositeModels {
     public sealed class MeshWrapper : PrettyMesh {
 
-        public MeshWrapper([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, bool flipTexture) {
+        public MeshWrapper([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, bool flipTexture, bool applyToon) {
             Name = mesh.m_Name;
 
             {
@@ -16,7 +16,7 @@ namespace AssetStudio.Extended.CompositeModels {
 
                 for (var i = 0; i < mesh.m_SubMeshes.Length; i += 1) {
                     var subMesh = mesh.m_SubMeshes[i];
-                    var mat = FindMaterialInfo(assetFiles, mesh, i, flipTexture);
+                    var mat = FindMaterialInfo(assetFiles, mesh, i, flipTexture, applyToon);
                     var sm = new SubMesh(meshIndexStart, subMesh, mat);
                     subMeshes[i] = sm;
                     meshIndexStart += subMesh.indexCount;
@@ -151,7 +151,7 @@ namespace AssetStudio.Extended.CompositeModels {
         }
 
         [NotNull]
-        private static TexturedMaterial FindMaterialInfo([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, int meshIndex, bool flipTexture) {
+        private static TexturedMaterial FindMaterialInfo([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, int meshIndex, bool flipTexture, bool applyToon) {
             SkinnedMeshRenderer meshRenderer = null;
 
             foreach (var assetFile in assetFiles) {
@@ -273,7 +273,7 @@ namespace AssetStudio.Extended.CompositeModels {
                 }
             }
 
-            return new TexturedMaterial(material.m_Name, mainTexture, subTexture, flipTexture);
+            return new TexturedMaterial(material.m_Name, mainTexture, subTexture, flipTexture, applyToon);
         }
 
         [NotNull]

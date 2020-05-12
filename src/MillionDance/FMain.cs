@@ -42,6 +42,7 @@ namespace OpenMLTD.MillionDance {
             chkOptScalePmx.CheckedChanged -= ChkOptScalePmx_CheckedChanged;
             btnClearLog.Click -= BtnClearLog_Click;
             btnOptSelectFEMappings.Click -= BtnOptSelectFEMappings_Click;
+            chkGameToon.CheckedChanged -= ChkGameToon_CheckedChanged;
         }
 
         private void RegisterEventHandlers() {
@@ -64,6 +65,11 @@ namespace OpenMLTD.MillionDance {
             chkOptScalePmx.CheckedChanged += ChkOptScalePmx_CheckedChanged;
             btnClearLog.Click += BtnClearLog_Click;
             btnOptSelectFEMappings.Click += BtnOptSelectFEMappings_Click;
+            chkGameToon.CheckedChanged += ChkGameToon_CheckedChanged;
+        }
+
+        private void ChkGameToon_CheckedChanged(object sender, EventArgs e) {
+            cboGameToonNumber.Enabled = chkGameToon.Checked;
         }
 
         private void BtnOptSelectFEMappings_Click(object sender, EventArgs e) {
@@ -167,6 +173,7 @@ namespace OpenMLTD.MillionDance {
 
         private void FMain_Load(object sender, EventArgs e) {
             cboOptSongPosition.SelectedIndex = 0;
+            cboGameToonNumber.SelectedIndex = 4; // toon05, looks closest to MLTD models
 
             // globalization: Decimal point affects parsing result. Bear in mind.
             // In custom numeric format string, the "." means decimal point, which will be correctly translated to target culture.
@@ -360,6 +367,8 @@ namespace OpenMLTD.MillionDance {
                 ip.HideUnityGeneratedBones = chkOptHideUnityGenBones.Checked;
                 ip.TranslateFacialExpressionNames = chkOptTranslateFacialExpressionNames.Checked;
                 ip.ImportPhysics = chkOptImportPhysics.Checked;
+                ip.GameStyledToon = chkGameToon.Checked;
+                ip.ToonNumber = cboGameToonNumber.SelectedIndex + 1;
 
                 ip.TransformTo30Fps = radOptAnimFrameRate30.Checked;
                 ip.ScaleVmd = chkOptScaleVmd.Checked;

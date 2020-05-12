@@ -33,7 +33,7 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentNullException(nameof(mesh), "Body mesh is null.");
                     }
 
-                    result = new MeshWrapper(manager.assetsFileList, mesh, true);
+                    result = new MeshWrapper(manager.assetsFileList, mesh, true, true);
 
                     break;
                 }
@@ -89,7 +89,7 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentNullException(nameof(mesh), "One of head meshes is null.");
                     }
 
-                    var m = new MeshWrapper(manager.assetsFileList, mesh, false);
+                    var m = new MeshWrapper(manager.assetsFileList, mesh, false, false);
                     meshList.Add(m);
                 }
             }

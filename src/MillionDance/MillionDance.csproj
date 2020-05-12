@@ -64,6 +64,7 @@
     <Compile Include="Core\MvdCreator.Camera.cs" />
     <Compile Include="Core\MvdCreator.cs" />
     <Compile Include="Core\MvdWriter.cs" />
+    <Compile Include="Core\PmxCreator.ConversionDetails.cs" />
     <Compile Include="Core\PmxCreator.Physics.cs" />
     <Compile Include="Core\SkeletonFormat.cs" />
     <Compile Include="Core\VmdCreator.BoneAnimation.cs" />

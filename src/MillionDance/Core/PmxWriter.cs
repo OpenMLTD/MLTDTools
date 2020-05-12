@@ -228,16 +228,16 @@ namespace OpenMLTD.MillionDance.Core {
                     _writer.Write(vertex.BoneWeights[3].Weight);
                     break;
                 case Deformation.Sdef: {
-                        _writer.WriteInt32AsVarLenInt(vertex.BoneWeights[0].BoneIndex, BoneElementSize);
-                        _writer.WriteInt32AsVarLenInt(vertex.BoneWeights[1].BoneIndex, BoneElementSize);
-                        _writer.Write(vertex.BoneWeights[0].Weight);
+                    _writer.WriteInt32AsVarLenInt(vertex.BoneWeights[0].BoneIndex, BoneElementSize);
+                    _writer.WriteInt32AsVarLenInt(vertex.BoneWeights[1].BoneIndex, BoneElementSize);
+                    _writer.Write(vertex.BoneWeights[0].Weight);
 
-                        _writer.Write(vertex.C0);
-                        _writer.Write(vertex.R0);
-                        _writer.Write(vertex.R1);
+                    _writer.Write(vertex.C0);
+                    _writer.Write(vertex.R0);
+                    _writer.Write(vertex.R1);
 
-                        break;
-                    }
+                    break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -291,9 +291,12 @@ namespace OpenMLTD.MillionDance.Core {
                     return false;
                 }
 
-                toonIndex = Convert.ToInt32(match.Groups["toonIndex"].Value);
+                var toonStr = match.Groups["toonIndex"].Value;
+                toonIndex = Convert.ToInt32(toonStr);
+                // From 1-based to 0-based
+                toonIndex -= 1;
 
-                return toonIndex >= 0;
+                return toonIndex > 0;
             }
         }
 
@@ -721,7 +724,9 @@ namespace OpenMLTD.MillionDance.Core {
         private enum PmxFormatVersion {
 
             Unknown = 0,
+
             Version1 = 1,
+
             Version2 = 2
 
         }
@@ -729,14 +734,17 @@ namespace OpenMLTD.MillionDance.Core {
         private enum PmxStringEncoding {
 
             Utf16 = 0,
+
             Utf8 = 1
 
         }
 
         private static readonly byte[] PmxSignatureV1 = { 0x50, 0x6d, 0x78, 0x20 }; // "Pmx "
+
         private static readonly byte[] PmxSignatureV2 = { 0x50, 0x4d, 0x58, 0x20 }; // "PMX "
 
         private static readonly Encoding Utf16NoBom = new UnicodeEncoding(false, false);
+
         private static readonly Encoding Utf8NoBom = new UTF8Encoding(false);
 
         private static readonly Regex ToonNameRegex = new Regex(@"^toon(?<toonIndex>\d+)\.bmp$");

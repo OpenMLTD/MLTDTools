@@ -219,7 +219,8 @@ namespace OpenMLTD.MillionDance {
                         Log("Generating model...");
 
                         var pmxCreator = new PmxCreator();
-                        var pmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMesh.VertexCount, texPrefix, bodySway, headSway, out var materialList);
+                        var pmxConversionDetails = new PmxCreator.ConversionDetails(texPrefix, p.GameStyledToon, p.ToonNumber);
+                        var pmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMesh.VertexCount, bodySway, headSway, pmxConversionDetails, out var materialList);
 
                         if (p.GenerateModel) {
                             Log("Saving model...");
@@ -245,9 +246,9 @@ namespace OpenMLTD.MillionDance {
                             foreach (var (subFileName, mat) in materialList) {
                                 var textureFilePath = Path.Combine(modelDir, subFileName);
 
-                                using (var image = mat.MainTexture.ConvertToBitmap(mat.Flip)) {
+                                using (var image = mat.MainTexture.ConvertToBitmap(mat.ShouldFlip)) {
                                     if (mat.SubTexture != null) {
-                                        using (var subTex = mat.SubTexture.ConvertToBitmap(mat.Flip)) {
+                                        using (var subTex = mat.SubTexture.ConvertToBitmap(mat.ShouldFlip)) {
                                             using (var g = Graphics.FromImage(image)) {
                                                 g.DrawImageUnscaled(subTex, 0, 0);
                                             }
@@ -376,6 +377,10 @@ namespace OpenMLTD.MillionDance {
             public bool TranslateFacialExpressionNames { get; set; }
 
             public bool ImportPhysics { get; set; }
+
+            public bool GameStyledToon { get; set; }
+
+            public int ToonNumber { get; set; }
 
             public bool TransformTo30Fps { get; set; }
 

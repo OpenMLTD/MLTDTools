@@ -45,6 +45,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.cboGameToonNumber = new System.Windows.Forms.ComboBox();
+            this.chkGameToon = new System.Windows.Forms.CheckBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.txtOptCharHeight = new System.Windows.Forms.TextBox();
@@ -63,6 +65,10 @@
             this.radOptMotionSourceMltd = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.radFESourcePortrait = new System.Windows.Forms.RadioButton();
+            this.radFESourceLandscape = new System.Windows.Forms.RadioButton();
+            this.label19 = new System.Windows.Forms.Label();
             this.btnOptSelectFEMappings = new System.Windows.Forms.Button();
             this.txtOptFEMappings = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
@@ -96,20 +102,16 @@
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
-            this.label19 = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.radFESourcePortrait = new System.Windows.Forms.RadioButton();
-            this.radFESourceLandscape = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -316,11 +318,13 @@
             this.tabControl1.Location = new System.Drawing.Point(288, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(417, 276);
+            this.tabControl1.Size = new System.Drawing.Size(417, 303);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.cboGameToonNumber);
+            this.tabPage1.Controls.Add(this.chkGameToon);
             this.tabPage1.Controls.Add(this.label16);
             this.tabPage1.Controls.Add(this.label15);
             this.tabPage1.Controls.Add(this.txtOptCharHeight);
@@ -339,10 +343,42 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(409, 250);
+            this.tabPage1.Size = new System.Drawing.Size(409, 277);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Model";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // cboGameToonNumber
+            // 
+            this.cboGameToonNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGameToonNumber.FormattingEnabled = true;
+            this.cboGameToonNumber.Items.AddRange(new object[] {
+            "toon01",
+            "toon02",
+            "toon03",
+            "toon04",
+            "toon05",
+            "toon06",
+            "toon07",
+            "toon08",
+            "toon09",
+            "toon10"});
+            this.cboGameToonNumber.Location = new System.Drawing.Point(174, 248);
+            this.cboGameToonNumber.Name = "cboGameToonNumber";
+            this.cboGameToonNumber.Size = new System.Drawing.Size(114, 21);
+            this.cboGameToonNumber.TabIndex = 26;
+            // 
+            // chkGameToon
+            // 
+            this.chkGameToon.AutoSize = true;
+            this.chkGameToon.Checked = true;
+            this.chkGameToon.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkGameToon.Location = new System.Drawing.Point(9, 250);
+            this.chkGameToon.Name = "chkGameToon";
+            this.chkGameToon.Size = new System.Drawing.Size(108, 17);
+            this.chkGameToon.TabIndex = 25;
+            this.chkGameToon.Text = "Game styled toon";
+            this.chkGameToon.UseVisualStyleBackColor = true;
             // 
             // label16
             // 
@@ -548,10 +584,50 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(409, 250);
+            this.tabPage2.Size = new System.Drawing.Size(409, 282);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Motions";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.radFESourcePortrait);
+            this.panel4.Controls.Add(this.radFESourceLandscape);
+            this.panel4.Location = new System.Drawing.Point(172, 166);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(204, 24);
+            this.panel4.TabIndex = 15;
+            // 
+            // radFESourcePortrait
+            // 
+            this.radFESourcePortrait.AutoSize = true;
+            this.radFESourcePortrait.Location = new System.Drawing.Point(112, 3);
+            this.radFESourcePortrait.Name = "radFESourcePortrait";
+            this.radFESourcePortrait.Size = new System.Drawing.Size(83, 17);
+            this.radFESourcePortrait.TabIndex = 6;
+            this.radFESourcePortrait.Text = "Portrait view";
+            this.radFESourcePortrait.UseVisualStyleBackColor = true;
+            // 
+            // radFESourceLandscape
+            // 
+            this.radFESourceLandscape.AutoSize = true;
+            this.radFESourceLandscape.Checked = true;
+            this.radFESourceLandscape.Location = new System.Drawing.Point(3, 3);
+            this.radFESourceLandscape.Name = "radFESourceLandscape";
+            this.radFESourceLandscape.Size = new System.Drawing.Size(103, 17);
+            this.radFESourceLandscape.TabIndex = 5;
+            this.radFESourceLandscape.TabStop = true;
+            this.radFESourceLandscape.Text = "Landscape view";
+            this.radFESourceLandscape.UseVisualStyleBackColor = true;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(7, 171);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(161, 13);
+            this.label19.TabIndex = 14;
+            this.label19.Text = "Prefer facial expressions used in:";
             // 
             // btnOptSelectFEMappings
             // 
@@ -829,12 +905,12 @@
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(288, 292);
+            this.txtLog.Location = new System.Drawing.Point(288, 317);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(331, 129);
+            this.txtLog.Size = new System.Drawing.Size(331, 104);
             this.txtLog.TabIndex = 4;
             // 
             // btnGo
@@ -848,52 +924,12 @@
             // 
             // btnClearLog
             // 
-            this.btnClearLog.Location = new System.Drawing.Point(625, 292);
+            this.btnClearLog.Location = new System.Drawing.Point(625, 317);
             this.btnClearLog.Name = "btnClearLog";
             this.btnClearLog.Size = new System.Drawing.Size(76, 27);
             this.btnClearLog.TabIndex = 6;
             this.btnClearLog.Text = "&Clear Log";
             this.btnClearLog.UseVisualStyleBackColor = true;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(7, 171);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(161, 13);
-            this.label19.TabIndex = 14;
-            this.label19.Text = "Prefer facial expressions used in:";
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.radFESourcePortrait);
-            this.panel4.Controls.Add(this.radFESourceLandscape);
-            this.panel4.Location = new System.Drawing.Point(172, 166);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(204, 24);
-            this.panel4.TabIndex = 15;
-            // 
-            // radFESourcePortrait
-            // 
-            this.radFESourcePortrait.AutoSize = true;
-            this.radFESourcePortrait.Location = new System.Drawing.Point(112, 3);
-            this.radFESourcePortrait.Name = "radFESourcePortrait";
-            this.radFESourcePortrait.Size = new System.Drawing.Size(83, 17);
-            this.radFESourcePortrait.TabIndex = 6;
-            this.radFESourcePortrait.Text = "Portrait view";
-            this.radFESourcePortrait.UseVisualStyleBackColor = true;
-            // 
-            // radFESourceLandscape
-            // 
-            this.radFESourceLandscape.AutoSize = true;
-            this.radFESourceLandscape.Checked = true;
-            this.radFESourceLandscape.Location = new System.Drawing.Point(3, 3);
-            this.radFESourceLandscape.Name = "radFESourceLandscape";
-            this.radFESourceLandscape.Size = new System.Drawing.Size(103, 17);
-            this.radFESourceLandscape.TabIndex = 5;
-            this.radFESourceLandscape.TabStop = true;
-            this.radFESourceLandscape.Text = "Landscape view";
-            this.radFESourceLandscape.UseVisualStyleBackColor = true;
             // 
             // FMain
             // 
@@ -923,14 +959,14 @@
             this.panel1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1088,5 +1124,7 @@
         private System.Windows.Forms.RadioButton radFESourcePortrait;
         private System.Windows.Forms.RadioButton radFESourceLandscape;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.ComboBox cboGameToonNumber;
+        private System.Windows.Forms.CheckBox chkGameToon;
     }
 }

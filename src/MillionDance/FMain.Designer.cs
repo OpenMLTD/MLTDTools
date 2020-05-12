@@ -584,7 +584,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(409, 282);
+            this.tabPage2.Size = new System.Drawing.Size(409, 277);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Motions";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -685,9 +685,9 @@
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(7, 117);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(248, 13);
+            this.label14.Size = new System.Drawing.Size(243, 13);
             this.label14.TabIndex = 8;
-            this.label14.Text = "Singer position (affects lip sync && facial expression):";
+            this.label14.Text = "Idol position (affects dance, lip sync && expression):";
             // 
             // label12
             // 

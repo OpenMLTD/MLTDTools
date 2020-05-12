@@ -123,7 +123,7 @@ namespace OpenMLTD.MillionDance {
                         Log("Loading dance motion...");
                         (dance, _, _) = ResourceLoader.LoadDance(p.InputDance, p.SongPosition);
                         if (dance == null) {
-                            Log("Failed to load dance data.");
+                            Log("Failed to load dance data. Please check whether you selected a dance data file and chose corresponding idol position.");
                             break;
                         }
 

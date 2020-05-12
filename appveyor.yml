@@ -23,10 +23,6 @@ build_script:
 after_build:
   - cmd: marked ./README.md -o ./README.html
   - ps: .\scripts\pack_artifacts.ps1 -ZipName miritore.zip
-  - cmd: 7z a miritore.zip %APPVEYOR_BUILD_FOLDER%\README.html
-  #- cmd: 7z a miritore.zip -r docs\licenses\*
-  - cmd: copy miritore.zip miritore-appveyor-latest.zip
-  - cmd: copy miritore.zip miritore-appveyor-v%APPVEYOR_BUILD_VERSION%%RELEASE_SUFFIX%.zip
 test: false
 deploy:
   - provider: GitHub

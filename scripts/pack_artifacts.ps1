@@ -33,3 +33,6 @@ foreach ($subPath in $subPaths) {
     [ScriptBlock]$scriptBlock = { 7z a $zipName -r $allFilesPattern }
     Invoke-Command -ScriptBlock $scriptBlock
 }
+
+Push-AppveyorArtifact $zipName -FileName "miritore-appveyor-v${env:APPVEYOR_BUILD_VERSION}${env:RELEASE_SUFFIX}.zip" -DeploymentName "Versioned"
+Push-AppveyorArtifact $zipName -FileName "miritore-appveyor-latest.zip" -DeploymentName "Latest"

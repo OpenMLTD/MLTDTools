@@ -28,17 +28,12 @@ after_build:
   - cmd: copy miritore.zip miritore-appveyor-latest.zip
   - cmd: copy miritore.zip miritore-appveyor-v%APPVEYOR_BUILD_VERSION%%RELEASE_SUFFIX%.zip
 test: false
-artifacts:
-  - path: miritore-appveyor-v%APPVEYOR_BUILD_VERSION%%RELEASE_SUFFIX%.zip
-    name: WithVersion
-  - path: miritore-appveyor-latest.zip
-    name: Static
 deploy:
   - provider: GitHub
     description: MLTDTools
     auth_token:
       secure: u+MFjjY665AT4PHJ2bFMINBLnnnwSj1jLnNeFZoWfeYbomTNSPOmdahffmZa+dRH
-    artifact: /miritore.+\.zip/
+    artifact: 'Versioned'
     draft: false
     prerelease: false
     on:

@@ -1,6 +1,6 @@
 # https://www.appveyor.com/docs/appveyor-yml/
 
-version: 0.1.0.{build}
+version: 0.2.0.{build}
 image: Visual Studio 2017
 platform:
   - Any CPU
@@ -8,7 +8,7 @@ configuration:
   - Release
 environment:
   EnableNuGetPackageRestore: true
-  Release_Suffix: -alpha
+  Release_Suffix:
   NuGet_API_Key:
     secure: izZ+2u3Vp3ykQNtVQqYtsmP4SoCO3vZ0gUp4zFCRsa0pBNgdkX354tc7VItMD5yh
 install:

@@ -96,6 +96,10 @@
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
+            this.label19 = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.radFESourcePortrait = new System.Windows.Forms.RadioButton();
+            this.radFESourceLandscape = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -105,6 +109,7 @@
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -524,6 +529,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.panel4);
+            this.tabPage2.Controls.Add(this.label19);
             this.tabPage2.Controls.Add(this.btnOptSelectFEMappings);
             this.tabPage2.Controls.Add(this.txtOptFEMappings);
             this.tabPage2.Controls.Add(this.label18);
@@ -586,7 +593,12 @@
             // 
             this.cboOptSongPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboOptSongPosition.FormattingEnabled = true;
-            this.cboOptSongPosition.Items.AddRange(new object[] { "1 (center)", "2 (center left)", "3 (center right)", "4 (left-most)", "5 (right-most)" });
+            this.cboOptSongPosition.Items.AddRange(new object[] {
+            "1 (center)",
+            "2 (center left)",
+            "3 (center right)",
+            "4 (left-most)",
+            "5 (right-most)"});
             this.cboOptSongPosition.Location = new System.Drawing.Point(261, 114);
             this.cboOptSongPosition.Name = "cboOptSongPosition";
             this.cboOptSongPosition.Size = new System.Drawing.Size(107, 21);
@@ -686,7 +698,7 @@
             // 
             this.panel2.Controls.Add(this.radOptAnimFrameRate30);
             this.panel2.Controls.Add(this.radOptAnimFrameRate60);
-            this.panel2.Location = new System.Drawing.Point(144, 5);
+            this.panel2.Location = new System.Drawing.Point(172, 5);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(170, 24);
             this.panel2.TabIndex = 1;
@@ -843,6 +855,46 @@
             this.btnClearLog.Text = "&Clear Log";
             this.btnClearLog.UseVisualStyleBackColor = true;
             // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(7, 171);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(161, 13);
+            this.label19.TabIndex = 14;
+            this.label19.Text = "Prefer facial expressions used in:";
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.radFESourcePortrait);
+            this.panel4.Controls.Add(this.radFESourceLandscape);
+            this.panel4.Location = new System.Drawing.Point(172, 166);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(204, 24);
+            this.panel4.TabIndex = 15;
+            // 
+            // radFESourcePortrait
+            // 
+            this.radFESourcePortrait.AutoSize = true;
+            this.radFESourcePortrait.Location = new System.Drawing.Point(112, 3);
+            this.radFESourcePortrait.Name = "radFESourcePortrait";
+            this.radFESourcePortrait.Size = new System.Drawing.Size(83, 17);
+            this.radFESourcePortrait.TabIndex = 6;
+            this.radFESourcePortrait.Text = "Portrait view";
+            this.radFESourcePortrait.UseVisualStyleBackColor = true;
+            // 
+            // radFESourceLandscape
+            // 
+            this.radFESourceLandscape.AutoSize = true;
+            this.radFESourceLandscape.Checked = true;
+            this.radFESourceLandscape.Location = new System.Drawing.Point(3, 3);
+            this.radFESourceLandscape.Name = "radFESourceLandscape";
+            this.radFESourceLandscape.Size = new System.Drawing.Size(103, 17);
+            this.radFESourceLandscape.TabIndex = 5;
+            this.radFESourceLandscape.TabStop = true;
+            this.radFESourceLandscape.Text = "Landscape view";
+            this.radFESourceLandscape.UseVisualStyleBackColor = true;
+            // 
             // FMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -877,8 +929,11 @@
             this.panel2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private System.Windows.Forms.Button btnClearLog;
@@ -1029,5 +1084,9 @@
 
         #endregion
 
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.RadioButton radFESourcePortrait;
+        private System.Windows.Forms.RadioButton radFESourceLandscape;
+        private System.Windows.Forms.Label label19;
     }
 }

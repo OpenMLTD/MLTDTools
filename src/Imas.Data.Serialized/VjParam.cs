@@ -1,12 +1,9 @@
 ﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 
-namespace OpenMLTD.MillionDance.Entities.Mltd {
+namespace Imas.Data.Serialized {
     [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public sealed class VjParam {
-
-        internal VjParam() {
-        }
 
         public bool Use { get; set; }
 

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using AssetStudio.Extended.CompositeModels;
+using Imas.Data.Serialized;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Viewer.Internal;

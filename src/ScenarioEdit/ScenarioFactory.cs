@@ -1,6 +1,6 @@
 ﻿using System;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
-using OpenMLTD.ScenarioEdit.Entities;
 
 namespace OpenMLTD.ScenarioEdit {
     public sealed class ScenarioFactory {

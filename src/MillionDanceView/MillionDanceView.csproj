@@ -116,6 +116,10 @@
       <Project>{45ae5ed2-589b-422b-98f7-48050b3ce3b8}</Project>
       <Name>AssetStudio.Extended.MonoBehaviours</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Imas.Data.Serialized\Imas.Data.Serialized.csproj">
+      <Project>{3e816e61-9809-4b77-92d9-4ad891eaeaa3}</Project>
+      <Name>Imas.Data.Serialized</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MillionDance\MillionDance.csproj">
       <Project>{8a36e44e-4cf7-48a6-874c-fc770d02d874}</Project>
       <Name>MillionDance</Name>

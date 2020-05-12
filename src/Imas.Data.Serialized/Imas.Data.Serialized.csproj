@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{906E225D-7C75-4836-BC90-350547238F4E}</ProjectGuid>
+    <ProjectGuid>{3E816E61-9809-4B77-92D9-4AD891EAEAA3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenMLTD.MiriTore</RootNamespace>
-    <AssemblyName>MiriTore.Common</AssemblyName>
+    <RootNamespace>Imas.Data.Serialized</RootNamespace>
+    <AssemblyName>Imas.Data.Serialized</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,8 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
       <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,34 +45,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationHelper.cs" />
-    <Compile Include="Database\AssetInfo.cs" />
-    <Compile Include="Database\AssetInfoList.cs" />
-    <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="MathUtilities.cs" />
-    <Compile Include="Mltd\Entities\ColorType.cs" />
-    <Compile Include="Mltd\Entities\Course.cs" />
-    <Compile Include="Mltd\Entities\FourLevelRank.cs" />
-    <Compile Include="Mltd\Entities\IdolInfo.cs" />
-    <Compile Include="Mltd\Entities\NoteDesign.cs" />
-    <Compile Include="Mltd\Entities\ProducerRank.cs" />
-    <Compile Include="Mltd\Entities\Rarity.cs" />
-    <Compile Include="Mltd\MltdHcaCipher.cs" />
-    <Compile Include="TheaterHelper.cs" />
-    <Compile Include="Core\DisposableBase.cs" />
-    <Compile Include="Core\Endian.cs" />
-    <Compile Include="Core\EndianBinaryReader.cs" />
-    <Compile Include="Core\EndianBinaryWriter.cs" />
-    <Compile Include="Extensions\ArrayExtensions.cs" />
-    <Compile Include="Extensions\StreamExtensions.cs" />
-    <Compile Include="MltdConstants.cs" />
+    <Compile Include="CharacterImasMotionAsset.cs" />
+    <Compile Include="ColorRGBA.cs" />
+    <Compile Include="Curve.cs" />
+    <Compile Include="EventScenarioData.cs" />
+    <Compile Include="KeyType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\SystemEndian.cs" />
+    <Compile Include="PropertyType.cs" />
+    <Compile Include="ScenarioDataType.cs" />
+    <Compile Include="ScenarioObject.cs" />
+    <Compile Include="Sway\ColliderType.cs" />
+    <Compile Include="Sway\CollidingAxis.cs" />
+    <Compile Include="Sway\CoordSystemPart.cs" />
+    <Compile Include="Sway\PlaneAxis.cs" />
+    <Compile Include="Sway\RefParam.cs" />
+    <Compile Include="Sway\SwayBase.cs" />
+    <Compile Include="Sway\SwayBone.cs" />
+    <Compile Include="Sway\SwayCollider.cs" />
+    <Compile Include="Sway\SwayController.cs" />
+    <Compile Include="Sway\SwayManager.cs" />
+    <Compile Include="TexTargetName.cs" />
+    <Compile Include="VjParam.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\thirdparty\AssetStudio\AssetStudio\AssetStudio.csproj">
+      <Project>{7662f8c2-7bfd-442e-a948-a43b4f7eb06e}</Project>
+      <Name>AssetStudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AssetStudio.Extended.MonoBehaviours\AssetStudio.Extended.MonoBehaviours.csproj">
+      <Project>{45ae5ed2-589b-422b-98f7-48050b3ce3b8}</Project>
+      <Name>AssetStudio.Extended.MonoBehaviours</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using Imas.Data.Serialized;
+using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Internal;
 

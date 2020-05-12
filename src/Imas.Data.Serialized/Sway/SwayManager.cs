@@ -1,6 +1,6 @@
-﻿using OpenTK;
+﻿using AssetStudio;
 
-namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
+namespace Imas.Data.Serialized.Sway {
     public sealed class SwayManager : SwayBase {
 
         internal SwayManager() {

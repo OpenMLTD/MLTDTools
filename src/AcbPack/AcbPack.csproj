@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>OpenMLTD.MLTDTools.Applications.AcbPack</RootNamespace>
     <AssemblyName>AcbPack</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

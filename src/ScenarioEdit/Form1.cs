@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using AssetStudio;
 using AssetStudio.Extended.MonoBehaviours.Serialization;
-using OpenMLTD.ScenarioEdit.Entities;
+using Imas.Data.Serialized;
 
 namespace OpenMLTD.ScenarioEdit {
     public partial class Form1 : Form {

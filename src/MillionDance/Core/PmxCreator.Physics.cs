@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Entities.Mltd.Sway;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Entities.Pmx.Extensions;
+using OpenMLTD.MillionDance.Extensions;
 using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 
@@ -126,7 +127,7 @@ namespace OpenMLTD.MillionDance.Core {
                                 body.BoundingBoxSize = new Vector3(collider.Radius, collider.Distance, 0);
                                 body.RotationAngles = MapRotation(part, collider.Axis);
 
-                                var offset = MapTranslation(collider.Offset, part, collider.Axis);
+                                var offset = MapTranslation(collider.Offset.ToOpenTK(), part, collider.Axis);
 
                                 if (ConversionConfig.Current.ScaleToPmxSize) {
                                     offset = offset * ScalingConfig.ScaleUnityToPmx;

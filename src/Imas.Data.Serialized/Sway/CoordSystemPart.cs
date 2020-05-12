@@ -1,5 +1,5 @@
-﻿namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
-    internal enum CoordSystemPart {
+﻿namespace Imas.Data.Serialized.Sway {
+    public enum CoordSystemPart {
 
         Invalid = 0,
         Torso = 1,

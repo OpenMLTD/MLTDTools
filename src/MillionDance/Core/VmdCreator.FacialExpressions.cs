@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Entities.Vmd;
 using OpenMLTD.MillionDance.Utilities;
 
@@ -11,7 +11,7 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<VmdFacialFrame> CreateFacialFrames([NotNull] ScenarioObject scenarioObject, int songPosition) {
+        private static IReadOnlyList<VmdFacialFrame> CreateFacialFrames([NotNull] ScenarioObject lipSync, [NotNull] ScenarioObject facialExpr, int songPosition) {
             VmdFacialFrame CreateFacialFrame(float time, string mltdTruncMorphName, float value) {
                 var n = (int)(time * 60.0f);
                 int frameIndex;
@@ -40,7 +40,7 @@ namespace OpenMLTD.MillionDance.Core {
 
             // Lip motion
             {
-                var lipSyncControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.LipSync).ToArray();
+                var lipSyncControls = lipSync.Scenario.Where(s => s.Type == ScenarioDataType.LipSync).ToArray();
 
                 Debug.Assert(lipSyncControls.Length > 0, "Lip-sync controls should exist.");
                 Debug.Assert(lipSyncControls[0].Param == 54, "The first control op should be 54.");
@@ -128,7 +128,7 @@ namespace OpenMLTD.MillionDance.Core {
 
             // Facial expression
             {
-                var expControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == songPosition - 1).ToArray();
+                var expControls = facialExpr.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == songPosition - 1).ToArray();
 
                 Debug.Assert(expControls.Length > 0, "Expression controls should exist.");
 
@@ -187,7 +187,6 @@ namespace OpenMLTD.MillionDance.Core {
                                         facialFrameList.Add(CreateFacialFrame(expectedTransitionStartTime, kv.Key, kv.Value));
                                     }
                                 }
-
                             }
                         }
                     } while (false);

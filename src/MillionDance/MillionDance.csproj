@@ -73,26 +73,11 @@
     <Compile Include="Core\VmdCreator.FacialExpressionTable.cs" />
     <Compile Include="Entities\Extensions\KeyTypeExtension.cs" />
     <Compile Include="Entities\Extensions\PropertyTypeExtension.cs" />
+    <Compile Include="Entities\Extensions\ScenarioObjectExtensions.cs" />
     <Compile Include="Entities\Internal\CameraAnimation.cs" />
     <Compile Include="Entities\Internal\CameraFrame.cs" />
-    <Compile Include="Entities\Mltd\ColorRGBA.cs" />
     <Compile Include="Entities\Mltd\CompiledBodyAnimationSource.cs" />
-    <Compile Include="Entities\Mltd\EventScenarioData.cs" />
     <Compile Include="Entities\Mltd\LegacyBodyAnimationSource.cs" />
-    <Compile Include="Entities\Mltd\ScenarioDataType.cs" />
-    <Compile Include="Entities\Mltd\ScenarioObject.cs" />
-    <Compile Include="Entities\Mltd\Sway\CollidingAxis.cs" />
-    <Compile Include="Entities\Mltd\Sway\CoordSystemPart.cs" />
-    <Compile Include="Entities\Mltd\Sway\PlaneAxis.cs" />
-    <Compile Include="Entities\Mltd\Sway\RefParam.cs" />
-    <Compile Include="Entities\Mltd\Sway\SwayBase.cs" />
-    <Compile Include="Entities\Mltd\Sway\SwayBone.cs" />
-    <Compile Include="Entities\Mltd\Sway\SwayCollider.cs" />
-    <Compile Include="Entities\Mltd\Sway\ColliderType.cs" />
-    <Compile Include="Entities\Mltd\Sway\SwayController.cs" />
-    <Compile Include="Entities\Mltd\Sway\SwayManager.cs" />
-    <Compile Include="Entities\Mltd\TexTargetName.cs" />
-    <Compile Include="Entities\Mltd\VjParam.cs" />
     <Compile Include="Entities\Mvd\InterpolationPair.cs" />
     <Compile Include="Entities\Mvd\MvdBaseFrame.cs" />
     <Compile Include="Entities\Mvd\MvdBaseMotion.cs" />
@@ -124,10 +109,6 @@
     <Compile Include="Entities\Internal\BodyAnimation.cs" />
     <Compile Include="Entities\Internal\BoneNode.cs" />
     <Compile Include="Entities\Internal\KeyFrame.cs" />
-    <Compile Include="Entities\Mltd\Curve.cs" />
-    <Compile Include="Entities\Mltd\CharacterImasMotionAsset.cs" />
-    <Compile Include="Entities\Mltd\KeyType.cs" />
-    <Compile Include="Entities\Mltd\PropertyType.cs" />
     <Compile Include="Entities\Pmx\BodyAnchor.cs" />
     <Compile Include="Entities\Pmx\BoneFlags.cs" />
     <Compile Include="Entities\Pmx\BoneWeight.cs" />
@@ -216,6 +197,10 @@
     <ProjectReference Include="..\AssetStudio.Extended.MonoBehaviours\AssetStudio.Extended.MonoBehaviours.csproj">
       <Project>{45ae5ed2-589b-422b-98f7-48050b3ce3b8}</Project>
       <Name>AssetStudio.Extended.MonoBehaviours</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Imas.Data.Serialized\Imas.Data.Serialized.csproj">
+      <Project>{3e816e61-9809-4b77-92d9-4ad891eaeaa3}</Project>
+      <Name>Imas.Data.Serialized</Name>
     </ProjectReference>
     <ProjectReference Include="..\TDFacial\TDFacial.csproj">
       <Project>{e3565f75-fcfd-4518-9d18-9d1dcb682dee}</Project>

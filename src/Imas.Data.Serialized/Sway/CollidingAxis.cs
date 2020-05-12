@@ -1,4 +1,4 @@
-﻿namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
+﻿namespace Imas.Data.Serialized.Sway {
     public enum CollidingAxis {
 
         Invalid = 0,

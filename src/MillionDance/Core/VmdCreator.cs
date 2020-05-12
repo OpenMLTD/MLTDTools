@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AssetStudio.Extended.CompositeModels;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Entities.Vmd;
 using OpenMLTD.MillionDance.Utilities;
@@ -24,7 +24,8 @@ namespace OpenMLTD.MillionDance.Core {
         [NotNull]
         public VmdMotion CreateFrom([CanBeNull] IBodyAnimationSource bodyAnimationSource, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel,
             [CanBeNull] CharacterImasMotionAsset cameraMotion,
-            [CanBeNull] ScenarioObject scenarioObject, int songPosition) {
+            [CanBeNull] ScenarioObject baseScenario, [CanBeNull] ScenarioObject facialExpr,
+            int songPosition) {
             IReadOnlyList<VmdBoneFrame> boneFrames;
             IReadOnlyList<VmdCameraFrame> cameraFrames;
             IReadOnlyList<VmdFacialFrame> facialFrames;
@@ -42,14 +43,14 @@ namespace OpenMLTD.MillionDance.Core {
                 cameraFrames = EmptyArray.Of<VmdCameraFrame>();
             }
 
-            if (ProcessFacialFrames && scenarioObject != null) {
-                facialFrames = CreateFacialFrames(scenarioObject, songPosition);
+            if (ProcessFacialFrames && baseScenario != null && facialExpr != null) {
+                facialFrames = CreateFacialFrames(baseScenario, facialExpr, songPosition);
             } else {
                 facialFrames = EmptyArray.Of<VmdFacialFrame>();
             }
 
-            if (ProcessLightFrames && scenarioObject != null) {
-                lightFrames = CreateLightFrames(scenarioObject);
+            if (ProcessLightFrames && baseScenario != null) {
+                lightFrames = CreateLightFrames(baseScenario);
             } else {
                 lightFrames = EmptyArray.Of<VmdLightFrame>();
             }

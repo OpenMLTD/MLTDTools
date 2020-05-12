@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Extensions;
-using OpenMLTD.MillionDance.Entities.Mltd;
 
 namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class CameraAnimation {

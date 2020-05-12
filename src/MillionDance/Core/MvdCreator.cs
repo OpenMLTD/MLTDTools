@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using AssetStudio;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Entities.Mvd;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Utilities;
@@ -20,7 +20,8 @@ namespace OpenMLTD.MillionDance.Core {
         [NotNull]
         public MvdMotion CreateFrom([CanBeNull] CharacterImasMotionAsset bodyMotion, [CanBeNull] Avatar avatar, [CanBeNull] PmxModel mltdPmxModel,
             [CanBeNull] CharacterImasMotionAsset cameraMotion,
-            [CanBeNull] ScenarioObject scenarioObject, int songPosition) {
+            [CanBeNull] ScenarioObject lipSync, [CanBeNull] ScenarioObject facialExpressions,
+            int songPosition) {
             IReadOnlyList<MvdCameraMotion> cameraFrames;
 
             if (ProcessCameraFrames && cameraMotion != null) {

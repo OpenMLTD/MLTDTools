@@ -1,6 +1,6 @@
 ﻿using System;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Entities.Mltd;
 
 namespace OpenMLTD.MillionDance.Entities.Extensions {
     internal static class PropertyTypeExtension {

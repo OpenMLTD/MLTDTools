@@ -1,4 +1,4 @@
-﻿using OpenMLTD.MillionDance.Entities.Mltd.Sway;
+﻿using Imas.Data.Serialized.Sway;
 using OpenTK;
 
 namespace OpenMLTD.MillionDance.Entities.Pmx {

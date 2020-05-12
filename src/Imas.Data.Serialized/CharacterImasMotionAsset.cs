@@ -1,7 +1,7 @@
 ﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 
-namespace OpenMLTD.MillionDance.Entities.Mltd {
+namespace Imas.Data.Serialized {
     // True name: Imas.CharacterImasMotionAsset
     [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention), ThrowOnUnmatched = false, PopulationStrategy = PopulationStrategy.OptIn)]
     public sealed class CharacterImasMotionAsset {

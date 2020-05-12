@@ -6,10 +6,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using AssetStudio.Extended.CompositeModels;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using OpenMLTD.MillionDance.Core;
-using OpenMLTD.MillionDance.Entities.Mltd;
+using OpenMLTD.MillionDance.Entities.Extensions;
 using OpenMLTD.MLTDTools.Applications.TDFacial.Entities;
 
 namespace OpenMLTD.MillionDance {
@@ -113,7 +114,7 @@ namespace OpenMLTD.MillionDance {
                     var combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
 
                     IBodyAnimationSource dance;
-                    ScenarioObject scenario;
+                    ScenarioObject baseScenario, facialExpr;
 
                     if (p.GenerateCharacterMotion) {
                         Log("Loading dance motion...");
@@ -124,14 +125,66 @@ namespace OpenMLTD.MillionDance {
                         }
 
                         Log("Loading lip sync and facial expression...");
-                        scenario = ResourceLoader.LoadScenario(p.InputFacialExpression);
-                        if (scenario == null) {
-                            Log("Failed to load scenario object.");
+                        var (main, yoko, tate) = ResourceLoader.LoadScenario(p.InputFacialExpression);
+                        if (main == null) {
+                            Log("Failed to load base scenario object.");
                             break;
+                        }
+
+                        baseScenario = main;
+
+                        if (main.HasFacialExpressionFrames()) {
+                            facialExpr = main;
+                        } else {
+                            Log("Main scenario object does not contain facial expressions. Trying with landscape and portrait.");
+
+                            if (yoko == null || tate == null) {
+                                Log("Failed to load either landscape or portrait.");
+                                break;
+                            }
+
+                            var foundFacialExpr = true;
+
+                            switch (p.PreferredFacialExpressionSource) {
+                                case InputParams.FallbackFacialExpressionSource.Landscape: {
+                                    if (yoko.HasFacialExpressionFrames()) {
+                                        facialExpr = yoko;
+                                    } else if (tate.HasFacialExpressionFrames()) {
+                                        Log("Facial expressions are not found in landscape, but found in portrait. Use portrait instead.");
+                                        facialExpr = tate;
+                                    } else {
+                                        Log("No scenario object contains facial expressions.");
+                                        facialExpr = null;
+                                        foundFacialExpr = false;
+                                    }
+
+                                    break;
+                                }
+                                case InputParams.FallbackFacialExpressionSource.Portrait:
+                                    if (yoko.HasFacialExpressionFrames()) {
+                                        facialExpr = yoko;
+                                    } else if (tate.HasFacialExpressionFrames()) {
+                                        Log("Facial expressions are not found in portrait, but found in landscape. Use landscape instead.");
+                                        facialExpr = tate;
+                                    } else {
+                                        Log("No scenario object contains facial expressions.");
+                                        facialExpr = null;
+                                        foundFacialExpr = false;
+                                    }
+
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(p.PreferredFacialExpressionSource), p.PreferredFacialExpressionSource, "Invalid facial expression source.");
+                            }
+
+                            if (!foundFacialExpr) {
+                                break;
+                            }
                         }
                     } else {
                         dance = null;
-                        scenario = null;
+                        baseScenario = null;
+                        facialExpr = null;
                     }
 
                     CharacterImasMotionAsset camera;
@@ -182,7 +235,7 @@ namespace OpenMLTD.MillionDance {
                                 ProcessLightFrames = false
                             };
 
-                            var danceVmd = creator.CreateFrom(dance, combinedAvatar, pmx, null, scenario, p.SongPosition);
+                            var danceVmd = creator.CreateFrom(dance, combinedAvatar, pmx, null, baseScenario, facialExpr, p.SongPosition);
 
                             Log("Saving character motion...");
 
@@ -202,7 +255,7 @@ namespace OpenMLTD.MillionDance {
                                     ProcessLightFrames = false
                                 };
 
-                                var motion = creator.CreateFrom(null, null, null, camera, null, p.SongPosition);
+                                var motion = creator.CreateFrom(null, null, null, camera, null, null, p.SongPosition);
 
                                 Log("Writing camera motion...");
 
@@ -217,7 +270,7 @@ namespace OpenMLTD.MillionDance {
                                     ProcessLightFrames = false
                                 };
 
-                                var motion = creator.CreateFrom(null, null, null, camera, null, p.SongPosition);
+                                var motion = creator.CreateFrom(null, null, null, camera, null, null, p.SongPosition);
 
                                 Log("Writing camera motion...");
 
@@ -301,6 +354,16 @@ namespace OpenMLTD.MillionDance {
             public int SongPosition { get; set; }
 
             public string FacialExpressionMappingFilePath { get; set; }
+
+            public FallbackFacialExpressionSource PreferredFacialExpressionSource { get; set; }
+
+            public enum FallbackFacialExpressionSource {
+
+                Landscape = 0,
+
+                Portrait = 1,
+
+            }
 
         }
 

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using AssetStudio;
 using JetBrains.Annotations;
-using OpenTK;
 
-namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
+namespace Imas.Data.Serialized.Sway {
     public sealed class SwayController {
 
         private SwayController() {
@@ -311,22 +311,22 @@ namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
                                 anyPropSet = true;
                                 break;
                             case "colliders": {
-                                    var colliderCount = Convert.ToInt32(kv.Value);
-                                    var colliderPathList = new List<string>();
+                                var colliderCount = Convert.ToInt32(kv.Value);
+                                var colliderPathList = new List<string>();
 
-                                    for (var j = 0; j < colliderCount; ++j) {
-                                        ++i;
-                                        line = lines[i];
+                                for (var j = 0; j < colliderCount; ++j) {
+                                    ++i;
+                                    line = lines[i];
 
-                                        kv = ParseKeyValue(line);
+                                    kv = ParseKeyValue(line);
 
-                                        colliderPathList.Add(kv.Value);
-                                    }
-
-                                    anyPropSet = true;
-
-                                    bone.ColliderPaths = colliderPathList.ToArray();
+                                    colliderPathList.Add(kv.Value);
                                 }
+
+                                anyPropSet = true;
+
+                                bone.ColliderPaths = colliderPathList.ToArray();
+                            }
                                 break;
                             case "sideLink":
                                 bone.SideLinkPath = kv.Value;

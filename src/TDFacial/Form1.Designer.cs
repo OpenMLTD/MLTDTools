@@ -42,89 +42,90 @@
             this.lvExpressions = new OpenMLTD.MLTDTools.Applications.TDFacial.ListViewEx();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnShowScrObj = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 422);
+            this.label1.Location = new System.Drawing.Point(12, 457);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 12);
+            this.label1.Size = new System.Drawing.Size(28, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Key:";
             // 
             // txtExprKey
             // 
-            this.txtExprKey.Location = new System.Drawing.Point(59, 419);
+            this.txtExprKey.Location = new System.Drawing.Point(59, 454);
             this.txtExprKey.Name = "txtExprKey";
-            this.txtExprKey.Size = new System.Drawing.Size(93, 21);
+            this.txtExprKey.Size = new System.Drawing.Size(93, 20);
             this.txtExprKey.TabIndex = 3;
             // 
             // txtExprDesc
             // 
-            this.txtExprDesc.Location = new System.Drawing.Point(59, 446);
+            this.txtExprDesc.Location = new System.Drawing.Point(59, 483);
             this.txtExprDesc.Name = "txtExprDesc";
-            this.txtExprDesc.Size = new System.Drawing.Size(179, 21);
+            this.txtExprDesc.Size = new System.Drawing.Size(179, 20);
             this.txtExprDesc.TabIndex = 5;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 449);
+            this.label2.Location = new System.Drawing.Point(12, 486);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 12);
+            this.label2.Size = new System.Drawing.Size(38, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "Desc.:";
             // 
             // btnExprAdd
             // 
-            this.btnExprAdd.Location = new System.Drawing.Point(12, 473);
+            this.btnExprAdd.Location = new System.Drawing.Point(12, 512);
             this.btnExprAdd.Name = "btnExprAdd";
-            this.btnExprAdd.Size = new System.Drawing.Size(50, 27);
+            this.btnExprAdd.Size = new System.Drawing.Size(50, 29);
             this.btnExprAdd.TabIndex = 6;
             this.btnExprAdd.Text = "Add";
             this.btnExprAdd.UseVisualStyleBackColor = true;
             // 
             // btnExprDel
             // 
-            this.btnExprDel.Location = new System.Drawing.Point(68, 473);
+            this.btnExprDel.Location = new System.Drawing.Point(68, 512);
             this.btnExprDel.Name = "btnExprDel";
-            this.btnExprDel.Size = new System.Drawing.Size(50, 27);
+            this.btnExprDel.Size = new System.Drawing.Size(50, 29);
             this.btnExprDel.TabIndex = 7;
             this.btnExprDel.Text = "Delete";
             this.btnExprDel.UseVisualStyleBackColor = true;
             // 
             // btnExprMod
             // 
-            this.btnExprMod.Location = new System.Drawing.Point(124, 473);
+            this.btnExprMod.Location = new System.Drawing.Point(124, 512);
             this.btnExprMod.Name = "btnExprMod";
-            this.btnExprMod.Size = new System.Drawing.Size(50, 27);
+            this.btnExprMod.Size = new System.Drawing.Size(50, 29);
             this.btnExprMod.TabIndex = 8;
             this.btnExprMod.Text = "Modify";
             this.btnExprMod.UseVisualStyleBackColor = true;
             // 
             // txtValueEditor
             // 
-            this.txtValueEditor.Location = new System.Drawing.Point(257, 473);
+            this.txtValueEditor.Location = new System.Drawing.Point(228, 521);
             this.txtValueEditor.Name = "txtValueEditor";
-            this.txtValueEditor.Size = new System.Drawing.Size(68, 21);
+            this.txtValueEditor.Size = new System.Drawing.Size(68, 20);
             this.txtValueEditor.TabIndex = 10;
             this.txtValueEditor.Visible = false;
             // 
             // btnLoadConfig
             // 
-            this.btnLoadConfig.Location = new System.Drawing.Point(372, 473);
+            this.btnLoadConfig.Location = new System.Drawing.Point(372, 512);
             this.btnLoadConfig.Name = "btnLoadConfig";
-            this.btnLoadConfig.Size = new System.Drawing.Size(89, 27);
+            this.btnLoadConfig.Size = new System.Drawing.Size(89, 29);
             this.btnLoadConfig.TabIndex = 11;
             this.btnLoadConfig.Text = "Load...";
             this.btnLoadConfig.UseVisualStyleBackColor = true;
             // 
             // btnSaveConfig
             // 
-            this.btnSaveConfig.Location = new System.Drawing.Point(467, 473);
+            this.btnSaveConfig.Location = new System.Drawing.Point(467, 512);
             this.btnSaveConfig.Name = "btnSaveConfig";
-            this.btnSaveConfig.Size = new System.Drawing.Size(89, 27);
+            this.btnSaveConfig.Size = new System.Drawing.Size(89, 29);
             this.btnSaveConfig.TabIndex = 12;
             this.btnSaveConfig.Text = "Save...";
             this.btnSaveConfig.UseVisualStyleBackColor = true;
@@ -141,10 +142,10 @@
             this.lvExpressionData.GridLines = true;
             this.lvExpressionData.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvExpressionData.HideSelection = false;
-            this.lvExpressionData.Location = new System.Drawing.Point(244, 12);
+            this.lvExpressionData.Location = new System.Drawing.Point(244, 13);
             this.lvExpressionData.MultiSelect = false;
             this.lvExpressionData.Name = "lvExpressionData";
-            this.lvExpressionData.Size = new System.Drawing.Size(312, 455);
+            this.lvExpressionData.Size = new System.Drawing.Size(312, 493);
             this.lvExpressionData.TabIndex = 1;
             this.lvExpressionData.UseCompatibleStateImageBehavior = false;
             this.lvExpressionData.View = System.Windows.Forms.View.Details;
@@ -155,7 +156,7 @@
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "Value";
+            this.columnHeader4.Text = "Value (0-1)";
             // 
             // columnHeader5
             // 
@@ -171,10 +172,10 @@
             this.lvExpressions.FullRowSelect = true;
             this.lvExpressions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvExpressions.HideSelection = false;
-            this.lvExpressions.Location = new System.Drawing.Point(12, 12);
+            this.lvExpressions.Location = new System.Drawing.Point(12, 13);
             this.lvExpressions.MultiSelect = false;
             this.lvExpressions.Name = "lvExpressions";
-            this.lvExpressions.Size = new System.Drawing.Size(226, 401);
+            this.lvExpressions.Size = new System.Drawing.Size(226, 434);
             this.lvExpressions.TabIndex = 0;
             this.lvExpressions.UseCompatibleStateImageBehavior = false;
             this.lvExpressions.View = System.Windows.Forms.View.Details;
@@ -189,11 +190,21 @@
             this.columnHeader2.Text = "Description";
             this.columnHeader2.Width = 126;
             // 
+            // btnShowScrObj
+            // 
+            this.btnShowScrObj.Location = new System.Drawing.Point(316, 512);
+            this.btnShowScrObj.Name = "btnShowScrObj";
+            this.btnShowScrObj.Size = new System.Drawing.Size(50, 29);
+            this.btnShowScrObj.TabIndex = 13;
+            this.btnShowScrObj.Text = "ScrObj";
+            this.btnShowScrObj.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(565, 509);
+            this.ClientSize = new System.Drawing.Size(565, 551);
+            this.Controls.Add(this.btnShowScrObj);
             this.Controls.Add(this.btnSaveConfig);
             this.Controls.Add(this.btnLoadConfig);
             this.Controls.Add(this.txtValueEditor);
@@ -237,6 +248,7 @@
         private System.Windows.Forms.Button btnSaveConfig;
         private System.Windows.Forms.OpenFileDialog ofd;
         private System.Windows.Forms.SaveFileDialog sfd;
+        private System.Windows.Forms.Button btnShowScrObj;
     }
 }
 

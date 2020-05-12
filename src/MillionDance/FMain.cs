@@ -368,6 +368,7 @@ namespace OpenMLTD.MillionDance {
                 ip.SongPosition = cboOptSongPosition.SelectedIndex + 1;
 
                 ip.FacialExpressionMappingFilePath = txtOptFEMappings.Text;
+                ip.PreferredFacialExpressionSource = radFESourceLandscape.Checked ? InputParams.FallbackFacialExpressionSource.Landscape : InputParams.FallbackFacialExpressionSource.Portrait;
 
                 return ip;
             }

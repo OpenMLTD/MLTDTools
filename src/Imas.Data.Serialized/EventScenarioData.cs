@@ -1,15 +1,14 @@
-﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
+﻿using System;
+using System.Diagnostics;
+using AssetStudio;
+using AssetStudio.Extended.MonoBehaviours.Serialization;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Utilities;
-using OpenTK;
 
-namespace OpenMLTD.MillionDance.Entities.Mltd {
+namespace Imas.Data.Serialized {
     [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention))]
+    [DebuggerDisplay("Scenario data (type: {Type}, time: {AbsoluteTime})")]
     public sealed class EventScenarioData {
-
-        internal EventScenarioData() {
-        }
 
         [ScriptableObjectProperty(Name = "absTime")]
         public double AbsoluteTime { get; set; }
@@ -51,7 +50,7 @@ namespace OpenMLTD.MillionDance.Entities.Mltd {
         public ColorRGBA Color2 { get; set; }
 
         [ScriptableObjectProperty(Name = "cols")]
-        public float[] Colors { get; set; } = EmptyArray.Of<float>();
+        public float[] Colors { get; set; } = Array.Empty<float>();
 
         [ScriptableObjectProperty(Name = "tex")]
         public object Texture { get; set; } = null;
@@ -69,7 +68,7 @@ namespace OpenMLTD.MillionDance.Entities.Mltd {
         /// </summary>
         public int Idol { get; set; }
 
-        public bool[] Mute { get; set; } = EmptyArray.Of<bool>();
+        public bool[] Mute { get; set; } = Array.Empty<bool>();
 
         public bool Addf { get; set; }
 
@@ -79,7 +78,7 @@ namespace OpenMLTD.MillionDance.Entities.Mltd {
         [ScriptableObjectProperty(Name = "eye_y")]
         public float EyeY { get; set; }
 
-        public Vector4[] Formation { get; set; } = EmptyArray.Of<Vector4>();
+        public Vector4[] Formation { get; set; } = Array.Empty<Vector4>();
 
         public bool Appeal { get; set; }
 
@@ -94,10 +93,10 @@ namespace OpenMLTD.MillionDance.Entities.Mltd {
         public bool Delay { get; set; }
 
         [ScriptableObjectProperty(Name = "clratio")]
-        public int[] ColorRatio { get; set; } = EmptyArray.Of<int>();
+        public int[] ColorRatio { get; set; } = Array.Empty<int>();
 
         [ScriptableObjectProperty(Name = "clcols")]
-        public int[] ColorColumns { get; set; } = EmptyArray.Of<int>();
+        public int[] ColorColumns { get; set; } = Array.Empty<int>();
 
         [ScriptableObjectProperty(Name = "camcut")]
         public int CameraCut { get; set; }

@@ -4,8 +4,8 @@ using System.IO;
 using System.Text;
 using AssetStudio;
 using AssetStudio.Extended.MonoBehaviours.Serialization;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
-using OpenMLTD.ScenarioEdit.Entities;
 
 namespace OpenMLTD.ScenarioEdit {
 #if DEBUG

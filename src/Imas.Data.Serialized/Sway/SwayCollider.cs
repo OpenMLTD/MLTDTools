@@ -1,7 +1,7 @@
-﻿using JetBrains.Annotations;
-using OpenTK;
+﻿using AssetStudio;
+using JetBrains.Annotations;
 
-namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
+namespace Imas.Data.Serialized.Sway {
     public sealed class SwayCollider : SwayBase {
 
         internal SwayCollider() {

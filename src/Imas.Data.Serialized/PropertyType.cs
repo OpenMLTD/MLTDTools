@@ -1,5 +1,5 @@
-﻿namespace OpenMLTD.MillionDance.Entities.Mltd {
-    internal enum PropertyType {
+﻿namespace Imas.Data.Serialized {
+    public enum PropertyType {
 
         General,
         AngleX,

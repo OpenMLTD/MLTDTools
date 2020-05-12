@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Internal;
-using OpenMLTD.MillionDance.Entities.Mltd;
 using OpenMLTD.MillionDance.Entities.Vmd;
 using OpenMLTD.MillionDance.Extensions;
 using OpenMLTD.MillionDance.Utilities;

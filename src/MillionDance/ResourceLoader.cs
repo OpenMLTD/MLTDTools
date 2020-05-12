@@ -5,10 +5,11 @@ using System.Text.RegularExpressions;
 using AssetStudio;
 using AssetStudio.Extended.CompositeModels;
 using AssetStudio.Extended.MonoBehaviours.Serialization;
+using Imas.Data.Serialized;
+using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Mltd;
-using OpenMLTD.MillionDance.Entities.Mltd.Sway;
 
 namespace OpenMLTD.MillionDance {
     internal static class ResourceLoader {
@@ -184,14 +185,17 @@ namespace OpenMLTD.MillionDance {
             return (null, null, null);
         }
 
-        [CanBeNull]
-        public static ScenarioObject LoadScenario([NotNull] string filePath) {
-            ScenarioObject result = null;
+        public static (ScenarioObject, ScenarioObject, ScenarioObject) LoadScenario([NotNull] string filePath) {
+            ScenarioObject main = null, landscape = null, portrait = null;
 
-            const string scenarioEnds = "scenario_sobj";
+            const string mainScenarioEnds = "scenario_sobj";
+            const string landscapeScenarioEnds = "scenario_yoko_sobj";
+            const string portraitScenarioEnds = "scenario_tate_sobj";
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
+
+            var ser = new ScriptableObjectSerializer();
 
             foreach (var assetFile in manager.assetsFileList) {
                 foreach (var obj in assetFile.Objects) {
@@ -205,19 +209,21 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
                     }
 
-                    if (!behaviour.m_Name.EndsWith(scenarioEnds)) {
-                        continue;
+                    if (behaviour.m_Name.EndsWith(mainScenarioEnds)) {
+                        main = ser.Deserialize<ScenarioObject>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(landscapeScenarioEnds)) {
+                        landscape = ser.Deserialize<ScenarioObject>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(portraitScenarioEnds)) {
+                        portrait = ser.Deserialize<ScenarioObject>(behaviour);
                     }
 
-                    var ser = new ScriptableObjectSerializer();
-
-                    result = ser.Deserialize<ScenarioObject>(behaviour);
-
-                    break;
+                    if (main != null && landscape != null && portrait != null) {
+                        break;
+                    }
                 }
             }
 
-            return result;
+            return (main, landscape, portrait);
         }
 
         private static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDanceLegacy([NotNull] string filePath, int songPosition) {

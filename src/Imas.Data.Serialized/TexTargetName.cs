@@ -1,7 +1,7 @@
 ﻿using AssetStudio.Extended.MonoBehaviours.Serialization;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 
-namespace OpenMLTD.ScenarioEdit.Entities {
+namespace Imas.Data.Serialized {
     [ScriptableObject(NamingConventionType = typeof(CamelCaseNamingConvention))]
     public sealed class TexTargetName {
 

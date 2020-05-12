@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>OpenMLTD.MLTDTools.Applications.TDFacial</RootNamespace>
     <AssemblyName>TDFacial</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -53,11 +53,18 @@
   <ItemGroup>
     <Compile Include="Entities\FacialConfig.cs" />
     <Compile Include="Entities\FacialExpression.cs" />
+    <Compile Include="Extensions\ScenarioObjectExtensions.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form2.Designer.cs">
+      <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
     <Compile Include="ListViewEx.cs" />
     <Compile Include="Mappings.cs" />
@@ -65,6 +72,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form2.resx">
+      <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -89,6 +99,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\thirdparty\AssetStudio\AssetStudio\AssetStudio.csproj">
+      <Project>{7662f8c2-7bfd-442e-a948-a43b4f7eb06e}</Project>
+      <Name>AssetStudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AssetStudio.Extended.MonoBehaviours\AssetStudio.Extended.MonoBehaviours.csproj">
+      <Project>{45ae5ed2-589b-422b-98f7-48050b3ce3b8}</Project>
+      <Name>AssetStudio.Extended.MonoBehaviours</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Imas.Data.Serialized\Imas.Data.Serialized.csproj">
+      <Project>{3e816e61-9809-4b77-92d9-4ad891eaeaa3}</Project>
+      <Name>Imas.Data.Serialized</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiriTore.Common\MiriTore.Common.csproj">
+      <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
+      <Name>MiriTore.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

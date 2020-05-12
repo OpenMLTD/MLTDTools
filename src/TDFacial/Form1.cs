@@ -27,6 +27,20 @@ namespace OpenMLTD.MLTDTools.Applications.TDFacial {
             btnExprAdd.Click += BtnExprAdd_Click;
             btnExprDel.Click += BtnExprDel_Click;
             btnExprMod.Click += BtnExprMod_Click;
+            btnShowScrObj.Click += BtnShowScrObj_Click;
+        }
+
+        private void BtnShowScrObj_Click(object sender, EventArgs e) {
+            var forms = Application.OpenForms;
+
+            foreach (Form form in forms) {
+                if (form is Form2) {
+                    return;
+                }
+            }
+
+            var form2 = new Form2();
+            form2.Show(this);
         }
 
         private void BtnExprMod_Click(object sender, EventArgs e) {
@@ -218,6 +232,11 @@ namespace OpenMLTD.MLTDTools.Applications.TDFacial {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
+            {
+                var form2 = new Form2();
+                form2.Show(this);
+            }
+
             UpdateExpressionList();
 
             if (lvExpressions.Items.Count > 0) {
@@ -294,7 +313,9 @@ namespace OpenMLTD.MLTDTools.Applications.TDFacial {
         private const string DefaultTitle = "Facial Expression Editor";
 
         private const int EditableColumnIndex = 1;
+
         private static readonly CultureInfo LocalCulture = CultureInfo.CurrentUICulture;
+
         private static readonly UTF8Encoding Utf8WithoutBom = new UTF8Encoding(false);
 
     }

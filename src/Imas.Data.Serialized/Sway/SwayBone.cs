@@ -1,12 +1,12 @@
-﻿using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Utilities;
-using OpenTK;
+﻿using System;
+using AssetStudio;
+using JetBrains.Annotations;
 
-namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
+namespace Imas.Data.Serialized.Sway {
     public sealed class SwayBone : SwayBase {
 
         internal SwayBone() {
-            Colliders = EmptyArray.Of<SwayCollider>();
+            Colliders = Array.Empty<SwayCollider>();
         }
 
         public float Radius { get; internal set; }

@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace OpenMLTD.MillionDance.Entities.Mltd.Sway {
+namespace Imas.Data.Serialized.Sway {
     public abstract class SwayBase {
 
         internal SwayBase() {

@@ -98,17 +98,17 @@
             // mnuActionDownload
             // 
             this.mnuActionDownload.Index = 0;
-            this.mnuActionDownload.Text = "&Download...";
+            this.mnuActionDownload.Text = "&Download Selected Assets...";
             // 
             // mnuActionSave
             // 
             this.mnuActionSave.Index = 1;
-            this.mnuActionSave.Text = "&Save...";
+            this.mnuActionSave.Text = "&Save Manifest...";
             // 
             // mnuActionExport
             // 
             this.mnuActionExport.Index = 2;
-            this.mnuActionExport.Text = "E&xport...";
+            this.mnuActionExport.Text = "E&xport Manifest as Text...";
             // 
             // ctxL
             // 

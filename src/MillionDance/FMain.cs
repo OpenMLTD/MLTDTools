@@ -212,14 +212,16 @@ namespace OpenMLTD.MillionDance {
                     return outputDirExists;
                 }
 
-                if (!File.Exists(txtInputHead.Text)) {
-                    Alert($"Head model \"{txtInputHead.Text}\" does not exist.");
-                    return false;
-                }
+                if (chkGenerateModel.Checked || chkGenerateCharAnim.Checked) {
+                    if (!File.Exists(txtInputHead.Text)) {
+                        Alert($"Head model \"{txtInputHead.Text}\" does not exist.");
+                        return false;
+                    }
 
-                if (!File.Exists(txtInputBody.Text)) {
-                    Alert($"Body model \"{txtInputBody.Text}\" does not exist.");
-                    return false;
+                    if (!File.Exists(txtInputBody.Text)) {
+                        Alert($"Body model \"{txtInputBody.Text}\" does not exist.");
+                        return false;
+                    }
                 }
 
                 if (chkGenerateModel.Checked) {
@@ -292,14 +294,16 @@ namespace OpenMLTD.MillionDance {
                     }
                 }
 
-                if (!Regex.IsMatch(txtInputHead.Text, @"ch_[a-z]{2}\d{3}_(?:\d{3}[a-z]{3}|[a-z])\.unity3d$", RegexOptions.CultureInvariant)) {
-                    Alert($"File \"{txtInputHead.Text}\" does not look like a character head file from the game.");
-                    return false;
-                }
+                if (chkGenerateModel.Checked || chkGenerateCharAnim.Checked) {
+                    if (!Regex.IsMatch(txtInputHead.Text, @"ch_[a-z]{2}\d{3}_(?:\d{3}[a-z]{3}|[a-z])\.unity3d$", RegexOptions.CultureInvariant)) {
+                        Alert($"File \"{txtInputHead.Text}\" does not look like a character head file from the game.");
+                        return false;
+                    }
 
-                if (!Regex.IsMatch(txtInputBody.Text, @"cb_[a-z]{2}\d{3}_(?:\d{3}[a-z]{3}|[a-z])\.unity3d$", RegexOptions.CultureInvariant)) {
-                    Alert($"File \"{txtInputBody.Text}\" does not look like a character body file from the game.");
-                    return false;
+                    if (!Regex.IsMatch(txtInputBody.Text, @"cb_[a-z]{2}\d{3}_(?:\d{3}[a-z]{3}|[a-z])\.unity3d$", RegexOptions.CultureInvariant)) {
+                        Alert($"File \"{txtInputBody.Text}\" does not look like a character body file from the game.");
+                        return false;
+                    }
                 }
 
                 if (chkGenerateCharAnim.Checked) {
@@ -429,42 +433,66 @@ namespace OpenMLTD.MillionDance {
         }
 
         private void ChkGenerateCameraMotion_CheckedChanged(object sender, EventArgs e) {
-            var b = chkGenerateCameraMotion.Checked;
-            txtOutputCameraMotion.Enabled = b;
-            btnOutputCameraMotion.Enabled = b;
-            txtInputCamera.Enabled = b;
-            btnInputCamera.Enabled = b;
-
+            SetInputOutputControlsAvailability();
             ValidateHasAtLeastOneTask();
         }
 
         private void ChkGenerateCharAnim_CheckedChanged(object sender, EventArgs e) {
-            var b = chkGenerateCharAnim.Checked;
-            txtOutputCharAnim.Enabled = b;
-            btnOutputCharAnim.Enabled = b;
-            txtInputDance.Enabled = b;
-            btnInputDance.Enabled = b;
-            txtInputFacialExpression.Enabled = b;
-            btnInputFacialExpression.Enabled = b;
+            SetInputOutputControlsAvailability();
 
             if (!radOptMotionSourceMltd.Checked) {
                 radOptMotionSourceMltd.Checked = true;
             }
 
-            radOptMotionSourceMmd.Enabled = !b;
+            radOptMotionSourceMmd.Enabled = !chkGenerateCharAnim.Checked;
 
             ValidateHasAtLeastOneTask();
         }
 
         private void ChkGenerateModel_CheckedChanged(object sender, EventArgs e) {
-            var b = chkGenerateModel.Checked;
-            txtOutputModel.Enabled = b;
-            btnOutputModel.Enabled = b;
-
+            SetInputOutputControlsAvailability();
             ValidateHasAtLeastOneTask();
         }
 
         #endregion
+
+        private void SetInputOutputControlsAvailability() {
+            var model = chkGenerateModel.Checked;
+            var charAnim = chkGenerateCharAnim.Checked;
+            var camAnim = chkGenerateCameraMotion.Checked;
+
+            var b = model || charAnim;
+            txtInputHead.Enabled = b;
+            btnInputHead.Enabled = b;
+
+            b = model || charAnim;
+            txtInputBody.Enabled = b;
+            btnInputBody.Enabled = b;
+
+            b = charAnim;
+            txtInputDance.Enabled = b;
+            btnInputDance.Enabled = b;
+
+            b = charAnim;
+            txtInputFacialExpression.Enabled = b;
+            btnInputFacialExpression.Enabled = b;
+
+            b = camAnim;
+            txtInputCamera.Enabled = b;
+            btnInputCamera.Enabled = b;
+
+            b = model;
+            txtOutputModel.Enabled = b;
+            btnOutputModel.Enabled = b;
+
+            b = charAnim;
+            txtOutputCharAnim.Enabled = b;
+            btnOutputCharAnim.Enabled = b;
+
+            b = camAnim;
+            txtOutputCameraMotion.Enabled = b;
+            btnOutputCameraMotion.Enabled = b;
+        }
 
         private void Log([NotNull] string text) {
             if (InvokeRequired) {
@@ -493,10 +521,6 @@ namespace OpenMLTD.MillionDance {
         private void ValidateHasAtLeastOneTask() {
             var b = chkGenerateModel.Checked || chkGenerateCharAnim.Checked || chkGenerateCameraMotion.Checked;
 
-            txtInputHead.Enabled = b;
-            btnInputHead.Enabled = b;
-            txtInputBody.Enabled = b;
-            btnInputBody.Enabled = b;
             tabControl1.Enabled = b;
             btnGo.Enabled = b;
         }

@@ -10,10 +10,12 @@ using System.Windows.Forms;
 using AssetStudio;
 using AssetStudio.Extended.CompositeModels;
 using Imas.Data.Serialized;
+using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Extensions;
+using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MLTDTools.Applications.TDFacial.Entities;
 
 namespace OpenMLTD.MillionDance {
@@ -77,44 +79,59 @@ namespace OpenMLTD.MillionDance {
                 ScalingConfig.CharacterHeight = p.IdolHeight;
 
                 do {
-                    Log("Loading body avatar...");
-                    var bodyAvatar = ResourceLoader.LoadBodyAvatar(p.InputBody);
-                    if (bodyAvatar == null) {
-                        Log("Failed to load body avatar.");
-                        break;
-                    }
+                    CompositeAvatar combinedAvatar;
+                    CompositeMesh combinedMesh;
+                    int bodyMeshVertexCount;
+                    SwayController headSway;
+                    SwayController bodySway;
 
-                    Log("Loading body mesh...");
-                    var bodyMesh = ResourceLoader.LoadBodyMesh(p.InputBody);
-                    if (bodyMesh == null) {
-                        Log("Failed to load body mesh.");
-                        break;
-                    }
+                    if (p.GenerateModel || p.GenerateCharacterMotion) {
+                        Log("Loading body avatar...");
+                        var bodyAvatar = ResourceLoader.LoadBodyAvatar(p.InputBody);
+                        if (bodyAvatar == null) {
+                            Log("Failed to load body avatar.");
+                            break;
+                        }
 
-                    Log("Loading head avatar...");
-                    var headAvatar = ResourceLoader.LoadHeadAvatar(p.InputHead);
-                    if (headAvatar == null) {
-                        Log("Failed to load head avatar.");
-                        break;
-                    }
+                        Log("Loading body mesh...");
+                        var bodyMesh = ResourceLoader.LoadBodyMesh(p.InputBody);
+                        if (bodyMesh == null) {
+                            Log("Failed to load body mesh.");
+                            break;
+                        }
 
-                    Log("Loading head avatar...");
-                    var headMesh = ResourceLoader.LoadHeadMesh(p.InputHead);
-                    if (headMesh == null) {
-                        Log("Failed to load head mesh.");
-                        break;
-                    }
+                        Log("Loading head avatar...");
+                        var headAvatar = ResourceLoader.LoadHeadAvatar(p.InputHead);
+                        if (headAvatar == null) {
+                            Log("Failed to load head avatar.");
+                            break;
+                        }
 
-                    Log("Loading head/body sway controllers...");
-                    var (bodySway, headSway) = ResourceLoader.LoadSwayControllers(p.InputBody, p.InputHead);
-                    if (bodySway == null || headSway == null) {
-                        Log("Failed to load sway controllers.");
-                        break;
-                    }
+                        Log("Loading head avatar...");
+                        var headMesh = ResourceLoader.LoadHeadMesh(p.InputHead);
+                        if (headMesh == null) {
+                            Log("Failed to load head mesh.");
+                            break;
+                        }
 
-                    Log("Combining avatars and meshes...");
-                    var combinedAvatar = CompositeAvatar.FromAvatars(bodyAvatar, headAvatar);
-                    var combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
+                        Log("Loading head/body sway controllers...");
+                        (bodySway, headSway) = ResourceLoader.LoadSwayControllers(p.InputBody, p.InputHead);
+                        if (bodySway == null || headSway == null) {
+                            Log("Failed to load sway controllers.");
+                            break;
+                        }
+
+                        Log("Combining avatars and meshes...");
+                        combinedAvatar = CompositeAvatar.FromAvatars(bodyAvatar, headAvatar);
+                        combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
+                        bodyMeshVertexCount = bodyMesh.VertexCount;
+                    } else {
+                        combinedAvatar = null;
+                        combinedMesh = null;
+                        bodyMeshVertexCount = 0;
+                        bodySway = null;
+                        headSway = null;
+                    }
 
                     IBodyAnimationSource dance;
                     ScenarioObject baseScenario, facialExpr;
@@ -204,26 +221,42 @@ namespace OpenMLTD.MillionDance {
                     }
 
                     do {
-                        // Now file names are like "ch_pr001_201xxx.unity3d".
-                        var avatarName = (new FileInfo(p.InputHead).Name).Substring(3, 12);
+                        PmxModel pmx;
+                        string texPrefix;
+                        (string FileName, TexturedMaterial Material)[] materialList;
 
-                        // ss001_015siz -> 015ss001
-                        // Note: PMD allows max 19 characters in texture file names.
-                        // In the format below, textures will be named like:
-                        // tex\015ss001_01.png
-                        // which is at the limit.
-                        var texPrefix = avatarName.Substring(6, 3) + avatarName.Substring(0, 5);
-                        // TODO: PMX seems to store path in this way. If so, MillionDance only works on Windows.
-                        texPrefix = $@"tex\{texPrefix}_";
+                        if (p.GenerateModel || p.GenerateCharacterMotion) {
+                            // Now file names are like "ch_pr001_201xxx.unity3d".
+                            var avatarName = (new FileInfo(p.InputHead).Name).Substring(3, 12);
 
-                        Log("Generating model...");
+                            // ss001_015siz -> 015ss001
+                            // Note: PMD allows max 19 characters in texture file names.
+                            // In the format below, textures will be named like:
+                            // tex\015ss001_01.png
+                            // which is at the limit.
+                            texPrefix = avatarName.Substring(6, 3) + avatarName.Substring(0, 5);
+                            // TODO: PMX seems to store path in this way. If so, MillionDance only works on Windows.
+                            texPrefix = $@"tex\{texPrefix}_";
 
-                        var pmxCreator = new PmxCreator();
-                        var pmxConversionDetails = new PmxCreator.ConversionDetails(texPrefix, p.GameStyledToon, p.ToonNumber);
-                        var pmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMesh.VertexCount, bodySway, headSway, pmxConversionDetails, out var materialList);
+                            Log("Generating model...");
+
+                            Debug.Assert(combinedAvatar != null);
+                            Debug.Assert(combinedMesh != null);
+
+                            var pmxCreator = new PmxCreator();
+                            var pmxConversionDetails = new PmxCreator.ConversionDetails(texPrefix, p.GameStyledToon, p.ToonNumber);
+
+                            pmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMeshVertexCount, bodySway, headSway, pmxConversionDetails, out materialList);
+                        } else {
+                            pmx = null;
+                            texPrefix = null;
+                            materialList = null;
+                        }
 
                         if (p.GenerateModel) {
                             Log("Saving model...");
+
+                            Debug.Assert(pmx != null);
 
                             using (var w = new PmxWriter(File.Open(p.OutputModel, FileMode.Create, FileAccess.Write, FileShare.Write))) {
                                 w.Write(pmx);

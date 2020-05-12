@@ -710,7 +710,15 @@ namespace OpenMLTD.MillionDance.Core {
                     var vertices = s.Vertices;
                     var morph = new PmxMorph();
 
-                    var morphName = channel.Name.Substring(12); // - "blendShape1."
+                    // Some models has the name "blendShape1.[morph]" (ch_gs001_201xxx), and some "[long serial prefix]_blendShape[n].[morph]" (ch_ss001_017kth)
+                    var morphNameDotIndex = channel.Name.LastIndexOf('.');
+                    string morphName;
+
+                    if (morphNameDotIndex < 0) {
+                        morphName = channel.Name;
+                    } else {
+                        morphName = channel.Name.Substring(morphNameDotIndex + 1);
+                    }
 
                     if (ConversionConfig.Current.TranslateFacialExpressionNamesToMmd) {
                         morph.Name = MorphUtils.LookupMorphName(morphName);

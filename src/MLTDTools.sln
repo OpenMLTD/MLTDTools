@@ -48,6 +48,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{A378
 	ProjectSection(SolutionItems) = preProject
 		..\scripts\nuget_restore.ps1 = ..\scripts\nuget_restore.ps1
 		..\scripts\pack_artifacts.ps1 = ..\scripts\pack_artifacts.ps1
+		..\scripts\install.ps1 = ..\scripts\install.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetStudio", "..\thirdparty\AssetStudio\AssetStudio\AssetStudio.csproj", "{7662F8C2-7BFD-442E-A948-A43B4F7EB06E}"

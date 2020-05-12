@@ -11,10 +11,11 @@ environment:
   Release_Suffix: -alpha
   NuGet_API_Key:
     secure: izZ+2u3Vp3ykQNtVQqYtsmP4SoCO3vZ0gUp4zFCRsa0pBNgdkX354tc7VItMD5yh
+install:
+  - ps: .\scripts\install.ps1
 before_build:
   - cmd: nuget update -self
   - cmd: git submodule update --init --recursive
-  - cmd: npm install
   - cmd: npm install -g marked
   - ps: .\scripts\nuget_restore.ps1
 build_script:
@@ -26,14 +27,12 @@ after_build:
   #- cmd: 7z a miritore.zip -r docs\licenses\*
   - cmd: copy miritore.zip miritore-appveyor-latest.zip
   - cmd: copy miritore.zip miritore-appveyor-v%APPVEYOR_BUILD_VERSION%%RELEASE_SUFFIX%.zip
-test: off
+test: false
 artifacts:
   - path: miritore-appveyor-v%APPVEYOR_BUILD_VERSION%%RELEASE_SUFFIX%.zip
     name: WithVersion
   - path: miritore-appveyor-latest.zip
     name: Static
-  - path: '*.nupkg'
-    name: 'NuGet Packages'
 deploy:
   - provider: GitHub
     description: MLTDTools
@@ -44,5 +43,3 @@ deploy:
     prerelease: true
     on:
       appveyor_repo_tag: true
-after_deploy:
-  #- cmd: node scripts\appveyor_deploy_nuget.js

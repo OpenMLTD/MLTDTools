@@ -68,6 +68,9 @@ namespace Imas.Data.Serialized {
         /// </summary>
         public int Idol { get; set; }
 
+        /// <summary>
+        /// This array actually instructs whether the corresponding singer should *sing* (i.e. enable lip sync), not should *mute*.
+        /// </summary>
         public bool[] Mute { get; set; } = Array.Empty<bool>();
 
         public bool Addf { get; set; }

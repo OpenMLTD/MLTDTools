@@ -11,10 +11,12 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private static List<VmdFacialFrame> CreateLipSyncFrames([NotNull] ScenarioObject lipSync) {
+        private static List<VmdFacialFrame> CreateLipSyncFrames([NotNull] ScenarioObject lipSync, int idolPosition) {
             var frameList = new List<VmdFacialFrame>();
 
             var lipSyncControls = lipSync.Scenario.Where(s => s.Type == ScenarioDataType.LipSync).ToArray();
+            var muteControls = lipSync.Scenario.Where(s => s.Type == ScenarioDataType.MuteControl).ToArray();
+            var muteControlTimes = muteControls.Select(s => s.AbsoluteTime).ToArray();
 
             Debug.Assert(lipSyncControls.Length > 0, "Lip-sync controls should exist.");
             Debug.Assert(lipSyncControls[0].Param == 54, "The first control op should be 54.");
@@ -25,76 +27,89 @@ namespace OpenMLTD.MillionDance.Core {
             for (var i = 0; i < lipSyncControls.Length; i++) {
                 var sync = lipSyncControls[i];
                 var currentTime = (float)sync.AbsoluteTime;
-                var hasNext = i < lipSyncControls.Length - 1;
-                var hasPrev = i > 0;
 
-                switch (sync.Param) {
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 50:
-                        // The whole song ends with a "mouse-closed" (54) op.
-                        Debug.Assert(hasNext, "The song should end with control op 54 (mouse closed).");
-                        // The whole song starts with a "mouse-closed" (54) op.
-                        Debug.Assert(hasPrev, "The song should start with control op 54 (mouse closed).");
+                var isMuted = IsMutedAt(muteControls, muteControlTimes, sync.AbsoluteTime, idolPosition);
 
-                        string morphName;
+                if (isMuted) {
+                    frameList.Add(CreateFacialFrame(currentTime, "M_a", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_i", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_u", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
+                } else {
+                    var lipCode = (LipCode)sync.Param;
 
-                        switch (sync.Param) {
-                            case 0:
-                                morphName = "M_a";
-                                break;
-                            case 1:
-                                morphName = "M_i";
-                                break;
-                            case 2:
-                                morphName = "M_u";
-                                break;
-                            case 3:
-                                morphName = "M_e";
-                                break;
-                            case 4:
-                                morphName = "M_o";
-                                break;
-                            case 50:
-                                morphName = "M_n";
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException("Not possible.");
+                    switch (lipCode) {
+                        case LipCode.A:
+                        case LipCode.I:
+                        case LipCode.U:
+                        case LipCode.E:
+                        case LipCode.O:
+                        case LipCode.N: {
+                            // The whole song ends with a "mouse-closed" (54) op.
+                            Debug.Assert(i < lipSyncControls.Length - 1, "The song should end with control op 54 (mouse closed).");
+                            // The whole song starts with a "mouse-closed" (54) op.
+                            Debug.Assert(i > 0, "The song should start with control op 54 (mouse closed).");
+
+                            string morphName;
+
+                            switch (lipCode) {
+                                case LipCode.A:
+                                    morphName = "M_a";
+                                    break;
+                                case LipCode.I:
+                                    morphName = "M_i";
+                                    break;
+                                case LipCode.U:
+                                    morphName = "M_u";
+                                    break;
+                                case LipCode.E:
+                                    morphName = "M_e";
+                                    break;
+                                case LipCode.O:
+                                    morphName = "M_o";
+                                    break;
+                                case LipCode.N:
+                                    morphName = "M_n";
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(lipCode), lipCode, "Not possible.");
+                            }
+
+                            var prevTime = (float)lipSyncControls[i - 1].AbsoluteTime;
+
+                            if (currentTime - prevTime > lipTransitionTime) {
+                                frameList.Add(CreateFacialFrame(currentTime - lipTransitionTime, morphName, 0));
+                            } else {
+                                frameList.Add(CreateFacialFrame(prevTime, morphName, 0));
+                            }
+
+                            frameList.Add(CreateFacialFrame(currentTime, morphName, 1));
+
+                            var nextTime = (float)lipSyncControls[i + 1].AbsoluteTime;
+
+                            if (nextTime - currentTime > lipTransitionTime) {
+                                frameList.Add(CreateFacialFrame(nextTime - lipTransitionTime, morphName, 1));
+                                frameList.Add(CreateFacialFrame(nextTime, morphName, 0));
+                            } else {
+                                frameList.Add(CreateFacialFrame(nextTime, morphName, 0));
+                            }
+
+                            break;
                         }
-
-                        var prevTime = (float)lipSyncControls[i - 1].AbsoluteTime;
-
-                        if (currentTime - prevTime > lipTransitionTime) {
-                            frameList.Add(CreateFacialFrame(currentTime - lipTransitionTime, morphName, 0));
-                        } else {
-                            frameList.Add(CreateFacialFrame(prevTime, morphName, 0));
+                        case LipCode.Closed: {
+                            frameList.Add(CreateFacialFrame(currentTime, "M_a", 0));
+                            frameList.Add(CreateFacialFrame(currentTime, "M_i", 0));
+                            frameList.Add(CreateFacialFrame(currentTime, "M_u", 0));
+                            frameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
+                            frameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
+                            frameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
+                            break;
                         }
-
-                        frameList.Add(CreateFacialFrame(currentTime, morphName, 1));
-
-                        var nextTime = (float)lipSyncControls[i + 1].AbsoluteTime;
-
-                        if (nextTime - currentTime > lipTransitionTime) {
-                            frameList.Add(CreateFacialFrame(nextTime - lipTransitionTime, morphName, 1));
-                            frameList.Add(CreateFacialFrame(nextTime, morphName, 0));
-                        } else {
-                            frameList.Add(CreateFacialFrame(nextTime, morphName, 0));
-                        }
-
-                        break;
-                    case 54:
-                        frameList.Add(CreateFacialFrame(currentTime, "M_a", 0));
-                        frameList.Add(CreateFacialFrame(currentTime, "M_i", 0));
-                        frameList.Add(CreateFacialFrame(currentTime, "M_u", 0));
-                        frameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
-                        frameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
-                        frameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(sync.Param), sync.Param, null);
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(lipCode), lipCode, "Not possible");
+                    }
                 }
             }
 
@@ -102,10 +117,10 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static List<VmdFacialFrame> CreateFacialExpressionFrames([NotNull] ScenarioObject facialExpr, int songPosition) {
+        private static List<VmdFacialFrame> CreateFacialExpressionFrames([NotNull] ScenarioObject facialExpr, int idolPosition) {
             var frameList = new List<VmdFacialFrame>();
 
-            var expControls = facialExpr.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == songPosition - 1).ToArray();
+            var expControls = facialExpr.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == idolPosition - 1).ToArray();
 
             Debug.Assert(expControls.Length > 0, "Expression controls should exist.");
 
@@ -244,6 +259,24 @@ namespace OpenMLTD.MillionDance.Core {
             return frame;
         }
 
+        private static bool IsMutedAt(EventScenarioData[] muteControls, double[] muteControlTimes, double lipSyncTime, int position) {
+            var index = Array.BinarySearch(muteControlTimes, lipSyncTime);
+            EventScenarioData control;
+
+            if (index >= 0) {
+                control = muteControls[index];
+            } else {
+                index = ~index;
+                control = muteControls[index - 1];
+            }
+
+            var mute = control.Mute;
+            Debug.Assert(mute.Length >= position);
+
+            // Note the logical not here. Yes it is tricky. We should The data field (EventScenarioData.Mute, reflecting the field in scrobj) is badly named.
+            return !mute[position - 1];
+        }
+
         [NotNull, ItemNotNull]
         private static readonly HashSet<string> EyesFilteredMorphs = new HashSet<string> {
             "E_metoji_l",
@@ -258,6 +291,24 @@ namespace OpenMLTD.MillionDance.Core {
             "E_open_l",
             "E_open_r",
         };
+
+        private enum LipCode {
+
+            A = 0,
+
+            I = 1,
+
+            U = 2,
+
+            E = 3,
+
+            O = 4,
+
+            N = 50,
+
+            Closed = 54,
+
+        }
 
     }
 }

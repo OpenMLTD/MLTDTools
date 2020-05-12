@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 namespace AssetStudio.Extended.CompositeModels {
     public sealed class SubMesh {
 
-        internal SubMesh(uint firstIndex, uint indexCount, PrimitiveType topology, uint triangleCount, uint firstVertex, uint vertexCount, AABB boundingBox) {
+        internal SubMesh(uint firstIndex, uint indexCount, PrimitiveType topology, uint triangleCount, uint firstVertex, uint vertexCount, AABB boundingBox, [NotNull] TexturedMaterial material) {
             FirstIndex = firstIndex;
             IndexCount = indexCount;
             Topology = topology;
@@ -11,9 +11,10 @@ namespace AssetStudio.Extended.CompositeModels {
             FirstVertex = firstVertex;
             VertexCount = vertexCount;
             BoundingBox = boundingBox;
+            Material = material;
         }
 
-        internal SubMesh(uint firstIndex, [NotNull] AssetStudio.SubMesh mesh) {
+        internal SubMesh(uint firstIndex, [NotNull] AssetStudio.SubMesh mesh, [NotNull] TexturedMaterial material) {
             FirstIndex = firstIndex;
             IndexCount = mesh.indexCount;
             Topology = (PrimitiveType)mesh.topology;
@@ -21,6 +22,7 @@ namespace AssetStudio.Extended.CompositeModels {
             FirstVertex = mesh.firstVertex;
             VertexCount = mesh.vertexCount;
             BoundingBox = new AABB(mesh.localAABB);
+            Material = material;
         }
 
         public uint FirstIndex { get; }
@@ -36,6 +38,9 @@ namespace AssetStudio.Extended.CompositeModels {
         public uint VertexCount { get; }
 
         public AABB BoundingBox { get; }
+
+        [NotNull]
+        public TexturedMaterial Material { get; }
 
     }
 }

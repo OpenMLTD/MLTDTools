@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using AssetStudio;
 using AssetStudio.Extended.CompositeModels;
 using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
@@ -11,12 +13,17 @@ using OpenMLTD.MillionDance.Entities.Pmx.Extensions;
 using OpenMLTD.MillionDance.Extensions;
 using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
+using Quaternion = OpenTK.Quaternion;
+using Vector2 = OpenTK.Vector2;
+using Vector3 = OpenTK.Vector3;
+using Vector4 = OpenTK.Vector4;
 
 namespace OpenMLTD.MillionDance.Core {
     public sealed partial class PmxCreator {
 
+        [NotNull]
         public PmxModel CreateFrom([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, int bodyMeshVertexCount, [NotNull] string texturePrefix,
-            [NotNull] SwayController bodySway, [NotNull] SwayController headSway) {
+            [NotNull] SwayController bodySway, [NotNull] SwayController headSway, out (string FileName, TexturedMaterial Material)[] materialList) {
             var model = new PmxModel();
 
             model.Name = "ミリシタ モデル00";
@@ -44,7 +51,7 @@ namespace OpenMLTD.MillionDance.Core {
                 }
             }
 
-            var materials = AddMaterials(combinedMesh, texturePrefix);
+            var materials = AddMaterials(combinedMesh, texturePrefix, out materialList);
             model.Materials = materials;
 
             var emotionMorphs = AddEmotionMorphs(combinedMesh);
@@ -652,26 +659,29 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<PmxMaterial> AddMaterials([NotNull] PrettyMesh combinedMesh, [NotNull] string texturePrefix) {
+        private static IReadOnlyList<PmxMaterial> AddMaterials([NotNull] PrettyMesh combinedMesh, [NotNull] string texturePrefix, [NotNull] out (string FileName, TexturedMaterial Material)[] materialList) {
             var materialCount = combinedMesh.SubMeshes.Length;
             var materials = new PmxMaterial[materialCount];
+            materialList = new (string, TexturedMaterial)[materialCount];
 
             for (var i = 0; i < materialCount; ++i) {
+                var subMesh = combinedMesh.SubMeshes[i];
                 var material = new PmxMaterial();
 
-                material.NameEnglish = material.Name = $"Mat #{i:00}";
-                material.AppliedFaceVertexCount = (int)combinedMesh.SubMeshes[i].IndexCount;
+                material.Name = subMesh.Material.MaterialName;
+                material.NameEnglish = subMesh.Material.MaterialName;
+                material.AppliedFaceVertexCount = (int)subMesh.IndexCount;
                 material.Ambient = new Vector3(0.5f, 0.5f, 0.5f);
                 material.Diffuse = Vector4.One;
                 material.Specular = Vector3.Zero;
                 material.EdgeColor = new Vector4(0.3f, 0.3f, 0.3f, 0.8f);
                 material.EdgeSize = 1.0f;
-                // TODO: The right way: reading textures' path ID and do the mapping.
-                material.TextureFileName = $"{texturePrefix}{i:00}.png";
+                material.TextureFileName = GetExportedTextureFileName(texturePrefix, i);
 
                 material.Flags = MaterialFlags.Shadow | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap | MaterialFlags.CullNone | MaterialFlags.Edge;
 
                 materials[i] = material;
+                materialList[i] = (material.TextureFileName, subMesh.Material);
             }
 
             return materials;
@@ -898,6 +908,12 @@ namespace OpenMLTD.MillionDance.Core {
             } else {
                 return null;
             }
+        }
+
+        [NotNull]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string GetExportedTextureFileName([NotNull] string texturePrefix, int textureIndex) {
+            return $"{texturePrefix}{textureIndex.ToString("00")}.png";
         }
 
     }

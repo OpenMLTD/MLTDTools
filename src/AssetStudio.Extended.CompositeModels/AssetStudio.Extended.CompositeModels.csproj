@@ -62,6 +62,7 @@
         <Compile Include="SkeletonPose.cs" />
         <Compile Include="RawTransform.cs" />
         <Compile Include="SubMesh.cs" />
+        <Compile Include="TexturedMaterial.cs" />
         <Compile Include="Utilities\EnumerableUtils.cs" />
     </ItemGroup>
     <ItemGroup>

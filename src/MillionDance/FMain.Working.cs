@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
+using AssetStudio;
 using AssetStudio.Extended.CompositeModels;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
@@ -210,18 +213,49 @@ namespace OpenMLTD.MillionDance {
                         // tex\015ss001_01.png
                         // which is at the limit.
                         var texPrefix = avatarName.Substring(6, 3) + avatarName.Substring(0, 5);
-                        texPrefix = @"tex\" + texPrefix + "_";
+                        // TODO: PMX seems to store path in this way. If so, MillionDance only works on Windows.
+                        texPrefix = $@"tex\{texPrefix}_";
 
                         Log("Generating model...");
 
                         var pmxCreator = new PmxCreator();
-                        var pmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMesh.VertexCount, texPrefix, bodySway, headSway);
+                        var pmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMesh.VertexCount, texPrefix, bodySway, headSway, out var materialList);
 
                         if (p.GenerateModel) {
                             Log("Saving model...");
 
                             using (var w = new PmxWriter(File.Open(p.OutputModel, FileMode.Create, FileAccess.Write, FileShare.Write))) {
                                 w.Write(pmx);
+                            }
+
+                            Log("Saving textures...");
+
+                            var modelDir = (new FileInfo(p.OutputModel)).DirectoryName;
+                            Debug.Assert(modelDir != null);
+
+                            {
+                                var texDir = (new FileInfo(Path.Combine(modelDir, texPrefix))).DirectoryName;
+                                Debug.Assert(texDir != null);
+
+                                if (!Directory.Exists(texDir)) {
+                                    Directory.CreateDirectory(texDir);
+                                }
+                            }
+
+                            foreach (var (subFileName, mat) in materialList) {
+                                var textureFilePath = Path.Combine(modelDir, subFileName);
+
+                                using (var image = mat.MainTexture.ConvertToBitmap(mat.Flip)) {
+                                    if (mat.SubTexture != null) {
+                                        using (var subTex = mat.SubTexture.ConvertToBitmap(mat.Flip)) {
+                                            using (var g = Graphics.FromImage(image)) {
+                                                g.DrawImageUnscaled(subTex, 0, 0);
+                                            }
+                                        }
+                                    }
+
+                                    image.Save(textureFilePath, ImageFormat.Png);
+                                }
                             }
                         }
 

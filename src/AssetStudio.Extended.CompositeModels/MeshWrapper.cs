@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.CompositeModels {
     public sealed class MeshWrapper : PrettyMesh {
 
-        public MeshWrapper([NotNull] Mesh mesh) {
+        public MeshWrapper([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, bool flipTexture) {
             Name = mesh.m_Name;
 
             {
@@ -14,7 +16,8 @@ namespace AssetStudio.Extended.CompositeModels {
 
                 for (var i = 0; i < mesh.m_SubMeshes.Length; i += 1) {
                     var subMesh = mesh.m_SubMeshes[i];
-                    var sm = new SubMesh(meshIndexStart, subMesh);
+                    var mat = FindMaterialInfo(assetFiles, mesh, i, flipTexture);
+                    var sm = new SubMesh(meshIndexStart, subMesh, mat);
                     subMeshes[i] = sm;
                     meshIndexStart += subMesh.indexCount;
                 }
@@ -145,6 +148,132 @@ namespace AssetStudio.Extended.CompositeModels {
             }
 
             return result;
+        }
+
+        [NotNull]
+        private static TexturedMaterial FindMaterialInfo([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, int meshIndex, bool flipTexture) {
+            SkinnedMeshRenderer meshRenderer = null;
+
+            foreach (var assetFile in assetFiles) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.SkinnedMeshRenderer) {
+                        continue;
+                    }
+
+                    var renderer = obj as SkinnedMeshRenderer;
+
+                    Debug.Assert(renderer != null);
+
+                    if (renderer.m_Mesh.m_PathID == mesh.m_PathID) {
+                        meshRenderer = renderer;
+                        break;
+                    }
+                }
+            }
+
+            if (meshRenderer == null) {
+                throw new KeyNotFoundException($"Found no SkinnedMeshRenderer associated with this mesh ({mesh.m_Name}).");
+            }
+
+            Debug.Assert(meshRenderer.m_Materials != null);
+
+            if (meshRenderer.m_Materials.Length <= meshIndex) {
+                throw new FormatException("No corresponding material is associated with this SkinnedMeshRenderer.");
+            }
+
+            var materialPtr = meshRenderer.m_Materials[meshIndex];
+            Material material = null;
+
+            foreach (var assetFile in assetFiles) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Material) {
+                        continue;
+                    }
+
+                    var mat = obj as Material;
+
+                    Debug.Assert(mat != null);
+
+                    if (mat.m_PathID == materialPtr.m_PathID) {
+                        material = mat;
+                        break;
+                    }
+                }
+            }
+
+            if (material == null) {
+                throw new KeyNotFoundException("Main material is not found by path ID.");
+            }
+
+            Debug.Assert(material.m_SavedProperties != null);
+            Debug.Assert(material.m_SavedProperties.m_TexEnvs != null);
+            Debug.Assert(material.m_SavedProperties.m_TexEnvs.Length > 0);
+
+            var kvPairs = material.m_SavedProperties.m_TexEnvs;
+            UnityTexEnv mainTexEnv = null;
+            UnityTexEnv subTexEnv = null;
+
+            foreach (var kv in kvPairs) {
+                if (kv.Key.Equals("_MainTex", StringComparison.Ordinal)) {
+                    mainTexEnv = kv.Value;
+                } else if (kv.Key.Equals("_SubTex", StringComparison.Ordinal)) {
+                    subTexEnv = kv.Value;
+                }
+            }
+
+            if (mainTexEnv == null) {
+                throw new KeyNotFoundException("Main texture is missing.");
+            }
+
+            Texture2D mainTexture = null;
+
+            foreach (var assetFile in assetFiles) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.Texture2D) {
+                        continue;
+                    }
+
+                    var tex = obj as Texture2D;
+
+                    Debug.Assert(tex != null);
+
+                    if (tex.m_PathID == mainTexEnv.m_Texture.m_PathID) {
+                        mainTexture = tex;
+                        break;
+                    }
+                }
+            }
+
+            if (mainTexture == null) {
+                throw new KeyNotFoundException("Main texture is not found by path ID.");
+            }
+
+            Texture2D subTexture = null;
+
+            if (subTexEnv != null) {
+                foreach (var assetFile in assetFiles) {
+                    foreach (var obj in assetFile.Objects) {
+                        if (obj.type != ClassIDType.Texture2D) {
+                            continue;
+                        }
+
+                        var tex = obj as Texture2D;
+
+                        Debug.Assert(tex != null);
+
+                        if (tex.m_PathID == subTexEnv.m_Texture.m_PathID) {
+                            subTexture = tex;
+                            break;
+                        }
+                    }
+                }
+
+                if (subTexture == null) {
+                    throw new KeyNotFoundException("Sub texture is not found by path ID.");
+                }
+            }
+
+            return new TexturedMaterial(material.m_Name, mainTexture, subTexture, flipTexture);
         }
 
         [NotNull]

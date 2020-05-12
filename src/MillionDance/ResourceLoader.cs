@@ -33,7 +33,7 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentNullException(nameof(mesh), "Body mesh is null.");
                     }
 
-                    result = new MeshWrapper(mesh);
+                    result = new MeshWrapper(manager.assetsFileList, mesh, true);
 
                     break;
                 }
@@ -89,7 +89,7 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentNullException(nameof(mesh), "One of head meshes is null.");
                     }
 
-                    var m = new MeshWrapper(mesh);
+                    var m = new MeshWrapper(manager.assetsFileList, mesh, false);
                     meshList.Add(m);
                 }
             }
@@ -316,7 +316,7 @@ namespace OpenMLTD.MillionDance {
             return (Body: body, Head: head);
         }
 
-        [NotNull]
+        [CanBeNull]
         private static SwayController LoadSwayController([NotNull] string filePath) {
             SwayController result = null;
 

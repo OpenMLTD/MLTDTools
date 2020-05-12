@@ -61,7 +61,9 @@ namespace AssetStudio.Extended.CompositeModels {
                     var subMesh = mesh.SubMeshes[i];
                     Debug.Assert(subMesh.Topology == PrimitiveType.Triangles);
 
-                    var newSubMesh = new SubMesh(subMesh.FirstIndex + indexStart, subMesh.IndexCount, subMesh.Topology, subMesh.TriangleCount, subMesh.FirstVertex + vertexStart, subMesh.VertexCount, subMesh.BoundingBox);
+                    var newSubMesh = new SubMesh(
+                        subMesh.FirstIndex + indexStart, subMesh.IndexCount, subMesh.Topology, subMesh.TriangleCount,
+                        subMesh.FirstVertex + vertexStart, subMesh.VertexCount, subMesh.BoundingBox, subMesh.Material);
 
                     subMeshList.Add(newSubMesh);
 

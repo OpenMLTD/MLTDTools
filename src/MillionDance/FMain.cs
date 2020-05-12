@@ -77,7 +77,7 @@ namespace OpenMLTD.MillionDance {
         }
 
         private void BtnClearLog_Click(object sender, EventArgs e) {
-            txtLog.ResetText();
+            txtLog.Clear();
         }
 
         private void ChkOptScalePmx_CheckedChanged(object sender, EventArgs e) {
@@ -372,6 +372,8 @@ namespace OpenMLTD.MillionDance {
 
                 return ip;
             }
+
+            txtLog.Clear();
 
             InputParams p;
 

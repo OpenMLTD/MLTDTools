@@ -7,7 +7,7 @@ $subPaths = @(
     [String]::Format("src/AcbPack/bin/{0}", $configuration),
     [String]::Format("src/HcaDec/bin/{0}", $configuration),
     [String]::Format("src/ManifestExport/bin/{0}", $configuration),
-    [String]::Format("src/MillionDance/bin/{0}", $configuration),
+    [String]::Format("src/MillionDance/bin/x86/{0}", $configuration), # temporarily fixed to x86 because of AssetStudioUtilities
     [String]::Format("src/MillionDanceView/bin/{0}", $configuration),
     [String]::Format("src/MiriTore.Common/bin/{0}", $configuration),
     [String]::Format("src/MiriTore.Logging/bin/{0}", $configuration),
@@ -23,8 +23,13 @@ foreach ($subPath in $subPaths) {
         continue
 	}
 
-    [String]$fullDirPath = [System.IO.Path]::Combine($basePath, $subPath, "*");
+    [String]$fullDirPath = [System.IO.Path]::Combine($basePath, $subPath);
+    [String]$xmlFilesPattern = [System.IO.Path]::Combine($fullDirPath, "*.xml")
+
+    Remove-Item $xmlFilesPattern
+
+    [String]$allFilesPattern = [System.IO.Path]::Combine($fullDirPath, "*")
     
-    [ScriptBlock]$scriptBlock = { 7z a $zipName -r $fullDirPath }
+    [ScriptBlock]$scriptBlock = { 7z a $zipName -r $allFilesPattern }
     Invoke-Command -ScriptBlock $scriptBlock
 }

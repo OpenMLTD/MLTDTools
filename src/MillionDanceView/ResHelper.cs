@@ -49,7 +49,7 @@ namespace OpenMLTD.MillionDance.Viewer {
                         throw new ArgumentNullException(nameof(mesh), "Body mesh is null.");
                     }
 
-                    result = new MeshWrapper(mesh);
+                    result = new MeshWrapper(manager.assetsFileList, mesh, true);
 
                     break;
                 }
@@ -77,7 +77,7 @@ namespace OpenMLTD.MillionDance.Viewer {
                         throw new ArgumentNullException(nameof(mesh), "One of head meshes is null.");
                     }
 
-                    var m = new MeshWrapper(mesh);
+                    var m = new MeshWrapper(manager.assetsFileList, mesh, false);
                     meshList.Add(m);
                 }
             }

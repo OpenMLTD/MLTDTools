@@ -354,7 +354,13 @@ namespace OpenMLTD.MillionDance.Core {
                 }
 
                 toonTexIndex += 1;
-                material.ToonTextureFileName = $"toon{toonTexIndex}.bmp";
+
+                if (toonTexIndex > 0) {
+                    // PMX Editor
+                    // What about other editors' defaults?
+                    var toonStr = toonTexIndex.ToString("00");
+                    material.ToonTextureFileName = $"toon{toonStr}.bmp";
+                }
             }
 
             material.MemoTextureFileName = ReadString() ?? string.Empty;

@@ -279,8 +279,9 @@ namespace OpenMLTD.MillionDance.Core {
 
             bool IsNormalToonTexture(string name, out int toonIndex) {
                 if (string.IsNullOrEmpty(name)) {
-                    toonIndex = 0;
-                    return true;
+                    // Maps to "no texture" (empty string)
+                    toonIndex = -1;
+                    return false;
                 }
 
                 var match = ToonNameRegex.Match(name);

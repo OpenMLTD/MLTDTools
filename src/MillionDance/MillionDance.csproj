@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="ApplicationHelper.cs" />
     <Compile Include="Core\ConversionConfig.cs" />
+    <Compile Include="Core\FrameRate.cs" />
     <Compile Include="Core\IBodyAnimationSource.cs" />
     <Compile Include="Core\MotionFormat.cs" />
     <Compile Include="Core\MvdCreator.Camera.cs" />

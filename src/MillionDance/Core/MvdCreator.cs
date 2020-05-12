@@ -33,9 +33,9 @@ namespace OpenMLTD.MillionDance.Core {
             var mvd = new MvdMotion(cameraFrames);
 
             if (ConversionConfig.Current.Transform60FpsTo30Fps) {
-                mvd.Fps = 30;
+                mvd.Fps = FrameRate.Mmd;
             } else {
-                mvd.Fps = 60;
+                mvd.Fps = FrameRate.Mltd;
             }
 
             return mvd;

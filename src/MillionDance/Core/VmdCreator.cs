@@ -44,7 +44,12 @@ namespace OpenMLTD.MillionDance.Core {
             }
 
             if (ProcessFacialFrames && baseScenario != null && facialExpr != null) {
-                facialFrames = CreateFacialFrames(baseScenario, facialExpr, songPosition);
+                var lipFrames = CreateLipSyncFrames(baseScenario);
+                var exprFrames = CreateFacialExpressionFrames(facialExpr, songPosition);
+                var allFrames = new List<VmdFacialFrame>(lipFrames);
+                allFrames.AddRange(exprFrames);
+
+                facialFrames = allFrames;
             } else {
                 facialFrames = Array.Empty<VmdFacialFrame>();
             }

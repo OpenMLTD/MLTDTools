@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
+using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Extensions;
 
 namespace OpenMLTD.MillionDance.Entities.Internal {
@@ -58,8 +59,7 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
                 throw new ApplicationException("Invalid key type.");
             }
 
-            const float mltdFps = 60;
-            const float frameDuration = 1 / mltdFps;
+            const float frameDuration = 1.0f / FrameRate.Mltd;
             var totalDuration = GetMaxDuration(allCameraCurves);
             var frameCount = (int)Math.Round(totalDuration / frameDuration);
 

@@ -1,12 +1,13 @@
 ﻿using System.Diagnostics;
 using JetBrains.Annotations;
+using OpenMLTD.MillionDance.Core;
 
 namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class KeyFrame {
 
         public KeyFrame(int frameIndex, [NotNull] string path) {
             FrameIndex = frameIndex;
-            Time = 1.0f / 60.0f * frameIndex;
+            Time = frameIndex / (float)FrameRate.Mltd;
             Path = path;
         }
 

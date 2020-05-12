@@ -38,7 +38,7 @@ namespace OpenMLTD.MillionDance.Core {
             var animatedBoneCount = animation.BoneCount;
             var keyFrameCount = animation.KeyFrames.Count;
 
-            do {
+            {
                 void MarkNamedBone(string name) {
                     var bone = pmx.Bones.FirstOrDefault(b => b.Name == name);
 
@@ -60,7 +60,7 @@ namespace OpenMLTD.MillionDance.Core {
                 // Special cases
                 MarkNamedBone("KUBI");
                 MarkNamedBone("頭");
-            } while (false);
+            }
 
             Debug.Assert(keyFrameCount % animatedBoneCount == 0, "keyFrameCount % animatedBoneCount == 0");
 

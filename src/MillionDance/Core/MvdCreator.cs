@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AssetStudio;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Mvd;
 using OpenMLTD.MillionDance.Entities.Pmx;
-using OpenMLTD.MillionDance.Utilities;
 
 namespace OpenMLTD.MillionDance.Core {
     public sealed partial class MvdCreator {
@@ -27,7 +27,7 @@ namespace OpenMLTD.MillionDance.Core {
             if (ProcessCameraFrames && cameraMotion != null) {
                 cameraFrames = CreateCameraMotions(cameraMotion);
             } else {
-                cameraFrames = EmptyArray.Of<MvdCameraMotion>();
+                cameraFrames = Array.Empty<MvdCameraMotion>();
             }
 
             var mvd = new MvdMotion(cameraFrames);

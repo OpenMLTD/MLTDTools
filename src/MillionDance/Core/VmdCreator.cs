@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AssetStudio.Extended.CompositeModels;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Entities.Vmd;
-using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 
 namespace OpenMLTD.MillionDance.Core {
@@ -34,25 +34,25 @@ namespace OpenMLTD.MillionDance.Core {
             if (ProcessBoneFrames && (bodyAnimationSource != null && avatar != null && mltdPmxModel != null)) {
                 boneFrames = CreateBoneFrames(bodyAnimationSource, avatar, mltdPmxModel);
             } else {
-                boneFrames = EmptyArray.Of<VmdBoneFrame>();
+                boneFrames = Array.Empty<VmdBoneFrame>();
             }
 
             if (ProcessCameraFrames && cameraMotion != null) {
                 cameraFrames = CreateCameraFrames(cameraMotion, FixedFov);
             } else {
-                cameraFrames = EmptyArray.Of<VmdCameraFrame>();
+                cameraFrames = Array.Empty<VmdCameraFrame>();
             }
 
             if (ProcessFacialFrames && baseScenario != null && facialExpr != null) {
                 facialFrames = CreateFacialFrames(baseScenario, facialExpr, songPosition);
             } else {
-                facialFrames = EmptyArray.Of<VmdFacialFrame>();
+                facialFrames = Array.Empty<VmdFacialFrame>();
             }
 
             if (ProcessLightFrames && baseScenario != null) {
                 lightFrames = CreateLightFrames(baseScenario);
             } else {
-                lightFrames = EmptyArray.Of<VmdLightFrame>();
+                lightFrames = Array.Empty<VmdLightFrame>();
             }
 
             const string modelName = "MODEL_00";

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Utilities;
 
 namespace OpenMLTD.MillionDance.Entities.Pmx {
     public sealed class PmxSoftBody : PmxBaseBody {
@@ -27,10 +27,10 @@ namespace OpenMLTD.MillionDance.Entities.Pmx {
         public SoftBodyMaterialConfig MaterialConfig { get; } = new SoftBodyMaterialConfig();
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<BodyAnchor> BodyAnchors { get; internal set; } = EmptyArray.Of<BodyAnchor>();
+        public IReadOnlyList<BodyAnchor> BodyAnchors { get; internal set; } = Array.Empty<BodyAnchor>();
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<VertexPin> VertexPins { get; internal set; } = EmptyArray.Of<VertexPin>();
+        public IReadOnlyList<VertexPin> VertexPins { get; internal set; } = Array.Empty<VertexPin>();
 
     }
 }

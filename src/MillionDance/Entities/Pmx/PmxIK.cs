@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Utilities;
 
 namespace OpenMLTD.MillionDance.Entities.Pmx {
     public sealed class PmxIK {
@@ -21,7 +21,7 @@ namespace OpenMLTD.MillionDance.Entities.Pmx {
         public float AngleLimit { get; internal set; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<IKLink> Links { get; internal set; } = EmptyArray.Of<IKLink>();
+        public IReadOnlyList<IKLink> Links { get; internal set; } = Array.Empty<IKLink>();
 
     }
 }

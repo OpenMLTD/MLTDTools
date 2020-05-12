@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Utilities;
 
 namespace OpenMLTD.MillionDance.Entities.Pmx {
     public sealed class PmxNode : IPmxNamedObject {
@@ -13,7 +13,7 @@ namespace OpenMLTD.MillionDance.Entities.Pmx {
         public string NameEnglish { get; internal set; } = string.Empty;
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<NodeElement> Elements { get; internal set; } = EmptyArray.Of<NodeElement>();
+        public IReadOnlyList<NodeElement> Elements { get; internal set; } = Array.Empty<NodeElement>();
 
         internal bool IsSystemNode { get; set; }
 

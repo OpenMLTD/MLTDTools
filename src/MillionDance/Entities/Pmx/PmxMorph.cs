@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Utilities;
 
 namespace OpenMLTD.MillionDance.Entities.Pmx {
     public sealed class PmxMorph : IPmxNamedObject {
@@ -17,7 +17,7 @@ namespace OpenMLTD.MillionDance.Entities.Pmx {
         public MorphOffsetKind OffsetKind { get; internal set; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<PmxBaseMorph> Offsets { get; internal set; } = EmptyArray.Of<PmxBaseMorph>();
+        public IReadOnlyList<PmxBaseMorph> Offsets { get; internal set; } = Array.Empty<PmxBaseMorph>();
 
     }
 }

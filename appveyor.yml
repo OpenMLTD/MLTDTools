@@ -37,4 +37,4 @@ deploy:
     draft: false
     prerelease: false
     on:
-      appveyor_repo_tag: true
+      APPVEYOR_REPO_TAG: true

@@ -58,305 +58,23 @@ namespace Imas.Data.Serialized.Sway {
                     case "Top":
                         controller.Top = topKeyValue.Value;
                         break;
-                    case "SwayManager":
-                        var sm = ReadSwayManger();
+                    case "SwayManager": {
+                        var sm = ReadSwayManger(lines, line, ref i);
                         managers.Add(sm);
                         break;
-                    case "SwayCollider":
-                        var sc = ReadSwayCollider();
+                    }
+                    case "SwayCollider": {
+                        var sc = ReadSwayCollider(lines, line, ref i);
                         colliders.Add(sc);
                         break;
-                    case "SwayBone":
-                        var sb = ReadSwayBone();
+                    }
+                    case "SwayBone": {
+                        var sb = ReadSwayBone(lines, line, ref i);
                         swayBones.Add(sb);
                         break;
+                    }
                     default:
                         throw new ArgumentOutOfRangeException(nameof(topKeyValue.Key), topKeyValue.Key, null);
-                }
-
-                SwayManager ReadSwayManger() {
-                    var kv = ParseKeyValue(line);
-                    var manager = new SwayManager();
-                    var anyPropSet = false;
-
-                    do {
-                        switch (kv.Key) {
-                            case "SwayManager":
-                                manager.Path = kv.Value;
-                                break;
-                            case "gravity":
-                                manager.Gravity = ParseVector3(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "stiffnessForce":
-                                manager.StiffnessForce = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "dragForce":
-                                manager.DragForce = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "followForce":
-                                manager.FollowForce = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "lineMoveLimit":
-                                manager.LineMoveLimit = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "sidelineMoveLimit":
-                                manager.SideLineMoveLimit = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            default:
-                                Debug.Print("Unknow property key/value: {0} / {1}", kv.Key, kv.Value);
-                                break;
-                        }
-
-                        {
-                            ++i;
-                            line = lines[i];
-
-                            if (line.Length == 0 || line[0] != ' ') {
-                                // A new entry (manager/collider/bone) starts.
-                                // Decrease counter so the next reading attempt will work with auto counter increment.
-                                --i;
-                                break;
-                            }
-
-                            kv = ParseKeyValue(line);
-                        }
-                    } while (true);
-
-                    if (!anyPropSet) {
-                        throw new ArgumentException("Empty SwayManager body");
-                    }
-
-                    return manager;
-                }
-
-                SwayCollider ReadSwayCollider() {
-                    var kv = ParseKeyValue(line);
-                    var collider = new SwayCollider();
-                    var anyPropSet = false;
-
-                    do {
-                        switch (kv.Key) {
-                            case "SwayCollider":
-                                collider.Path = kv.Value;
-                                break;
-                            case "type":
-                                collider.Type = ParseColliderType(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "axis":
-                                collider.Axis = ParseCollidingAxis(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "radius":
-                                collider.Radius = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "distance":
-                                collider.Distance = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "offset":
-                                collider.Offset = ParseVector3(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "planeAxis":
-                                collider.PlaneAxis = ParsePlaneAxis(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "CapsuleSphere1":
-                                collider.CapsuleSphere1 = Convert.ToBoolean(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "CapsuleSphere2":
-                                collider.CapsuleSphere2 = Convert.ToBoolean(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "planeRotOn":
-                                collider.PlaneRotationEnabled = Convert.ToBoolean(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "planeRotEuler":
-                                collider.PlaneRotationEuler = ParseVector3(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "bridgetgt":
-                                collider.BridgeTargetPath = kv.Value;
-                                anyPropSet = true;
-                                break;
-                            default:
-                                Debug.Print("Unknow property key/value: {0} / {1}", kv.Key, kv.Value);
-                                break;
-                        }
-
-                        {
-                            ++i;
-                            line = lines[i];
-
-                            if (line.Length == 0 || line[0] != ' ') {
-                                // A new entry (manager/collider/bone) starts.
-                                // Decrease counter so the next reading attempt will work with auto counter increment.
-                                --i;
-                                break;
-                            }
-
-                            kv = ParseKeyValue(line);
-                        }
-                    } while (true);
-
-                    if (!anyPropSet) {
-                        throw new ArgumentException("Empty SwayCollider body");
-                    }
-
-                    return collider;
-                }
-
-                SwayBone ReadSwayBone() {
-                    var kv = ParseKeyValue(line);
-                    var bone = new SwayBone();
-                    var anyPropSet = false;
-
-                    do {
-                        switch (kv.Key) {
-                            case "SwayBone":
-                                bone.Path = kv.Value;
-                                break;
-                            case "radius":
-                                bone.Radius = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "type":
-                                bone.Type = ParseColliderType(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "isSkirt":
-                                bone.IsSkirt = Convert.ToBoolean(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "HitMuteForce":
-                                bone.HitMuteForce = Convert.ToBoolean(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "HitMuteRate":
-                                bone.HitMuteRate = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "limitAngle":
-                                bone.HasAngleLimit = Convert.ToBoolean(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "useBindDir":
-                                bone.UseBindingDirection = Convert.ToBoolean(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "minYAngle":
-                                bone.MinYAngle = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "maxYAngle":
-                                bone.MaxYAngle = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "minZAngle":
-                                bone.MinZAngle = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "maxZAngle":
-                                bone.MaxZAngle = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "followForce":
-                                bone.FollowForce = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "refParam":
-                                bone.RefParam = ParseRefParam(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "stiffnessForce":
-                                bone.StiffnessForce = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "dragForce":
-                                bone.DragForce = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "hitTwice":
-                                bone.HitTwice = Convert.ToBoolean(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "useLinkHit":
-                                bone.UseLinkHit = Convert.ToBoolean(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "gravity":
-                                bone.Gravity = ParseVector3(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "colliderOffset":
-                                bone.ColliderOffset = ParseVector3(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "sideSpringTorelance":
-                                bone.SideSpringTolerance = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "sideSpringForce":
-                                bone.SideSpringForce = Convert.ToSingle(kv.Value);
-                                anyPropSet = true;
-                                break;
-                            case "colliders": {
-                                var colliderCount = Convert.ToInt32(kv.Value);
-                                var colliderPathList = new List<string>();
-
-                                for (var j = 0; j < colliderCount; ++j) {
-                                    ++i;
-                                    line = lines[i];
-
-                                    kv = ParseKeyValue(line);
-
-                                    colliderPathList.Add(kv.Value);
-                                }
-
-                                anyPropSet = true;
-
-                                bone.ColliderPaths = colliderPathList.ToArray();
-                            }
-                                break;
-                            case "sideLink":
-                                bone.SideLinkPath = kv.Value;
-                                anyPropSet = true;
-                                break;
-                            default:
-                                Debug.Print("Unknow property key/value: {0} / {1}", kv.Key, kv.Value);
-                                break;
-                        }
-
-                        {
-                            ++i;
-                            line = lines[i];
-
-                            if (line.Length == 0 || line[0] != ' ') {
-                                // A new entry (manager/collider/bone) starts.
-                                // Decrease counter so the next reading attempt will work with auto counter increment.
-                                --i;
-                                break;
-                            }
-
-                            kv = ParseKeyValue(line);
-                        }
-                    } while (true);
-
-                    if (!anyPropSet) {
-                        throw new ArgumentException("Empty SwayBone body");
-                    }
-
-                    return bone;
                 }
             }
 
@@ -422,7 +140,290 @@ namespace Imas.Data.Serialized.Sway {
             }
         }
 
-        private static KeyValuePair<string, string> ParseKeyValue(string str) {
+        [NotNull]
+        private static SwayManager ReadSwayManger([NotNull, ItemNotNull] string[] lines, [NotNull] string line, ref int i) {
+            var kv = ParseKeyValue(line);
+            var manager = new SwayManager();
+            var anyPropSet = false;
+
+            do {
+                var setAProp = true;
+
+                switch (kv.Key) {
+                    case "SwayManager":
+                        manager.Path = kv.Value;
+                        setAProp = false;
+                        break;
+                    case "gravity":
+                        manager.Gravity = ParseVector3(kv.Value);
+                        break;
+                    case "stiffnessForce":
+                        manager.StiffnessForce = Convert.ToSingle(kv.Value);
+                        break;
+                    case "dragForce":
+                        manager.DragForce = Convert.ToSingle(kv.Value);
+                        break;
+                    case "followForce":
+                        manager.FollowForce = Convert.ToSingle(kv.Value);
+                        break;
+                    case "lineMoveLimit":
+                        manager.LineMoveLimit = Convert.ToSingle(kv.Value);
+                        break;
+                    case "sidelineMoveLimit":
+                        manager.SideLineMoveLimit = Convert.ToSingle(kv.Value);
+                        break;
+                    default:
+                        Debug.Print("Unknown manager property key/value: {0} / {1}", kv.Key, kv.Value);
+                        setAProp = false;
+                        break;
+                }
+
+                anyPropSet = anyPropSet || setAProp;
+
+                {
+                    ++i;
+                    line = lines[i];
+
+                    if (line.Length == 0 || line[0] != ' ') {
+                        // A new entry (manager/collider/bone) starts.
+                        // Decrease counter so the next reading attempt will work with auto counter increment.
+                        --i;
+                        break;
+                    }
+
+                    kv = ParseKeyValue(line);
+                }
+            } while (true);
+
+            if (!anyPropSet) {
+                throw new ArgumentException("Empty SwayManager body");
+            }
+
+            return manager;
+        }
+
+        [NotNull]
+        private static SwayCollider ReadSwayCollider([NotNull, ItemNotNull] string[] lines, [NotNull] string line, ref int i) {
+            var kv = ParseKeyValue(line);
+            var collider = new SwayCollider();
+            var anyPropSet = false;
+
+            do {
+                var setAProp = true;
+
+                switch (kv.Key) {
+                    case "SwayCollider":
+                        collider.Path = kv.Value;
+                        setAProp = false;
+                        break;
+                    case "type":
+                        collider.Type = ParseColliderType(kv.Value);
+                        break;
+                    case "axis":
+                        collider.Axis = ParseCollidingAxis(kv.Value);
+                        break;
+                    case "radius":
+                        collider.Radius = Convert.ToSingle(kv.Value);
+                        break;
+                    case "distance":
+                        collider.Distance = Convert.ToSingle(kv.Value);
+                        break;
+                    case "offset":
+                        collider.Offset = ParseVector3(kv.Value);
+                        break;
+                    case "planeAxis":
+                        collider.PlaneAxis = ParsePlaneAxis(kv.Value);
+                        break;
+                    case "CapsuleSphere1":
+                        collider.CapsuleSphere1 = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "CapsuleSphere2":
+                        collider.CapsuleSphere2 = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "clipPlane":
+                        collider.ClipPlane = kv.Value;
+                        break;
+                    case "useSkirtBarrier":
+                        collider.UseSkirtBarrier = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "planeRotOn":
+                        collider.PlaneRotationEnabled = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "planeRotEuler":
+                        collider.PlaneRotationEuler = ParseVector3(kv.Value);
+                        break;
+                    case "bridgetgt":
+                        collider.BridgeTargetPath = kv.Value;
+                        break;
+                    default:
+                        Debug.Print("Unknown collider property key/value: {0} / {1}", kv.Key, kv.Value);
+                        setAProp = false;
+                        break;
+                }
+
+                anyPropSet = anyPropSet || setAProp;
+
+                {
+                    ++i;
+                    line = lines[i];
+
+                    if (line.Length == 0 || line[0] != ' ') {
+                        // A new entry (manager/collider/bone) starts.
+                        // Decrease counter so the next reading attempt will work with auto counter increment.
+                        --i;
+                        break;
+                    }
+
+                    kv = ParseKeyValue(line);
+                }
+            } while (true);
+
+            if (!anyPropSet) {
+                throw new ArgumentException("Empty SwayCollider body");
+            }
+
+            return collider;
+        }
+
+        [NotNull]
+        private static SwayBone ReadSwayBone([NotNull, ItemNotNull] string[] lines, [NotNull] string line, ref int i) {
+            var kv = ParseKeyValue(line);
+            var bone = new SwayBone();
+            var anyPropSet = false;
+
+            do {
+                var setAProp = true;
+
+                switch (kv.Key) {
+                    case "SwayBone":
+                        bone.Path = kv.Value;
+                        setAProp = false;
+                        break;
+                    case "radius":
+                        bone.Radius = Convert.ToSingle(kv.Value);
+                        break;
+                    case "type":
+                        bone.Type = ParseColliderType(kv.Value);
+                        break;
+                    case "isSkirt":
+                        bone.IsSkirt = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "HitMuteForce":
+                        bone.HitMuteForce = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "HitMuteRate":
+                        bone.HitMuteRate = Convert.ToSingle(kv.Value);
+                        break;
+                    case "limitAngle":
+                        bone.HasAngleLimit = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "useBindDir":
+                        bone.UseBindingDirection = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "minYAngle":
+                        bone.MinYAngle = Convert.ToSingle(kv.Value);
+                        break;
+                    case "maxYAngle":
+                        bone.MaxYAngle = Convert.ToSingle(kv.Value);
+                        break;
+                    case "minZAngle":
+                        bone.MinZAngle = Convert.ToSingle(kv.Value);
+                        break;
+                    case "maxZAngle":
+                        bone.MaxZAngle = Convert.ToSingle(kv.Value);
+                        break;
+                    case "followForce":
+                        bone.FollowForce = Convert.ToSingle(kv.Value);
+                        break;
+                    case "refParam":
+                        bone.RefParam = ParseRefParam(kv.Value);
+                        break;
+                    case "stiffnessForce":
+                        bone.StiffnessForce = Convert.ToSingle(kv.Value);
+                        break;
+                    case "dragForce":
+                        bone.DragForce = Convert.ToSingle(kv.Value);
+                        break;
+                    case "hitTwice":
+                        bone.HitTwice = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "useLinkHit":
+                        bone.UseLinkHit = Convert.ToBoolean(kv.Value);
+                        break;
+                    case "gravity":
+                        bone.Gravity = ParseVector3(kv.Value);
+                        break;
+                    case "colliderOffset":
+                        bone.ColliderOffset = ParseVector3(kv.Value);
+                        break;
+                    case "sideSpringTorelance": // not my typo
+                        bone.SideSpringTolerance = Convert.ToSingle(kv.Value);
+                        break;
+                    case "sideSpringForce":
+                        bone.SideSpringForce = Convert.ToSingle(kv.Value);
+                        break;
+                    case "sideAntiSpringTorelance": // not my typo
+                        bone.SideAntiSpringTolerance = Convert.ToSingle(kv.Value);
+                        break;
+                    case "sideAntiSpringForce":
+                        bone.SideAntiSpringForce = Convert.ToSingle(kv.Value);
+                        break;
+                    case "antiFoldForceK":
+                        bone.AntiFoldForceK = Convert.ToSingle(kv.Value);
+                        break;
+                    case "antiFoldAngle":
+                        bone.AntiFoldAngle = Convert.ToSingle(kv.Value);
+                        break;
+                    case "colliders": {
+                        var colliderCount = Convert.ToInt32(kv.Value);
+                        var colliderPathList = new List<string>();
+
+                        for (var j = 0; j < colliderCount; ++j) {
+                            ++i;
+                            line = lines[i];
+
+                            kv = ParseKeyValue(line);
+
+                            colliderPathList.Add(kv.Value);
+                        }
+
+                        bone.ColliderPaths = colliderPathList.ToArray();
+                    }
+                        break;
+                    case "sideLink":
+                        bone.SideLinkPath = kv.Value;
+                        break;
+                    default:
+                        Debug.Print("Unknown bone property key/value: {0} / {1}", kv.Key, kv.Value);
+                        setAProp = false;
+                        break;
+                }
+
+                anyPropSet = anyPropSet || setAProp;
+
+                {
+                    ++i;
+                    line = lines[i];
+
+                    if (line.Length == 0 || line[0] != ' ') {
+                        // A new entry (manager/collider/bone) starts.
+                        // Decrease counter so the next reading attempt will work with auto counter increment.
+                        --i;
+                        break;
+                    }
+
+                    kv = ParseKeyValue(line);
+                }
+            } while (true);
+
+            if (!anyPropSet) {
+                throw new ArgumentException("Empty SwayBone body");
+            }
+
+            return bone;
+        }
+
+        private static KeyValuePair<string, string> ParseKeyValue([NotNull] string str) {
             var ss = str.Split(KeyValueSeps, StringSplitOptions.RemoveEmptyEntries);
 
             Debug.Assert(ss.Length == 2);
@@ -511,12 +512,16 @@ namespace Imas.Data.Serialized.Sway {
             }
         }
 
+        [NotNull]
         private static readonly char[] LineSeps = { '\n' };
 
+        [NotNull]
         private static readonly char[] TrimSeps = { '\r' };
 
+        [NotNull]
         private static readonly string[] KeyValueSeps = { ": " };
 
+        [NotNull]
         private static readonly char[] OptKeyStart = { ' ' };
 
         private static readonly char[] ParamSeps = { ',' };

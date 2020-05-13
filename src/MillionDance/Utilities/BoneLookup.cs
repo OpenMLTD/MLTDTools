@@ -14,15 +14,15 @@ using Quaternion = OpenTK.Quaternion;
 using Vector3 = OpenTK.Vector3;
 
 namespace OpenMLTD.MillionDance.Utilities {
-    internal static class BoneUtils {
+    internal sealed class BoneLookup {
 
-        static BoneUtils() {
-            switch (ConversionConfig.Current.SkeletonFormat) {
+        public BoneLookup([NotNull] ConversionConfig conversionConfig) {
+            switch (conversionConfig.SkeletonFormat) {
                 case SkeletonFormat.Mmd:
-                    BonePathMap = BonePathMapMmd;
+                    _bonePathMap = BonePathMapMmd;
                     break;
                 case SkeletonFormat.Mltd:
-                    BonePathMap = BonePathMapMltd;
+                    _bonePathMap = BonePathMapMltd;
                     break;
                 default:
                     throw new NotSupportedException("You must choose a skeleton format.");
@@ -30,7 +30,7 @@ namespace OpenMLTD.MillionDance.Utilities {
 
             var dict = new Dictionary<string, string>();
 
-            foreach (var kv in BonePathMap) {
+            foreach (var kv in _bonePathMap) {
                 string boneName;
 
                 if (kv.Key.Contains("BODY_SCALE/")) {
@@ -42,11 +42,18 @@ namespace OpenMLTD.MillionDance.Utilities {
                 dict.Add(boneName, kv.Value);
             }
 
-            BoneNameMap = dict;
+            _boneNameMap = dict;
+            _conversionConfig = conversionConfig;
+            _scalingConfig = new ScalingConfig(conversionConfig);
         }
 
         [NotNull, ItemNotNull]
-        public static IReadOnlyList<BoneNode> BuildBoneHierarchy([NotNull] PrettyAvatar avatar, bool fixKubi = true) {
+        public IReadOnlyList<BoneNode> BuildBoneHierarchy([NotNull] PrettyAvatar avatar) {
+            return BuildBoneHierarchy(avatar, true);
+        }
+
+        [NotNull, ItemNotNull]
+        public IReadOnlyList<BoneNode> BuildBoneHierarchy([NotNull] PrettyAvatar avatar, bool fixKubi) {
             var boneList = new List<BoneNode>();
             var skeletonNodes = avatar.AvatarSkeleton.Nodes;
 
@@ -65,7 +72,7 @@ namespace OpenMLTD.MillionDance.Utilities {
 
                 var initialPose = avatar.AvatarSkeletonPose.Transforms[boneIndex];
 
-                var t = initialPose.Translation.ToOpenTK() * ScalingConfig.ScaleUnityToPmx;
+                var t = initialPose.Translation.ToOpenTK() * _scalingConfig.ScaleUnityToPmx;
                 var q = initialPose.Rotation.ToOpenTK();
 
                 var bone = new BoneNode(parent, i, bonePath, t, q);
@@ -134,14 +141,14 @@ namespace OpenMLTD.MillionDance.Utilities {
         }
 
         [NotNull, ItemNotNull]
-        public static IReadOnlyList<BoneNode> BuildBoneHierarchy([NotNull] PmxModel pmx) {
+        public IReadOnlyList<BoneNode> BuildBoneHierarchy([NotNull] PmxModel pmx) {
             var boneList = new List<BoneNode>();
 
             for (var i = 0; i < pmx.Bones.Count; i++) {
                 var pmxBone = pmx.Bones[i];
                 var parent = pmxBone.ParentIndex >= 0 ? boneList[pmxBone.ParentIndex] : null;
 
-                var mltdBoneName = BoneNameMap.SingleOrDefault(kv => kv.Value == pmx.Name).Key;
+                var mltdBoneName = _boneNameMap.SingleOrDefault(kv => kv.Value == pmx.Name).Key;
                 var path = mltdBoneName ?? pmxBone.Name;
 
                 Vector3 t;
@@ -186,28 +193,25 @@ namespace OpenMLTD.MillionDance.Utilities {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetPmxBoneName([NotNull] string mltdBoneName) {
-            return GetBoneNameFromDict(BoneNameMap, mltdBoneName);
+        public string GetPmxBoneName([NotNull] string mltdBoneName) {
+            return GetBoneNameFromDict(_boneNameMap, mltdBoneName);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetVmdBoneNameFromBonePath([NotNull] string mltdBonePath) {
-            return GetBoneNameFromDict(BonePathMap, mltdBonePath);
+        public string GetVmdBoneNameFromBonePath([NotNull] string mltdBonePath) {
+            return GetBoneNameFromDict(_bonePathMap, mltdBonePath);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetVmdBoneNameFromBoneName([NotNull] string mltdBoneName) {
-            return GetBoneNameFromDict(BoneNameMap, mltdBoneName);
+        public string GetVmdBoneNameFromBoneName([NotNull] string mltdBoneName) {
+            return GetBoneNameFromDict(_boneNameMap, mltdBoneName);
         }
 
-        public static IReadOnlyDictionary<string, string> BoneNameMap { get; }
-
-        public static IReadOnlyDictionary<string, string> BonePathMap { get; }
-
-        private static string GetBoneNameFromDict([NotNull] IReadOnlyDictionary<string, string> dict, [NotNull] string mltdBoneName) {
+        [NotNull]
+        private string GetBoneNameFromDict([NotNull] IReadOnlyDictionary<string, string> dict, [NotNull] string mltdBoneName) {
             string pmxBoneName;
 
-            if (ConversionConfig.Current.TranslateBoneNamesToMmd) {
+            if (_conversionConfig.TranslateBoneNamesToMmd) {
                 if (dict.ContainsKey(mltdBoneName)) {
                     pmxBoneName = dict[mltdBoneName];
                 } else {
@@ -227,34 +231,6 @@ namespace OpenMLTD.MillionDance.Utilities {
             return pmxBoneName;
         }
 
-        // e.g. "abc/def/ghi",'/' -> "ghi"
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string BreakLast([NotNull] this string str, char ch) {
-            var index = str.LastIndexOf(ch);
-
-            if (index < 0) {
-                return str;
-            }
-
-            if (index == str.Length - 1) {
-                throw new ArgumentException("The string must not end with the breaking character.");
-            }
-
-            return str.Substring(index + 1);
-        }
-
-        // e.g. "abc/def/ghi",'/' -> "ghi"
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string BreakFirst([NotNull] this string str, char ch) {
-            var index = str.LastIndexOf(ch);
-
-            if (index < 0) {
-                return str;
-            }
-
-            return str.Substring(0, index);
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNameGenerated([NotNull] string mltdBoneName) {
             return CompilerGeneratedJointParts.Any(mltdBoneName.Contains);
@@ -264,6 +240,18 @@ namespace OpenMLTD.MillionDance.Utilities {
         public static bool IsBoneMovable([NotNull] string mltdBoneName) {
             return MovableBoneNames.Contains(mltdBoneName);
         }
+
+        [NotNull]
+        private readonly ConversionConfig _conversionConfig;
+
+        [NotNull]
+        private readonly ScalingConfig _scalingConfig;
+
+        [NotNull]
+        private readonly IReadOnlyDictionary<string, string> _boneNameMap;
+
+        [NotNull]
+        private readonly IReadOnlyDictionary<string, string> _bonePathMap;
 
         [NotNull, ItemNotNull]
         private static readonly ISet<string> MovableBoneNames = new HashSet<string> {
@@ -282,6 +270,7 @@ namespace OpenMLTD.MillionDance.Utilities {
             "__slerp"
         };
 
+        [NotNull]
         private static readonly IReadOnlyDictionary<string, string> BonePathMapMltd = new Dictionary<string, string> {
             ["POSITION"] = "操作中心",
             ["POSITION/SCALE_POINT"] = "全ての親",
@@ -343,6 +332,7 @@ namespace OpenMLTD.MillionDance.Utilities {
             ["MODEL_00/BODY_SCALE/BASE/MUNE1/MUNE2/SAKOTSU_R/KATA_R/UDE_R/TE_R/OYA3_R/OYA2_R/OYA1_R"] = "右親指３"
         };
 
+        [NotNull]
         private static readonly IReadOnlyDictionary<string, string> BonePathMapMmd = new Dictionary<string, string> {
             [""] = "操作中心",
             // We can't keep this; they will cause compatibility issues when we manually fix the master and center bones.

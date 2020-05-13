@@ -24,6 +24,8 @@
         /// </summary>
         private void InitializeComponent() {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkGenerateFacialExpression = new System.Windows.Forms.CheckBox();
+            this.chkGenerateLipSync = new System.Windows.Forms.CheckBox();
             this.chkGenerateCameraMotion = new System.Windows.Forms.CheckBox();
             this.chkGenerateCharAnim = new System.Windows.Forms.CheckBox();
             this.chkGenerateModel = new System.Windows.Forms.CheckBox();
@@ -88,6 +90,12 @@
             this.radOptAnimFrameRate60 = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnOutputFacialExpression = new System.Windows.Forms.Button();
+            this.txtOutputFacialExpression = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.btnOutputLipSync = new System.Windows.Forms.Button();
+            this.txtOutputLipSync = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.btnOutputCameraMotion = new System.Windows.Forms.Button();
             this.txtOutputCameraMotion = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -116,22 +124,48 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.chkGenerateFacialExpression);
+            this.groupBox1.Controls.Add(this.chkGenerateLipSync);
             this.groupBox1.Controls.Add(this.chkGenerateCameraMotion);
             this.groupBox1.Controls.Add(this.chkGenerateCharAnim);
             this.groupBox1.Controls.Add(this.chkGenerateModel);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(270, 92);
+            this.groupBox1.Size = new System.Drawing.Size(270, 135);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Tasks";
+            // 
+            // chkGenerateFacialExpression
+            // 
+            this.chkGenerateFacialExpression.AutoSize = true;
+            this.chkGenerateFacialExpression.Checked = true;
+            this.chkGenerateFacialExpression.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkGenerateFacialExpression.Location = new System.Drawing.Point(19, 88);
+            this.chkGenerateFacialExpression.Name = "chkGenerateFacialExpression";
+            this.chkGenerateFacialExpression.Size = new System.Drawing.Size(184, 17);
+            this.chkGenerateFacialExpression.TabIndex = 4;
+            this.chkGenerateFacialExpression.Text = "Generate facial expression (VMD)";
+            this.chkGenerateFacialExpression.UseVisualStyleBackColor = true;
+            // 
+            // chkGenerateLipSync
+            // 
+            this.chkGenerateLipSync.AutoSize = true;
+            this.chkGenerateLipSync.Checked = true;
+            this.chkGenerateLipSync.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkGenerateLipSync.Location = new System.Drawing.Point(19, 65);
+            this.chkGenerateLipSync.Name = "chkGenerateLipSync";
+            this.chkGenerateLipSync.Size = new System.Drawing.Size(141, 17);
+            this.chkGenerateLipSync.TabIndex = 3;
+            this.chkGenerateLipSync.Text = "Generate lip sync (VMD)";
+            this.chkGenerateLipSync.UseVisualStyleBackColor = true;
             // 
             // chkGenerateCameraMotion
             // 
             this.chkGenerateCameraMotion.AutoSize = true;
             this.chkGenerateCameraMotion.Checked = true;
             this.chkGenerateCameraMotion.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkGenerateCameraMotion.Location = new System.Drawing.Point(19, 64);
+            this.chkGenerateCameraMotion.Location = new System.Drawing.Point(19, 111);
             this.chkGenerateCameraMotion.Name = "chkGenerateCameraMotion";
             this.chkGenerateCameraMotion.Size = new System.Drawing.Size(204, 17);
             this.chkGenerateCameraMotion.TabIndex = 2;
@@ -145,9 +179,9 @@
             this.chkGenerateCharAnim.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkGenerateCharAnim.Location = new System.Drawing.Point(19, 42);
             this.chkGenerateCharAnim.Name = "chkGenerateCharAnim";
-            this.chkGenerateCharAnim.Size = new System.Drawing.Size(185, 17);
+            this.chkGenerateCharAnim.Size = new System.Drawing.Size(184, 17);
             this.chkGenerateCharAnim.TabIndex = 2;
-            this.chkGenerateCharAnim.Text = "Generate character motion (VMD)";
+            this.chkGenerateCharAnim.Text = "Generate dance animation (VMD)";
             this.chkGenerateCharAnim.UseVisualStyleBackColor = true;
             // 
             // chkGenerateModel
@@ -179,7 +213,7 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(12, 110);
+            this.groupBox2.Location = new System.Drawing.Point(12, 153);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(270, 167);
             this.groupBox2.TabIndex = 1;
@@ -535,6 +569,7 @@
             // radOptMotionSourceMmd
             // 
             this.radOptMotionSourceMmd.AutoSize = true;
+            this.radOptMotionSourceMmd.Enabled = false;
             this.radOptMotionSourceMmd.Location = new System.Drawing.Point(86, 3);
             this.radOptMotionSourceMmd.Name = "radOptMotionSourceMmd";
             this.radOptMotionSourceMmd.Size = new System.Drawing.Size(119, 17);
@@ -659,7 +694,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Enabled = false;
-            this.label17.Location = new System.Drawing.Point(170, 90);
+            this.label17.Location = new System.Drawing.Point(194, 90);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(69, 13);
             this.label17.TabIndex = 10;
@@ -693,7 +728,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Enabled = false;
-            this.label12.Location = new System.Drawing.Point(141, 90);
+            this.label12.Location = new System.Drawing.Point(165, 90);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(25, 13);
             this.label12.TabIndex = 7;
@@ -702,7 +737,7 @@
             // txtOptFixedFov
             // 
             this.txtOptFixedFov.Enabled = false;
-            this.txtOptFixedFov.Location = new System.Drawing.Point(78, 87);
+            this.txtOptFixedFov.Location = new System.Drawing.Point(102, 87);
             this.txtOptFixedFov.Name = "txtOptFixedFov";
             this.txtOptFixedFov.Size = new System.Drawing.Size(60, 20);
             this.txtOptFixedFov.TabIndex = 6;
@@ -812,6 +847,12 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.btnOutputFacialExpression);
+            this.groupBox3.Controls.Add(this.txtOutputFacialExpression);
+            this.groupBox3.Controls.Add(this.label21);
+            this.groupBox3.Controls.Add(this.btnOutputLipSync);
+            this.groupBox3.Controls.Add(this.txtOutputLipSync);
+            this.groupBox3.Controls.Add(this.label20);
             this.groupBox3.Controls.Add(this.btnOutputCameraMotion);
             this.groupBox3.Controls.Add(this.txtOutputCameraMotion);
             this.groupBox3.Controls.Add(this.label9);
@@ -821,16 +862,66 @@
             this.groupBox3.Controls.Add(this.btnOutputModel);
             this.groupBox3.Controls.Add(this.txtOutputModel);
             this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Location = new System.Drawing.Point(12, 283);
+            this.groupBox3.Location = new System.Drawing.Point(12, 326);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(270, 138);
+            this.groupBox3.Size = new System.Drawing.Size(270, 157);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Output Files";
             // 
+            // btnOutputFacialExpression
+            // 
+            this.btnOutputFacialExpression.Location = new System.Drawing.Point(222, 98);
+            this.btnOutputFacialExpression.Name = "btnOutputFacialExpression";
+            this.btnOutputFacialExpression.Size = new System.Drawing.Size(32, 21);
+            this.btnOutputFacialExpression.TabIndex = 20;
+            this.btnOutputFacialExpression.Text = "...";
+            this.btnOutputFacialExpression.UseVisualStyleBackColor = true;
+            // 
+            // txtOutputFacialExpression
+            // 
+            this.txtOutputFacialExpression.Location = new System.Drawing.Point(70, 99);
+            this.txtOutputFacialExpression.Name = "txtOutputFacialExpression";
+            this.txtOutputFacialExpression.Size = new System.Drawing.Size(146, 20);
+            this.txtOutputFacialExpression.TabIndex = 19;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(17, 102);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(38, 13);
+            this.label21.TabIndex = 18;
+            this.label21.Text = "Facial:";
+            // 
+            // btnOutputLipSync
+            // 
+            this.btnOutputLipSync.Location = new System.Drawing.Point(222, 72);
+            this.btnOutputLipSync.Name = "btnOutputLipSync";
+            this.btnOutputLipSync.Size = new System.Drawing.Size(32, 21);
+            this.btnOutputLipSync.TabIndex = 17;
+            this.btnOutputLipSync.Text = "...";
+            this.btnOutputLipSync.UseVisualStyleBackColor = true;
+            // 
+            // txtOutputLipSync
+            // 
+            this.txtOutputLipSync.Location = new System.Drawing.Point(70, 73);
+            this.txtOutputLipSync.Name = "txtOutputLipSync";
+            this.txtOutputLipSync.Size = new System.Drawing.Size(146, 20);
+            this.txtOutputLipSync.TabIndex = 16;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(17, 76);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(49, 13);
+            this.label20.TabIndex = 15;
+            this.label20.Text = "Lip sync:";
+            // 
             // btnOutputCameraMotion
             // 
-            this.btnOutputCameraMotion.Location = new System.Drawing.Point(222, 98);
+            this.btnOutputCameraMotion.Location = new System.Drawing.Point(222, 124);
             this.btnOutputCameraMotion.Name = "btnOutputCameraMotion";
             this.btnOutputCameraMotion.Size = new System.Drawing.Size(32, 21);
             this.btnOutputCameraMotion.TabIndex = 14;
@@ -839,23 +930,23 @@
             // 
             // txtOutputCameraMotion
             // 
-            this.txtOutputCameraMotion.Location = new System.Drawing.Point(19, 99);
+            this.txtOutputCameraMotion.Location = new System.Drawing.Point(70, 125);
             this.txtOutputCameraMotion.Name = "txtOutputCameraMotion";
-            this.txtOutputCameraMotion.Size = new System.Drawing.Size(197, 20);
+            this.txtOutputCameraMotion.Size = new System.Drawing.Size(146, 20);
             this.txtOutputCameraMotion.TabIndex = 13;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(17, 84);
+            this.label9.Location = new System.Drawing.Point(17, 128);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(80, 13);
+            this.label9.Size = new System.Drawing.Size(46, 13);
             this.label9.TabIndex = 12;
-            this.label9.Text = "Camera motion:";
+            this.label9.Text = "Camera:";
             // 
             // btnOutputCharAnim
             // 
-            this.btnOutputCharAnim.Location = new System.Drawing.Point(222, 59);
+            this.btnOutputCharAnim.Location = new System.Drawing.Point(222, 46);
             this.btnOutputCharAnim.Name = "btnOutputCharAnim";
             this.btnOutputCharAnim.Size = new System.Drawing.Size(32, 21);
             this.btnOutputCharAnim.TabIndex = 11;
@@ -864,19 +955,19 @@
             // 
             // txtOutputCharAnim
             // 
-            this.txtOutputCharAnim.Location = new System.Drawing.Point(19, 60);
+            this.txtOutputCharAnim.Location = new System.Drawing.Point(70, 47);
             this.txtOutputCharAnim.Name = "txtOutputCharAnim";
-            this.txtOutputCharAnim.Size = new System.Drawing.Size(197, 20);
+            this.txtOutputCharAnim.Size = new System.Drawing.Size(146, 20);
             this.txtOutputCharAnim.TabIndex = 10;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(17, 45);
+            this.label8.Location = new System.Drawing.Point(17, 50);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(90, 13);
+            this.label8.Size = new System.Drawing.Size(42, 13);
             this.label8.TabIndex = 9;
-            this.label8.Text = "Character motion:";
+            this.label8.Text = "Dance:";
             // 
             // btnOutputModel
             // 
@@ -905,26 +996,26 @@
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(288, 317);
+            this.txtLog.Location = new System.Drawing.Point(288, 321);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(331, 104);
+            this.txtLog.Size = new System.Drawing.Size(331, 162);
             this.txtLog.TabIndex = 4;
             // 
             // btnGo
             // 
-            this.btnGo.Location = new System.Drawing.Point(625, 373);
+            this.btnGo.Location = new System.Drawing.Point(625, 435);
             this.btnGo.Name = "btnGo";
-            this.btnGo.Size = new System.Drawing.Size(80, 48);
+            this.btnGo.Size = new System.Drawing.Size(76, 48);
             this.btnGo.TabIndex = 5;
             this.btnGo.Text = "&Go";
             this.btnGo.UseVisualStyleBackColor = true;
             // 
             // btnClearLog
             // 
-            this.btnClearLog.Location = new System.Drawing.Point(625, 317);
+            this.btnClearLog.Location = new System.Drawing.Point(625, 321);
             this.btnClearLog.Name = "btnClearLog";
             this.btnClearLog.Size = new System.Drawing.Size(76, 27);
             this.btnClearLog.TabIndex = 6;
@@ -935,7 +1026,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(715, 433);
+            this.ClientSize = new System.Drawing.Size(710, 491);
             this.Controls.Add(this.btnClearLog);
             this.Controls.Add(this.btnGo);
             this.Controls.Add(this.txtLog);
@@ -1126,5 +1217,13 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.ComboBox cboGameToonNumber;
         private System.Windows.Forms.CheckBox chkGameToon;
+        private System.Windows.Forms.CheckBox chkGenerateFacialExpression;
+        private System.Windows.Forms.CheckBox chkGenerateLipSync;
+        private System.Windows.Forms.Button btnOutputFacialExpression;
+        private System.Windows.Forms.TextBox txtOutputFacialExpression;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Button btnOutputLipSync;
+        private System.Windows.Forms.TextBox txtOutputLipSync;
+        private System.Windows.Forms.Label label20;
     }
 }

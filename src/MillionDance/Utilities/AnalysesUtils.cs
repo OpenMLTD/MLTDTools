@@ -6,6 +6,7 @@ using System.Text;
 using AssetStudio;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Internal;
+using OpenMLTD.MillionDance.Extensions;
 
 namespace OpenMLTD.MillionDance.Utilities {
     internal static class AnalysesUtils {

@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace OpenMLTD.MillionDance.Entities.Vmd {
     public sealed class VmdMotion {
 
-        internal VmdMotion([NotNull] string modelName, [NotNull, ItemNotNull] IReadOnlyList<VmdBoneFrame> boneFrames,
-            [NotNull, ItemNotNull] IReadOnlyList<VmdFacialFrame> facialFrames, [NotNull, ItemNotNull] IReadOnlyList<VmdCameraFrame> cameraFrames,
-            [NotNull, ItemNotNull] IReadOnlyList<VmdLightFrame> lightFrames, [CanBeNull, ItemNotNull] IReadOnlyList<VmdIkFrame> ikFrames) {
+        internal VmdMotion([NotNull] string modelName, [CanBeNull, ItemNotNull] IReadOnlyList<VmdBoneFrame> boneFrames,
+            [CanBeNull, ItemNotNull] IReadOnlyList<VmdFacialFrame> facialFrames, [CanBeNull, ItemNotNull] IReadOnlyList<VmdCameraFrame> cameraFrames,
+            [CanBeNull, ItemNotNull] IReadOnlyList<VmdLightFrame> lightFrames, [CanBeNull, ItemNotNull] IReadOnlyList<VmdIkFrame> ikFrames) {
             ModelName = modelName;
-            BoneFrames = boneFrames;
-            FacialFrames = facialFrames;
-            CameraFrames = cameraFrames;
-            LightFrames = lightFrames;
+            BoneFrames = boneFrames ?? Array.Empty<VmdBoneFrame>();
+            FacialFrames = facialFrames ?? Array.Empty<VmdFacialFrame>();
+            CameraFrames = cameraFrames ?? Array.Empty<VmdCameraFrame>();
+            LightFrames = lightFrames ?? Array.Empty<VmdLightFrame>();
             IkFrames = ikFrames;
         }
 

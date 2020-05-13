@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Extensions;
 using OpenMLTD.MillionDance.Entities.Pmx;
+using OpenMLTD.MillionDance.Utilities;
 using OpenMLTD.MLTDTools.Applications.TDFacial.Entities;
 
 namespace OpenMLTD.MillionDance {
@@ -70,13 +71,14 @@ namespace OpenMLTD.MillionDance {
             try {
                 var p = (InputParams)state;
 
-                ConversionConfig.Current = PrepareConversionConfig(p);
+                var conversionConfig = PrepareConversionConfig(p);
+                var scalingConfig = new ScalingConfig(conversionConfig);
 
                 if (p.IdolHeight <= 0) {
                     throw new ArgumentOutOfRangeException(nameof(p.IdolHeight), "Invalid idol height.");
                 }
 
-                ScalingConfig.CharacterHeight = p.IdolHeight;
+                scalingConfig.CharacterHeight = p.IdolHeight;
 
                 do {
                     CompositeAvatar combinedAvatar;
@@ -134,7 +136,6 @@ namespace OpenMLTD.MillionDance {
                     }
 
                     IBodyAnimationSource dance;
-                    ScenarioObject baseScenario, facialExpr;
 
                     if (p.GenerateCharacterMotion) {
                         Log("Loading dance motion...");
@@ -143,7 +144,13 @@ namespace OpenMLTD.MillionDance {
                             Log("Failed to load dance data. Please check whether you selected a dance data file and chose corresponding idol position.");
                             break;
                         }
+                    } else {
+                        dance = null;
+                    }
 
+                    ScenarioObject lipSync, facialExpr;
+
+                    if (p.GenerateLipSync || p.GenerateFacialExpressions) {
                         Log("Loading lip sync and facial expression...");
                         var (main, yoko, tate) = ResourceLoader.LoadScenario(p.InputFacialExpression);
                         if (main == null) {
@@ -151,59 +158,66 @@ namespace OpenMLTD.MillionDance {
                             break;
                         }
 
-                        baseScenario = main;
-
-                        if (main.HasFacialExpressionFrames()) {
-                            facialExpr = main;
+                        if (p.GenerateLipSync) {
+                            lipSync = main;
                         } else {
-                            Log("Main scenario object does not contain facial expressions. Trying with landscape and portrait.");
+                            lipSync = null;
+                        }
 
-                            if (yoko == null || tate == null) {
-                                Log("Failed to load either landscape or portrait.");
-                                break;
-                            }
+                        if (p.GenerateFacialExpressions) {
+                            if (main.HasFacialExpressionFrames()) {
+                                facialExpr = main;
+                            } else {
+                                Log("Main scenario object does not contain facial expressions. Trying with landscape and portrait.");
 
-                            var foundFacialExpr = true;
-
-                            switch (p.PreferredFacialExpressionSource) {
-                                case InputParams.FallbackFacialExpressionSource.Landscape: {
-                                    if (yoko.HasFacialExpressionFrames()) {
-                                        facialExpr = yoko;
-                                    } else if (tate.HasFacialExpressionFrames()) {
-                                        Log("Facial expressions are not found in landscape, but found in portrait. Use portrait instead.");
-                                        facialExpr = tate;
-                                    } else {
-                                        Log("No scenario object contains facial expressions.");
-                                        facialExpr = null;
-                                        foundFacialExpr = false;
-                                    }
-
+                                if (yoko == null || tate == null) {
+                                    Log("Failed to load either landscape or portrait.");
                                     break;
                                 }
-                                case InputParams.FallbackFacialExpressionSource.Portrait:
-                                    if (yoko.HasFacialExpressionFrames()) {
-                                        facialExpr = yoko;
-                                    } else if (tate.HasFacialExpressionFrames()) {
-                                        Log("Facial expressions are not found in portrait, but found in landscape. Use landscape instead.");
-                                        facialExpr = tate;
-                                    } else {
-                                        Log("No scenario object contains facial expressions.");
-                                        facialExpr = null;
-                                        foundFacialExpr = false;
+
+                                var foundFacialExpr = true;
+
+                                switch (p.PreferredFacialExpressionSource) {
+                                    case InputParams.FallbackFacialExpressionSource.Landscape: {
+                                        if (yoko.HasFacialExpressionFrames()) {
+                                            facialExpr = yoko;
+                                        } else if (tate.HasFacialExpressionFrames()) {
+                                            Log("Facial expressions are not found in landscape, but found in portrait. Use portrait instead.");
+                                            facialExpr = tate;
+                                        } else {
+                                            Log("No scenario object contains facial expressions.");
+                                            facialExpr = null;
+                                            foundFacialExpr = false;
+                                        }
+
+                                        break;
                                     }
+                                    case InputParams.FallbackFacialExpressionSource.Portrait:
+                                        if (yoko.HasFacialExpressionFrames()) {
+                                            facialExpr = yoko;
+                                        } else if (tate.HasFacialExpressionFrames()) {
+                                            Log("Facial expressions are not found in portrait, but found in landscape. Use landscape instead.");
+                                            facialExpr = tate;
+                                        } else {
+                                            Log("No scenario object contains facial expressions.");
+                                            facialExpr = null;
+                                            foundFacialExpr = false;
+                                        }
 
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException(nameof(p.PreferredFacialExpressionSource), p.PreferredFacialExpressionSource, "Invalid facial expression source.");
+                                }
+
+                                if (!foundFacialExpr) {
                                     break;
-                                default:
-                                    throw new ArgumentOutOfRangeException(nameof(p.PreferredFacialExpressionSource), p.PreferredFacialExpressionSource, "Invalid facial expression source.");
+                                }
                             }
-
-                            if (!foundFacialExpr) {
-                                break;
-                            }
+                        } else {
+                            facialExpr = null;
                         }
                     } else {
-                        dance = null;
-                        baseScenario = null;
+                        lipSync = null;
                         facialExpr = null;
                     }
 
@@ -243,10 +257,12 @@ namespace OpenMLTD.MillionDance {
                             Debug.Assert(combinedAvatar != null);
                             Debug.Assert(combinedMesh != null);
 
-                            var pmxCreator = new PmxCreator();
+                            var boneLookup = new BoneLookup(conversionConfig);
+
+                            var pmxCreator = new PmxCreator(conversionConfig, scalingConfig, boneLookup);
                             var pmxConversionDetails = new PmxCreator.ConversionDetails(texPrefix, p.GameStyledToon, p.ToonNumber);
 
-                            pmx = pmxCreator.CreateFrom(combinedAvatar, combinedMesh, bodyMeshVertexCount, bodySway, headSway, pmxConversionDetails, out materialList);
+                            pmx = pmxCreator.CreateModel(combinedAvatar, combinedMesh, bodyMeshVertexCount, bodySway, headSway, pmxConversionDetails, out materialList);
                         } else {
                             pmx = null;
                             texPrefix = null;
@@ -296,14 +312,14 @@ namespace OpenMLTD.MillionDance {
                         if (p.GenerateCharacterMotion) {
                             Log("Generating character motion...");
 
-                            var creator = new VmdCreator {
+                            var creator = new VmdCreator(conversionConfig, scalingConfig) {
                                 ProcessBoneFrames = true,
                                 ProcessCameraFrames = false,
-                                ProcessFacialFrames = true,
+                                ProcessFacialFrames = false,
                                 ProcessLightFrames = false
                             };
 
-                            var danceVmd = creator.CreateFrom(dance, combinedAvatar, pmx, null, baseScenario, facialExpr, p.SongPosition);
+                            var danceVmd = creator.CreateCharacterAnimation(dance, combinedAvatar, pmx);
 
                             Log("Saving character motion...");
 
@@ -312,18 +328,56 @@ namespace OpenMLTD.MillionDance {
                             }
                         }
 
+                        if (p.GenerateLipSync) {
+                            Log("Generating lip sync...");
+
+                            var creator = new VmdCreator(conversionConfig, scalingConfig) {
+                                ProcessBoneFrames = false,
+                                ProcessCameraFrames = false,
+                                ProcessFacialFrames = true,
+                                ProcessLightFrames = false
+                            };
+
+                            var lipVmd = creator.CreateLipSync(lipSync, p.SongPosition);
+
+                            Log("Saving lip sync...");
+
+                            using (var w = new VmdWriter(File.Open(p.OutputLipSync, FileMode.Create, FileAccess.Write, FileShare.Write))) {
+                                w.Write(lipVmd);
+                            }
+                        }
+
+                        if (p.GenerateFacialExpressions) {
+                            Log("Generating facial expressions...");
+
+                            var creator = new VmdCreator(conversionConfig, scalingConfig) {
+                                ProcessBoneFrames = false,
+                                ProcessCameraFrames = false,
+                                ProcessFacialFrames = true,
+                                ProcessLightFrames = false
+                            };
+
+                            var lipVmd = creator.CreateFacialExpressions(facialExpr, p.SongPosition);
+
+                            Log("Saving facial expressions...");
+
+                            using (var w = new VmdWriter(File.Open(p.OutputFacialExpressions, FileMode.Create, FileAccess.Write, FileShare.Write))) {
+                                w.Write(lipVmd);
+                            }
+                        }
+
                         if (p.GenerateCameraMotion) {
                             Log("Generating camera motion...");
 
-                            if (p.UseMvd) {
-                                var creator = new MvdCreator {
+                            if (p.UseMvdForCamera) {
+                                var creator = new MvdCreator(conversionConfig, scalingConfig) {
                                     ProcessBoneFrames = false,
                                     ProcessCameraFrames = true,
                                     ProcessFacialFrames = false,
-                                    ProcessLightFrames = false
+                                    ProcessLightFrames = false,
                                 };
 
-                                var motion = creator.CreateFrom(null, null, null, camera, null, null, p.SongPosition);
+                                var motion = creator.CreateCameraMotion(camera);
 
                                 Log("Writing camera motion...");
 
@@ -331,14 +385,16 @@ namespace OpenMLTD.MillionDance {
                                     w.Write(motion);
                                 }
                             } else {
-                                var creator = new VmdCreator {
+                                var creator = new VmdCreator(conversionConfig, scalingConfig) {
                                     ProcessBoneFrames = false,
                                     ProcessCameraFrames = true,
                                     ProcessFacialFrames = false,
-                                    ProcessLightFrames = false
+                                    ProcessLightFrames = false,
                                 };
 
-                                var motion = creator.CreateFrom(null, null, null, camera, null, null, p.SongPosition);
+                                creator.FixedFov = p.FixedFov;
+
+                                var motion = creator.CreateCameraMotion(camera);
 
                                 Log("Writing camera motion...");
 
@@ -361,82 +417,6 @@ namespace OpenMLTD.MillionDance {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Invoke([NotNull] Action action) {
             Invoke((Delegate)action);
-        }
-
-        private sealed class InputParams {
-
-            public bool GenerateModel { get; set; }
-
-            public bool GenerateCharacterMotion { get; set; }
-
-            public bool GenerateCameraMotion { get; set; }
-
-            public string InputHead { get; set; }
-
-            public string InputBody { get; set; }
-
-            public string InputDance { get; set; }
-
-            public string InputFacialExpression { get; set; }
-
-            public string InputCamera { get; set; }
-
-            public string OutputModel { get; set; }
-
-            public string OutputCharacterAnimation { get; set; }
-
-            public string OutputCamera { get; set; }
-
-            public MotionFormat MotionSource { get; set; }
-
-            public bool ScalePmx { get; set; }
-
-            public bool ConsiderIdolHeight { get; set; }
-
-            public float IdolHeight { get; set; }
-
-            public bool TranslateBoneNames { get; set; }
-
-            public bool AppendLegIkBones { get; set; }
-
-            public bool FixCenterBones { get; set; }
-
-            public bool ConvertBindingPose { get; set; }
-
-            public bool AppendEyeBones { get; set; }
-
-            public bool HideUnityGeneratedBones { get; set; }
-
-            public bool TranslateFacialExpressionNames { get; set; }
-
-            public bool ImportPhysics { get; set; }
-
-            public bool GameStyledToon { get; set; }
-
-            public int ToonNumber { get; set; }
-
-            public bool TransformTo30Fps { get; set; }
-
-            public bool ScaleVmd { get; set; }
-
-            public bool UseMvd { get; set; }
-
-            public uint FixedFov { get; set; }
-
-            public int SongPosition { get; set; }
-
-            public string FacialExpressionMappingFilePath { get; set; }
-
-            public FallbackFacialExpressionSource PreferredFacialExpressionSource { get; set; }
-
-            public enum FallbackFacialExpressionSource {
-
-                Landscape = 0,
-
-                Portrait = 1,
-
-            }
-
         }
 
     }

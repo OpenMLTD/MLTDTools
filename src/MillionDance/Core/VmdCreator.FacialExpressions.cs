@@ -10,8 +10,34 @@ using OpenMLTD.MillionDance.Utilities;
 namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
+        [NotNull]
+        public VmdMotion CreateLipSync([CanBeNull] ScenarioObject baseScenario, int songPosition) {
+            IReadOnlyList<VmdFacialFrame> frames;
+
+            if (ProcessFacialFrames && baseScenario != null) {
+                frames = CreateLipSyncFrames(baseScenario, songPosition);
+            } else {
+                frames = null;
+            }
+
+            return new VmdMotion(ModelName, null, frames, null, null, null);
+        }
+
+        [NotNull]
+        public VmdMotion CreateFacialExpressions([CanBeNull] ScenarioObject facialExpr, int songPosition) {
+            IReadOnlyList<VmdFacialFrame> frames;
+
+            if (ProcessFacialFrames && facialExpr != null) {
+                frames = CreateFacialExpressionFrames(facialExpr, songPosition);
+            } else {
+                frames = null;
+            }
+
+            return new VmdMotion(ModelName, null, frames, null, null, null);
+        }
+
         [NotNull, ItemNotNull]
-        private static List<VmdFacialFrame> CreateLipSyncFrames([NotNull] ScenarioObject lipSync, int idolPosition) {
+        private List<VmdFacialFrame> CreateLipSyncFrames([NotNull] ScenarioObject lipSync, int idolPosition) {
             var frameList = new List<VmdFacialFrame>();
 
             var lipSyncControls = lipSync.Scenario.Where(s => s.Type == ScenarioDataType.LipSync).ToArray();
@@ -117,14 +143,14 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static List<VmdFacialFrame> CreateFacialExpressionFrames([NotNull] ScenarioObject facialExpr, int idolPosition) {
+        private List<VmdFacialFrame> CreateFacialExpressionFrames([NotNull] ScenarioObject facialExpr, int idolPosition) {
             var frameList = new List<VmdFacialFrame>();
 
             var expControls = facialExpr.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == idolPosition - 1).ToArray();
 
             Debug.Assert(expControls.Length > 0, "Expression controls should exist.");
 
-            var mappings = ConversionConfig.Current.FacialExpressionMappings;
+            var mappings = _conversionConfig.FacialExpressionMappings;
 
             // Note that here we don't process blinks (which happens in MLTD)
             for (var i = 0; i < expControls.Length; i++) {
@@ -235,11 +261,11 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull]
-        private static VmdFacialFrame CreateFacialFrame(float time, string mltdTruncMorphName, float value) {
+        private VmdFacialFrame CreateFacialFrame(float time, string mltdTruncMorphName, float value) {
             var n = (int)(time * FrameRate.Mltd);
             int frameIndex;
 
-            if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+            if (_conversionConfig.Transform60FpsTo30Fps) {
                 frameIndex = n / 2;
             } else {
                 frameIndex = n;
@@ -247,7 +273,7 @@ namespace OpenMLTD.MillionDance.Core {
 
             string expressionName;
 
-            if (ConversionConfig.Current.TranslateFacialExpressionNamesToMmd) {
+            if (_conversionConfig.TranslateFacialExpressionNamesToMmd) {
                 expressionName = MorphUtils.LookupMorphName(mltdTruncMorphName);
             } else {
                 expressionName = mltdTruncMorphName;

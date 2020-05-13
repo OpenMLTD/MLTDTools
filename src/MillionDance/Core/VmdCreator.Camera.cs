@@ -10,15 +10,28 @@ using OpenTK;
 namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
+        [NotNull]
+        public VmdMotion CreateCameraMotion([CanBeNull] CharacterImasMotionAsset cameraMotion) {
+            IReadOnlyList<VmdCameraFrame> frames;
+
+            if (ProcessCameraFrames && cameraMotion != null) {
+                frames = CreateCameraFrames(cameraMotion, FixedFov);
+            } else {
+                frames = null;
+            }
+
+            return new VmdMotion(ModelName, null, null, frames, null, null);
+        }
+
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<VmdCameraFrame> CreateCameraFrames([NotNull] CharacterImasMotionAsset cameraMotion, uint fixedFov) {
+        private IReadOnlyList<VmdCameraFrame> CreateCameraFrames([NotNull] CharacterImasMotionAsset cameraMotion, uint fixedFov) {
             var animation = CameraAnimation.CreateFrom(cameraMotion);
             var animationFrameCount = animation.CameraFrames.Count;
 
             var cameraFrameList = new List<VmdCameraFrame>();
 
             for (var i = 0; i < animationFrameCount; ++i) {
-                if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                if (_conversionConfig.Transform60FpsTo30Fps) {
                     if (i % 2 == 1) {
                         continue;
                     }
@@ -26,7 +39,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                 int frameIndex;
 
-                if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                if (_conversionConfig.Transform60FpsTo30Fps) {
                     frameIndex = i / 2;
                 } else {
                     frameIndex = i;
@@ -39,8 +52,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                 pos = pos.FixUnityToOpenTK();
 
-                if (ConversionConfig.Current.ScaleToVmdSize) {
-                    pos = pos * ScalingConfig.ScaleUnityToVmd;
+                if (_conversionConfig.ScaleToVmdSize) {
+                    pos = pos * _scalingConfig.ScaleUnityToVmd;
                 }
 
                 vmdFrame.Position = pos;
@@ -49,8 +62,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                 target = target.FixUnityToOpenTK();
 
-                if (ConversionConfig.Current.ScaleToVmdSize) {
-                    target = target * ScalingConfig.ScaleUnityToVmd;
+                if (_conversionConfig.ScaleToVmdSize) {
+                    target = target * _scalingConfig.ScaleUnityToVmd;
                 }
 
                 var delta = target - pos;

@@ -15,11 +15,13 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<VmdBoneFrame> CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx) {
-            var mltdHierarchy = BoneUtils.BuildBoneHierarchy(avatar);
-            var pmxHierarchy = BoneUtils.BuildBoneHierarchy(pmx);
+        private IReadOnlyList<VmdBoneFrame> CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx) {
+            var boneLookup = new BoneLookup(_conversionConfig);
 
-            if (ConversionConfig.Current.AppendIKBones || ConversionConfig.Current.AppendEyeBones) {
+            var mltdHierarchy = boneLookup.BuildBoneHierarchy(avatar);
+            var pmxHierarchy = boneLookup.BuildBoneHierarchy(pmx);
+
+            if (_conversionConfig.AppendIKBones || _conversionConfig.AppendEyeBones) {
                 throw new NotSupportedException("Character motion frames generation (from MLTD) is not supported when appending bones (eyes and/or IK) is enabled.");
             } else {
                 Debug.Assert(mltdHierarchy.Count == pmxHierarchy.Count, "Hierarchy number should be equal between MLTD and MMD.");
@@ -51,7 +53,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                 var names1 = animation.KeyFrames.Take(animatedBoneCount)
                     .Select(kf => kf.Path).ToArray();
-                var names = names1.Select(BoneUtils.GetVmdBoneNameFromBonePath).ToArray();
+                var names = names1.Select(boneLookup.GetVmdBoneNameFromBonePath).ToArray();
                 // Mark MLTD key bones.
                 foreach (var name in names) {
                     MarkNamedBone(name);
@@ -77,7 +79,7 @@ namespace OpenMLTD.MillionDance.Core {
 
             // OK, now perform iterations
             for (var i = 0; i < iterationTimes; ++i) {
-                if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                if (_conversionConfig.Transform60FpsTo30Fps) {
                     if (i % 2 == 1) {
                         continue;
                     }
@@ -118,8 +120,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                         t = t.FixUnityToOpenTK();
 
-                        if (ConversionConfig.Current.ScaleToVmdSize) {
-                            t = t * ScalingConfig.ScaleUnityToPmx;
+                        if (_conversionConfig.ScaleToVmdSize) {
+                            t = t * _scalingConfig.ScaleUnityToPmx;
                         }
 
                         targetBone.LocalPosition = t;
@@ -187,13 +189,13 @@ namespace OpenMLTD.MillionDance.Core {
 
                     int frameIndex;
 
-                    if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                    if (_conversionConfig.Transform60FpsTo30Fps) {
                         frameIndex = i / 2;
                     } else {
                         frameIndex = i;
                     }
 
-                    var vmdBoneName = BoneUtils.GetVmdBoneNameFromBoneName(mltdBone.Path);
+                    var vmdBoneName = boneLookup.GetVmdBoneNameFromBoneName(mltdBone.Path);
                     var boneFrame = new VmdBoneFrame(frameIndex, vmdBoneName);
 
                     boneFrame.Position = t;

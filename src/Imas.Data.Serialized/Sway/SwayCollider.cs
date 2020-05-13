@@ -23,6 +23,11 @@ namespace Imas.Data.Serialized.Sway {
 
         public bool CapsuleSphere2 { get; internal set; }
 
+        // This should be an enum, but only one value ("All") is observed
+        public string ClipPlane { get; internal set; }
+
+        public bool UseSkirtBarrier { get; internal set; }
+
         public bool PlaneRotationEnabled { get; internal set; }
 
         /// <summary>

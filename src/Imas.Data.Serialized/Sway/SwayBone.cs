@@ -63,6 +63,14 @@ namespace Imas.Data.Serialized.Sway {
 
         public float SideSpringForce { get; internal set; }
 
+        public float SideAntiSpringTolerance { get; internal set; }
+
+        public float SideAntiSpringForce { get; internal set; }
+
+        public float AntiFoldForceK { get; internal set; }
+
+        public float AntiFoldAngle { get; internal set; }
+
         [NotNull, ItemNotNull]
         public SwayCollider[] Colliders { get; internal set; }
 

@@ -1,8 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using JetBrains.Annotations;
 
 namespace OpenMLTD.MillionDance.Core {
     internal sealed class ConversionConfig {
+
+        static ConversionConfig() {
+            EmptyDictionary = new ReadOnlyDictionary<int, IReadOnlyDictionary<string, float>>(new Dictionary<int, IReadOnlyDictionary<string, float>>());
+        }
+
+        internal ConversionConfig() {
+            FacialExpressionMappings = EmptyDictionary;
+        }
 
         public MotionFormat MotionFormat { get; internal set; }
 
@@ -14,6 +23,7 @@ namespace OpenMLTD.MillionDance.Core {
 
         public bool TranslateBoneNamesToMmd { get; internal set; }
 
+        // ReSharper disable once InconsistentNaming
         public bool AppendIKBones { get; internal set; }
 
         public bool FixMmdCenterBones { get; internal set; }
@@ -40,6 +50,48 @@ namespace OpenMLTD.MillionDance.Core {
         public IReadOnlyDictionary<int, IReadOnlyDictionary<string, float>> FacialExpressionMappings { get; internal set; }
 
         [NotNull]
+        public static ConversionConfig GetMltdTemplate() {
+            return new ConversionConfig {
+                MotionFormat = MotionFormat.Mltd,
+                ScaleToPmxSize = true,
+                ApplyPmxCharacterHeight = true,
+                TranslateBoneNamesToMmd = true,
+                AppendIKBones = false,
+                FixMmdCenterBones = false,
+                FixTdaBindingPose = false,
+                AppendEyeBones = false,
+                HideUnityGeneratedBones = true,
+                SkeletonFormat = SkeletonFormat.Mltd,
+                TranslateFacialExpressionNamesToMmd = true,
+                ImportPhysics = true,
+                Transform60FpsTo30Fps = false,
+                ScaleToVmdSize = true,
+                FacialExpressionMappings = ConvertDictionary(VmdCreator.DefaultFacialExpressionTable)
+            };
+        }
+
+        [NotNull]
+        public static ConversionConfig GetMmdTemplate() {
+            return new ConversionConfig {
+                MotionFormat = MotionFormat.Mmd,
+                ScaleToPmxSize = true,
+                ApplyPmxCharacterHeight = true,
+                TranslateBoneNamesToMmd = true,
+                AppendIKBones = true,
+                FixMmdCenterBones = true,
+                FixTdaBindingPose = true,
+                AppendEyeBones = true,
+                HideUnityGeneratedBones = true,
+                SkeletonFormat = SkeletonFormat.Mmd,
+                TranslateFacialExpressionNamesToMmd = true,
+                ImportPhysics = true,
+                Transform60FpsTo30Fps = true,
+                ScaleToVmdSize = true,
+                FacialExpressionMappings = ConvertDictionary(VmdCreator.DefaultFacialExpressionTable)
+            };
+        }
+
+        [NotNull]
         private static IReadOnlyDictionary<int, IReadOnlyDictionary<string, float>> ConvertDictionary([NotNull] IReadOnlyDictionary<VmdCreator.FacialExpressionKind, IReadOnlyDictionary<string, float>> dict) {
             var d = new Dictionary<int, IReadOnlyDictionary<string, float>>();
 
@@ -50,43 +102,8 @@ namespace OpenMLTD.MillionDance.Core {
             return d;
         }
 
-        private static readonly ConversionConfig UseMltdMotion = new ConversionConfig {
-            MotionFormat = MotionFormat.Mltd,
-            ScaleToPmxSize = true,
-            ApplyPmxCharacterHeight = true,
-            TranslateBoneNamesToMmd = true,
-            AppendIKBones = false,
-            FixMmdCenterBones = false,
-            FixTdaBindingPose = false,
-            AppendEyeBones = false,
-            HideUnityGeneratedBones = true,
-            SkeletonFormat = SkeletonFormat.Mltd,
-            TranslateFacialExpressionNamesToMmd = true,
-            ImportPhysics = true,
-            Transform60FpsTo30Fps = false,
-            ScaleToVmdSize = true,
-            FacialExpressionMappings = ConvertDictionary(VmdCreator.DefaultFacialExpressionTable)
-        };
-
-        private static readonly ConversionConfig UseMmdMotion = new ConversionConfig {
-            MotionFormat = MotionFormat.Mmd,
-            ScaleToPmxSize = true,
-            ApplyPmxCharacterHeight = true,
-            TranslateBoneNamesToMmd = true,
-            AppendIKBones = true,
-            FixMmdCenterBones = true,
-            FixTdaBindingPose = true,
-            AppendEyeBones = true,
-            HideUnityGeneratedBones = true,
-            SkeletonFormat = SkeletonFormat.Mmd,
-            TranslateFacialExpressionNamesToMmd = true,
-            ImportPhysics = true,
-            Transform60FpsTo30Fps = true,
-            ScaleToVmdSize = true,
-            FacialExpressionMappings = ConvertDictionary(VmdCreator.DefaultFacialExpressionTable)
-        };
-
-        public static ConversionConfig Current { get; internal set; } = UseMltdMotion;
+        [NotNull]
+        private static readonly IReadOnlyDictionary<int, IReadOnlyDictionary<string, float>> EmptyDictionary;
 
     }
 }

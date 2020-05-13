@@ -11,8 +11,29 @@ using OpenTK;
 namespace OpenMLTD.MillionDance.Core {
     partial class MvdCreator {
 
+        [NotNull]
+        public MvdMotion CreateCameraMotion([CanBeNull] CharacterImasMotionAsset cameraMotion) {
+            IReadOnlyList<MvdCameraMotion> cameraFrames;
+
+            if (ProcessCameraFrames && cameraMotion != null) {
+                cameraFrames = CreateCameraMotions(cameraMotion);
+            } else {
+                cameraFrames = Array.Empty<MvdCameraMotion>();
+            }
+
+            var mvd = new MvdMotion(cameraFrames);
+
+            if (_conversionConfig.Transform60FpsTo30Fps) {
+                mvd.Fps = FrameRate.Mmd;
+            } else {
+                mvd.Fps = FrameRate.Mltd;
+            }
+
+            return mvd;
+        }
+
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<MvdCameraMotion> CreateCameraMotions([NotNull] CharacterImasMotionAsset cameraMotion) {
+        private IReadOnlyList<MvdCameraMotion> CreateCameraMotions([NotNull] CharacterImasMotionAsset cameraMotion) {
             const string cameraName = "カメラ00"; // Localization error (Mr. mogg, please!), MUST NOT USE "Camera00"!
 
             MvdCameraObject CreateCamera() {
@@ -33,7 +54,7 @@ namespace OpenMLTD.MillionDance.Core {
                 var cameraFrameList = new List<MvdCameraFrame>();
 
                 for (var i = 0; i < animationFrameCount; ++i) {
-                    if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                    if (_conversionConfig.Transform60FpsTo30Fps) {
                         if (i % 2 == 1) {
                             continue;
                         }
@@ -41,7 +62,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                     int frameIndex;
 
-                    if (ConversionConfig.Current.Transform60FpsTo30Fps) {
+                    if (_conversionConfig.Transform60FpsTo30Fps) {
                         frameIndex = i / 2;
                     } else {
                         frameIndex = i;
@@ -54,8 +75,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                     pos = pos.FixUnityToOpenTK();
 
-                    if (ConversionConfig.Current.ScaleToVmdSize) {
-                        pos = pos * ScalingConfig.ScaleUnityToVmd;
+                    if (_conversionConfig.ScaleToVmdSize) {
+                        pos = pos * _scalingConfig.ScaleUnityToVmd;
                     }
 
                     mvdFrame.Position = pos;
@@ -64,8 +85,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                     target = target.FixUnityToOpenTK();
 
-                    if (ConversionConfig.Current.ScaleToVmdSize) {
-                        target = target * ScalingConfig.ScaleUnityToVmd;
+                    if (_conversionConfig.ScaleToVmdSize) {
+                        target = target * _scalingConfig.ScaleUnityToVmd;
                     }
 
                     var delta = target - pos;

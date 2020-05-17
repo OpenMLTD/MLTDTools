@@ -164,25 +164,54 @@ namespace OpenMLTD.MillionDance {
         }
 
         public static (IBodyAnimationSource, IBodyAnimationSource, IBodyAnimationSource) LoadDance([NotNull] string filePath, int songPosition) {
-            {
+            IBodyAnimationSource danSource = null, apaSource = null, apgSource = null;
+            var danceAnimationLoaded = false;
+
+            // About number of main dance animations and special/another appeal animations:
+            // Most songs have 1 dance animation (i.e. animation for 1 idol, multiplied by 3/4/5 etc.) and 1 appeal animation
+            // (i.e. for 1 idol when player completes FC before the big note). Or, n dance animation and n appeal animations
+            // (e.g. 虹色letters [nijile], n=2 for position 1 and 2). Some songs have 1 dance animation and n appeal animations
+            // (e.g. クルリウタ [kururi], n=3 for position 1, 2 and 3). Rarely a song has n dance animations and 1 appeal animation
+            // (i.e. RE@DY!! [ready0], n=5). For each dance animation, there is a dan_ object; for each appeal animation, there
+            // is an apa_ or apg_ object. So there isn't really a guarantee when dan, apa or apg is non-null.
+
+            if (!danceAnimationLoaded) {
                 // First try with legacy bundles
                 var (dan, apa, apg) = LoadDanceLegacy(filePath, songPosition);
 
-                if (dan != null && apa != null && apg != null) {
-                    return (new LegacyBodyAnimationSource(dan), new LegacyBodyAnimationSource(apa), new LegacyBodyAnimationSource(apg));
+                if (dan != null) {
+                    danSource = new LegacyBodyAnimationSource(dan);
+                    danceAnimationLoaded = true;
+                }
+
+                if (apa != null) {
+                    apaSource = new LegacyBodyAnimationSource(apa);
+                }
+
+                if (apg != null) {
+                    apgSource = new LegacyBodyAnimationSource(apg);
                 }
             }
 
-            {
+            if (!danceAnimationLoaded) {
                 // If failed, try the new one (from ~mid 2018?)
                 var (dan, apa, apg) = LoadDanceCompiled(filePath, songPosition);
 
-                if (dan != null && apa != null && apg != null) {
-                    return (new CompiledBodyAnimationSource(dan), new CompiledBodyAnimationSource(apa), new CompiledBodyAnimationSource(apg));
+                if (dan != null) {
+                    danSource = new CompiledBodyAnimationSource(dan);
+                    danceAnimationLoaded = true;
+                }
+
+                if (apa != null) {
+                    apaSource = new CompiledBodyAnimationSource(apa);
+                }
+
+                if (apg != null) {
+                    apgSource = new CompiledBodyAnimationSource(apg);
                 }
             }
 
-            return (null, null, null);
+            return (danSource, apaSource, apgSource);
         }
 
         public static (ScenarioObject, ScenarioObject, ScenarioObject) LoadScenario([NotNull] string filePath) {

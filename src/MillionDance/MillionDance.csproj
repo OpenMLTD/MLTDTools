@@ -77,9 +77,12 @@
     <Compile Include="Core\VmdCreator.FacialExpressions.cs" />
     <Compile Include="Core\VmdCreator.FacialExpressionTable.cs" />
     <Compile Include="Core\VmdCreator.Light.cs" />
+    <Compile Include="Entities\Extensions\AnimationSetExtensions.cs" />
     <Compile Include="Entities\Extensions\KeyTypeExtension.cs" />
     <Compile Include="Entities\Extensions\PropertyTypeExtension.cs" />
     <Compile Include="Entities\Extensions\ScenarioObjectExtensions.cs" />
+    <Compile Include="Entities\Internal\AnimationSet.cs" />
+    <Compile Include="Entities\Internal\AnimationSet`1.cs" />
     <Compile Include="Entities\Internal\CameraAnimation.cs" />
     <Compile Include="Entities\Internal\CameraFrame.cs" />
     <Compile Include="Entities\Mltd\CompiledBodyAnimationSource.cs" />

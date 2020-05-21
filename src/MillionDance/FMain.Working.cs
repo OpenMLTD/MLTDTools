@@ -225,7 +225,7 @@ namespace OpenMLTD.MillionDance {
 
                     if (p.GenerateCameraMotion) {
                         Log("Loading camera motion...");
-                        camera = ResourceLoader.LoadCamera(p.InputCamera);
+                        (camera, _, _) = ResourceLoader.LoadCamera(p.InputCamera);
                         if (camera == null) {
                             Log("Failed to load camera data.");
                             break;

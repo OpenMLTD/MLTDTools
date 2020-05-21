@@ -9,6 +9,8 @@ using Imas.Data.Serialized;
 using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
+using OpenMLTD.MillionDance.Entities.Extensions;
+using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mltd;
 
 namespace OpenMLTD.MillionDance {
@@ -127,14 +129,20 @@ namespace OpenMLTD.MillionDance {
             return result;
         }
 
-        [CanBeNull]
-        public static CharacterImasMotionAsset LoadCamera([NotNull] string filePath) {
-            CharacterImasMotionAsset cam = null;
+        [NotNull]
+        public static AnimationSet<CharacterImasMotionAsset> LoadCamera([NotNull] string filePath) {
+            CharacterImasMotionAsset cam = null, apa = null, apg = null;
 
-            const string camEnds = "_cam.imo";
+            const string defCamEnds = "_cam.imo";
+            const string apaCamEnds = "_apa.imo";
+            const string apgCamEnds = "_apg.imo";
+            const string apaPortraitCamEnds = "_tate_apa.imo";
+            const string apgPortraitCamEnds = "_tate_apg.imo";
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
+
+            var ser = new ScriptableObjectSerializer();
 
             foreach (var assetFile in manager.assetsFileList) {
                 foreach (var obj in assetFile.Objects) {
@@ -148,22 +156,25 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
                     }
 
-                    if (!behaviour.m_Name.EndsWith(camEnds)) {
-                        continue;
+                    if (behaviour.m_Name.EndsWith(defCamEnds)) {
+                        cam = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apaCamEnds) && !behaviour.m_Name.EndsWith(apaPortraitCamEnds)) {
+                        apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apgCamEnds) && !behaviour.m_Name.EndsWith(apgPortraitCamEnds)) {
+                        apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                     }
 
-                    var ser = new ScriptableObjectSerializer();
-
-                    cam = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-
-                    break;
+                    if (cam != null && apa != null && apg != null) {
+                        break;
+                    }
                 }
             }
 
-            return cam;
+            return AnimationSet.Create(cam, apa, apg);
         }
 
-        public static (IBodyAnimationSource, IBodyAnimationSource, IBodyAnimationSource) LoadDance([NotNull] string filePath, int songPosition) {
+        [NotNull]
+        public static AnimationSet<IBodyAnimationSource> LoadDance([NotNull] string filePath, int songPosition) {
             IBodyAnimationSource danSource = null, apaSource = null, apgSource = null;
             var danceAnimationLoaded = false;
 
@@ -211,7 +222,7 @@ namespace OpenMLTD.MillionDance {
                 }
             }
 
-            return (danSource, apaSource, apgSource);
+            return AnimationSet.Create(danSource, apaSource, apgSource);
         }
 
         public static (ScenarioObject, ScenarioObject, ScenarioObject) LoadScenario([NotNull] string filePath) {
@@ -255,7 +266,8 @@ namespace OpenMLTD.MillionDance {
             return (main, landscape, portrait);
         }
 
-        private static (CharacterImasMotionAsset, CharacterImasMotionAsset, CharacterImasMotionAsset) LoadDanceLegacy([NotNull] string filePath, int songPosition) {
+        [NotNull]
+        private static AnimationSet<CharacterImasMotionAsset> LoadDanceLegacy([NotNull] string filePath, int songPosition) {
             CharacterImasMotionAsset dan = null, apa = null, apg = null;
 
             var danComp = $"{songPosition:00}_dan.imo";
@@ -294,10 +306,11 @@ namespace OpenMLTD.MillionDance {
                 }
             }
 
-            return (dan, apa, apg);
+            return AnimationSet.Create(dan, apa, apg);
         }
 
-        private static (AnimationClip, AnimationClip, AnimationClip) LoadDanceCompiled([NotNull] string filePath, int songPosition) {
+        [NotNull]
+        private static AnimationSet<AnimationClip> LoadDanceCompiled([NotNull] string filePath, int songPosition) {
             AnimationClip dan = null, apa = null, apg = null;
 
             var danComp = $"{songPosition:00}_dan";
@@ -333,12 +346,21 @@ namespace OpenMLTD.MillionDance {
                 }
             }
 
-            return (dan, apa, apg);
+            return AnimationSet.Create(dan, apa, apg);
         }
 
         public static (SwayController Body, SwayController Head) LoadSwayControllers([NotNull] string bodyFilePath, [NotNull] string headFilePath) {
             var body = LoadSwayController(bodyFilePath);
+
+            if (body == null) {
+                throw new ArgumentNullException(nameof(body), "Body sway is null.");
+            }
+
             var head = LoadSwayController(headFilePath);
+
+            if (head == null) {
+                throw new ArgumentNullException(nameof(head), "Head sway is null.");
+            }
 
             SwayController.FixSwayReferences(body, head);
 

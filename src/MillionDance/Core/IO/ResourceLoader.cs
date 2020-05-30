@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using AssetStudio;
@@ -13,7 +14,7 @@ using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mltd;
 
 namespace OpenMLTD.MillionDance.Core.IO {
-    internal static class ResourceLoader {
+    internal static partial class ResourceLoader {
 
         [CanBeNull]
         public static MeshWrapper LoadBodyMesh([NotNull] string filePath) {
@@ -173,9 +174,10 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         [NotNull]
-        public static AnimationSet<IBodyAnimationSource> LoadDance([NotNull] string filePath, int songPosition) {
+        public static LoadedDance LoadDance([NotNull] string filePath, int songPosition) {
             IBodyAnimationSource danSource = null, apaSource = null, apgSource = null;
             var danceAnimationLoaded = false;
+            var suggestedPosition = InvalidDancePosition;
 
             // About number of main dance animations and special/another appeal animations:
             // Most songs have 1 dance animation (i.e. animation for 1 idol, multiplied by 3/4/5 etc.) and 1 appeal animation
@@ -187,7 +189,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             if (!danceAnimationLoaded) {
                 // First try with legacy bundles
-                var (dan, apa, apg) = LoadDanceLegacy(filePath, songPosition);
+                var (dan, apa, apg) = LoadDanceLegacy(filePath, songPosition, out suggestedPosition);
 
                 if (dan != null) {
                     danSource = new LegacyBodyAnimationSource(dan);
@@ -205,7 +207,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             if (!danceAnimationLoaded) {
                 // If failed, try the new one (from ~mid 2018?)
-                var (dan, apa, apg) = LoadDanceCompiled(filePath, songPosition);
+                var (dan, apa, apg) = LoadDanceCompiled(filePath, songPosition, out suggestedPosition);
 
                 if (dan != null) {
                     danSource = new CompiledBodyAnimationSource(dan);
@@ -221,7 +223,9 @@ namespace OpenMLTD.MillionDance.Core.IO {
                 }
             }
 
-            return AnimationSet.Create(danSource, apaSource, apgSource);
+            var animationSet = AnimationSet.Create(danSource, apaSource, apgSource);
+
+            return new LoadedDance(animationSet, suggestedPosition);
         }
 
         public static (ScenarioObject, ScenarioObject, ScenarioObject) LoadScenario([NotNull] string filePath) {
@@ -266,7 +270,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         [NotNull]
-        private static AnimationSet<CharacterImasMotionAsset> LoadDanceLegacy([NotNull] string filePath, int songPosition) {
+        private static AnimationSet<CharacterImasMotionAsset> LoadDanceLegacy([NotNull] string filePath, int songPosition, out int suggestedPosition) {
             CharacterImasMotionAsset dan = null, apa = null, apg = null;
 
             var danComp = $"{songPosition:00}_dan.imo";
@@ -305,11 +309,13 @@ namespace OpenMLTD.MillionDance.Core.IO {
                 }
             }
 
+            suggestedPosition = GetSuggestedDancePosition(manager);
+
             return AnimationSet.Create(dan, apa, apg);
         }
 
         [NotNull]
-        private static AnimationSet<AnimationClip> LoadDanceCompiled([NotNull] string filePath, int songPosition) {
+        private static AnimationSet<AnimationClip> LoadDanceCompiled([NotNull] string filePath, int songPosition, out int suggestedPosition) {
             AnimationClip dan = null, apa = null, apg = null;
 
             var danComp = $"{songPosition:00}_dan";
@@ -344,6 +350,8 @@ namespace OpenMLTD.MillionDance.Core.IO {
                     }
                 }
             }
+
+            suggestedPosition = GetSuggestedDancePosition(manager);
 
             return AnimationSet.Create(dan, apa, apg);
         }
@@ -405,8 +413,37 @@ namespace OpenMLTD.MillionDance.Core.IO {
             return result;
         }
 
+        private static int GetSuggestedDancePosition([NotNull] AssetsManager manager) {
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.MonoBehaviour) {
+                        continue;
+                    }
+
+                    var behaviour = obj as MonoBehaviour;
+
+                    Debug.Assert(behaviour != null);
+
+                    var match = DanceAssetVaguePattern.Match(behaviour.m_Name);
+
+                    if (match.Success) {
+                        var posStr = match.Groups["position"].Value;
+                        var pos = Convert.ToInt32(posStr);
+                        return pos;
+                    }
+                }
+            }
+
+            return InvalidDancePosition;
+        }
+
         [NotNull]
-        private static readonly Regex ReplaceNewLine = new Regex("(?<!\r)\n");
+        private static readonly Regex ReplaceNewLine = new Regex("(?<!\r)\n", RegexOptions.CultureInvariant);
+
+        [NotNull]
+        private static readonly Regex DanceAssetVaguePattern = new Regex(@"(?<position>\d{2})_dan", RegexOptions.CultureInvariant);
+
+        private const int InvalidDancePosition = -1;
 
     }
 }

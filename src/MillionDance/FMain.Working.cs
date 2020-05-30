@@ -67,35 +67,35 @@ namespace OpenMLTD.MillionDance {
                     Log("Loading body avatar...");
                     var bodyAvatar = ResourceLoader.LoadBodyAvatar(p.InputBody);
                     if (bodyAvatar == null) {
-                        Log("Failed to load body avatar.");
+                        Log("Cannot load body avatar.");
                         break;
                     }
 
                     Log("Loading body mesh...");
                     var bodyMesh = ResourceLoader.LoadBodyMesh(p.InputBody);
                     if (bodyMesh == null) {
-                        Log("Failed to load body mesh.");
+                        Log("Cannot load body mesh.");
                         break;
                     }
 
                     Log("Loading head avatar...");
                     var headAvatar = ResourceLoader.LoadHeadAvatar(p.InputHead);
                     if (headAvatar == null) {
-                        Log("Failed to load head avatar.");
+                        Log("Cannot load head avatar.");
                         break;
                     }
 
                     Log("Loading head avatar...");
                     var headMesh = ResourceLoader.LoadHeadMesh(p.InputHead);
                     if (headMesh == null) {
-                        Log("Failed to load head mesh.");
+                        Log("Cannot load head mesh.");
                         break;
                     }
 
                     Log("Loading head/body sway controllers...");
                     (bodySway, headSway) = ResourceLoader.LoadSwayControllers(p.InputBody, p.InputHead);
                     if (bodySway == null || headSway == null) {
-                        Log("Failed to load sway controllers.");
+                        Log("Cannot load sway controllers.");
                         break;
                     }
 
@@ -115,9 +115,15 @@ namespace OpenMLTD.MillionDance {
 
                 if (p.GenerateCharacterMotion) {
                     Log("Loading dance motion...");
-                    (dance, _, _) = ResourceLoader.LoadDance(p.InputDance, p.SongPosition);
+                    var loadedDance = ResourceLoader.LoadDance(p.InputDance, p.SongPosition);
+                    (dance, _, _) = loadedDance.AnimationSet;
                     if (dance == null) {
-                        Log("Failed to load dance data. Please check whether you selected a dance data file and chose corresponding idol position.");
+                        if (1 <= loadedDance.SuggestedPosition && loadedDance.SuggestedPosition <= 5) {
+                            Log($"Cannot load dance data. However, this file may contain animation for idol at position {loadedDance.SuggestedPosition.ToString()}. Please check whether you selected the correct idol position (in 'Motions' tab).");
+                        } else {
+                            Log("Cannot load dance data. Please check whether you selected a dance data file.");
+                        }
+
                         break;
                     }
                 } else {
@@ -130,7 +136,7 @@ namespace OpenMLTD.MillionDance {
                     Log("Loading lip sync and facial expression...");
                     var (main, yoko, tate) = ResourceLoader.LoadScenario(p.InputFacialExpression);
                     if (main == null) {
-                        Log("Failed to load base scenario object.");
+                        Log("Cannot load base scenario object.");
                         break;
                     }
 
@@ -147,7 +153,7 @@ namespace OpenMLTD.MillionDance {
                             Log("Main scenario object does not contain facial expressions. Trying with landscape and portrait.");
 
                             if (yoko == null || tate == null) {
-                                Log("Failed to load either landscape or portrait.");
+                                Log("Cannot load either landscape or portrait.");
                                 break;
                             }
 
@@ -203,7 +209,7 @@ namespace OpenMLTD.MillionDance {
                     Log("Loading camera motion...");
                     (camera, _, _) = ResourceLoader.LoadCamera(p.InputCamera);
                     if (camera == null) {
-                        Log("Failed to load camera data.");
+                        Log("Cannot load camera data.");
                         break;
                     }
                 } else {

@@ -46,7 +46,7 @@ namespace OpenMLTD.MLTDTools.Applications.TDFacial {
             var (main, yoko, tate) = LoadScenario(filePath);
 
             if (main == null || yoko == null || tate == null) {
-                MessageBox.Show($"Failed to load '{filePath}'.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"Cannot load '{filePath}'.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 

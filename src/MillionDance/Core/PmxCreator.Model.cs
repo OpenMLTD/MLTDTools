@@ -677,8 +677,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                 if (details.ApplyToon) {
                     var shouldExcludeToon =
-                        subMesh.Material.MaterialName.Contains("head") ||
-                        subMesh.Material.MaterialName.Contains("face");
+                        subMesh.Material.MaterialName.Contains("face") ||
+                        subMesh.Material.MaterialName.Contains("hair");
 
                     if (!shouldExcludeToon) {
                         // Only apply toon on body, not on head. (Shadows on head is pre-baked.)

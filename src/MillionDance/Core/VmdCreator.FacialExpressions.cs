@@ -61,7 +61,7 @@ namespace OpenMLTD.MillionDance.Core {
                 var currentTime = (float)sync.AbsoluteTime;
 
                 if (currentTime < 0) {
-                    // Some facial control frames have negative time, which eventually leads to negative frame indices when writing VMD file.
+                    // Some facial control frames have negative time (e.g. scrobj_s02ann), which eventually leads to negative frame indices when writing VMD file.
                     // MMM interprets this as uint64 (read int32 -> convert to int64 -> unchecked convert to uint64), MMD interprets this as int32.
                     // Both of them crash on negative frame indices. We have to avoid that.
                     continue;

@@ -331,7 +331,7 @@ namespace OpenMLTD.MillionDance {
                 }
 
                 if (chkGenerateModel.Checked || chkGenerateCharAnim.Checked) {
-                    if (!Regex.IsMatch(txtInputHead.Text, @"ch_[a-z]{2}\d{3}_(?:\d{3}[a-z]{3}|[a-z])\.unity3d$", RegexOptions.CultureInvariant)) {
+                    if (!Regex.IsMatch(txtInputHead.Text, @"ch_[a-z]{2}\d{3}_(?:\d{3}[a-z]{3}|[a-z])(?:_v2)?\.unity3d$", RegexOptions.CultureInvariant)) {
                         Alert($"File \"{txtInputHead.Text}\" does not look like a character head file from the game.");
                         return false;
                     }

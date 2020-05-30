@@ -41,8 +41,13 @@ namespace OpenMLTD.MillionDance.Core {
             var frameList = new List<VmdFacialFrame>();
 
             var lipSyncControls = lipSync.Scenario.Where(s => s.Type == ScenarioDataType.LipSync).ToArray();
-            var muteControls = lipSync.Scenario.Where(s => s.Type == ScenarioDataType.MuteControl).ToArray();
-            var muteControlTimes = muteControls.Select(s => s.AbsoluteTime).ToArray();
+            var singControlList = lipSync.Scenario.Where(s => s.Type == ScenarioDataType.SingControl).ToList();
+
+            // Make sure the events are sorted.
+            singControlList.Sort((s1, s2) => s1.AbsoluteTime.CompareTo(s2.AbsoluteTime));
+
+            var singControls = singControlList.ToArray();
+            var singControlTimes = singControls.Select(s => s.AbsoluteTime).ToArray();
 
             Debug.Assert(lipSyncControls.Length > 0, "Lip-sync controls should exist.");
             Debug.Assert(lipSyncControls[0].Param == 54, "The first control op should be 54.");
@@ -54,16 +59,9 @@ namespace OpenMLTD.MillionDance.Core {
                 var sync = lipSyncControls[i];
                 var currentTime = (float)sync.AbsoluteTime;
 
-                var isMuted = IsMutedAt(muteControls, muteControlTimes, sync.AbsoluteTime, idolPosition);
+                var isSinging = IsSingingAt(singControls, singControlTimes, sync.AbsoluteTime, idolPosition);
 
-                if (isMuted) {
-                    frameList.Add(CreateFacialFrame(currentTime, "M_a", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_i", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_u", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
-                } else {
+                if (isSinging) {
                     var lipCode = (LipCode)sync.Param;
 
                     switch (lipCode) {
@@ -136,6 +134,14 @@ namespace OpenMLTD.MillionDance.Core {
                         default:
                             throw new ArgumentOutOfRangeException(nameof(lipCode), lipCode, "Not possible");
                     }
+                } else {
+                    // Muted
+                    frameList.Add(CreateFacialFrame(currentTime, "M_a", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_i", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_u", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
+                    frameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
                 }
             }
 
@@ -261,7 +267,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull]
-        private VmdFacialFrame CreateFacialFrame(float time, string mltdTruncMorphName, float value) {
+        private VmdFacialFrame CreateFacialFrame(float time, [NotNull] string mltdTruncMorphName, float value) {
             var n = (int)(time * FrameRate.Mltd);
             int frameIndex;
 
@@ -285,22 +291,47 @@ namespace OpenMLTD.MillionDance.Core {
             return frame;
         }
 
-        private static bool IsMutedAt(EventScenarioData[] muteControls, double[] muteControlTimes, double lipSyncTime, int position) {
-            var index = Array.BinarySearch(muteControlTimes, lipSyncTime);
+        private static bool IsSingingAt([NotNull, ItemNotNull] EventScenarioData[] singControls, [NotNull] double[] singControlTimes, double lipSyncTime, int position) {
+            const bool isSingingByDefault = true;
+
+            Debug.Assert(singControls.Length == singControlTimes.Length);
+
+            var muteControlPointCount = singControls.Length;
+
+            if (muteControlPointCount == 0) {
+                // In general, this case shouldn't happen.
+                return isSingingByDefault;
+            }
+
+            var index = Array.BinarySearch(singControlTimes, lipSyncTime);
             EventScenarioData control;
 
             if (index >= 0) {
-                control = muteControls[index];
+                control = singControls[index];
             } else {
                 index = ~index;
-                control = muteControls[index - 1];
+
+                // MSDN:
+                // If value is not found and value is less than one or more elements in array,
+                // the negative number returned is the bitwise complement of the index of the
+                // first element that is larger than value. If value is not found and value is
+                // greater than all elements in array, the negative number returned is the
+                // bitwise complement of (the index of the last element plus 1).
+                if (index == 0) {
+                    // lipSyncTime is earlier than the first control point
+                    return isSingingByDefault;
+                } else {
+                    // index points to the next control point (maybe it does not exist, i.e.
+                    // index equals the array length), and we should take the one before that.
+                    control = singControls[index - 1];
+                }
             }
 
-            var mute = control.Mute;
-            Debug.Assert(mute.Length >= position);
+            var isSinging = control.IsSinging;
+            Debug.Assert(isSinging.Length >= position);
 
             // Note the logical not here. Yes it is tricky. We should The data field (EventScenarioData.Mute, reflecting the field in scrobj) is badly named.
-            return !mute[position - 1];
+            return isSinging[position - 1];
         }
 
         [NotNull, ItemNotNull]

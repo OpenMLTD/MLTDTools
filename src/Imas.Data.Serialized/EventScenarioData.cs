@@ -70,8 +70,10 @@ namespace Imas.Data.Serialized {
 
         /// <summary>
         /// This array actually instructs whether the corresponding singer should *sing* (i.e. enable lip sync), not should *mute*.
+        /// The blame goes to BNSI staffs.
         /// </summary>
-        public bool[] Mute { get; set; } = Array.Empty<bool>();
+        [ScriptableObjectProperty(Name = "mute")]
+        public bool[] IsSinging { get; set; } = Array.Empty<bool>();
 
         public bool Addf { get; set; }
 

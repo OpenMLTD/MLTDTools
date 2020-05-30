@@ -31,7 +31,7 @@
 
         BeginTapButtonsAnimation = 57,
 
-        MuteControl = 59,
+        SingControl = 59,
 
         Type63 = 63,
 

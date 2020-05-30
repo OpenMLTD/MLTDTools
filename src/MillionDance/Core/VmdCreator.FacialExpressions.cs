@@ -344,7 +344,6 @@ namespace OpenMLTD.MillionDance.Core {
             var isSinging = control.IsSinging;
             Debug.Assert(isSinging.Length >= position);
 
-            // Note the logical not here. Yes it is tricky. We should The data field (EventScenarioData.Mute, reflecting the field in scrobj) is badly named.
             return isSinging[position - 1];
         }
 

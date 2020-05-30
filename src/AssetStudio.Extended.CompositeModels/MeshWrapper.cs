@@ -6,18 +6,18 @@ using JetBrains.Annotations;
 namespace AssetStudio.Extended.CompositeModels {
     public sealed class MeshWrapper : PrettyMesh {
 
-        public MeshWrapper([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, bool flipTexture, bool applyToon) {
+        public MeshWrapper([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, [NotNull] TexturedMaterialExtraProperties extraMaterialProperties) {
             Name = mesh.m_Name;
 
             {
                 var subMeshCount = mesh.m_SubMeshes.Length;
-                var subMeshes = new SubMesh[subMeshCount];
+                var subMeshes = new PrettySubMesh[subMeshCount];
                 uint meshIndexStart = 0;
 
                 for (var i = 0; i < mesh.m_SubMeshes.Length; i += 1) {
                     var subMesh = mesh.m_SubMeshes[i];
-                    var mat = FindMaterialInfo(assetFiles, mesh, i, flipTexture, applyToon);
-                    var sm = new SubMesh(meshIndexStart, subMesh, mat);
+                    var material = FindMaterialInfo(assetFiles, mesh, i, extraMaterialProperties);
+                    var sm = new PrettySubMesh(meshIndexStart, subMesh, material);
                     subMeshes[i] = sm;
                     meshIndexStart += subMesh.indexCount;
                 }
@@ -81,7 +81,7 @@ namespace AssetStudio.Extended.CompositeModels {
 
         public override string Name { get; }
 
-        public override SubMesh[] SubMeshes { get; }
+        public override PrettySubMesh[] SubMeshes { get; }
 
         public override uint[] Indices { get; }
 
@@ -151,7 +151,7 @@ namespace AssetStudio.Extended.CompositeModels {
         }
 
         [NotNull]
-        private static TexturedMaterial FindMaterialInfo([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, int meshIndex, bool flipTexture, bool applyToon) {
+        private static TexturedMaterial FindMaterialInfo([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, int meshIndex, [NotNull] TexturedMaterialExtraProperties extraProperties) {
             SkinnedMeshRenderer meshRenderer = null;
 
             foreach (var assetFile in assetFiles) {
@@ -273,7 +273,7 @@ namespace AssetStudio.Extended.CompositeModels {
                 }
             }
 
-            return new TexturedMaterial(material.m_Name, mainTexture, subTexture, flipTexture, applyToon);
+            return new TexturedMaterial(material.m_Name, mainTexture, subTexture, extraProperties);
         }
 
         [NotNull]
@@ -298,6 +298,10 @@ namespace AssetStudio.Extended.CompositeModels {
             }
 
             return result;
+        }
+
+        private sealed class DetailedConfig {
+
         }
 
     }

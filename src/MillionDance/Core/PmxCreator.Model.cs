@@ -676,8 +676,13 @@ namespace OpenMLTD.MillionDance.Core {
                 material.TextureFileName = GetExportedTextureFileName(details.TexturePrefix, i);
 
                 if (details.ApplyToon) {
-                    if (subMesh.Material.ShouldApplyToon) {
+                    var shouldExcludeToon =
+                        subMesh.Material.MaterialName.Contains("head") ||
+                        subMesh.Material.MaterialName.Contains("face");
+
+                    if (!shouldExcludeToon) {
                         // Only apply toon on body, not on head. (Shadows on head is pre-baked.)
+                        // (What about accessories on head? Currently we also apply toon on them.)
                         // "BNSI seems to call this technique 'lively toon'?" - wikisong
                         var toonStr = details.ToonNumber.ToString("00");
                         material.ToonTextureFileName = $"toon{toonStr}.bmp";

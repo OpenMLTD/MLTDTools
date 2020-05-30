@@ -3,12 +3,11 @@
 namespace AssetStudio.Extended.CompositeModels {
     public sealed class TexturedMaterial {
 
-        internal TexturedMaterial([NotNull] string materialName, [NotNull] Texture2D mainTexture, [CanBeNull] Texture2D subTexture, bool shouldFlip, bool shouldApplyToon) {
+        internal TexturedMaterial([NotNull] string materialName, [NotNull] Texture2D mainTexture, [CanBeNull] Texture2D subTexture, [NotNull] TexturedMaterialExtraProperties extraProperties) {
             MaterialName = materialName;
             MainTexture = mainTexture;
             SubTexture = subTexture;
-            ShouldFlip = shouldFlip;
-            ShouldApplyToon = shouldApplyToon;
+            ExtraProperties = extraProperties;
         }
 
         [NotNull]
@@ -20,9 +19,8 @@ namespace AssetStudio.Extended.CompositeModels {
         [CanBeNull]
         public Texture2D SubTexture { get; }
 
-        public bool ShouldFlip { get; }
-
-        public bool ShouldApplyToon { get; }
+        [NotNull]
+        public TexturedMaterialExtraProperties ExtraProperties { get; }
 
     }
 }

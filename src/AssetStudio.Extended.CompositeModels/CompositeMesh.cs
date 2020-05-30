@@ -36,7 +36,7 @@ namespace AssetStudio.Extended.CompositeModels {
                 Name = sb.ToString();
             }
 
-            var subMeshList = new List<SubMesh>();
+            var subMeshList = new List<PrettySubMesh>();
             var indexList = new List<uint>();
             var skinList = new List<BoneInfluence[]>();
             var bindPoseList = new List<Matrix4x4>();
@@ -61,7 +61,7 @@ namespace AssetStudio.Extended.CompositeModels {
                     var subMesh = mesh.SubMeshes[i];
                     Debug.Assert(subMesh.Topology == PrimitiveType.Triangles);
 
-                    var newSubMesh = new SubMesh(
+                    var newSubMesh = new PrettySubMesh(
                         subMesh.FirstIndex + indexStart, subMesh.IndexCount, subMesh.Topology, subMesh.TriangleCount,
                         subMesh.FirstVertex + vertexStart, subMesh.VertexCount, subMesh.BoundingBox, subMesh.Material);
 
@@ -164,7 +164,7 @@ namespace AssetStudio.Extended.CompositeModels {
 
         public override string Name { get; }
 
-        public override SubMesh[] SubMeshes { get; }
+        public override PrettySubMesh[] SubMeshes { get; }
 
         public override uint[] Indices { get; }
 

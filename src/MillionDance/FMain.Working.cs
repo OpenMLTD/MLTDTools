@@ -15,6 +15,7 @@ using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using OpenMLTD.MillionDance.Core;
+using OpenMLTD.MillionDance.Core.IO;
 using OpenMLTD.MillionDance.Entities.Extensions;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Utilities;
@@ -270,10 +271,10 @@ namespace OpenMLTD.MillionDance {
                         foreach (var (subFileName, mat) in materialList) {
                             var textureFilePath = Path.Combine(modelDir, subFileName);
 
-                            using (var image = mat.MainTexture.ConvertToBitmap(mat.ShouldFlip)) {
+                            using (var image = mat.MainTexture.ConvertToBitmap(mat.ExtraProperties.ShouldFlip)) {
                                 // Only auto composite textures for eyes (with highlights)
-                                if (mat.SubTexture != null && mat.MainTexture.m_Name.Contains("eye")) {
-                                    using (var subTex = mat.SubTexture.ConvertToBitmap(mat.ShouldFlip)) {
+                                if (mat.SubTexture != null && mat.MaterialName.Contains("eye")) {
+                                    using (var subTex = mat.SubTexture.ConvertToBitmap(mat.ExtraProperties.ShouldFlip)) {
                                         using (var g = Graphics.FromImage(image)) {
                                             g.DrawImageUnscaled(subTex, 0, 0);
                                         }

@@ -61,9 +61,9 @@ namespace AssetStudio.Extended.CompositeModels {
 
         public override string Name { get; }
 
-        public override Skeleton AvatarSkeleton { get; }
+        public override PrettySkeleton AvatarSkeleton { get; }
 
-        public override SkeletonPose AvatarSkeletonPose { get; }
+        public override PrettySkeletonPose AvatarSkeletonPose { get; }
 
         public override IReadOnlyDictionary<uint, string> BoneNamesMap { get; }
 
@@ -76,7 +76,7 @@ namespace AssetStudio.Extended.CompositeModels {
         }
 
         [NotNull]
-        private static Skeleton CombineSkeletons([NotNull, ItemNotNull] IEnumerable<Skeleton> skeletons) {
+        private static PrettySkeleton CombineSkeletons([NotNull, ItemNotNull] IEnumerable<PrettySkeleton> skeletons) {
             var nodeIDList = new List<uint>();
             var nodeList = new List<SkeletonNode>();
 
@@ -137,13 +137,13 @@ namespace AssetStudio.Extended.CompositeModels {
                 ++counter;
             }
 
-            var result = new Skeleton(nodeList.ToArray(), nodeIDList.ToArray());
+            var result = new PrettySkeleton(nodeList.ToArray(), nodeIDList.ToArray());
 
             return result;
         }
 
         [NotNull]
-        private static SkeletonPose CombineSkeletonPoses([NotNull, ItemNotNull] IEnumerable<SkeletonPose> poses, [NotNull, ItemNotNull] IEnumerable<Skeleton> skeletons) {
+        private static PrettySkeletonPose CombineSkeletonPoses([NotNull, ItemNotNull] IEnumerable<PrettySkeletonPose> poses, [NotNull, ItemNotNull] IEnumerable<PrettySkeleton> skeletons) {
             var transformList = new List<RawTransform>();
 
             foreach (var (pose, skeleton) in EnumerableUtils.Zip(poses, skeletons)) {
@@ -165,7 +165,7 @@ namespace AssetStudio.Extended.CompositeModels {
                 }
             }
 
-            var result = new SkeletonPose(transformList.ToArray());
+            var result = new PrettySkeletonPose(transformList.ToArray());
 
             return result;
         }

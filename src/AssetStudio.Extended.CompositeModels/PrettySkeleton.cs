@@ -2,14 +2,14 @@
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.CompositeModels {
-    public sealed class Skeleton {
+    public sealed class PrettySkeleton {
 
-        internal Skeleton([NotNull, ItemNotNull] SkeletonNode[] nodes, [NotNull] uint[] nodeIDs) {
+        internal PrettySkeleton([NotNull, ItemNotNull] SkeletonNode[] nodes, [NotNull] uint[] nodeIDs) {
             _nodes = nodes;
             _nodeIDs = nodeIDs;
         }
 
-        internal Skeleton([NotNull] AssetStudio.Skeleton skeleton) {
+        internal PrettySkeleton([NotNull] Skeleton skeleton) {
             var nodeCount = skeleton.m_Node.Length;
             Debug.Assert(nodeCount == skeleton.m_ID.Length);
 

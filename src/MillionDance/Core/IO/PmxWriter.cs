@@ -11,7 +11,7 @@ using OpenMLTD.MillionDance.Entities.Pmx.Extensions;
 using OpenMLTD.MillionDance.Extensions;
 using OpenTK;
 
-namespace OpenMLTD.MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core.IO {
     internal sealed class PmxWriter : DisposableBase {
 
         public PmxWriter([NotNull] Stream stream) {
@@ -28,8 +28,9 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         protected override void Dispose(bool disposing) {
-            _writer?.Dispose();
-            _writer = null;
+            if (disposing) {
+                _writer.Dispose();
+            }
 
             base.Dispose(disposing);
         }
@@ -55,144 +56,110 @@ namespace OpenMLTD.MillionDance.Core {
         private int TexElementSize { get; } = 4;
 
         private void WritePmxModel([NotNull] PmxModel model) {
-            BuildTextureNameMap(model);
+            var textureNames = BuildTextureNameMap(model);
 
             WriteString(model.Name);
             WriteString(model.NameEnglish);
             WriteString(model.Comment);
             WriteString(model.CommentEnglish);
 
-            WriteVertexInfo();
-            WriteFaceInfo();
-            WriteTextureInfo();
-            WriteMaterialInfo();
-            WriteBoneInfo();
-            WriteMorphInfo();
-            WriteNodeInfo();
-            WriteRigidBodyInfo();
-            WriteJointInfo();
-            WriteSoftBodyInfo();
+            WriteVertexInfo(model);
+            WriteFaceInfo(model);
+            WriteTextureInfo(textureNames);
+            WriteMaterialInfo(model, textureNames);
+            WriteBoneInfo(model);
+            WriteMorphInfo(model);
+            WriteNodeInfo(model);
+            WriteRigidBodyInfo(model);
+            WriteJointInfo(model);
+            WriteSoftBodyInfo(model);
+        }
 
-            void WriteVertexInfo() {
-                if (model.Vertices != null) {
-                    _writer.Write(model.Vertices.Count);
+        private void WriteVertexInfo([NotNull] PmxModel model) {
+            _writer.Write(model.Vertices.Count);
 
-                    foreach (var vertex in model.Vertices) {
-                        WritePmxVertex(vertex);
-                    }
-                } else {
-                    _writer.Write(0);
-                }
+            foreach (var vertex in model.Vertices) {
+                WritePmxVertex(vertex);
+            }
+        }
+
+        private void WriteFaceInfo([NotNull] PmxModel model) {
+            _writer.Write(model.FaceTriangles.Count);
+
+            foreach (var v in model.FaceTriangles) {
+                _writer.WriteInt32AsVarLenInt(v, VertexElementSize, true);
+            }
+        }
+
+        private void WriteTextureInfo([NotNull, ItemNotNull] string[] textureNames) {
+            _writer.Write(textureNames.Length);
+
+            foreach (var textureName in textureNames) {
+                WriteString(textureName);
+            }
+        }
+
+        private void WriteMaterialInfo([NotNull] PmxModel model, [NotNull, ItemNotNull] string[] textureNames) {
+            _writer.Write(model.Materials.Count);
+
+            foreach (var material in model.Materials) {
+                WritePmxMaterial(material, textureNames);
+            }
+        }
+
+        private void WriteBoneInfo([NotNull] PmxModel model) {
+            _writer.Write(model.Bones.Count);
+
+            foreach (var bone in model.Bones) {
+                WritePmxBone(bone);
+            }
+        }
+
+        private void WriteMorphInfo([NotNull] PmxModel model) {
+            _writer.Write(model.Morphs.Count);
+
+            foreach (var morph in model.Morphs) {
+                WritePmxMorph(morph);
+            }
+        }
+
+        private void WriteNodeInfo([NotNull] PmxModel model) {
+            _writer.Write(model.Nodes.Count);
+
+            foreach (var node in model.Nodes) {
+                WritePmxNode(node);
+            }
+        }
+
+        private void WriteRigidBodyInfo([NotNull] PmxModel model) {
+            _writer.Write(model.RigidBodies.Count);
+
+            foreach (var body in model.RigidBodies) {
+                WritePmxRigidBody(body);
+            }
+        }
+
+        private void WriteJointInfo([NotNull] PmxModel model) {
+            _writer.Write(model.Joints.Count);
+
+            foreach (var joint in model.Joints) {
+                WritePmxJoint(joint);
+            }
+        }
+
+        private void WriteSoftBodyInfo([NotNull] PmxModel model) {
+            if (DetailedVersion < 2.1f) {
+                return;
             }
 
-            void WriteFaceInfo() {
-                if (model.FaceTriangles != null) {
-                    _writer.Write(model.FaceTriangles.Count);
+            if (model.SoftBodies != null) {
+                _writer.Write(model.SoftBodies.Count);
 
-                    foreach (var v in model.FaceTriangles) {
-                        _writer.WriteInt32AsVarLenInt(v, VertexElementSize, true);
-                    }
-                } else {
-                    _writer.Write(0);
+                foreach (var body in model.SoftBodies) {
+                    WritePmxSoftBody(body);
                 }
-            }
-
-            void WriteTextureInfo() {
-                var textureCount = _textureNameList.Count;
-
-                _writer.Write(textureCount);
-
-                foreach (var textureName in _textureNameList) {
-                    WriteString(textureName);
-                }
-            }
-
-            void WriteMaterialInfo() {
-                if (model.Materials != null) {
-                    _writer.Write(model.Materials.Count);
-
-                    foreach (var material in model.Materials) {
-                        WritePmxMaterial(material);
-                    }
-                } else {
-                    _writer.Write(0);
-                }
-            }
-
-            void WriteBoneInfo() {
-                if (model.Bones != null) {
-                    _writer.Write(model.Bones.Count);
-
-                    foreach (var bone in model.Bones) {
-                        WritePmxBone(bone);
-                    }
-                } else {
-                    _writer.Write(0);
-                }
-            }
-
-            void WriteMorphInfo() {
-                if (model.Morphs != null) {
-                    _writer.Write(model.Morphs.Count);
-
-                    foreach (var morph in model.Morphs) {
-                        WritePmxMorph(morph);
-                    }
-                } else {
-                    _writer.Write(0);
-                }
-            }
-
-            void WriteNodeInfo() {
-                if (model.Nodes != null) {
-                    _writer.Write(model.Nodes.Count);
-
-                    foreach (var node in model.Nodes) {
-                        WritePmxNode(node);
-                    }
-                } else {
-                    _writer.Write(0);
-                }
-            }
-
-            void WriteRigidBodyInfo() {
-                if (model.RigidBodies != null) {
-                    _writer.Write(model.RigidBodies.Count);
-
-                    foreach (var body in model.RigidBodies) {
-                        WritePmxRigidBody(body);
-                    }
-                } else {
-                    _writer.Write(0);
-                }
-            }
-
-            void WriteJointInfo() {
-                if (model.Joints != null) {
-                    _writer.Write(model.Joints.Count);
-
-                    foreach (var joint in model.Joints) {
-                        WritePmxJoint(joint);
-                    }
-                } else {
-                    _writer.Write(0);
-                }
-            }
-
-            void WriteSoftBodyInfo() {
-                if (DetailedVersion < 2.1f) {
-                    return;
-                }
-
-                if (model.SoftBodies != null) {
-                    _writer.Write(model.SoftBodies.Count);
-
-                    foreach (var body in model.SoftBodies) {
-                        WritePmxSoftBody(body);
-                    }
-                } else {
-                    _writer.Write(0);
-                }
+            } else {
+                _writer.Write(0);
             }
         }
 
@@ -245,7 +212,7 @@ namespace OpenMLTD.MillionDance.Core {
             _writer.Write(vertex.EdgeScale);
         }
 
-        private void WritePmxMaterial([NotNull] PmxMaterial material) {
+        private void WritePmxMaterial([NotNull] PmxMaterial material, [NotNull, ItemNotNull] string[] textureNames) {
             WriteString(material.Name);
             WriteString(material.NameEnglish);
 
@@ -257,9 +224,9 @@ namespace OpenMLTD.MillionDance.Core {
             _writer.Write(material.EdgeColor);
             _writer.Write(material.EdgeSize);
 
-            var texNameIndex = GetTextureIndex(material.TextureFileName);
+            var texNameIndex = GetTextureIndex(textureNames, material.TextureFileName);
             _writer.WriteInt32AsVarLenInt(texNameIndex, TexElementSize);
-            var sphereTexNameIndex = GetTextureIndex(material.SphereTextureFileName);
+            var sphereTexNameIndex = GetTextureIndex(textureNames, material.SphereTextureFileName);
             _writer.WriteInt32AsVarLenInt(sphereTexNameIndex, TexElementSize);
             _writer.Write((byte)material.SphereMode);
 
@@ -268,7 +235,7 @@ namespace OpenMLTD.MillionDance.Core {
             _writer.Write(!mappedToonTexture);
 
             if (mappedToonTexture) {
-                var toonTexNameIndex = GetTextureIndex(material.ToonTextureFileName);
+                var toonTexNameIndex = GetTextureIndex(textureNames, material.ToonTextureFileName);
                 _writer.WriteInt32AsVarLenInt(toonTexNameIndex, TexElementSize);
             } else {
                 _writer.Write((byte)toon);
@@ -690,11 +657,12 @@ namespace OpenMLTD.MillionDance.Core {
             _writer.Write(bytes);
         }
 
-        private void BuildTextureNameMap([NotNull] PmxModel model) {
+        [NotNull, ItemNotNull]
+        private string[] BuildTextureNameMap([NotNull] PmxModel model) {
             var materials = model.Materials;
 
             if (materials == null) {
-                return;
+                return Array.Empty<string>();
             }
 
             var nameList = new List<string>();
@@ -713,12 +681,12 @@ namespace OpenMLTD.MillionDance.Core {
                 }
             }
 
-            _textureNameList.AddRange(nameList.Distinct());
+            return nameList.Distinct().ToArray();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetTextureIndex([NotNull] string s) {
-            return _textureNameList.IndexOf(s);
+        private static int GetTextureIndex([NotNull, ItemNotNull] string[] textureNames, [NotNull] string s) {
+            return Array.IndexOf(textureNames, s);
         }
 
         private enum PmxFormatVersion {
@@ -749,9 +717,8 @@ namespace OpenMLTD.MillionDance.Core {
 
         private static readonly Regex ToonNameRegex = new Regex(@"^toon(?<toonIndex>\d+)\.bmp$");
 
-        private BinaryWriter _writer;
-
-        private readonly List<string> _textureNameList = new List<string>();
+        [NotNull]
+        private readonly BinaryWriter _writer;
 
     }
 }

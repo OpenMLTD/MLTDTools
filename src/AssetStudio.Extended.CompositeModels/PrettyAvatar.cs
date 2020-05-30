@@ -11,10 +11,10 @@ namespace AssetStudio.Extended.CompositeModels {
         public abstract string Name { get; }
 
         [NotNull]
-        public abstract Skeleton AvatarSkeleton { get; }
+        public abstract PrettySkeleton AvatarSkeleton { get; }
 
         [NotNull]
-        public abstract SkeletonPose AvatarSkeletonPose { get; }
+        public abstract PrettySkeletonPose AvatarSkeletonPose { get; }
 
         [NotNull]
         public abstract IReadOnlyDictionary<uint, string> BoneNamesMap { get; }

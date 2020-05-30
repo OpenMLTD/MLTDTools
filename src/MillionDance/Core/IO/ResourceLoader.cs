@@ -8,12 +8,11 @@ using AssetStudio.Extended.MonoBehaviours.Serialization;
 using Imas.Data.Serialized;
 using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Extensions;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mltd;
 
-namespace OpenMLTD.MillionDance {
+namespace OpenMLTD.MillionDance.Core.IO {
     internal static class ResourceLoader {
 
         [CanBeNull]
@@ -35,7 +34,7 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentNullException(nameof(mesh), "Body mesh is null.");
                     }
 
-                    result = new MeshWrapper(manager.assetsFileList, mesh, true, true);
+                    result = new MeshWrapper(manager.assetsFileList, mesh, TexturedMaterialExtraProperties.Body);
 
                     break;
                 }
@@ -91,7 +90,7 @@ namespace OpenMLTD.MillionDance {
                         throw new ArgumentNullException(nameof(mesh), "One of head meshes is null.");
                     }
 
-                    var m = new MeshWrapper(manager.assetsFileList, mesh, false, false);
+                    var m = new MeshWrapper(manager.assetsFileList, mesh, TexturedMaterialExtraProperties.Head);
                     meshList.Add(m);
                 }
             }

@@ -63,10 +63,13 @@
     <Compile Include="Core\ConversionConfig.cs" />
     <Compile Include="Core\FrameRate.cs" />
     <Compile Include="Core\IBodyAnimationSource.cs" />
+    <Compile Include="Core\IO\MvdWriter.cs" />
+    <Compile Include="Core\IO\PmxWriter.cs" />
+    <Compile Include="Core\IO\ResourceLoader.cs" />
+    <Compile Include="Core\IO\VmdWriter.cs" />
     <Compile Include="Core\MotionFormat.cs" />
     <Compile Include="Core\MvdCreator.Camera.cs" />
     <Compile Include="Core\MvdCreator.cs" />
-    <Compile Include="Core\MvdWriter.cs" />
     <Compile Include="Core\PmxCreator.ConversionDetails.cs" />
     <Compile Include="Core\PmxCreator.Model.cs" />
     <Compile Include="Core\PmxCreator.Physics.cs" />
@@ -112,7 +115,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GlobalizationHelper.cs" />
-    <Compile Include="ResourceLoader.cs" />
     <Compile Include="Utilities\AnalysesUtils.cs" />
     <Compile Include="Utilities\BoneLookup.cs" />
     <Compile Include="Core\ScalingConfig.cs" />
@@ -178,14 +180,12 @@
     <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="Core\PmxCreator.cs" />
     <Compile Include="Core\PmxReader.cs" />
-    <Compile Include="Core\PmxWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\MorphUtils.cs" />
     <Compile Include="Utilities\RotationDebug.cs" />
     <Compile Include="Core\UnityRotation.cs" />
     <Compile Include="Core\VmdCreator.cs" />
-    <Compile Include="Core\VmdWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FMain.TextBoxTracer.cs">

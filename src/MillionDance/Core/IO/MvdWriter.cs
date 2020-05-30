@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Mvd;
 using OpenMLTD.MillionDance.Extensions;
 
-namespace OpenMLTD.MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core.IO {
     public sealed class MvdWriter : DisposableBase {
 
         public MvdWriter([NotNull] Stream stream) {
@@ -61,68 +61,9 @@ namespace OpenMLTD.MillionDance.Core {
 
                     startId = 0;
 
-                    void WriteCamera(BinaryWriter writer, int id) {
-                        writer.Write((byte)96);
-                        writer.Write((byte)3);
-                        writer.Write(id);
-                        writer.Write(64);
-
-                        writer.Write(cameraMotion.CameraFrames.Count);
-
-                        writer.Write(4);
-                        // stream.Write(BitConverter.GetBytes(cameraSequence.motiondata[boneindex].Count), 0, 4);
-                        // It seems the value is always 1 in our case...
-                        writer.Write(1);
-
-                        var i = 0;
-
-                        foreach (var frame in cameraMotion.CameraFrames) {
-                            writer.Write(i); // layer index
-                            writer.Write(frame.FrameNumber);
-
-                            writer.Write(frame.Distance);
-                            writer.Write(frame.Position);
-                            writer.Write(frame.Rotation);
-                            writer.Write(frame.FieldOfView);
-                            writer.Write(frame.IsSpline);
-
-                            WriteZeroBlocks(writer, 3);
-
-                            writer.Write(frame.TranslationInterpolation);
-                            writer.Write(frame.RotationInterpolation);
-                            writer.Write(frame.DistanceInterpolation);
-                            writer.Write(frame.FovInterpolation);
-                        }
-
-                        ++i;
-                    }
-
-                    void WriteCameraProperty(BinaryWriter writer, int id) {
-                        writer.Write((byte)104);
-                        writer.Write((byte)2);
-                        writer.Write(id);
-                        writer.Write(32);
-
-                        writer.Write(cameraMotion.CameraPropertyFrames.Count); // 1 frame
-                        writer.Write(0);
-
-                        foreach (var frame in cameraMotion.CameraPropertyFrames) {
-                            writer.Write(frame.FrameNumber);
-                            writer.Write(frame.Enabled);
-                            writer.Write(frame.IsPerspective);
-                            writer.Write(frame.Alpha);
-                            writer.Write(frame.EffectEnabled);
-                            writer.Write(frame.DynamicFovEnabled);
-                            writer.Write(frame.DynamicFovRate);
-                            writer.Write(frame.DynamicFovCoefficient);
-                            writer.Write(frame.RelatedModelId);
-                            writer.Write(frame.RelatedBoneId);
-                        }
-                    }
-
-                    WriteCamera(_writer, startId);
+                    WriteCamera(cameraMotion, startId);
                     ++startId;
-                    WriteCameraProperty(_writer, startId);
+                    WriteCameraProperty(cameraMotion, startId);
                     ++startId;
 
                     // Write EOF
@@ -131,6 +72,69 @@ namespace OpenMLTD.MillionDance.Core {
                 }
 
                 WriteCameraMotion(m);
+            }
+        }
+
+        private void WriteCamera([NotNull] MvdCameraMotion cameraMotion, int id) {
+            var writer = _writer;
+
+            writer.Write((byte)96);
+            writer.Write((byte)3);
+            writer.Write(id);
+            writer.Write(64);
+
+            writer.Write(cameraMotion.CameraFrames.Count);
+
+            writer.Write(4);
+            // stream.Write(BitConverter.GetBytes(cameraSequence.motiondata[boneindex].Count), 0, 4);
+            // It seems the value is always 1 in our case...
+            writer.Write(1);
+
+            var i = 0;
+
+            foreach (var frame in cameraMotion.CameraFrames) {
+                writer.Write(i); // layer index
+                writer.Write(frame.FrameNumber);
+
+                writer.Write(frame.Distance);
+                writer.Write(frame.Position);
+                writer.Write(frame.Rotation);
+                writer.Write(frame.FieldOfView);
+                writer.Write(frame.IsSpline);
+
+                WriteZeroBlocks(writer, 3);
+
+                writer.Write(frame.TranslationInterpolation);
+                writer.Write(frame.RotationInterpolation);
+                writer.Write(frame.DistanceInterpolation);
+                writer.Write(frame.FovInterpolation);
+            }
+
+            ++i;
+        }
+
+        private void WriteCameraProperty([NotNull] MvdCameraMotion cameraMotion, int id) {
+            var writer = _writer;
+
+            writer.Write((byte)104);
+            writer.Write((byte)2);
+            writer.Write(id);
+            writer.Write(32);
+
+            writer.Write(cameraMotion.CameraPropertyFrames.Count); // 1 frame
+            writer.Write(0);
+
+            foreach (var frame in cameraMotion.CameraPropertyFrames) {
+                writer.Write(frame.FrameNumber);
+                writer.Write(frame.Enabled);
+                writer.Write(frame.IsPerspective);
+                writer.Write(frame.Alpha);
+                writer.Write(frame.EffectEnabled);
+                writer.Write(frame.DynamicFovEnabled);
+                writer.Write(frame.DynamicFovRate);
+                writer.Write(frame.DynamicFovCoefficient);
+                writer.Write(frame.RelatedModelId);
+                writer.Write(frame.RelatedBoneId);
             }
         }
 

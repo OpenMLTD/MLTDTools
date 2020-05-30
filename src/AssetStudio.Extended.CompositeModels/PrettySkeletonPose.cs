@@ -2,13 +2,13 @@
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.CompositeModels {
-    public sealed class SkeletonPose {
+    public sealed class PrettySkeletonPose {
 
-        internal SkeletonPose([NotNull, ItemNotNull] RawTransform[] transforms) {
+        internal PrettySkeletonPose([NotNull, ItemNotNull] RawTransform[] transforms) {
             Transforms = transforms;
         }
 
-        internal SkeletonPose([NotNull] AssetStudio.SkeletonPose pose) {
+        internal PrettySkeletonPose([NotNull] SkeletonPose pose) {
             var transformCount = pose.m_X.Length;
             var transforms = new RawTransform[transformCount];
 

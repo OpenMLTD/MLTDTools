@@ -1,9 +1,9 @@
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.CompositeModels {
-    public sealed class SubMesh {
+    public sealed class PrettySubMesh {
 
-        internal SubMesh(uint firstIndex, uint indexCount, PrimitiveType topology, uint triangleCount, uint firstVertex, uint vertexCount, AABB boundingBox, [NotNull] TexturedMaterial material) {
+        internal PrettySubMesh(uint firstIndex, uint indexCount, PrimitiveType topology, uint triangleCount, uint firstVertex, uint vertexCount, AABB boundingBox, [NotNull] TexturedMaterial material) {
             FirstIndex = firstIndex;
             IndexCount = indexCount;
             Topology = topology;
@@ -14,7 +14,7 @@ namespace AssetStudio.Extended.CompositeModels {
             Material = material;
         }
 
-        internal SubMesh(uint firstIndex, [NotNull] AssetStudio.SubMesh mesh, [NotNull] TexturedMaterial material) {
+        internal PrettySubMesh(uint firstIndex, [NotNull] AssetStudio.SubMesh mesh, [NotNull] TexturedMaterial material) {
             FirstIndex = firstIndex;
             IndexCount = mesh.indexCount;
             Topology = (PrimitiveType)mesh.topology;

@@ -10,7 +10,7 @@ namespace AssetStudio.Extended.CompositeModels {
         public abstract string Name { get; }
 
         [NotNull]
-        public abstract SubMesh[] SubMeshes { get; }
+        public abstract PrettySubMesh[] SubMeshes { get; }
 
         [NotNull]
         public abstract uint[] Indices { get; }

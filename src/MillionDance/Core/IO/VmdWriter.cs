@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Vmd;
 using OpenMLTD.MillionDance.Extensions;
 
-namespace OpenMLTD.MillionDance.Core {
+namespace OpenMLTD.MillionDance.Core.IO {
     public sealed class VmdWriter : DisposableBase {
 
         public VmdWriter([NotNull] Stream stream) {
@@ -28,57 +28,57 @@ namespace OpenMLTD.MillionDance.Core {
 
             WriteString(motion.ModelName, 20);
 
-            WriteBoneFrames();
-            WriteFacialFrames();
-            WriteCameraFrames();
-            WriteLightFrames();
+            WriteBoneFrames(motion);
+            WriteFacialFrames(motion);
+            WriteCameraFrames(motion);
+            WriteLightFrames(motion);
 
             _writer.Write(new byte[4]);
 
-            WriteIkFrames();
+            WriteIkFrames(motion);
+        }
 
-            void WriteBoneFrames() {
-                _writer.Write(motion.BoneFrames.Count);
+        private void WriteBoneFrames([NotNull] VmdMotion motion) {
+            _writer.Write(motion.BoneFrames.Count);
 
-                foreach (var frame in motion.BoneFrames) {
-                    WriteBoneFrame(frame);
-                }
+            foreach (var frame in motion.BoneFrames) {
+                WriteBoneFrame(frame);
+            }
+        }
+
+        private void WriteFacialFrames([NotNull] VmdMotion motion) {
+            _writer.Write(motion.FacialFrames.Count);
+
+            foreach (var frame in motion.FacialFrames) {
+                WriteFacialFrame(frame);
+            }
+        }
+
+        private void WriteCameraFrames([NotNull] VmdMotion motion) {
+            _writer.Write(motion.CameraFrames.Count);
+
+            foreach (var frame in motion.CameraFrames) {
+                WriteCameraFrame(frame);
+            }
+        }
+
+        private void WriteLightFrames([NotNull] VmdMotion motion) {
+            _writer.Write(motion.LightFrames.Count);
+
+            foreach (var frame in motion.LightFrames) {
+                WriteLightFrame(frame);
+            }
+        }
+
+        private void WriteIkFrames([NotNull] VmdMotion motion) {
+            if (motion.IkFrames == null) {
+                return;
             }
 
-            void WriteFacialFrames() {
-                _writer.Write(motion.FacialFrames.Count);
+            _writer.Write(motion.IkFrames.Count);
 
-                foreach (var frame in motion.FacialFrames) {
-                    WriteFacialFrame(frame);
-                }
-            }
-
-            void WriteCameraFrames() {
-                _writer.Write(motion.CameraFrames.Count);
-
-                foreach (var frame in motion.CameraFrames) {
-                    WriteCameraFrame(frame);
-                }
-            }
-
-            void WriteLightFrames() {
-                _writer.Write(motion.LightFrames.Count);
-
-                foreach (var frame in motion.LightFrames) {
-                    WriteLightFrame(frame);
-                }
-            }
-
-            void WriteIkFrames() {
-                if (motion.IkFrames == null) {
-                    return;
-                }
-
-                _writer.Write(motion.IkFrames.Count);
-
-                foreach (var frame in motion.IkFrames) {
-                    WriteIkFrame(frame);
-                }
+            foreach (var frame in motion.IkFrames) {
+                WriteIkFrame(frame);
             }
         }
 

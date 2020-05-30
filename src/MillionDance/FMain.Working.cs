@@ -335,12 +335,12 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var lipVmd = creator.CreateFacialExpressions(facialExpr, p.SongPosition);
+                        var facialVmd = creator.CreateFacialExpressions(facialExpr, p.SongPosition);
 
                         Log("Saving facial expressions...");
 
                         using (var w = new VmdWriter(File.Open(p.OutputFacialExpressions, FileMode.Create, FileAccess.Write, FileShare.Write))) {
-                            w.Write(lipVmd);
+                            w.Write(facialVmd);
                         }
                     }
 

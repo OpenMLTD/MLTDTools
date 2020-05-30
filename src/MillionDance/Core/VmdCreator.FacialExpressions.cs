@@ -54,10 +54,23 @@ namespace OpenMLTD.MillionDance.Core {
             Debug.Assert(lipSyncControls[lipSyncControls.Length - 1].Param == 54, "The last control op should be 54.");
 
             const float lipTransitionTime = 0.2f;
+            var lastFrameTime = float.NaN;
 
             for (var i = 0; i < lipSyncControls.Length; i++) {
                 var sync = lipSyncControls[i];
                 var currentTime = (float)sync.AbsoluteTime;
+
+                if (currentTime < 0) {
+                    // Some facial control frames have negative time, which eventually leads to negative frame indices when writing VMD file.
+                    // MMM interprets this as uint64 (read int32 -> convert to int64 -> unchecked convert to uint64), MMD interprets this as int32.
+                    // Both of them crash on negative frame indices. We have to avoid that.
+                    continue;
+                }
+
+                if (float.IsNaN(lastFrameTime) && !currentTime.Equals(0)) {
+                    // Manually insert a silence frame at the beginning.
+                    AddSilenceFrame(frameList, 0);
+                }
 
                 var isSinging = IsSingingAt(singControls, singControlTimes, sync.AbsoluteTime, idolPosition);
 
@@ -123,12 +136,7 @@ namespace OpenMLTD.MillionDance.Core {
                             break;
                         }
                         case LipCode.Closed: {
-                            frameList.Add(CreateFacialFrame(currentTime, "M_a", 0));
-                            frameList.Add(CreateFacialFrame(currentTime, "M_i", 0));
-                            frameList.Add(CreateFacialFrame(currentTime, "M_u", 0));
-                            frameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
-                            frameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
-                            frameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
+                            AddSilenceFrame(frameList, currentTime);
                             break;
                         }
                         default:
@@ -136,16 +144,22 @@ namespace OpenMLTD.MillionDance.Core {
                     }
                 } else {
                     // Muted
-                    frameList.Add(CreateFacialFrame(currentTime, "M_a", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_i", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_u", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
-                    frameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
+                    AddSilenceFrame(frameList, currentTime);
                 }
+
+                lastFrameTime = currentTime;
             }
 
             return frameList;
+        }
+
+        private void AddSilenceFrame([NotNull, ItemNotNull] List<VmdFacialFrame> frameList, float currentTime) {
+            frameList.Add(CreateFacialFrame(currentTime, "M_a", 0));
+            frameList.Add(CreateFacialFrame(currentTime, "M_i", 0));
+            frameList.Add(CreateFacialFrame(currentTime, "M_u", 0));
+            frameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
+            frameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
+            frameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
         }
 
         [NotNull, ItemNotNull]

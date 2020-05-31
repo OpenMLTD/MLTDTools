@@ -49,9 +49,9 @@ namespace OpenMLTD.MillionDance.Core {
             var singControls = singControlList.ToArray();
             var singControlTimes = singControls.Select(s => s.AbsoluteTime).ToArray();
 
-            Debug.Assert(lipSyncControls.Length > 0, "Lip-sync controls should exist.");
-            Debug.Assert(lipSyncControls[0].Param == 54, "The first control op should be 54.");
-            Debug.Assert(lipSyncControls[lipSyncControls.Length - 1].Param == 54, "The last control op should be 54.");
+            Trace.Assert(lipSyncControls.Length > 0, "Lip-sync controls should exist.");
+            Trace.Assert(lipSyncControls[0].Param == (int)LipCode.Closed, "The first control op should be 54.");
+            Trace.Assert(lipSyncControls[lipSyncControls.Length - 1].Param == (int)LipCode.Closed, "The last control op should be 54.");
 
             var lastFrameTime = float.NaN;
 
@@ -82,6 +82,8 @@ namespace OpenMLTD.MillionDance.Core {
                         case LipCode.U:
                         case LipCode.E:
                         case LipCode.O:
+                        case LipCode.E2:
+                        case LipCode.U2:
                         case LipCode.N: {
                             // The whole song ends with a "mouse-closed" (54) op.
                             Debug.Assert(i < lipSyncControls.Length - 1, "The song should end with control op 54 (mouse closed).");
@@ -98,9 +100,11 @@ namespace OpenMLTD.MillionDance.Core {
                                     morphName = "M_i";
                                     break;
                                 case LipCode.U:
+                                case LipCode.U2:
                                     morphName = "M_u";
                                     break;
                                 case LipCode.E:
+                                case LipCode.E2:
                                     morphName = "M_e";
                                     break;
                                 case LipCode.O:
@@ -385,6 +389,12 @@ namespace OpenMLTD.MillionDance.Core {
             N = 50,
 
             Closed = 54,
+
+            // アライブファクター (alivef) at frame 5481 @60fps, kind of... interpolation(?) between "わ" and "た"
+            E2 = 55,
+
+            // アライブファクター (alivef) at frame 6207 @60fps, pronouncing "す"
+            U2 = 57,
 
         }
 

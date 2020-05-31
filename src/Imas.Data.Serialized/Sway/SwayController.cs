@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using AssetStudio;
 using JetBrains.Annotations;
 
@@ -172,11 +173,45 @@ namespace Imas.Data.Serialized.Sway {
                     case "sidelineMoveLimit":
                         manager.SideLineMoveLimit = Convert.ToSingle(kv.Value);
                         break;
+                    case "isSpread":
+                        manager.IsSpread = Convert.ToBoolean(kv.Value);
+                        break;
                     default:
-                        Debug.Print("Unknown manager property key/value: {0} / {1}", kv.Key, kv.Value);
-                        setAProp = false;
                         break;
                 }
+
+                do {
+                    var match = ThresholdNameRegex.Match(kv.Key);
+                    int key, index;
+                    float value;
+
+                    if (match.Success) {
+                        key = Convert.ToInt32(match.Groups["key"].Value);
+                        value = Convert.ToSingle(kv.Value);
+                        manager.AddThreshold(key, value);
+                        break;
+                    }
+
+                    match = SpreadZRotNameRegex.Match(kv.Key);
+
+                    if (match.Success) {
+                        key = Convert.ToInt32(match.Groups["key"].Value);
+                        value = Convert.ToSingle(kv.Value);
+                        manager.AddSpreadZRotation(key, value);
+                    }
+
+                    match = PushRatioNameRegex.Match(kv.Key);
+
+                    if (match.Success) {
+                        key = Convert.ToInt32(match.Groups["key"].Value);
+                        index = Convert.ToInt32(match.Groups["index"].Value);
+                        value = Convert.ToSingle(kv.Value);
+                        manager.AddPushRatio(key, index, value);
+                    }
+
+                    Debug.Print("Unknown manager property key/value: {0} / {1}", kv.Key, kv.Value);
+                    setAProp = false;
+                } while (false);
 
                 anyPropSet = anyPropSet || setAProp;
 
@@ -314,6 +349,9 @@ namespace Imas.Data.Serialized.Sway {
                     case "HitMuteRate":
                         bone.HitMuteRate = Convert.ToSingle(kv.Value);
                         break;
+                    case "isZConstraint":
+                        bone.IsZConstraint = Convert.ToBoolean(kv.Value);
+                        break;
                     case "limitAngle":
                         bone.HasAngleLimit = Convert.ToBoolean(kv.Value);
                         break;
@@ -388,8 +426,9 @@ namespace Imas.Data.Serialized.Sway {
                         }
 
                         bone.ColliderPaths = colliderPathList.ToArray();
-                    }
+
                         break;
+                    }
                     case "sideLink":
                         bone.SideLinkPath = kv.Value;
                         break;
@@ -524,7 +563,17 @@ namespace Imas.Data.Serialized.Sway {
         [NotNull]
         private static readonly char[] OptKeyStart = { ' ' };
 
+        [NotNull]
         private static readonly char[] ParamSeps = { ',' };
+
+        [NotNull]
+        private static readonly Regex ThresholdNameRegex = new Regex(@"^threshold(?<key>\d+)$", RegexOptions.CultureInvariant | RegexOptions.ECMAScript);
+
+        [NotNull]
+        private static readonly Regex SpreadZRotNameRegex = new Regex(@"^SpreadZRot(?<key>\d+)$", RegexOptions.CultureInvariant | RegexOptions.ECMAScript);
+
+        [NotNull]
+        private static readonly Regex PushRatioNameRegex = new Regex(@"^pushRatio(?<key>\d+)_(?<index>\d+)$", RegexOptions.CultureInvariant | RegexOptions.ECMAScript);
 
     }
 }

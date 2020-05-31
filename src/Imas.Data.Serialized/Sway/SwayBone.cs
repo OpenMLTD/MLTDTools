@@ -19,6 +19,8 @@ namespace Imas.Data.Serialized.Sway {
 
         public float HitMuteRate { get; internal set; }
 
+        public bool IsZConstraint { get; internal set; }
+
         public bool HasAngleLimit { get; internal set; }
 
         public bool UseBindingDirection { get; internal set; }

@@ -59,9 +59,11 @@ namespace OpenMLTD.MillionDance {
 
             public bool ImportPhysics { get; set; }
 
-            public bool GameStyledToon { get; set; }
+            public bool ApplyGameStyledToon { get; set; }
 
-            public int ToonNumber { get; set; }
+            public int SkinToonNumber { get; set; }
+
+            public int ClothesToonNumber { get; set; }
 
             public bool TransformTo30Fps { get; set; }
 

@@ -77,7 +77,8 @@ namespace OpenMLTD.MillionDance {
         }
 
         private void ChkGameToon_CheckedChanged(object sender, EventArgs e) {
-            cboGameToonNumber.Enabled = chkGameToon.Checked;
+            cboGameToonSkinNumber.Enabled = chkGameToon.Checked;
+            cboGameToonClothesNumber.Enabled = chkGameToon.Checked;
         }
 
         private void BtnOptSelectFEMappings_Click(object sender, EventArgs e) {
@@ -195,7 +196,8 @@ namespace OpenMLTD.MillionDance {
 
         private void FMain_Load(object sender, EventArgs e) {
             cboOptSongPosition.SelectedIndex = 0;
-            cboGameToonNumber.SelectedIndex = 4; // toon05, looks closest to MLTD models
+            cboGameToonSkinNumber.SelectedIndex = 5 - 1; // toon05, looks closest to MLTD models
+            cboGameToonClothesNumber.SelectedIndex = 4 - 1; // toon 04, less yellow-ish
 
             // globalization: Decimal point affects parsing result. Bear in mind.
             // In custom numeric format string, the "." means decimal point, which will be correctly translated to target culture.
@@ -413,8 +415,9 @@ namespace OpenMLTD.MillionDance {
                 ip.HideUnityGeneratedBones = chkOptHideUnityGenBones.Checked;
                 ip.TranslateFacialExpressionNames = chkOptTranslateFacialExpressionNames.Checked;
                 ip.ImportPhysics = chkOptImportPhysics.Checked;
-                ip.GameStyledToon = chkGameToon.Checked;
-                ip.ToonNumber = cboGameToonNumber.SelectedIndex + 1;
+                ip.ApplyGameStyledToon = chkGameToon.Checked;
+                ip.SkinToonNumber = cboGameToonSkinNumber.SelectedIndex + 1;
+                ip.ClothesToonNumber = cboGameToonClothesNumber.SelectedIndex + 1;
 
                 ip.TransformTo30Fps = radOptAnimFrameRate30.Checked;
                 ip.ScaleVmd = chkOptScaleVmd.Checked;

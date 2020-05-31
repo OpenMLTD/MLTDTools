@@ -244,7 +244,7 @@ namespace OpenMLTD.MillionDance {
                         var boneLookup = new BoneLookup(conversionConfig);
 
                         var pmxCreator = new PmxCreator(conversionConfig, scalingConfig, boneLookup);
-                        var pmxConversionDetails = new PmxCreator.ConversionDetails(texPrefix, p.GameStyledToon, p.ToonNumber);
+                        var pmxConversionDetails = new PmxCreator.ConversionDetails(texPrefix, p.ApplyGameStyledToon, p.SkinToonNumber, p.ClothesToonNumber);
 
                         pmx = pmxCreator.CreateModel(combinedAvatar, combinedMesh, bodyMeshVertexCount, bodySway, headSway, pmxConversionDetails, out materialList);
                     } else {

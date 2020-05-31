@@ -47,7 +47,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.cboGameToonNumber = new System.Windows.Forms.ComboBox();
+            this.cboGameToonSkinNumber = new System.Windows.Forms.ComboBox();
             this.chkGameToon = new System.Windows.Forms.CheckBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -110,6 +110,9 @@
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.cboGameToonClothesNumber = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -357,7 +360,10 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.cboGameToonNumber);
+            this.tabPage1.Controls.Add(this.label23);
+            this.tabPage1.Controls.Add(this.cboGameToonClothesNumber);
+            this.tabPage1.Controls.Add(this.label22);
+            this.tabPage1.Controls.Add(this.cboGameToonSkinNumber);
             this.tabPage1.Controls.Add(this.chkGameToon);
             this.tabPage1.Controls.Add(this.label16);
             this.tabPage1.Controls.Add(this.label15);
@@ -382,11 +388,11 @@
             this.tabPage1.Text = "Model";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // cboGameToonNumber
+            // cboGameToonSkinNumber
             // 
-            this.cboGameToonNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboGameToonNumber.FormattingEnabled = true;
-            this.cboGameToonNumber.Items.AddRange(new object[] {
+            this.cboGameToonSkinNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGameToonSkinNumber.FormattingEnabled = true;
+            this.cboGameToonSkinNumber.Items.AddRange(new object[] {
             "toon01",
             "toon02",
             "toon03",
@@ -397,10 +403,10 @@
             "toon08",
             "toon09",
             "toon10"});
-            this.cboGameToonNumber.Location = new System.Drawing.Point(174, 248);
-            this.cboGameToonNumber.Name = "cboGameToonNumber";
-            this.cboGameToonNumber.Size = new System.Drawing.Size(114, 21);
-            this.cboGameToonNumber.TabIndex = 26;
+            this.cboGameToonSkinNumber.Location = new System.Drawing.Point(163, 248);
+            this.cboGameToonSkinNumber.Name = "cboGameToonSkinNumber";
+            this.cboGameToonSkinNumber.Size = new System.Drawing.Size(84, 21);
+            this.cboGameToonSkinNumber.TabIndex = 26;
             // 
             // chkGameToon
             // 
@@ -1022,6 +1028,44 @@
             this.btnClearLog.Text = "&Clear Log";
             this.btnClearLog.UseVisualStyleBackColor = true;
             // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(128, 251);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(29, 13);
+            this.label22.TabIndex = 27;
+            this.label22.Text = "skin:";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(260, 251);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(44, 13);
+            this.label23.TabIndex = 29;
+            this.label23.Text = "clothes:";
+            // 
+            // cboGameToonClothesNumber
+            // 
+            this.cboGameToonClothesNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGameToonClothesNumber.FormattingEnabled = true;
+            this.cboGameToonClothesNumber.Items.AddRange(new object[] {
+            "toon01",
+            "toon02",
+            "toon03",
+            "toon04",
+            "toon05",
+            "toon06",
+            "toon07",
+            "toon08",
+            "toon09",
+            "toon10"});
+            this.cboGameToonClothesNumber.Location = new System.Drawing.Point(310, 250);
+            this.cboGameToonClothesNumber.Name = "cboGameToonClothesNumber";
+            this.cboGameToonClothesNumber.Size = new System.Drawing.Size(84, 21);
+            this.cboGameToonClothesNumber.TabIndex = 28;
+            // 
             // FMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1215,7 +1259,7 @@
         private System.Windows.Forms.RadioButton radFESourcePortrait;
         private System.Windows.Forms.RadioButton radFESourceLandscape;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.ComboBox cboGameToonNumber;
+        private System.Windows.Forms.ComboBox cboGameToonSkinNumber;
         private System.Windows.Forms.CheckBox chkGameToon;
         private System.Windows.Forms.CheckBox chkGenerateFacialExpression;
         private System.Windows.Forms.CheckBox chkGenerateLipSync;
@@ -1225,5 +1269,8 @@
         private System.Windows.Forms.Button btnOutputLipSync;
         private System.Windows.Forms.TextBox txtOutputLipSync;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.ComboBox cboGameToonClothesNumber;
+        private System.Windows.Forms.Label label22;
     }
 }

@@ -664,9 +664,10 @@ namespace OpenMLTD.MillionDance.Core {
             for (var i = 0; i < materialCount; ++i) {
                 var subMesh = combinedMesh.SubMeshes[i];
                 var material = new PmxMaterial();
+                var materialName = subMesh.Material.MaterialName;
 
-                material.Name = subMesh.Material.MaterialName;
-                material.NameEnglish = subMesh.Material.MaterialName;
+                material.Name = materialName;
+                material.NameEnglish = materialName;
                 material.AppliedFaceVertexCount = (int)subMesh.IndexCount;
                 material.Ambient = new Vector3(0.5f, 0.5f, 0.5f);
                 material.Diffuse = Vector4.One;
@@ -675,21 +676,35 @@ namespace OpenMLTD.MillionDance.Core {
                 material.EdgeSize = 1.0f;
                 material.TextureFileName = GetExportedTextureFileName(details.TexturePrefix, i);
 
-                if (details.ApplyToon) {
-                    var shouldExcludeToon =
-                        subMesh.Material.MaterialName.Contains("face") ||
-                        subMesh.Material.MaterialName.Contains("hair");
+                string toonStr = null;
+                var materialFlags = MaterialFlags.Shadow | MaterialFlags.CullNone | MaterialFlags.Edge;
 
-                    if (!shouldExcludeToon) {
+                if (materialName.Contains("face") || materialName.Contains("hair")) {
+                    // Facial skin and hair, should not apply toon
+                    toonStr = null;
+                } else if (materialName.Contains("skin")) {
+                    if (details.ApplyToon) {
                         // Only apply toon on body, not on head. (Shadows on head is pre-baked.)
                         // (What about accessories on head? Currently we also apply toon on them.)
                         // "BNSI seems to call this technique 'lively toon'?" - wikisong
-                        var toonStr = details.ToonNumber.ToString("00");
-                        material.ToonTextureFileName = $"toon{toonStr}.bmp";
+                        toonStr = details.SkinToonNumber.ToString("00");
                     }
+
+                    materialFlags = materialFlags | MaterialFlags.Shadow | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap;
+                } else {
+                    if (details.ApplyToon) {
+                        // Clothes
+                        toonStr = details.ClothesToonNumber.ToString("00");
+                    }
+
+                    materialFlags = materialFlags | MaterialFlags.Shadow | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap;
                 }
 
-                material.Flags = MaterialFlags.Shadow | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap | MaterialFlags.CullNone | MaterialFlags.Edge;
+                if (toonStr != null) {
+                    material.ToonTextureFileName = $"toon{toonStr}.bmp";
+                }
+
+                material.Flags = materialFlags;
 
                 materials[i] = material;
                 materialList[i] = (material.TextureFileName, subMesh.Material);

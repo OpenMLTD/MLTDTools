@@ -5,10 +5,11 @@ namespace OpenMLTD.MillionDance.Core {
 
         public sealed class ConversionDetails {
 
-            internal ConversionDetails([NotNull] string texturePrefix, bool applyToon, int toonNumber) {
+            internal ConversionDetails([NotNull] string texturePrefix, bool applyToon, int skinToonNumber, int clothesToonNumber) {
                 TexturePrefix = texturePrefix;
                 ApplyToon = applyToon;
-                ToonNumber = toonNumber;
+                SkinToonNumber = skinToonNumber;
+                ClothesToonNumber = clothesToonNumber;
             }
 
             [NotNull]
@@ -16,7 +17,9 @@ namespace OpenMLTD.MillionDance.Core {
 
             public bool ApplyToon { get; }
 
-            public int ToonNumber { get; }
+            public int SkinToonNumber { get; }
+
+            public int ClothesToonNumber { get; }
 
         }
 

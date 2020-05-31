@@ -47,6 +47,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label23 = new System.Windows.Forms.Label();
+            this.cboGameToonClothesNumber = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
             this.cboGameToonSkinNumber = new System.Windows.Forms.ComboBox();
             this.chkGameToon = new System.Windows.Forms.CheckBox();
             this.label16 = new System.Windows.Forms.Label();
@@ -110,9 +113,6 @@
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.cboGameToonClothesNumber = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -388,6 +388,44 @@
             this.tabPage1.Text = "Model";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(268, 251);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(44, 13);
+            this.label23.TabIndex = 29;
+            this.label23.Text = "clothes:";
+            // 
+            // cboGameToonClothesNumber
+            // 
+            this.cboGameToonClothesNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGameToonClothesNumber.FormattingEnabled = true;
+            this.cboGameToonClothesNumber.Items.AddRange(new object[] {
+            "toon01",
+            "toon02",
+            "toon03",
+            "toon04",
+            "toon05",
+            "toon06",
+            "toon07",
+            "toon08",
+            "toon09",
+            "toon10"});
+            this.cboGameToonClothesNumber.Location = new System.Drawing.Point(318, 248);
+            this.cboGameToonClothesNumber.Name = "cboGameToonClothesNumber";
+            this.cboGameToonClothesNumber.Size = new System.Drawing.Size(67, 21);
+            this.cboGameToonClothesNumber.TabIndex = 28;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(128, 251);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(61, 13);
+            this.label22.TabIndex = 27;
+            this.label22.Text = "skin (body):";
+            // 
             // cboGameToonSkinNumber
             // 
             this.cboGameToonSkinNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -403,9 +441,9 @@
             "toon08",
             "toon09",
             "toon10"});
-            this.cboGameToonSkinNumber.Location = new System.Drawing.Point(163, 248);
+            this.cboGameToonSkinNumber.Location = new System.Drawing.Point(195, 248);
             this.cboGameToonSkinNumber.Name = "cboGameToonSkinNumber";
-            this.cboGameToonSkinNumber.Size = new System.Drawing.Size(84, 21);
+            this.cboGameToonSkinNumber.Size = new System.Drawing.Size(67, 21);
             this.cboGameToonSkinNumber.TabIndex = 26;
             // 
             // chkGameToon
@@ -567,27 +605,27 @@
             // 
             this.panel1.Controls.Add(this.radOptMotionSourceMmd);
             this.panel1.Controls.Add(this.radOptMotionSourceMltd);
-            this.panel1.Location = new System.Drawing.Point(101, 5);
+            this.panel1.Location = new System.Drawing.Point(131, 6);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(302, 21);
+            this.panel1.Size = new System.Drawing.Size(239, 21);
             this.panel1.TabIndex = 11;
             // 
             // radOptMotionSourceMmd
             // 
             this.radOptMotionSourceMmd.AutoSize = true;
             this.radOptMotionSourceMmd.Enabled = false;
-            this.radOptMotionSourceMmd.Location = new System.Drawing.Point(86, 3);
+            this.radOptMotionSourceMmd.Location = new System.Drawing.Point(80, 0);
             this.radOptMotionSourceMmd.Name = "radOptMotionSourceMmd";
-            this.radOptMotionSourceMmd.Size = new System.Drawing.Size(119, 17);
+            this.radOptMotionSourceMmd.Size = new System.Drawing.Size(159, 17);
             this.radOptMotionSourceMmd.TabIndex = 1;
-            this.radOptMotionSourceMmd.Text = "MMD (experimental)";
+            this.radOptMotionSourceMmd.Text = "Generic MMD (experimental)";
             this.radOptMotionSourceMmd.UseVisualStyleBackColor = true;
             // 
             // radOptMotionSourceMltd
             // 
             this.radOptMotionSourceMltd.AutoSize = true;
             this.radOptMotionSourceMltd.Checked = true;
-            this.radOptMotionSourceMltd.Location = new System.Drawing.Point(3, 3);
+            this.radOptMotionSourceMltd.Location = new System.Drawing.Point(3, 0);
             this.radOptMotionSourceMltd.Name = "radOptMotionSourceMltd";
             this.radOptMotionSourceMltd.Size = new System.Drawing.Size(55, 17);
             this.radOptMotionSourceMltd.TabIndex = 0;
@@ -600,9 +638,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(6, 8);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(77, 13);
+            this.label5.Size = new System.Drawing.Size(114, 13);
             this.label5.TabIndex = 10;
-            this.label5.Text = "Motion source:";
+            this.label5.Text = "Use model for motions:";
             // 
             // tabPage2
             // 
@@ -1027,44 +1065,6 @@
             this.btnClearLog.TabIndex = 6;
             this.btnClearLog.Text = "&Clear Log";
             this.btnClearLog.UseVisualStyleBackColor = true;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(128, 251);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(29, 13);
-            this.label22.TabIndex = 27;
-            this.label22.Text = "skin:";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(260, 251);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(44, 13);
-            this.label23.TabIndex = 29;
-            this.label23.Text = "clothes:";
-            // 
-            // cboGameToonClothesNumber
-            // 
-            this.cboGameToonClothesNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboGameToonClothesNumber.FormattingEnabled = true;
-            this.cboGameToonClothesNumber.Items.AddRange(new object[] {
-            "toon01",
-            "toon02",
-            "toon03",
-            "toon04",
-            "toon05",
-            "toon06",
-            "toon07",
-            "toon08",
-            "toon09",
-            "toon10"});
-            this.cboGameToonClothesNumber.Location = new System.Drawing.Point(310, 250);
-            this.cboGameToonClothesNumber.Name = "cboGameToonClothesNumber";
-            this.cboGameToonClothesNumber.Size = new System.Drawing.Size(84, 21);
-            this.cboGameToonClothesNumber.TabIndex = 28;
             // 
             // FMain
             // 

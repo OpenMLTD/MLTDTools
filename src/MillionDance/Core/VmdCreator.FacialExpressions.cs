@@ -53,7 +53,6 @@ namespace OpenMLTD.MillionDance.Core {
             Debug.Assert(lipSyncControls[0].Param == 54, "The first control op should be 54.");
             Debug.Assert(lipSyncControls[lipSyncControls.Length - 1].Param == 54, "The last control op should be 54.");
 
-            const float lipTransitionTime = 0.2f;
             var lastFrameTime = float.NaN;
 
             for (var i = 0; i < lipSyncControls.Length; i++) {
@@ -116,8 +115,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                             var prevTime = (float)lipSyncControls[i - 1].AbsoluteTime;
 
-                            if (currentTime - prevTime > lipTransitionTime) {
-                                frameList.Add(CreateFacialFrame(currentTime - lipTransitionTime, morphName, 0));
+                            if (currentTime - prevTime > LipTransitionTime) {
+                                frameList.Add(CreateFacialFrame(currentTime - LipTransitionTime, morphName, 0));
                             } else {
                                 frameList.Add(CreateFacialFrame(prevTime, morphName, 0));
                             }
@@ -126,8 +125,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                             var nextTime = (float)lipSyncControls[i + 1].AbsoluteTime;
 
-                            if (nextTime - currentTime > lipTransitionTime) {
-                                frameList.Add(CreateFacialFrame(nextTime - lipTransitionTime, morphName, 1));
+                            if (nextTime - currentTime > LipTransitionTime) {
+                                frameList.Add(CreateFacialFrame(nextTime - LipTransitionTime, morphName, 1));
                                 frameList.Add(CreateFacialFrame(nextTime, morphName, 0));
                             } else {
                                 frameList.Add(CreateFacialFrame(nextTime, morphName, 0));
@@ -177,7 +176,6 @@ namespace OpenMLTD.MillionDance.Core {
                 var exp = expControls[i];
                 var currentTime = (float)exp.AbsoluteTime;
 
-                const float eyeBlinkTime = 0.1f;
                 bool areEyesOpen;
 
                 var eyesClosedRatio = exp.EyeClosed ? 1.0f : 0.0f;
@@ -187,8 +185,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                 if (i > 0) {
                     if (expControls[i - 1].EyeClosed != exp.EyeClosed) {
-                        frameList.Add(CreateFacialFrame(currentTime - eyeBlinkTime, "E_metoji_r", 1 - eyesClosedRatio));
-                        frameList.Add(CreateFacialFrame(currentTime - eyeBlinkTime, "E_metoji_l", 1 - eyesClosedRatio));
+                        frameList.Add(CreateFacialFrame(currentTime - HalfEyeBlinkTime, "E_metoji_r", 1 - eyesClosedRatio));
+                        frameList.Add(CreateFacialFrame(currentTime - HalfEyeBlinkTime, "E_metoji_l", 1 - eyesClosedRatio));
                     }
                 }
 
@@ -205,7 +203,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                         if (i < expControls.Length - 1) {
                             if (expControls[i + 1].EyeClosed) {
-                                if (currentTime >= expControls[i + 1].AbsoluteTime - eyeBlinkTime) {
+                                if (currentTime >= expControls[i + 1].AbsoluteTime - HalfEyeBlinkTime) {
                                     areEyesOpen = false;
                                     break;
                                 }
@@ -225,8 +223,6 @@ namespace OpenMLTD.MillionDance.Core {
 
                         expressionKey = 0;
                     }
-
-                    const float exprTransitionTime = 0.1333333f;
 
                     foreach (var kv in mappings[expressionKey]) {
                         var morphName = kv.Key;
@@ -256,7 +252,7 @@ namespace OpenMLTD.MillionDance.Core {
                                 lastExpressionKey = 0;
                             }
 
-                            var expectedTransitionStartTime = currentTime - exprTransitionTime;
+                            var expectedTransitionStartTime = currentTime - FacialExpressionTransitionTime;
 
                             foreach (var kv in mappings[lastExpressionKey]) {
                                 var morphName = kv.Key;
@@ -361,6 +357,18 @@ namespace OpenMLTD.MillionDance.Core {
             "E_open_l",
             "E_open_r",
         };
+
+        private const float LipTransitionTime = 0.1f;
+
+        // Wikipedia:
+        // The duration of a blink is on average 100–150 milliseconds according to UCL researcher and
+        // between 100–400 ms according to the Harvard Database of Useful Biological Numbers.
+        //
+        // Since we should consider both 30fps and 60fps, the minimum resolution for halfEyeBlinkTime is
+        // 1/30s (0.0333s).
+        private const float HalfEyeBlinkTime = 0.120f / 2;
+
+        private const float FacialExpressionTransitionTime = 0.1f;
 
         private enum LipCode {
 

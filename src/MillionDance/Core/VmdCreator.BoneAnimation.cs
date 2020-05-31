@@ -77,6 +77,9 @@ namespace OpenMLTD.MillionDance.Core {
                 boneMatchPredicateCache[j] = bone => bone.Name == refBone.Name;
             }
 
+            // Cache `mltdBoneName`s so we don't have to compute them all in every iteration
+            var boneNameCache = new Dictionary<string, string>();
+
             // OK, now perform iterations
             for (var i = 0; i < iterationTimes; ++i) {
                 if (_conversionConfig.Transform60FpsTo30Fps) {
@@ -89,7 +92,20 @@ namespace OpenMLTD.MillionDance.Core {
 
                 for (var j = 0; j < animatedBoneCount; ++j) {
                     var keyFrame = animation.KeyFrames[keyFrameIndexStart + j];
-                    var mltdBoneName = keyFrame.Path.Replace("BODY_SCALE/", string.Empty);
+                    string mltdBoneName;
+
+                    if (boneNameCache.ContainsKey(keyFrame.Path)) {
+                        mltdBoneName = boneNameCache[keyFrame.Path];
+                    } else {
+                        if (keyFrame.Path.Contains("BODY_SCALE/")) {
+                            mltdBoneName = keyFrame.Path.Replace("BODY_SCALE/", string.Empty);
+                        } else {
+                            mltdBoneName = keyFrame.Path;
+                        }
+
+                        boneNameCache.Add(keyFrame.Path, mltdBoneName);
+                    }
+
                     var targetBone = mltdHierarchy.SingleOrDefault(bone => bone.Name == mltdBoneName);
 
                     if (targetBone == null) {
@@ -112,8 +128,11 @@ namespace OpenMLTD.MillionDance.Core {
                     }
 
                     if (keyFrame.HasPositions) {
+                        // ReSharper disable once PossibleInvalidOperationException
                         var x = keyFrame.PositionX.Value;
+                        // ReSharper disable once PossibleInvalidOperationException
                         var y = keyFrame.PositionY.Value;
+                        // ReSharper disable once PossibleInvalidOperationException
                         var z = keyFrame.PositionZ.Value;
 
                         var t = new Vector3(x, y, z);
@@ -132,8 +151,11 @@ namespace OpenMLTD.MillionDance.Core {
                     }
 
                     if (keyFrame.HasRotations) {
+                        // ReSharper disable once PossibleInvalidOperationException
                         var x = keyFrame.AngleX.Value;
+                        // ReSharper disable once PossibleInvalidOperationException
                         var y = keyFrame.AngleY.Value;
+                        // ReSharper disable once PossibleInvalidOperationException
                         var z = keyFrame.AngleZ.Value;
 
                         var q = UnityRotation.EulerDeg(x, y, z);

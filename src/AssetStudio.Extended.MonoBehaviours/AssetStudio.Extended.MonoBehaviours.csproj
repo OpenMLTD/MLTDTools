@@ -36,6 +36,10 @@
           <HintPath>..\packages\JetBrains.Annotations.2020.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="LruCacheNet, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\LruCacheNet.1.2.0\lib\netstandard2.0\LruCacheNet.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />

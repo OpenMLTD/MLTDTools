@@ -369,7 +369,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
                 throw new ArgumentNullException(nameof(head), "Head sway is null.");
             }
 
-            SwayController.FixSwayReferences(body, head);
+            SwayAsset.FixSwayReferences(body, head);
 
             return (Body: body, Head: head);
         }
@@ -404,7 +404,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
                     str = ReplaceNewLine.Replace(str, "\n");
 
-                    result = SwayController.Parse(str);
+                    result = SwayAsset.Parse(str);
 
                     break;
                 }

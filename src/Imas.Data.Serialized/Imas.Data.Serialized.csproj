@@ -59,6 +59,7 @@
     <Compile Include="Sway\CoordSystemPart.cs" />
     <Compile Include="Sway\PlaneAxis.cs" />
     <Compile Include="Sway\RefParam.cs" />
+    <Compile Include="Sway\SwayAsset.cs" />
     <Compile Include="Sway\SwayBase.cs" />
     <Compile Include="Sway\SwayBone.cs" />
     <Compile Include="Sway\SwayCollider.cs" />

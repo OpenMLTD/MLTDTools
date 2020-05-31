@@ -6,7 +6,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using AssetStudio;
 using AssetStudio.Extended.CompositeModels;
@@ -30,10 +29,13 @@ namespace OpenMLTD.MillionDance {
 
                 Log("Done.");
             } catch (Exception ex) {
+                var exDesc = ex.ToString();
+
                 Log("Error occurred.");
+                Log(exDesc);
 
                 Invoke(() => {
-                    MessageBox.Show(ex.ToString(), ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(exDesc, ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 });
             } finally {
                 Invoke(() => EnableMainControls(true));

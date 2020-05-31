@@ -77,7 +77,7 @@ namespace OpenMLTD.MillionDance.Viewer {
                         throw new ArgumentNullException(nameof(mesh), "One of head meshes is null.");
                     }
 
-                    var m = new MeshWrapper(manager.assetsFileList, mesh, TexturedMaterialExtraProperties.Body);
+                    var m = new MeshWrapper(manager.assetsFileList, mesh, TexturedMaterialExtraProperties.Head);
                     meshList.Add(m);
                 }
             }

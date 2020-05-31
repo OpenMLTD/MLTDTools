@@ -167,9 +167,9 @@
             this.chkGenerateCameraMotion.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkGenerateCameraMotion.Location = new System.Drawing.Point(19, 111);
             this.chkGenerateCameraMotion.Name = "chkGenerateCameraMotion";
-            this.chkGenerateCameraMotion.Size = new System.Drawing.Size(204, 17);
+            this.chkGenerateCameraMotion.Size = new System.Drawing.Size(240, 17);
             this.chkGenerateCameraMotion.TabIndex = 2;
-            this.chkGenerateCameraMotion.Text = "Generate camera motion (VMD/MVD)";
+            this.chkGenerateCameraMotion.Text = "Generate camera motion (VMD/MVD) *buggy";
             this.chkGenerateCameraMotion.UseVisualStyleBackColor = true;
             // 
             // chkGenerateCharAnim

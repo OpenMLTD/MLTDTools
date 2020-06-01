@@ -10,8 +10,6 @@ namespace OpenMLTD.MiriTore {
 
         public static IReadOnlyList<IdolInfo> Idols => IdolsArray;
 
-        public static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
         private static readonly IdolInfo[] IdolsArray = {
             new IdolInfo("天海 春香", 1, "har", ColorType.Princess),
             new IdolInfo("如月 千早", 2, "chi", ColorType.Fairy),

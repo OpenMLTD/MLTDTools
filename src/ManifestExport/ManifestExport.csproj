@@ -54,6 +54,10 @@
       <Project>{906e225d-7c75-4836-bc90-350547238f4e}</Project>
       <Name>MiriTore.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MiriTore.Database\MiriTore.Database.csproj">
+      <Project>{264ce110-658d-435e-bbf0-bbc665060e91}</Project>
+      <Name>MiriTore.Database</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

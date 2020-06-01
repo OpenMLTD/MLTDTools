@@ -52,7 +52,7 @@ namespace OpenMLTD.ManifestTools.UI {
             var filePath = ofd.FileName;
             var data = File.ReadAllBytes(filePath);
 
-            var b = AssetInfoList.TryParse(data, Encoding.UTF8, out var assetInfoList);
+            var b = AssetInfoList.TryParse(data, out var assetInfoList);
 
             if (!b) {
                 var message = $"'{filePath}' is not a valid asset database file.";
@@ -89,7 +89,7 @@ namespace OpenMLTD.ManifestTools.UI {
                 return;
             }
 
-            var b = AssetInfoList.TryParse(assetInfoListData, Encoding.UTF8, out var assetInfoList);
+            var b = AssetInfoList.TryParse(assetInfoListData, out var assetInfoList);
 
             if (!b) {
                 const string message = "Received data is not a valid asset database file.";

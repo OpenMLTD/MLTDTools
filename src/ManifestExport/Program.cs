@@ -14,7 +14,7 @@ namespace ManifestExport {
 
             var data = File.ReadAllBytes(args[0]);
 
-            var b = AssetInfoList.TryParse(data, MltdConstants.Utf8WithoutBom, out var assetInfoList);
+            var b = AssetInfoList.TryParse(data, out var assetInfoList);
 
             if (!b || assetInfoList == null) {
                 Console.WriteLine("Manifest parsing failed.");
@@ -31,14 +31,14 @@ namespace ManifestExport {
             }
 
             using (var writer = new StreamWriter(outputFilePath, false, MltdConstants.Utf8WithoutBom)) {
-                writer.WriteLine("Asset count: {0}", assetInfoList.Assets.Count);
+                writer.WriteLine("Asset count: {0}", assetInfoList.Assets.Count.ToString());
 
                 foreach (var asset in assetInfoList.Assets) {
                     writer.WriteLine();
                     writer.WriteLine("Resource name: {0}", asset.ResourceName);
                     writer.WriteLine("Resource hash: {0}", asset.ContentHash);
                     writer.WriteLine("Remote name: {0}", asset.RemoteName);
-                    writer.WriteLine("File size: {0} ({1})", asset.Size, MathUtilities.GetHumanReadableFileSize(asset.Size));
+                    writer.WriteLine("File size: {0} ({1})", asset.Size.ToString(), MathUtilities.GetHumanReadableFileSize(asset.Size));
                 }
             }
         }

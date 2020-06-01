@@ -208,7 +208,7 @@ namespace MltdInfoViewer {
             AssetInfoList assetInfoList;
 
             try {
-                assetInfoList = AssetInfoList.Parse(bytes, MltdConstants.Utf8WithoutBom);
+                assetInfoList = AssetInfoList.Parse(bytes);
             } catch (Exception ex) {
                 MessageBox.Show(ex.ToString(), ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -385,7 +385,7 @@ namespace MltdInfoViewer {
             AssetInfoList assetInfoList;
 
             try {
-                assetInfoList = AssetInfoList.Parse(bytes, MltdConstants.Utf8WithoutBom);
+                assetInfoList = AssetInfoList.Parse(bytes);
             } catch (Exception ex) {
                 MessageBox.Show(ex.ToString(), ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

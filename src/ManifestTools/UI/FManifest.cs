@@ -287,7 +287,7 @@ namespace OpenMLTD.ManifestTools.UI {
             }
 
             using (var fileStream = File.Open(sfd.FileName, FileMode.Create, FileAccess.Write, FileShare.Write)) {
-                Manifest.SaveTo(fileStream, MltdConstants.Utf8WithoutBom);
+                Manifest.SaveTo(fileStream);
             }
 
             MessageBox.Show($"Manifest saved to '{sfd.FileName}'.", ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Information);

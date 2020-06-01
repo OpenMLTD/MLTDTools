@@ -2,6 +2,9 @@
 
 version: 0.2.0.{build}
 image: Visual Studio 2017
+branches:
+  except:
+    - media
 platform:
   - Any CPU
 configuration:

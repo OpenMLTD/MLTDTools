@@ -187,6 +187,7 @@
     <Compile Include="Utilities\RotationDebug.cs" />
     <Compile Include="Core\UnityRotation.cs" />
     <Compile Include="Core\VmdCreator.cs" />
+    <Compile Include="Utilities\UrlOpener.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FMain.TextBoxTracer.cs">

@@ -113,6 +113,7 @@
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
+            this.lnkHelp = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -1066,11 +1067,22 @@
             this.btnClearLog.Text = "&Clear Log";
             this.btnClearLog.UseVisualStyleBackColor = true;
             // 
+            // lnkHelp
+            // 
+            this.lnkHelp.AutoSize = true;
+            this.lnkHelp.Location = new System.Drawing.Point(625, 419);
+            this.lnkHelp.Name = "lnkHelp";
+            this.lnkHelp.Size = new System.Drawing.Size(62, 13);
+            this.lnkHelp.TabIndex = 7;
+            this.lnkHelp.TabStop = true;
+            this.lnkHelp.Text = "Need help?";
+            // 
             // FMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(710, 491);
+            this.Controls.Add(this.lnkHelp);
             this.Controls.Add(this.btnClearLog);
             this.Controls.Add(this.btnGo);
             this.Controls.Add(this.txtLog);
@@ -1272,5 +1284,6 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.ComboBox cboGameToonClothesNumber;
         private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.LinkLabel lnkHelp;
     }
 }

@@ -2,11 +2,13 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
+using OpenMLTD.MillionDance.Utilities;
 
 namespace OpenMLTD.MillionDance {
     public partial class FMain : Form {
@@ -47,6 +49,7 @@ namespace OpenMLTD.MillionDance {
             btnClearLog.Click -= BtnClearLog_Click;
             btnOptSelectFEMappings.Click -= BtnOptSelectFEMappings_Click;
             chkGameToon.CheckedChanged -= ChkGameToon_CheckedChanged;
+            lnkHelp.LinkClicked -= LnkHelp_LinkClicked;
         }
 
         private void RegisterEventHandlers() {
@@ -74,6 +77,24 @@ namespace OpenMLTD.MillionDance {
             btnClearLog.Click += BtnClearLog_Click;
             btnOptSelectFEMappings.Click += BtnOptSelectFEMappings_Click;
             chkGameToon.CheckedChanged += ChkGameToon_CheckedChanged;
+            lnkHelp.LinkClicked += LnkHelp_LinkClicked;
+        }
+
+        private void LnkHelp_LinkClicked(object sender, EventArgs e) {
+            const string helpUrl = "https://github.com/OpenMLTD/MLTDTools/wiki/MillionDance-Manual";
+
+            try {
+                UrlOpener.OpenUrl(helpUrl);
+            } catch (Exception ex) {
+                var sb = new StringBuilder();
+                sb.AppendLine("Cannot open URL <" + helpUrl + ">; please manually open it in your browser.");
+                sb.AppendLine();
+                sb.Append(ex.ToString());
+
+                var message = sb.ToString();
+
+                MessageBox.Show(message, ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void ChkGameToon_CheckedChanged(object sender, EventArgs e) {

@@ -1072,10 +1072,10 @@
             this.lnkHelp.AutoSize = true;
             this.lnkHelp.Location = new System.Drawing.Point(625, 419);
             this.lnkHelp.Name = "lnkHelp";
-            this.lnkHelp.Size = new System.Drawing.Size(62, 13);
+            this.lnkHelp.Size = new System.Drawing.Size(61, 13);
             this.lnkHelp.TabIndex = 7;
             this.lnkHelp.TabStop = true;
-            this.lnkHelp.Text = "Need help?";
+            this.lnkHelp.Text = "Usage help";
             // 
             // FMain
             // 

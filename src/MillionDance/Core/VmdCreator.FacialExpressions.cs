@@ -193,7 +193,7 @@ namespace OpenMLTD.MillionDance.Core {
                 var frame = controls[i];
                 var lipCode = (LipCode)frame.Param;
 
-                if (IsActiveLipCode(lipCode)) {
+                if (DoesLipCodeInfluenceLipMorph(lipCode)) {
                     return frame;
                 }
             }
@@ -207,7 +207,7 @@ namespace OpenMLTD.MillionDance.Core {
                 var frame = controls[i];
                 var lipCode = (LipCode)frame.Param;
 
-                if (IsActiveLipCode(lipCode)) {
+                if (DoesLipCodeInfluenceLipMorph(lipCode)) {
                     return frame;
                 }
             }
@@ -215,8 +215,10 @@ namespace OpenMLTD.MillionDance.Core {
             return null;
         }
 
+        // Some codes influence lip morphs and make the character "moves" her mouth.
+        // Other seem to have no direct effect on this. But they may be meta-controls. Who knows?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsActiveLipCode(LipCode code) {
+        private static bool DoesLipCodeInfluenceLipMorph(LipCode code) {
             switch (code) {
                 case LipCode.A:
                 case LipCode.I:

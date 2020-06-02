@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Vmd;
@@ -72,6 +74,7 @@ namespace OpenMLTD.MillionDance.Core {
                 }
 
                 var isSinging = IsSingingAt(singControls, singControlTimes, sync.AbsoluteTime, idolPosition);
+                var shouldUpdateLastFrameTime = true;
 
                 if (isSinging) {
                     var lipCode = (LipCode)sync.Param;
@@ -82,8 +85,6 @@ namespace OpenMLTD.MillionDance.Core {
                         case LipCode.U:
                         case LipCode.E:
                         case LipCode.O:
-                        case LipCode.E2:
-                        case LipCode.U2:
                         case LipCode.N: {
                             // The whole song ends with a "mouse-closed" (54) op.
                             Debug.Assert(i < lipSyncControls.Length - 1, "The song should end with control op 54 (mouse closed).");
@@ -100,11 +101,9 @@ namespace OpenMLTD.MillionDance.Core {
                                     morphName = "M_i";
                                     break;
                                 case LipCode.U:
-                                case LipCode.U2:
                                     morphName = "M_u";
                                     break;
                                 case LipCode.E:
-                                case LipCode.E2:
                                     morphName = "M_e";
                                     break;
                                 case LipCode.O:
@@ -117,7 +116,13 @@ namespace OpenMLTD.MillionDance.Core {
                                     throw new ArgumentOutOfRangeException(nameof(lipCode), lipCode, "Not possible.");
                             }
 
-                            var prevTime = (float)lipSyncControls[i - 1].AbsoluteTime;
+                            var prevFrame = FindPreviousActiveLipSyncFrame(lipSyncControls, i);
+
+                            if (prevFrame == null) {
+                                throw new KeyNotFoundException($"Cannot find the previous active lip sync frame of frame at {sync.AbsoluteTime.ToString(CultureInfo.InvariantCulture)}.");
+                            }
+
+                            var prevTime = (float)prevFrame.AbsoluteTime;
 
                             if (currentTime - prevTime > LipTransitionTime) {
                                 frameList.Add(CreateFacialFrame(currentTime - LipTransitionTime, morphName, 0));
@@ -127,7 +132,13 @@ namespace OpenMLTD.MillionDance.Core {
 
                             frameList.Add(CreateFacialFrame(currentTime, morphName, 1));
 
-                            var nextTime = (float)lipSyncControls[i + 1].AbsoluteTime;
+                            var nextFrame = FindNextActiveLipSyncFrame(lipSyncControls, i);
+
+                            if (nextFrame == null) {
+                                throw new KeyNotFoundException($"Cannot find the next active lip sync frame of frame at {sync.AbsoluteTime.ToString(CultureInfo.InvariantCulture)}.");
+                            }
+
+                            var nextTime = (float)nextFrame.AbsoluteTime;
 
                             if (nextTime - currentTime > LipTransitionTime) {
                                 frameList.Add(CreateFacialFrame(nextTime - LipTransitionTime, morphName, 1));
@@ -142,15 +153,24 @@ namespace OpenMLTD.MillionDance.Core {
                             AddSilenceFrame(frameList, currentTime);
                             break;
                         }
+                        // Don't generate frames for these control codes(?)
+                        case LipCode.Control1:
+                        case LipCode.Control2:
+                        case LipCode.Control3: {
+                            shouldUpdateLastFrameTime = false;
+                            break;
+                        }
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(lipCode), lipCode, "Not possible");
+                            throw new ArgumentOutOfRangeException(nameof(lipCode), lipCode, "Invalid lip code.");
                     }
                 } else {
                     // Muted
                     AddSilenceFrame(frameList, currentTime);
                 }
 
-                lastFrameTime = currentTime;
+                if (shouldUpdateLastFrameTime) {
+                    lastFrameTime = currentTime;
+                }
             }
 
             return frameList;
@@ -163,6 +183,56 @@ namespace OpenMLTD.MillionDance.Core {
             frameList.Add(CreateFacialFrame(currentTime, "M_e", 0));
             frameList.Add(CreateFacialFrame(currentTime, "M_o", 0));
             frameList.Add(CreateFacialFrame(currentTime, "M_n", 0));
+        }
+
+        [CanBeNull]
+        private static EventScenarioData FindNextActiveLipSyncFrame([NotNull, ItemNotNull] EventScenarioData[] controls, int currentIndex) {
+            var controlPointCount = controls.Length;
+
+            for (var i = currentIndex + 1; i < controlPointCount; i += 1) {
+                var frame = controls[i];
+                var lipCode = (LipCode)frame.Param;
+
+                if (IsActiveLipCode(lipCode)) {
+                    return frame;
+                }
+            }
+
+            return null;
+        }
+
+        [CanBeNull]
+        private static EventScenarioData FindPreviousActiveLipSyncFrame([NotNull, ItemNotNull] EventScenarioData[] controls, int currentIndex) {
+            for (var i = currentIndex - 1; i >= 0; i -= 1) {
+                var frame = controls[i];
+                var lipCode = (LipCode)frame.Param;
+
+                if (IsActiveLipCode(lipCode)) {
+                    return frame;
+                }
+            }
+
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsActiveLipCode(LipCode code) {
+            switch (code) {
+                case LipCode.A:
+                case LipCode.I:
+                case LipCode.U:
+                case LipCode.E:
+                case LipCode.O:
+                case LipCode.N:
+                case LipCode.Closed:
+                    return true;
+                case LipCode.Control1:
+                case LipCode.Control2:
+                case LipCode.Control3:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(code), code, "Invalid lip code.");
+            }
         }
 
         [NotNull, ItemNotNull]
@@ -390,11 +460,16 @@ namespace OpenMLTD.MillionDance.Core {
 
             Closed = 54,
 
-            // アライブファクター (alivef) at frame 5481 @60fps, kind of... interpolation(?) between "わ" and "た"
-            E2 = 55,
+            // Control codes(?) below
 
-            // アライブファクター (alivef) at frame 6207 @60fps, pronouncing "す"
-            U2 = 57,
+            // アライブファクター (alivef) idol 1 at frame 5481 @60fps, kind of... interpolation(?) between "わ" and "た"
+            Control1 = 55,
+
+            // アライブファクター (alivef) idol 2 at frame 1383 @60fps, during the pronunciation of "ち"
+            Control2 = 56,
+
+            // アライブファクター (alivef) idol 1 at frame 6207 @60fps, pronouncing "す"
+            Control3 = 57,
 
         }
 

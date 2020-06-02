@@ -97,7 +97,7 @@ namespace OpenMLTD.ManifestTools.UI {
             ctxLAdd.Click += CtxLAdd_Click;
             ctxRRemove.Click += CtxRRemove_Click;
             ctxRClear.Click += CtxRClear_Click;
-            lvDownload.MouseDown += LvDownload_MouseDown;
+            lvDownload.MouseUp += LvDownload_MouseUp;
             mnuActionExport.Click += MnuActionExport_Click;
             mnuActionDownload.Click += MnuActionDownload_Click;
             mnuActionSave.Click += MnuActionSave_Click;
@@ -115,7 +115,7 @@ namespace OpenMLTD.ManifestTools.UI {
             ctxLAdd.Click -= CtxLAdd_Click;
             ctxRRemove.Click -= CtxRRemove_Click;
             ctxRClear.Click -= CtxRClear_Click;
-            lvDownload.MouseDown -= LvDownload_MouseDown;
+            lvDownload.MouseUp -= LvDownload_MouseUp;
             mnuActionExport.Click -= MnuActionExport_Click;
             mnuActionDownload.Click -= MnuActionDownload_Click;
             mnuActionSave.Click -= MnuActionSave_Click;
@@ -190,7 +190,7 @@ namespace OpenMLTD.ManifestTools.UI {
             ClearPendingDownloads();
         }
 
-        private void LvDownload_MouseDown(object sender, MouseEventArgs e) {
+        private void LvDownload_MouseUp(object sender, MouseEventArgs e) {
             if (e.Button != MouseButtons.Right) {
                 return;
             }

@@ -59,17 +59,17 @@ namespace OpenMLTD.ManifestTools.UI {
         private void RegisterEventHandlers() {
             Resize += UserControl_Resize;
             lv.MouseDoubleClick += Lv_MouseDoubleClick;
-            lv.MouseDown += Lv_MouseDown;
+            lv.MouseUp += Lv_MouseUp;
             tv.MouseDoubleClick += Tv_MouseDoubleClick;
-            tv.MouseDown += Tv_MouseDown;
+            tv.MouseUp += Tv_MouseUp;
         }
 
         private void UnregisterEventHandlers() {
             Resize -= UserControl_Resize;
             lv.MouseDoubleClick -= Lv_MouseDoubleClick;
-            lv.MouseDown -= Lv_MouseDown;
+            lv.MouseUp -= Lv_MouseUp;
             tv.MouseDoubleClick -= Tv_MouseDoubleClick;
-            tv.MouseDown -= Tv_MouseDown;
+            tv.MouseUp -= Tv_MouseUp;
         }
 
         private void UserControl_Resize(object sender, EventArgs e) {
@@ -88,7 +88,7 @@ namespace OpenMLTD.ManifestTools.UI {
             }
         }
 
-        private void Lv_MouseDown(object sender, MouseEventArgs e) {
+        private void Lv_MouseUp(object sender, MouseEventArgs e) {
             if (e.Button == MouseButtons.Right && lv.SelectedItems.Count > 0) {
                 ItemsContextRequested?.Invoke(lv, e);
             }
@@ -105,7 +105,7 @@ namespace OpenMLTD.ManifestTools.UI {
             }
         }
 
-        private void Tv_MouseDown(object sender, MouseEventArgs e) {
+        private void Tv_MouseUp(object sender, MouseEventArgs e) {
             if (e.Button == MouseButtons.Right && tv.SelectedNode != null) {
                 ItemsContextRequested?.Invoke(tv, e);
             }

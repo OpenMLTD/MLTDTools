@@ -54,7 +54,7 @@ foreach ($subPath in $subPaths)
 
 & 7z a miritore.zip "${env:APPVEYOR_BUILD_FOLDER}\README.html"
 
-[String]$isTagRelease = Test-TagRelease
+[Boolean]$isTagRelease = Test-TagRelease
 [String]$tagRelComp = if ($isTagRelease)
 {
     "-rel"

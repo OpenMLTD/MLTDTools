@@ -3,18 +3,21 @@ param([String]$zipName = "miritore.zip")
 function Test-TagRelease()
 {
     [String]$repoTag = $env:APPVEYOR_REPO_TAG
+    [Boolean]$r = $false
 
     if ($null -eq $repoTag)
     {
-        return $false
+        $r = $false
     }
     else
     {
         [Boolean]$r = $false
-        [Boolean]::TryParse($repoTag, [ref]$r)
-
-        return $r
+        # Be sure to discard the return value otherwise it appears in the result and turns the result
+        # to and object array.
+        [Boolean]::TryParse($repoTag, [ref]$r) | Out-Null
     }
+
+    return $r
 }
 
 [String]$configuration = $env:CONFIGURATION

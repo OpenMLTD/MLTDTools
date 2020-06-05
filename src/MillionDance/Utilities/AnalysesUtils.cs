@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if DEBUG
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -134,3 +136,5 @@ namespace OpenMLTD.MillionDance.Utilities {
 
     }
 }
+
+#endif

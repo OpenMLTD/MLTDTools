@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace OpenMLTD.MillionDance.Entities.Mvd {
     public sealed class MvdCameraMotion : MvdBaseMotion {
 
-        internal MvdCameraMotion([NotNull] MvdCameraObject camera, [NotNull, ItemNotNull] IReadOnlyList<MvdCameraFrame> cameraFrames, [NotNull, ItemNotNull] IReadOnlyList<MvdCameraPropertyFrame> cameraPropertyFrames) {
+        internal MvdCameraMotion([NotNull] MvdCameraObject camera, [NotNull, ItemNotNull] MvdCameraFrame[] cameraFrames, [NotNull, ItemNotNull] MvdCameraPropertyFrame[] cameraPropertyFrames) {
             Camera = camera;
             CameraFrames = cameraFrames;
             CameraPropertyFrames = cameraPropertyFrames;
@@ -20,10 +20,10 @@ namespace OpenMLTD.MillionDance.Entities.Mvd {
         public MvdCameraObject Camera { get; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<MvdCameraFrame> CameraFrames { get; }
+        public MvdCameraFrame[] CameraFrames { get; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<MvdCameraPropertyFrame> CameraPropertyFrames { get; }
+        public MvdCameraPropertyFrame[] CameraPropertyFrames { get; }
 
     }
 }

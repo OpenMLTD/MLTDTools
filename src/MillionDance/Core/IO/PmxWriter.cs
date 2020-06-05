@@ -76,7 +76,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteVertexInfo([NotNull] PmxModel model) {
-            _writer.Write(model.Vertices.Count);
+            _writer.Write(model.Vertices.Length);
 
             foreach (var vertex in model.Vertices) {
                 WritePmxVertex(vertex);
@@ -84,7 +84,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteFaceInfo([NotNull] PmxModel model) {
-            _writer.Write(model.FaceTriangles.Count);
+            _writer.Write(model.FaceTriangles.Length);
 
             foreach (var v in model.FaceTriangles) {
                 _writer.WriteInt32AsVarLenInt(v, VertexElementSize, true);
@@ -100,7 +100,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteMaterialInfo([NotNull] PmxModel model, [NotNull, ItemNotNull] string[] textureNames) {
-            _writer.Write(model.Materials.Count);
+            _writer.Write(model.Materials.Length);
 
             foreach (var material in model.Materials) {
                 WritePmxMaterial(material, textureNames);
@@ -108,7 +108,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteBoneInfo([NotNull] PmxModel model) {
-            _writer.Write(model.Bones.Count);
+            _writer.Write(model.Bones.Length);
 
             foreach (var bone in model.Bones) {
                 WritePmxBone(bone);
@@ -116,7 +116,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteMorphInfo([NotNull] PmxModel model) {
-            _writer.Write(model.Morphs.Count);
+            _writer.Write(model.Morphs.Length);
 
             foreach (var morph in model.Morphs) {
                 WritePmxMorph(morph);
@@ -124,7 +124,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteNodeInfo([NotNull] PmxModel model) {
-            _writer.Write(model.Nodes.Count);
+            _writer.Write(model.Nodes.Length);
 
             foreach (var node in model.Nodes) {
                 WritePmxNode(node);
@@ -132,7 +132,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteRigidBodyInfo([NotNull] PmxModel model) {
-            _writer.Write(model.RigidBodies.Count);
+            _writer.Write(model.RigidBodies.Length);
 
             foreach (var body in model.RigidBodies) {
                 WritePmxRigidBody(body);
@@ -140,7 +140,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteJointInfo([NotNull] PmxModel model) {
-            _writer.Write(model.Joints.Count);
+            _writer.Write(model.Joints.Length);
 
             foreach (var joint in model.Joints) {
                 WritePmxJoint(joint);
@@ -153,7 +153,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
             }
 
             if (model.SoftBodies != null) {
-                _writer.Write(model.SoftBodies.Count);
+                _writer.Write(model.SoftBodies.Length);
 
                 foreach (var body in model.SoftBodies) {
                     WritePmxSoftBody(body);
@@ -243,28 +243,6 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             WriteString(material.MemoTextureFileName);
             _writer.Write(material.AppliedFaceVertexCount);
-
-            bool IsNormalToonTexture(string name, out int toonIndex) {
-                if (string.IsNullOrEmpty(name)) {
-                    // Maps to "no texture" (empty string)
-                    toonIndex = -1;
-                    return false;
-                }
-
-                var match = ToonNameRegex.Match(name);
-
-                if (!match.Success) {
-                    toonIndex = -1;
-                    return false;
-                }
-
-                var toonStr = match.Groups["toonIndex"].Value;
-                toonIndex = Convert.ToInt32(toonStr);
-                // From 1-based to 0-based
-                toonIndex -= 1;
-
-                return toonIndex > 0;
-            }
         }
 
         private void WritePmxBone([NotNull] PmxBone bone) {
@@ -314,22 +292,20 @@ namespace OpenMLTD.MillionDance.Core.IO {
             }
         }
 
+        // ReSharper disable once InconsistentNaming
         private void WritePmxIK([NotNull] PmxIK ik) {
             _writer.WriteInt32AsVarLenInt(ik.TargetBoneIndex, BoneElementSize);
             _writer.Write(ik.LoopCount);
             _writer.Write(ik.AngleLimit);
 
-            if (ik.Links != null) {
-                _writer.Write(ik.Links.Count);
+            _writer.Write(ik.Links.Length);
 
-                foreach (var link in ik.Links) {
-                    WriteIKLink(link);
-                }
-            } else {
-                _writer.Write(0);
+            foreach (var link in ik.Links) {
+                WriteIKLink(link);
             }
         }
 
+        // ReSharper disable once InconsistentNaming
         private void WriteIKLink([NotNull] IKLink link) {
             _writer.WriteInt32AsVarLenInt(link.BoneIndex, BoneElementSize);
             _writer.Write(link.IsLimited);
@@ -347,35 +323,31 @@ namespace OpenMLTD.MillionDance.Core.IO {
             _writer.Write((sbyte)morph.Panel);
             _writer.Write((byte)morph.OffsetKind);
 
-            if (morph.Offsets != null) {
-                _writer.Write(morph.Offsets.Count);
+            _writer.Write(morph.Offsets.Length);
 
-                foreach (var subm in morph.Offsets) {
-                    switch (subm) {
-                        case PmxGroupMorph m0:
-                            WritePmxGroupMorph(m0);
-                            break;
-                        case PmxVertexMorph m1:
-                            WritePmxVertexMorph(m1);
-                            break;
-                        case PmxBoneMorph m2:
-                            WritePmxBoneMorph(m2);
-                            break;
-                        case PmxUVMorph m3:
-                            WritePmxUVMorph(m3);
-                            break;
-                        case PmxMaterialMorph m4:
-                            WritePmxMaterialMorph(m4);
-                            break;
-                        case PmxImpulseMorph m5:
-                            WritePmxImpulseMorph(m5);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+            foreach (var subMorph in morph.Offsets) {
+                switch (subMorph) {
+                    case PmxGroupMorph m0:
+                        WritePmxGroupMorph(m0);
+                        break;
+                    case PmxVertexMorph m1:
+                        WritePmxVertexMorph(m1);
+                        break;
+                    case PmxBoneMorph m2:
+                        WritePmxBoneMorph(m2);
+                        break;
+                    case PmxUVMorph m3:
+                        WritePmxUVMorph(m3);
+                        break;
+                    case PmxMaterialMorph m4:
+                        WritePmxMaterialMorph(m4);
+                        break;
+                    case PmxImpulseMorph m5:
+                        WritePmxImpulseMorph(m5);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-            } else {
-                _writer.Write(0);
             }
         }
 
@@ -395,6 +367,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
             _writer.Write(morph.Rotation);
         }
 
+        // ReSharper disable once InconsistentNaming
         private void WritePmxUVMorph([NotNull] PmxUVMorph morph) {
             _writer.WriteInt32AsVarLenInt(morph.Index, MorphElementSize);
             _writer.Write(morph.Offset);
@@ -427,14 +400,10 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             _writer.Write(node.IsSystemNode);
 
-            if (node.Elements != null) {
-                _writer.Write(node.Elements.Count);
+            _writer.Write(node.Elements.Length);
 
-                foreach (var element in node.Elements) {
-                    WriteNodeElement(element);
-                }
-            } else {
-                _writer.Write(0);
+            foreach (var element in node.Elements) {
+                WriteNodeElement(element);
             }
         }
 
@@ -539,24 +508,16 @@ namespace OpenMLTD.MillionDance.Core.IO {
             _writer.Write(matCfg.AST);
             _writer.Write(matCfg.VST);
 
-            if (body.BodyAnchors != null) {
-                _writer.Write(body.BodyAnchors.Count);
+            _writer.Write(body.BodyAnchors.Length);
 
-                foreach (var anchor in body.BodyAnchors) {
-                    WriteBodyAnchor(anchor);
-                }
-            } else {
-                _writer.Write(0);
+            foreach (var anchor in body.BodyAnchors) {
+                WriteBodyAnchor(anchor);
             }
 
-            if (body.VertexPins != null) {
-                _writer.Write(body.VertexPins.Count);
+            _writer.Write(body.VertexPins.Length);
 
-                foreach (var pin in body.VertexPins) {
-                    WriteVertexPin(pin);
-                }
-            } else {
-                _writer.Write(0);
+            foreach (var pin in body.VertexPins) {
+                WriteVertexPin(pin);
             }
         }
 
@@ -661,10 +622,6 @@ namespace OpenMLTD.MillionDance.Core.IO {
         private string[] BuildTextureNameMap([NotNull] PmxModel model) {
             var materials = model.Materials;
 
-            if (materials == null) {
-                return Array.Empty<string>();
-            }
-
             var nameList = new List<string>();
 
             foreach (var material in materials) {
@@ -684,9 +641,31 @@ namespace OpenMLTD.MillionDance.Core.IO {
             return nameList.Distinct().ToArray();
         }
 
+        private static bool IsNormalToonTexture(string name, out int toonIndex) {
+            if (string.IsNullOrEmpty(name)) {
+                // Maps to "no texture" (empty string)
+                toonIndex = -1;
+                return false;
+            }
+
+            var match = ToonNameRegex.Match(name);
+
+            if (!match.Success) {
+                toonIndex = -1;
+                return false;
+            }
+
+            var toonStr = match.Groups["toonIndex"].Value;
+            toonIndex = Convert.ToInt32(toonStr);
+            // From 1-based to 0-based
+            toonIndex -= 1;
+
+            return toonIndex > 0;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetTextureIndex([NotNull, ItemNotNull] string[] textureNames, [NotNull] string s) {
-            return Array.IndexOf(textureNames, s);
+            return textureNames.IndexOf(s);
         }
 
         private enum PmxFormatVersion {

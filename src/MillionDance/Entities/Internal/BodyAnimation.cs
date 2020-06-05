@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using AssetStudio;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Extensions;
+using OpenMLTD.MillionDance.Extensions;
 
 namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class BodyAnimation {
 
-        private BodyAnimation([NotNull, ItemNotNull] IReadOnlyList<KeyFrame> keyFrames, float duration, int boneCount) {
+        private BodyAnimation([NotNull, ItemNotNull] KeyFrame[] keyFrames, float duration, int boneCount) {
             KeyFrames = keyFrames;
             Duration = duration;
             BoneCount = boneCount;
         }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<KeyFrame> KeyFrames { get; }
+        public KeyFrame[] KeyFrames { get; }
 
         public float Duration { get; }
 
@@ -108,58 +108,51 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
                 var keyType = curve.GetKeyType();
                 var propertyType = curve.GetPropertyType();
 
-                KeyFrame GetOrAddFrame(int index) {
-                    KeyFrame frame;
-
-                    if (frameList.Count > index) {
-                        frame = frameList[index];
-                    } else {
-                        frame = new KeyFrame(index, path);
-                        frameList.Add(frame);
-                    }
-
-                    return frame;
-                }
-
                 switch (keyType) {
                     case KeyType.Const: {
                         switch (propertyType) {
-                            case PropertyType.AngleX:
+                            case PropertyType.AngleX: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    GetOrAddFrame(frameIndex).AngleX = curve.Values[0];
+                                    GetOrAddFrame(frameList, path, frameIndex).AngleX = curve.Values[0];
                                 }
 
                                 break;
-                            case PropertyType.AngleY:
+                            }
+                            case PropertyType.AngleY: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    GetOrAddFrame(frameIndex).AngleY = curve.Values[0];
+                                    GetOrAddFrame(frameList, path, frameIndex).AngleY = curve.Values[0];
                                 }
 
                                 break;
-                            case PropertyType.AngleZ:
+                            }
+                            case PropertyType.AngleZ: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    GetOrAddFrame(frameIndex).AngleZ = curve.Values[0];
+                                    GetOrAddFrame(frameList, path, frameIndex).AngleZ = curve.Values[0];
                                 }
 
                                 break;
-                            case PropertyType.PositionX:
+                            }
+                            case PropertyType.PositionX: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    GetOrAddFrame(frameIndex).PositionX = curve.Values[0];
+                                    GetOrAddFrame(frameList, path, frameIndex).PositionX = curve.Values[0];
                                 }
 
                                 break;
-                            case PropertyType.PositionY:
+                            }
+                            case PropertyType.PositionY: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    GetOrAddFrame(frameIndex).PositionY = curve.Values[0];
+                                    GetOrAddFrame(frameList, path, frameIndex).PositionY = curve.Values[0];
                                 }
 
                                 break;
-                            case PropertyType.PositionZ:
+                            }
+                            case PropertyType.PositionZ: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    GetOrAddFrame(frameIndex).PositionZ = curve.Values[0];
+                                    GetOrAddFrame(frameList, path, frameIndex).PositionZ = curve.Values[0];
                                 }
 
                                 break;
+                            }
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(propertyType), propertyType, $"Unknown property type: \"{propertyType}\".");
                         }
@@ -169,48 +162,54 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
                         var valueCount = curve.Values.Length;
 
                         switch (propertyType) {
-                            case PropertyType.AngleX:
+                            case PropertyType.AngleX: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                     var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                    GetOrAddFrame(frameIndex).AngleX = curve.Values[index];
+                                    GetOrAddFrame(frameList, path, frameIndex).AngleX = curve.Values[index];
                                 }
 
                                 break;
-                            case PropertyType.AngleY:
+                            }
+                            case PropertyType.AngleY: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                     var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                    GetOrAddFrame(frameIndex).AngleY = curve.Values[index];
+                                    GetOrAddFrame(frameList, path, frameIndex).AngleY = curve.Values[index];
                                 }
 
                                 break;
-                            case PropertyType.AngleZ:
+                            }
+                            case PropertyType.AngleZ: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                     var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                    GetOrAddFrame(frameIndex).AngleZ = curve.Values[index];
+                                    GetOrAddFrame(frameList, path, frameIndex).AngleZ = curve.Values[index];
                                 }
 
                                 break;
-                            case PropertyType.PositionX:
+                            }
+                            case PropertyType.PositionX: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                     var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                    GetOrAddFrame(frameIndex).PositionX = curve.Values[index];
+                                    GetOrAddFrame(frameList, path, frameIndex).PositionX = curve.Values[index];
                                 }
 
                                 break;
-                            case PropertyType.PositionY:
+                            }
+                            case PropertyType.PositionY: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                     var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                    GetOrAddFrame(frameIndex).PositionY = curve.Values[index];
+                                    GetOrAddFrame(frameList, path, frameIndex).PositionY = curve.Values[index];
                                 }
 
                                 break;
-                            case PropertyType.PositionZ:
+                            }
+                            case PropertyType.PositionZ: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
                                     var index = frameIndex < valueCount ? frameIndex : valueCount - 1;
-                                    GetOrAddFrame(frameIndex).PositionZ = curve.Values[index];
+                                    GetOrAddFrame(frameList, path, frameIndex).PositionZ = curve.Values[index];
                                 }
 
                                 break;
+                            }
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(propertyType), propertyType, $"Unknown property type: \"{propertyType}\".");
                         }
@@ -261,54 +260,60 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
                         }
 
                         switch (propertyType) {
-                            case PropertyType.AngleX:
+                            case PropertyType.AngleX: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    var frame = GetOrAddFrame(frameIndex);
+                                    var frame = GetOrAddFrame(frameList, path, frameIndex);
                                     var value = InterpolateValue(frame);
                                     frame.AngleX = value;
                                 }
 
                                 break;
-                            case PropertyType.AngleY:
+                            }
+                            case PropertyType.AngleY: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    var frame = GetOrAddFrame(frameIndex);
+                                    var frame = GetOrAddFrame(frameList, path, frameIndex);
                                     var value = InterpolateValue(frame);
                                     frame.AngleY = value;
                                 }
 
                                 break;
-                            case PropertyType.AngleZ:
+                            }
+                            case PropertyType.AngleZ: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    var frame = GetOrAddFrame(frameIndex);
+                                    var frame = GetOrAddFrame(frameList, path, frameIndex);
                                     var value = InterpolateValue(frame);
                                     frame.AngleZ = value;
                                 }
 
                                 break;
-                            case PropertyType.PositionX:
+                            }
+                            case PropertyType.PositionX: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    var frame = GetOrAddFrame(frameIndex);
+                                    var frame = GetOrAddFrame(frameList, path, frameIndex);
                                     var value = InterpolateValue(frame);
                                     frame.PositionX = value;
                                 }
 
                                 break;
-                            case PropertyType.PositionY:
+                            }
+                            case PropertyType.PositionY: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    var frame = GetOrAddFrame(frameIndex);
+                                    var frame = GetOrAddFrame(frameList, path, frameIndex);
                                     var value = InterpolateValue(frame);
                                     frame.PositionY = value;
                                 }
 
                                 break;
-                            case PropertyType.PositionZ:
+                            }
+                            case PropertyType.PositionZ: {
                                 for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-                                    var frame = GetOrAddFrame(frameIndex);
+                                    var frame = GetOrAddFrame(frameList, path, frameIndex);
                                     var value = InterpolateValue(frame);
                                     frame.PositionZ = value;
                                 }
 
                                 break;
+                            }
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(propertyType), propertyType, $"Unknown property type: \"{propertyType}\".");
                         }
@@ -320,7 +325,7 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
                 }
             }
 
-            var totalList = frameDict.SelectMany(kv => kv.Value).ToList();
+            var totalList = frameDict.SelectManyToList(kv => kv.Value);
 
             totalList.Sort((f1, f2) => {
                 var s1 = f1.FrameIndex.CompareTo(f2.FrameIndex);
@@ -333,6 +338,20 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
             });
 
             return (totalList.ToArray(), frameDict.Count);
+        }
+
+        [NotNull]
+        private static KeyFrame GetOrAddFrame([NotNull, ItemNotNull] List<KeyFrame> frameList, [NotNull] string path, int index) {
+            KeyFrame frame;
+
+            if (frameList.Count > index) {
+                frame = frameList[index];
+            } else {
+                frame = new KeyFrame(index, path);
+                frameList.Add(frame);
+            }
+
+            return frame;
         }
 
         private const int CurvesInAnimationClip = 180;

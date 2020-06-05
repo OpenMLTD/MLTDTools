@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -93,6 +95,89 @@ namespace OpenMLTD.MillionDance.Extensions {
             }
 
             return -1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOf<T>([NotNull, ItemCanBeNull] this T[] array, [CanBeNull] T item) {
+            return Array.IndexOf(array, item);
+        }
+
+        [CanBeNull]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T Find<T>([NotNull, ItemCanBeNull] this T[] array, [NotNull] Predicate<T> predicate) {
+            return Array.Find(array, predicate);
+        }
+
+        [NotNull, ItemCanBeNull]
+        public static TResultItem[] SelectToArray<TItem, TResultItem>([NotNull, ItemCanBeNull] this TItem[] array, [NotNull] Func<TItem, TResultItem> map) {
+            var list = new List<TResultItem>();
+
+            foreach (var item in array) {
+                list.Add(map(item));
+            }
+
+            return list.ToArray();
+        }
+
+        [NotNull, ItemCanBeNull]
+        public static List<T> WhereToList<T>([NotNull, ItemCanBeNull] this T[] array, [NotNull] Predicate<T> predicate) {
+            var result = new List<T>();
+
+            foreach (var item in array) {
+                if (predicate(item)) {
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
+        [NotNull, ItemCanBeNull]
+        public static T[] WhereToArray<T>([NotNull, ItemCanBeNull] this T[] array, [NotNull] Predicate<T> predicate) {
+            var list = WhereToList(array, predicate);
+            return list.ToArray();
+        }
+
+        public static int Count<T>([NotNull, ItemCanBeNull] this T[] array, [NotNull] Predicate<T> predicate) {
+            var count = 0;
+
+            foreach (var value in array) {
+                if (predicate(value)) {
+                    ++count;
+                }
+            }
+
+            return count;
+        }
+
+        public static int Max<T>([NotNull, ItemCanBeNull] this T[] array, [NotNull] Func<T, int> map) {
+            if (array.Length == 0) {
+                throw new ArgumentException("Array has no elements.");
+            }
+
+            int? result = null;
+
+            foreach (var item in array) {
+                var n = map(item);
+
+                if (result.HasValue) {
+                    if (result.Value < n) {
+                        result = n;
+                    }
+                } else {
+                    result = n;
+                }
+            }
+
+            Debug.Assert(result != null, nameof(result) + " != null");
+
+            return result.Value;
+        }
+
+        [Conditional("TRACE")]
+        public static void AssertAllUnique<T>([NotNull, ItemNotNull] this T[] array) {
+            var set = new HashSet<T>(array);
+            Trace.Assert(array.Length == set.Count);
         }
 
     }

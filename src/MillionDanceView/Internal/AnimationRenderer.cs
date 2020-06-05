@@ -176,7 +176,7 @@ namespace OpenMLTD.MillionDance.Viewer.Internal {
             var firstKeyFrameIndex = -1;
             var lastFirstKeyFrameIndex = 0;
 
-            for (var i = 0; i < keyFrames.Count; i += animatedBoneCount) {
+            for (var i = 0; i < keyFrames.Length; i += animatedBoneCount) {
                 //if (keyFrames[i].Time >= currentTime) {
                 if (keyFrames[i].FrameIndex > _lastFrameIndex) {
                     firstKeyFrameIndex = lastFirstKeyFrameIndex;

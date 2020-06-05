@@ -74,6 +74,7 @@
     <Compile Include="Core\PmxCreator.ConversionDetails.cs" />
     <Compile Include="Core\PmxCreator.Model.cs" />
     <Compile Include="Core\PmxCreator.Physics.cs" />
+    <Compile Include="Core\PmxCreator.Physics.PhysicsObject.cs" />
     <Compile Include="Core\SkeletonFormat.cs" />
     <Compile Include="Core\VmdCreator.BoneAnimation.cs" />
     <Compile Include="Core\VmdCreator.Camera.cs" />
@@ -102,6 +103,8 @@
     <Compile Include="Entities\Mvd\MvdMotion.cs" />
     <Compile Include="Entities\OpenTK\Vector2i.cs" />
     <Compile Include="Entities\Pmx\Extensions\PmxPassGroupExtensions.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FMain.cs">
       <SubType>Form</SubType>
@@ -180,7 +183,6 @@
     <Compile Include="Extensions\UnityStudioMathExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="Core\PmxCreator.cs" />
-    <Compile Include="Core\PmxReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\MorphUtils.cs" />

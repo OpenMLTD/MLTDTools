@@ -83,7 +83,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
             writer.Write(id);
             writer.Write(64);
 
-            writer.Write(cameraMotion.CameraFrames.Count);
+            writer.Write(cameraMotion.CameraFrames.Length);
 
             writer.Write(4);
             // stream.Write(BitConverter.GetBytes(cameraSequence.motiondata[boneindex].Count), 0, 4);
@@ -121,7 +121,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
             writer.Write(id);
             writer.Write(32);
 
-            writer.Write(cameraMotion.CameraPropertyFrames.Count); // 1 frame
+            writer.Write(cameraMotion.CameraPropertyFrames.Length); // 1 frame
             writer.Write(0);
 
             foreach (var frame in cameraMotion.CameraPropertyFrames) {

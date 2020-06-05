@@ -17,7 +17,7 @@ namespace OpenMLTD.MillionDance.Entities.Pmx {
         public MorphOffsetKind OffsetKind { get; internal set; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<PmxBaseMorph> Offsets { get; internal set; } = Array.Empty<PmxBaseMorph>();
+        public PmxBaseMorph[] Offsets { get; internal set; } = Array.Empty<PmxBaseMorph>();
 
     }
 }

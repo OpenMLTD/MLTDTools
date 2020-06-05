@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace OpenMLTD.MillionDance.Entities.Vmd {
     public sealed class VmdIkFrame : VmdBaseFrame {
 
-        internal VmdIkFrame(int frameIndex, [NotNull, ItemNotNull] IReadOnlyList<IkControl> ikControls)
+        internal VmdIkFrame(int frameIndex, [NotNull, ItemNotNull] IkControl[] ikControls)
             : base(frameIndex) {
             IkControls = ikControls;
         }
@@ -12,7 +11,7 @@ namespace OpenMLTD.MillionDance.Entities.Vmd {
         public bool Visible { get; internal set; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<IkControl> IkControls { get; }
+        public IkControl[] IkControls { get; }
 
     }
 }

@@ -17,7 +17,7 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
         }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<CameraFrame> CameraFrames { get; }
+        public CameraFrame[] CameraFrames { get; }
 
         public float Duration { get; }
 

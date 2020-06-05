@@ -39,7 +39,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteBoneFrames([NotNull] VmdMotion motion) {
-            _writer.Write(motion.BoneFrames.Count);
+            _writer.Write(motion.BoneFrames.Length);
 
             foreach (var frame in motion.BoneFrames) {
                 WriteBoneFrame(frame);
@@ -47,7 +47,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteFacialFrames([NotNull] VmdMotion motion) {
-            _writer.Write(motion.FacialFrames.Count);
+            _writer.Write(motion.FacialFrames.Length);
 
             foreach (var frame in motion.FacialFrames) {
                 WriteFacialFrame(frame);
@@ -55,7 +55,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteCameraFrames([NotNull] VmdMotion motion) {
-            _writer.Write(motion.CameraFrames.Count);
+            _writer.Write(motion.CameraFrames.Length);
 
             foreach (var frame in motion.CameraFrames) {
                 WriteCameraFrame(frame);
@@ -63,7 +63,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         private void WriteLightFrames([NotNull] VmdMotion motion) {
-            _writer.Write(motion.LightFrames.Count);
+            _writer.Write(motion.LightFrames.Length);
 
             foreach (var frame in motion.LightFrames) {
                 WriteLightFrame(frame);
@@ -75,7 +75,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
                 return;
             }
 
-            _writer.Write(motion.IkFrames.Count);
+            _writer.Write(motion.IkFrames.Length);
 
             foreach (var frame in motion.IkFrames) {
                 WriteIkFrame(frame);
@@ -120,7 +120,8 @@ namespace OpenMLTD.MillionDance.Core.IO {
         private void WriteIkFrame([NotNull] VmdIkFrame frame) {
             _writer.Write(frame.FrameIndex);
             _writer.Write(frame.Visible);
-            _writer.Write(frame.IkControls.Count);
+
+            _writer.Write(frame.IkControls.Length);
 
             foreach (var ik in frame.IkControls) {
                 WriteIkControl(ik);

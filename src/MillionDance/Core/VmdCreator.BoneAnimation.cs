@@ -15,16 +15,21 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private IReadOnlyList<VmdBoneFrame> CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx) {
+        private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx) {
             var boneLookup = new BoneLookup(_conversionConfig);
 
             var mltdHierarchy = boneLookup.BuildBoneHierarchy(avatar);
+
+            mltdHierarchy.AssertAllUnique();
+
             var pmxHierarchy = boneLookup.BuildBoneHierarchy(pmx);
+
+            pmxHierarchy.AssertAllUnique();
 
             if (_conversionConfig.AppendIKBones || _conversionConfig.AppendEyeBones) {
                 throw new NotSupportedException("Character motion frames generation (from MLTD) is not supported when appending bones (eyes and/or IK) is enabled.");
             } else {
-                Debug.Assert(mltdHierarchy.Count == pmxHierarchy.Count, "Hierarchy number should be equal between MLTD and MMD.");
+                Debug.Assert(mltdHierarchy.Length == pmxHierarchy.Length, "Hierarchy number should be equal between MLTD and MMD.");
             }
 
             foreach (var mltdBone in mltdHierarchy) {
@@ -36,43 +41,34 @@ namespace OpenMLTD.MillionDance.Core {
             }
 
             var animation = bodyMotionSource.Convert();
-            var boneCount = mltdHierarchy.Count;
+            var mltdBoneCount = mltdHierarchy.Length;
             var animatedBoneCount = animation.BoneCount;
-            var keyFrameCount = animation.KeyFrames.Count;
+            var keyFrameCount = animation.KeyFrames.Length;
 
             {
-                void MarkNamedBone(string name) {
-                    var bone = pmx.Bones.FirstOrDefault(b => b.Name == name);
-
-                    if (bone != null) {
-                        bone.IsMltdKeyBone = true;
-                    } else {
-                        Debug.Print("Warning: trying to mark bone {0} as MLTD key bone but the bone is missing from the model.", name);
-                    }
-                }
-
                 var names1 = animation.KeyFrames.Take(animatedBoneCount)
                     .Select(kf => kf.Path).ToArray();
                 var names = names1.Select(boneLookup.GetVmdBoneNameFromBonePath).ToArray();
+
                 // Mark MLTD key bones.
                 foreach (var name in names) {
-                    MarkNamedBone(name);
+                    MarkNamedBoneAsKeyBone(pmx, name);
                 }
 
                 // Special cases
-                MarkNamedBone("KUBI");
-                MarkNamedBone("頭");
+                MarkNamedBoneAsKeyBone(pmx, "KUBI");
+                MarkNamedBoneAsKeyBone(pmx, "頭");
             }
 
             Debug.Assert(keyFrameCount % animatedBoneCount == 0, "keyFrameCount % animatedBoneCount == 0");
 
-            var iterationTimes = keyFrameCount / animatedBoneCount;
+            var resultFrameCount = keyFrameCount / animatedBoneCount;
             var boneFrameList = new List<VmdBoneFrame>();
 
             // Reduce memory pressure of allocating new delegates (see mltdHierarchy.FirstOrDefault(...))
-            var boneMatchPredicateCache = new Func<PmxBone, bool>[boneCount];
+            var boneMatchPredicateCache = new Predicate<PmxBone>[mltdBoneCount];
 
-            for (var j = 0; j < boneCount; j += 1) {
+            for (var j = 0; j < mltdBoneCount; j += 1) {
                 var refBone = pmx.Bones[j];
                 boneMatchPredicateCache[j] = bone => bone.Name == refBone.Name;
             }
@@ -80,9 +76,11 @@ namespace OpenMLTD.MillionDance.Core {
             // Cache `mltdBoneName`s so we don't have to compute them all in every iteration
             var boneNameCache = new Dictionary<string, string>();
 
+            var transform60FpsTo30Fps = _conversionConfig.Transform60FpsTo30Fps;
+
             // OK, now perform iterations
-            for (var i = 0; i < iterationTimes; ++i) {
-                if (_conversionConfig.Transform60FpsTo30Fps) {
+            for (var i = 0; i < resultFrameCount; ++i) {
+                if (transform60FpsTo30Fps) {
                     if (i % 2 == 1) {
                         continue;
                     }
@@ -97,8 +95,8 @@ namespace OpenMLTD.MillionDance.Core {
                     if (boneNameCache.ContainsKey(keyFrame.Path)) {
                         mltdBoneName = boneNameCache[keyFrame.Path];
                     } else {
-                        if (keyFrame.Path.Contains("BODY_SCALE/")) {
-                            mltdBoneName = keyFrame.Path.Replace("BODY_SCALE/", string.Empty);
+                        if (keyFrame.Path.Contains(BoneLookup.BoneNamePart_BodyScale)) {
+                            mltdBoneName = keyFrame.Path.Replace(BoneLookup.BoneNamePart_BodyScale, string.Empty);
                         } else {
                             mltdBoneName = keyFrame.Path;
                         }
@@ -106,7 +104,8 @@ namespace OpenMLTD.MillionDance.Core {
                         boneNameCache.Add(keyFrame.Path, mltdBoneName);
                     }
 
-                    var targetBone = mltdHierarchy.SingleOrDefault(bone => bone.Name == mltdBoneName);
+                    // Uniqueness is asserted above
+                    var targetBone = mltdHierarchy.Find(bone => bone.Name == mltdBoneName);
 
                     if (targetBone == null) {
                         //throw new ArgumentException("Bone not found.");
@@ -116,15 +115,20 @@ namespace OpenMLTD.MillionDance.Core {
                     BoneNode transferredBone = null;
 
                     foreach (var kv in BoneAttachmentMap) {
-                        if (kv.Key == mltdBoneName) {
-                            transferredBone = mltdHierarchy.SingleOrDefault(bone => bone.Name == kv.Value);
-
-                            if (transferredBone == null) {
-                                throw new ArgumentException();
-                            }
-
-                            break;
+                        if (kv.Key != mltdBoneName) {
+                            continue;
                         }
+
+                        var attachmentTarget = kv.Value;
+
+                        // Uniqueness is asserted above
+                        transferredBone = mltdHierarchy.Find(bone => bone.Name == attachmentTarget);
+
+                        if (transferredBone == null) {
+                            throw new ArgumentException("Cannot find transferred bone.");
+                        }
+
+                        break;
                     }
 
                     if (keyFrame.HasPositions) {
@@ -174,13 +178,13 @@ namespace OpenMLTD.MillionDance.Core {
                     mltdBone.UpdateTransform();
                 }
 
-                for (var j = 0; j < boneCount; ++j) {
+                for (var j = 0; j < mltdBoneCount; ++j) {
                     var pmxBone = pmxHierarchy[j];
                     var mltdBone = mltdHierarchy[j];
 
                     {
                         var predicate = boneMatchPredicateCache[j];
-                        var pb = pmx.Bones.FirstOrDefault(predicate);
+                        var pb = pmx.Bones.Find(predicate);
 
 #if DEBUG
                         if (pb == null) {
@@ -231,10 +235,22 @@ namespace OpenMLTD.MillionDance.Core {
                 }
             }
 
-            return boneFrameList;
+            return boneFrameList.ToArray();
         }
 
-        private static readonly IReadOnlyDictionary<string, string> BoneAttachmentMap = new Dictionary<string, string> {
+        // Set the bones that appear in the animation file as "key bone"
+        private static void MarkNamedBoneAsKeyBone([NotNull] PmxModel pmx, [NotNull] string name) {
+            var bone = pmx.Bones.Find(b => b.Name == name);
+
+            if (bone != null) {
+                bone.IsMltdKeyBone = true;
+            } else {
+                Debug.Print("Warning: trying to mark bone {0} as MLTD key bone but the bone is missing from the model.", name);
+            }
+        }
+
+        [NotNull]
+        private static readonly Dictionary<string, string> BoneAttachmentMap = new Dictionary<string, string> {
             //["MODEL_00/BASE/MUNE1/MUNE2/KUBI"] = "KUBI",
             ["MODEL_00/BASE/MUNE1/MUNE2/KUBI/ATAMA"] = "KUBI/ATAMA"
         };

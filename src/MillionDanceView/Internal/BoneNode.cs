@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Viewer.Extensions;
@@ -168,21 +167,6 @@ namespace OpenMLTD.MillionDance.Viewer.Internal {
             foreach (var child in Children) {
                 child.SetDirty();
             }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TestStartsWithIn([NotNull] string str, [NotNull, ItemNotNull] IReadOnlyList<string> startWithList) {
-            return startWithList.Any(str.StartsWith);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TestEndsWith([NotNull] string str, [NotNull, ItemNotNull] IReadOnlyList<string> endWithList) {
-            return endWithList.Any(str.EndsWith);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TestContains([NotNull] string str, [NotNull, ItemNotNull] IReadOnlyCollection<string> collection) {
-            return collection.Any(str.Contains);
         }
 
         [NotNull, ItemNotNull]

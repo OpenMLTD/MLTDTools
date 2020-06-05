@@ -12,7 +12,7 @@ namespace OpenMLTD.MillionDance.Core {
 
         [NotNull]
         public VmdMotion CreateCameraMotion([CanBeNull] CharacterImasMotionAsset cameraMotion) {
-            IReadOnlyList<VmdCameraFrame> frames;
+            VmdCameraFrame[] frames;
 
             if (ProcessCameraFrames && cameraMotion != null) {
                 frames = CreateCameraFrames(cameraMotion, FixedFov);
@@ -24,9 +24,9 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private IReadOnlyList<VmdCameraFrame> CreateCameraFrames([NotNull] CharacterImasMotionAsset cameraMotion, uint fixedFov) {
+        private VmdCameraFrame[] CreateCameraFrames([NotNull] CharacterImasMotionAsset cameraMotion, uint fixedFov) {
             var animation = CameraAnimation.CreateFrom(cameraMotion);
-            var animationFrameCount = animation.CameraFrames.Count;
+            var animationFrameCount = animation.CameraFrames.Length;
 
             var cameraFrameList = new List<VmdCameraFrame>();
 
@@ -108,7 +108,7 @@ namespace OpenMLTD.MillionDance.Core {
                 cameraFrameList.Add(vmdFrame);
             }
 
-            return cameraFrameList;
+            return cameraFrameList.ToArray();
         }
 
     }

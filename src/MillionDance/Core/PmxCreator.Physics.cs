@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Entities.Pmx.Extensions;
 using OpenMLTD.MillionDance.Extensions;
+using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 
 namespace OpenMLTD.MillionDance.Core {
     partial class PmxCreator {
 
-        private sealed class Physics {
+        private sealed partial class Physics {
 
-            public Physics([NotNull] PmxCreator pmxCreator) {
+            internal Physics([NotNull] PmxCreator pmxCreator) {
                 _pmxCreator = pmxCreator;
             }
 
-            internal (IReadOnlyList<PmxRigidBody> Bodies, IReadOnlyList<PmxJoint> Joints) ImportPhysics([NotNull] IReadOnlyList<PmxBone> bones, [NotNull] SwayController bodySway, [NotNull] SwayController headSway) {
+            [NotNull]
+            internal PhysicsObject ImportPhysics([NotNull] PmxBone[] bones, [NotNull] SwayController bodySway, [NotNull] SwayController headSway) {
                 var bodies = new List<PmxRigidBody>();
 
                 var swayColliders = new List<SwayCollider>();
@@ -27,14 +28,18 @@ namespace OpenMLTD.MillionDance.Core {
                 swayColliders.AddRange(bodySway.Colliders);
                 swayColliders.AddRange(headSway.Colliders);
 
-                AppendStaticBodies(bones, swayColliders, bodies);
+                var swayColliderArray = swayColliders.ToArray();
+
+                AppendStaticBodies(bones, swayColliderArray, bodies);
 
                 var swayBones = new List<SwayBone>();
 
                 swayBones.AddRange(bodySway.SwayBones);
                 swayBones.AddRange(headSway.SwayBones);
 
-                AppendSwayBones(bones, swayBones, bodies);
+                var swayBoneArray = swayBones.ToArray();
+
+                AppendSwayBones(bones, swayBoneArray, bodies);
 
                 // TODO: fix rigid body rotation (with bone, e.g. the bones of arms)
                 if (_pmxCreator._conversionConfig.FixTdaBindingPose) {
@@ -45,21 +50,21 @@ namespace OpenMLTD.MillionDance.Core {
 
                 AppendJoints(bones, bodies, joints);
 
-                return (bodies, joints);
+                return new PhysicsObject(bodies.ToArray(), joints.ToArray());
             }
 
-            private void AppendStaticBodies([NotNull, ItemNotNull] IReadOnlyList<PmxBone> bones, [NotNull, ItemNotNull] IReadOnlyList<SwayCollider> swayColliders, [NotNull, ItemNotNull] List<PmxRigidBody> bodies) {
+            private void AppendStaticBodies([NotNull, ItemNotNull] PmxBone[] bones, [NotNull, ItemNotNull] SwayCollider[] swayColliders, [NotNull, ItemNotNull] List<PmxRigidBody> bodies) {
                 foreach (var collider in swayColliders) {
                     var mltdBoneName = collider.Path;
 
-                    if (mltdBoneName.Contains("BODY_SCALE/")) {
-                        mltdBoneName = mltdBoneName.Replace("BODY_SCALE/", string.Empty);
+                    if (mltdBoneName.Contains(BoneLookup.BoneNamePart_BodyScale)) {
+                        mltdBoneName = mltdBoneName.Replace(BoneLookup.BoneNamePart_BodyScale, string.Empty);
                     }
 
                     var pmxBoneName = _pmxCreator._boneLookup.GetPmxBoneName(mltdBoneName);
 
                     var body = new PmxRigidBody();
-                    var correspondingBone = bones.FirstOrDefault(o => o.Name == pmxBoneName);
+                    var correspondingBone = bones.Find(o => o.Name == pmxBoneName);
 
                     Debug.Assert(correspondingBone != null, nameof(correspondingBone) + " != null");
 
@@ -155,7 +160,7 @@ namespace OpenMLTD.MillionDance.Core {
                 }
             }
 
-            private void AppendSwayBones([NotNull, ItemNotNull] IReadOnlyList<PmxBone> bones, [NotNull, ItemNotNull] List<SwayBone> swayBones, [NotNull, ItemNotNull] List<PmxRigidBody> bodies) {
+            private void AppendSwayBones([NotNull, ItemNotNull] PmxBone[] bones, [NotNull, ItemNotNull] SwayBone[] swayBones, [NotNull, ItemNotNull] List<PmxRigidBody> bodies) {
                 // "Semi-root" sway bones
                 foreach (var swayBone in swayBones) {
                     var part = GetBodyCoordSystemPart(swayBone);
@@ -187,8 +192,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                     var mltdBoneName = swayBone.Path;
 
-                    if (mltdBoneName.Contains("BODY_SCALE/")) {
-                        mltdBoneName = mltdBoneName.Replace("BODY_SCALE/", string.Empty);
+                    if (mltdBoneName.Contains(BoneLookup.BoneNamePart_BodyScale)) {
+                        mltdBoneName = mltdBoneName.Replace(BoneLookup.BoneNamePart_BodyScale, string.Empty);
                     }
 
                     var pmxBoneName = _pmxCreator._boneLookup.GetPmxBoneName(mltdBoneName);
@@ -197,7 +202,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                     body.Part = part;
 
-                    var correspondingBone = bones.FirstOrDefault(o => o.Name == pmxBoneName);
+                    var correspondingBone = bones.Find(o => o.Name == pmxBoneName);
 
                     Debug.Assert(correspondingBone != null, "Semi-root sway: " + nameof(correspondingBone) + " != null");
 
@@ -256,7 +261,7 @@ namespace OpenMLTD.MillionDance.Core {
                             body.BoundingBoxKind = BoundingBoxKind.Sphere;
                             body.BoundingBoxSize = new Vector3(swayBone.Radius, 0, 0);
 
-                            var childBone = bones.FirstOrDefault(bo => bo.ParentIndex == correspondingBone.BoneIndex);
+                            var childBone = bones.Find(bo => bo.ParentIndex == correspondingBone.BoneIndex);
 
                             Debug.Assert(childBone != null, nameof(childBone) + " != null");
 
@@ -282,8 +287,8 @@ namespace OpenMLTD.MillionDance.Core {
                 foreach (var swayBone in swayBones) {
                     var mltdBoneName = swayBone.Path;
 
-                    if (mltdBoneName.Contains("BODY_SCALE/")) {
-                        mltdBoneName = mltdBoneName.Replace("BODY_SCALE/", string.Empty);
+                    if (mltdBoneName.Contains(BoneLookup.BoneNamePart_BodyScale)) {
+                        mltdBoneName = mltdBoneName.Replace(BoneLookup.BoneNamePart_BodyScale, string.Empty);
                     }
 
                     var pmxBoneName = _pmxCreator._boneLookup.GetPmxBoneName(mltdBoneName);
@@ -293,16 +298,18 @@ namespace OpenMLTD.MillionDance.Core {
 
                     body.Part = part;
 
-                    var correspondingBone = bones.FirstOrDefault(o => o.Name == pmxBoneName);
+                    var correspondingBone = bones.Find(o => o.Name == pmxBoneName);
 
                     Debug.Assert(correspondingBone != null, "Normal sway: " + nameof(correspondingBone) + " != null");
 
                     switch (part) {
                         case CoordSystemPart.Skirt:
-                        case CoordSystemPart.Hair:
-                            correspondingBone = bones.FirstOrDefault(b => b.ParentIndex == correspondingBone.BoneIndex);
-                            Debug.Assert(correspondingBone != null, "Normal sway: " + nameof(correspondingBone) + " != null");
+                        case CoordSystemPart.Hair: {
+                            var cb = correspondingBone;
+                            correspondingBone = bones.Find(b => b.ParentIndex == cb.BoneIndex);
+                            Debug.Assert(correspondingBone != null, "Normal sway (skirt/hair): " + nameof(correspondingBone) + " != null");
                             break;
+                        }
                         case CoordSystemPart.Accessories:
                         case CoordSystemPart.Breasts:
                             break;
@@ -371,12 +378,12 @@ namespace OpenMLTD.MillionDance.Core {
                             body.BoundingBoxKind = BoundingBoxKind.Sphere;
                             body.BoundingBoxSize = new Vector3(swayBone.Radius, 0, 0);
 
-                            var childBone = bones.FirstOrDefault(bo => bo.ParentIndex == correspondingBone.BoneIndex);
+                            var childBone = bones.Find(bo => bo.ParentIndex == correspondingBone.BoneIndex);
 
                             if (childBone != null) {
                                 body.Position = (correspondingBone.InitialPosition + childBone.InitialPosition) / 2;
                             } else {
-                                var parentBone = bones.FirstOrDefault(bo => bo.BoneIndex == correspondingBone.ParentIndex);
+                                var parentBone = bones.Find(bo => bo.BoneIndex == correspondingBone.ParentIndex);
 
                                 Debug.Assert(parentBone != null, nameof(parentBone) + " != null");
 
@@ -402,7 +409,7 @@ namespace OpenMLTD.MillionDance.Core {
                 }
             }
 
-            private void AppendJoints([NotNull, ItemNotNull] IReadOnlyList<PmxBone> bones, [NotNull, ItemNotNull] List<PmxRigidBody> bodies, [NotNull, ItemNotNull] List<PmxJoint> joints) {
+            private void AppendJoints([NotNull, ItemNotNull] PmxBone[] bones, [NotNull, ItemNotNull] List<PmxRigidBody> bodies, [NotNull, ItemNotNull] List<PmxJoint> joints) {
                 foreach (var body in bodies) {
                     var addJoint = false;
 
@@ -438,16 +445,20 @@ namespace OpenMLTD.MillionDance.Core {
                         switch (body.Part) {
                             case CoordSystemPart.Skirt:
                                 var koshi = _pmxCreator._boneLookup.GetPmxBoneName("MODEL_00/BASE/KOSHI");
-                                parentBody = bodies.FirstOrDefault(bo => bones[bo.BoneIndex].Name == koshi);
+                                parentBody = bodies.Find(bo => bones[bo.BoneIndex].Name == koshi);
                                 break;
-                            case CoordSystemPart.Hair:
+                            case CoordSystemPart.Hair: {
+                                var l = bodies.FindAll(bo => bones[bo.BoneIndex].Name == "ATAMA");
+
                                 // The first one is the one on body (which is larger).
                                 // The second one is what should be applied to the hair.
-                                parentBody = bodies.Where(bo => bones[bo.BoneIndex].Name == "ATAMA").Skip(1).FirstOrDefault();
+                                parentBody = l.Count >= 2 ? l[1] : null;
+
                                 break;
+                            }
                             case CoordSystemPart.Breasts:
                                 var mune2 = _pmxCreator._boneLookup.GetPmxBoneName("MODEL_00/BASE/MUNE1/MUNE2");
-                                parentBody = bodies.FirstOrDefault(bo => bones[bo.BoneIndex].Name == mune2);
+                                parentBody = bodies.Find(bo => bones[bo.BoneIndex].Name == mune2);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();
@@ -475,7 +486,7 @@ namespace OpenMLTD.MillionDance.Core {
                     joint.Position = pmxBone.InitialPosition;
 
                     // Now calculate rotation for this joint.
-                    var childBones = bones.Where(b => b.ParentIndex == pmxBone.BoneIndex).ToArray();
+                    var childBones = bones.WhereToArray(b => b.ParentIndex == pmxBone.BoneIndex);
 
                     if (childBones.Length > 1) {
                         Debug.Print("Warning: more than one child bone for joint rotation calculation. Aborting.");
@@ -502,9 +513,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                     joint.Rotation = new Vector3(qx, qy, qz);
 
-                    if (joint != null) {
-                        joints.Add(joint);
-                    }
+                    joints.Add(joint);
                 }
             }
 

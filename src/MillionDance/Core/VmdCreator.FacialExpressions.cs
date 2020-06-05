@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Vmd;
+using OpenMLTD.MillionDance.Extensions;
 using OpenMLTD.MillionDance.Utilities;
 
 namespace OpenMLTD.MillionDance.Core {
@@ -14,7 +14,7 @@ namespace OpenMLTD.MillionDance.Core {
 
         [NotNull]
         public VmdMotion CreateLipSync([CanBeNull] ScenarioObject baseScenario, int songPosition) {
-            IReadOnlyList<VmdFacialFrame> frames;
+            VmdFacialFrame[] frames;
 
             if (ProcessFacialFrames && baseScenario != null) {
                 frames = CreateLipSyncFrames(baseScenario, songPosition);
@@ -27,7 +27,7 @@ namespace OpenMLTD.MillionDance.Core {
 
         [NotNull]
         public VmdMotion CreateFacialExpressions([CanBeNull] ScenarioObject facialExpr, int songPosition) {
-            IReadOnlyList<VmdFacialFrame> frames;
+            VmdFacialFrame[] frames;
 
             if (ProcessFacialFrames && facialExpr != null) {
                 frames = CreateFacialExpressionFrames(facialExpr, songPosition);
@@ -39,17 +39,17 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private List<VmdFacialFrame> CreateLipSyncFrames([NotNull] ScenarioObject lipSync, int idolPosition) {
+        private VmdFacialFrame[] CreateLipSyncFrames([NotNull] ScenarioObject lipSync, int idolPosition) {
             var frameList = new List<VmdFacialFrame>();
 
-            var lipSyncControls = lipSync.Scenario.Where(s => s.Type == ScenarioDataType.LipSync).ToArray();
-            var singControlList = lipSync.Scenario.Where(s => s.Type == ScenarioDataType.SingControl).ToList();
+            var lipSyncControls = lipSync.Scenario.WhereToArray(s => s.Type == ScenarioDataType.LipSync);
+            var singControlList = lipSync.Scenario.WhereToList(s => s.Type == ScenarioDataType.SingControl);
 
             // Make sure the events are sorted.
             singControlList.Sort((s1, s2) => s1.AbsoluteTime.CompareTo(s2.AbsoluteTime));
 
             var singControls = singControlList.ToArray();
-            var singControlTimes = singControls.Select(s => s.AbsoluteTime).ToArray();
+            var singControlTimes = singControls.SelectToArray(s => s.AbsoluteTime);
 
             Trace.Assert(lipSyncControls.Length > 0, "Lip-sync controls should exist.");
             Trace.Assert(lipSyncControls[0].Param == (int)LipCode.Closed, "The first control op should be 54.");
@@ -59,6 +59,9 @@ namespace OpenMLTD.MillionDance.Core {
 
             for (var i = 0; i < lipSyncControls.Length; i++) {
                 var sync = lipSyncControls[i];
+
+                Debug.Assert(sync != null, nameof(sync) + " != null");
+
                 var currentTime = (float)sync.AbsoluteTime;
 
                 if (currentTime < 0) {
@@ -173,7 +176,7 @@ namespace OpenMLTD.MillionDance.Core {
                 }
             }
 
-            return frameList;
+            return frameList.ToArray();
         }
 
         private void AddSilenceFrame([NotNull, ItemNotNull] List<VmdFacialFrame> frameList, float currentTime) {
@@ -238,10 +241,10 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private List<VmdFacialFrame> CreateFacialExpressionFrames([NotNull] ScenarioObject facialExpr, int idolPosition) {
+        private VmdFacialFrame[] CreateFacialExpressionFrames([NotNull] ScenarioObject facialExpr, int idolPosition) {
             var frameList = new List<VmdFacialFrame>();
 
-            var expControls = facialExpr.Scenario.Where(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == idolPosition - 1).ToArray();
+            var expControls = facialExpr.Scenario.WhereToArray(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == idolPosition - 1);
 
             Debug.Assert(expControls.Length > 0, "Expression controls should exist.");
 
@@ -349,7 +352,7 @@ namespace OpenMLTD.MillionDance.Core {
                 }
             }
 
-            return frameList;
+            return frameList.ToArray();
         }
 
         [NotNull]

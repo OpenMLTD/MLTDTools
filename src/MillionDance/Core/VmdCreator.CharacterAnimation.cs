@@ -10,7 +10,7 @@ namespace OpenMLTD.MillionDance.Core {
 
         [NotNull]
         public VmdMotion CreateCharacterAnimation([CanBeNull] IBodyAnimationSource bodyAnimationSource, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel) {
-            IReadOnlyList<VmdBoneFrame> frames;
+            VmdBoneFrame[] frames;
 
             if (ProcessBoneFrames && (bodyAnimationSource != null && avatar != null && mltdPmxModel != null)) {
                 frames = CreateBoneFrames(bodyAnimationSource, avatar, mltdPmxModel);

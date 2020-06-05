@@ -75,7 +75,7 @@ namespace AssetStudio.Extended.CompositeModels {
                 }
 
                 if (cm != null) {
-                    parentMeshIndex += cm.Names.Count;
+                    parentMeshIndex += cm.Names.Length;
                 } else {
                     ++parentMeshIndex;
                 }
@@ -189,11 +189,11 @@ namespace AssetStudio.Extended.CompositeModels {
         public override BlendShapeData Shape { get; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<string> Names { get; }
+        public string[] Names { get; }
 
         // Mapping: submesh index => name index
         [NotNull]
-        public IReadOnlyList<int> ParentMeshIndices { get; }
+        public int[] ParentMeshIndices { get; }
 
         public int ComponentMeshCount { get; }
 

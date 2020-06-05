@@ -21,7 +21,7 @@ namespace OpenMLTD.MillionDance.Entities.Pmx {
         public float AngleLimit { get; internal set; }
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<IKLink> Links { get; internal set; } = Array.Empty<IKLink>();
+        public IKLink[] Links { get; internal set; } = Array.Empty<IKLink>();
 
     }
 }

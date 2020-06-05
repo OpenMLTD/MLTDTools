@@ -30,11 +30,13 @@ namespace OpenMLTD.MillionDance.Core {
             var vertices = AddVertices(combinedAvatar, combinedMesh, bodyMeshVertexCount);
             model.Vertices = vertices;
 
-            var indicies = AddIndices(combinedMesh);
-            model.FaceTriangles = indicies;
+            var indices = AddIndices(combinedMesh);
+            model.FaceTriangles = indices;
 
             var bones = AddBones(combinedAvatar, combinedMesh, vertices);
             model.Bones = bones;
+
+            bones.AssertAllUnique();
 
             if (_conversionConfig.FixTdaBindingPose) {
                 if (_conversionConfig.SkeletonFormat == SkeletonFormat.Mmd) {
@@ -60,7 +62,7 @@ namespace OpenMLTD.MillionDance.Core {
              * this.PXNode.Clear();
              * this.PXNode.Capacity = base.NodeList.Count - 1; // notice this line
              */
-            var nodes = AddNodes(bones, emotionMorphs);
+            var nodes = AddBoneNodesAsGroups(bones, emotionMorphs);
             model.Nodes = nodes;
 
             if (_conversionConfig.ImportPhysics) {
@@ -72,7 +74,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private IReadOnlyList<PmxVertex> AddVertices([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, int bodyMeshVertexCount) {
+        private PmxVertex[] AddVertices([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, int bodyMeshVertexCount) {
             var vertexCount = combinedMesh.VertexCount;
             var vertices = new PmxVertex[vertexCount];
             // In case that vertex count is more than skin count (ill-formed MLTD models: ch_ex005_022ser)
@@ -154,7 +156,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull]
-        private static IReadOnlyList<int> AddIndices([NotNull] CompositeMesh combinedMesh) {
+        private static int[] AddIndices([NotNull] CompositeMesh combinedMesh) {
             var indicies = new int[combinedMesh.Indices.Length];
 
             for (var i = 0; i < indicies.Length; ++i) {
@@ -165,7 +167,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private IReadOnlyList<PmxBone> AddBones([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, [NotNull, ItemNotNull] IReadOnlyList<PmxVertex> vertices) {
+        private PmxBone[] AddBones([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, [NotNull, ItemNotNull] PmxVertex[] vertices) {
             var boneCount = combinedAvatar.AvatarSkeleton.NodeIDs.Length;
             var bones = new List<PmxBone>(boneCount);
 
@@ -284,248 +286,23 @@ namespace OpenMLTD.MillionDance.Core {
             if (_conversionConfig.AppendIKBones) {
                 // Add IK bones.
 
-                PmxBone[] CreateLegIK(string leftRightJp, string leftRightEn) {
-                    var startBoneCount = bones.Count;
-
-                    PmxBone ikParent = new PmxBone(), ikBone = new PmxBone();
-
-                    ikParent.Name = leftRightJp + "足IK親";
-                    ikParent.NameEnglish = "leg IKP_" + leftRightEn;
-                    ikBone.Name = leftRightJp + "足ＩＫ";
-                    ikBone.NameEnglish = "leg IK_" + leftRightEn;
-
-                    PmxBone master;
-
-                    do {
-                        master = bones.Find(b => b.Name == "全ての親");
-
-                        if (master == null) {
-                            throw new ArgumentException("Missing master bone.");
-                        }
-                    } while (false);
-
-                    ikParent.ParentIndex = bones.IndexOf(master);
-                    ikBone.ParentIndex = startBoneCount; // IKP
-                    ikParent.SetFlag(BoneFlags.ToBone);
-                    ikBone.SetFlag(BoneFlags.ToBone);
-                    ikParent.To_Bone = startBoneCount + 1; // IK
-                    ikBone.To_Bone = -1;
-
-                    PmxBone ankle, knee, leg;
-
-                    do {
-                        var ankleName = leftRightJp + "足首";
-                        ankle = bones.Find(b => b.Name == ankleName);
-                        var kneeName = leftRightJp + "ひざ";
-                        knee = bones.Find(b => b.Name == kneeName);
-                        var legName = leftRightJp + "足";
-                        leg = bones.Find(b => b.Name == legName);
-
-                        if (ankle == null) {
-                            throw new ArgumentException("Missing ankle bone.");
-                        }
-
-                        if (knee == null) {
-                            throw new ArgumentException("Missing knee bone.");
-                        }
-
-                        if (leg == null) {
-                            throw new ArgumentException("Missing leg bone.");
-                        }
-                    } while (false);
-
-                    ikBone.CurrentPosition = ikBone.InitialPosition = ankle.InitialPosition;
-                    ikParent.CurrentPosition = ikParent.InitialPosition = new Vector3(ikBone.InitialPosition.X, 0, ikBone.InitialPosition.Z);
-
-                    ikParent.SetFlag(BoneFlags.Translation | BoneFlags.Rotation);
-                    ikBone.SetFlag(BoneFlags.Translation | BoneFlags.Rotation | BoneFlags.IK);
-
-                    var ik = new PmxIK();
-
-                    ik.LoopCount = 10;
-                    ik.AngleLimit = MathHelper.DegreesToRadians(114.5916f);
-                    ik.TargetBoneIndex = bones.IndexOf(ankle);
-
-                    var links = new IKLink[2];
-
-                    links[0] = new IKLink();
-                    links[0].BoneIndex = bones.IndexOf(knee);
-                    links[0].IsLimited = true;
-                    links[0].LowerBound = new Vector3(MathHelper.DegreesToRadians(-180), 0, 0);
-                    links[0].UpperBound = new Vector3(MathHelper.DegreesToRadians(-0.5f), 0, 0);
-                    links[1] = new IKLink();
-                    links[1].BoneIndex = bones.IndexOf(leg);
-
-                    ik.Links = links;
-                    ikBone.IK = ik;
-
-                    return new[] {
-                        ikParent, ikBone
-                    };
-                }
-
-                PmxBone[] CreateToeIK(string leftRightJp, string leftRightEn) {
-                    PmxBone ikParent, ikBone = new PmxBone();
-
-                    do {
-                        var parentName = leftRightJp + "足ＩＫ";
-
-                        ikParent = bones.Find(b => b.Name == parentName);
-
-                        Debug.Assert(ikParent != null, nameof(ikParent) + " != null");
-                    } while (false);
-
-                    ikBone.Name = leftRightJp + "つま先ＩＫ";
-                    ikBone.NameEnglish = "toe IK_" + leftRightEn;
-
-                    ikBone.ParentIndex = bones.IndexOf(ikParent);
-
-                    ikBone.SetFlag(BoneFlags.ToBone);
-                    ikBone.To_Bone = -1;
-
-                    PmxBone toe, ankle;
-
-                    do {
-                        var toeName = leftRightJp + "つま先";
-                        toe = bones.Find(b => b.Name == toeName);
-                        var ankleName = leftRightJp + "足首";
-                        ankle = bones.Find(b => b.Name == ankleName);
-
-                        if (toe == null) {
-                            throw new ArgumentException("Missing toe bone.");
-                        }
-
-                        if (ankle == null) {
-                            throw new ArgumentException("Missing ankle bone.");
-                        }
-                    } while (false);
-
-                    ikBone.CurrentPosition = ikBone.InitialPosition = toe.InitialPosition;
-                    ikBone.SetFlag(BoneFlags.Translation | BoneFlags.Rotation | BoneFlags.IK);
-
-                    var ik = new PmxIK();
-
-                    ik.LoopCount = 10;
-                    ik.AngleLimit = MathHelper.DegreesToRadians(114.5916f);
-                    ik.TargetBoneIndex = bones.IndexOf(toe);
-
-                    var links = new IKLink[1];
-
-                    links[0] = new IKLink();
-                    links[0].BoneIndex = bones.IndexOf(ankle);
-
-                    ik.Links = links.ToArray();
-                    ikBone.IK = ik;
-
-                    return new[] {
-                        ikBone
-                    };
-                }
-
-                var leftLegIK = CreateLegIK("左", "L");
+                // ReSharper disable once InconsistentNaming
+                var leftLegIK = CreateLegIK(bones, "左", "L");
                 bones.AddRange(leftLegIK);
-                var rightLegIK = CreateLegIK("右", "R");
+                // ReSharper disable once InconsistentNaming
+                var rightLegIK = CreateLegIK(bones, "右", "R");
                 bones.AddRange(rightLegIK);
 
-                var leftToeIK = CreateToeIK("左", "L");
+                // ReSharper disable once InconsistentNaming
+                var leftToeIK = CreateToeIK(bones, "左", "L");
                 bones.AddRange(leftToeIK);
-                var rightToeIK = CreateToeIK("右", "R");
+                // ReSharper disable once InconsistentNaming
+                var rightToeIK = CreateToeIK(bones, "右", "R");
                 bones.AddRange(rightToeIK);
             }
 
             if (_conversionConfig.AppendEyeBones) {
-                (int VertexStart1, int VertexCount1, int VertexStart2, int VertexCount2) FindEyesVerticeRange() {
-                    var meshNameIndex = -1;
-                    var cm = combinedMesh as CompositeMesh;
-
-                    Debug.Assert(cm != null, nameof(cm) + " != null");
-
-                    for (var i = 0; i < cm.Names.Count; i++) {
-                        var meshName = cm.Names[i];
-
-                        if (meshName == "eyes") {
-                            meshNameIndex = i;
-                            break;
-                        }
-                    }
-
-                    if (meshNameIndex < 0) {
-                        throw new ArgumentException("Mesh \"eyes\" is missing.");
-                    }
-
-                    var subMeshMaps = cm.ParentMeshIndices.Enumerate().Where(s => s.Value == meshNameIndex).ToArray();
-
-                    Debug.Assert(subMeshMaps.Length == 2, "There should be 2 sub mesh maps.");
-                    Debug.Assert(subMeshMaps[1].Index - subMeshMaps[0].Index == 1, "The first sub mesh map should contain one element.");
-
-                    var vertexStart1 = (int)cm.SubMeshes[subMeshMaps[0].Index].FirstVertex;
-                    var vertexCount1 = (int)cm.SubMeshes[subMeshMaps[0].Index].VertexCount;
-                    var vertexStart2 = (int)cm.SubMeshes[subMeshMaps[1].Index].FirstVertex;
-                    var vertexCount2 = (int)cm.SubMeshes[subMeshMaps[1].Index].VertexCount;
-
-                    return (vertexStart1, vertexCount1, vertexStart2, vertexCount2);
-                }
-
-                Vector3 GetEyeBonePosition(int vertexStart, int vertexCount) {
-                    var centerPos = Vector3.Zero;
-                    var leftMostPos = new Vector3(float.MinValue, 0, 0);
-                    var rightMostPos = new Vector3(float.MaxValue, 0, 0);
-                    int leftMostIndex = -1, rightMostIndex = -1;
-
-                    for (var i = vertexStart; i < vertexStart + vertexCount; ++i) {
-                        var pos = vertices[i].Position;
-
-                        centerPos += pos;
-
-                        if (pos.X > leftMostPos.X) {
-                            leftMostPos = pos;
-                            leftMostIndex = i;
-                        }
-
-                        if (pos.X < rightMostPos.X) {
-                            rightMostPos = pos;
-                            rightMostIndex = i;
-                        }
-                    }
-
-                    Debug.Assert(leftMostIndex >= 0, nameof(leftMostIndex) + " >= 0");
-                    Debug.Assert(rightMostIndex >= 0, nameof(rightMostIndex) + " >= 0");
-
-                    centerPos = centerPos / vertexCount;
-
-                    // "Eyeball". You got the idea?
-                    var leftMostNorm = vertices[leftMostIndex].Normal;
-                    var rightMostNorm = vertices[rightMostIndex].Normal;
-
-                    var k1 = leftMostNorm.Z / leftMostNorm.X;
-                    var k2 = rightMostNorm.Z / rightMostNorm.X;
-                    float x1 = leftMostPos.X, x2 = rightMostPos.X, z1 = leftMostPos.Z, z2 = rightMostPos.Z;
-
-                    var d1 = (z2 - k2 * x2 + k2 * x1 - z1) / (k1 - k2);
-
-                    var x = x1 + d1;
-                    var z = z1 + k1 * d1;
-
-                    return new Vector3(x, centerPos.Y, z);
-                }
-
-                Vector3 GetEyesBonePosition(int vertexStart1, int vertexCount1, int vertexStart2, int vertexCount2) {
-                    var result = new Vector3();
-
-                    for (var i = vertexStart1; i < vertexStart1 + vertexCount1; ++i) {
-                        result += vertices[i].Position;
-                    }
-
-                    for (var i = vertexStart2; i < vertexStart2 + vertexCount2; ++i) {
-                        result += vertices[i].Position;
-                    }
-
-                    result = result / (vertexCount1 + vertexCount2);
-
-                    return new Vector3(0, result.Y + 0.5f, -0.6f);
-                }
-
-                var (vs1, vc1, vs2, vc2) = FindEyesVerticeRange();
+                var (vs1, vc1, vs2, vc2) = FindEyesVerticesRange(combinedMesh);
                 PmxBone head;
 
                 do {
@@ -544,7 +321,7 @@ namespace OpenMLTD.MillionDance.Core {
                 eyes.Parent = head;
                 eyes.ParentIndex = bones.IndexOf(head);
 
-                eyes.CurrentPosition = eyes.InitialPosition = GetEyesBonePosition(vs1, vc1, vs2, vc2);
+                eyes.CurrentPosition = eyes.InitialPosition = GetEyesBonePosition(vertices, vs1, vc1, vs2, vc2);
 
                 eyes.SetFlag(BoneFlags.Visible | BoneFlags.Rotation | BoneFlags.ToBone);
                 eyes.To_Bone = -1;
@@ -574,8 +351,8 @@ namespace OpenMLTD.MillionDance.Core {
                 leftEye.AppendRatio = 1;
                 rightEye.AppendRatio = 1;
 
-                leftEye.CurrentPosition = leftEye.InitialPosition = GetEyeBonePosition(vs1, vc1);
-                rightEye.CurrentPosition = rightEye.InitialPosition = GetEyeBonePosition(vs2, vc2);
+                leftEye.CurrentPosition = leftEye.InitialPosition = GetEyeBonePosition(vertices, vs1, vc1);
+                rightEye.CurrentPosition = rightEye.InitialPosition = GetEyeBonePosition(vertices, vs2, vc2);
 
                 bones.Add(leftEye);
                 bones.Add(rightEye);
@@ -610,12 +387,13 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         // Change standard T-pose to TDA T-pose
-        private static void FixTdaBonesAndVertices([NotNull, ItemNotNull] IReadOnlyList<PmxBone> bones, [NotNull, ItemNotNull] IReadOnlyList<PmxVertex> vertices) {
+        private static void FixTdaBonesAndVertices([NotNull, ItemNotNull] PmxBone[] bones, [NotNull, ItemNotNull] PmxVertex[] vertices) {
             var defRotRight = Quaternion.FromEulerAngles(0, 0, MathHelper.DegreesToRadians(34.5f));
             var defRotLeft = Quaternion.FromEulerAngles(0, 0, MathHelper.DegreesToRadians(-34.5f));
 
-            var leftArm = bones.SingleOrDefault(b => b.Name == "左腕");
-            var rightArm = bones.SingleOrDefault(b => b.Name == "右腕");
+            // Uniqueness is asserted above
+            var leftArm = bones.Find(b => b.Name == "左腕");
+            var rightArm = bones.Find(b => b.Name == "右腕");
 
             Debug.Assert(leftArm != null, nameof(leftArm) + " != null");
             Debug.Assert(rightArm != null, nameof(rightArm) + " != null");
@@ -656,7 +434,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<PmxMaterial> AddMaterials([NotNull] PrettyMesh combinedMesh, [NotNull] ConversionDetails details, [NotNull] out (string FileName, TexturedMaterial Material)[] materialList) {
+        private static PmxMaterial[] AddMaterials([NotNull] PrettyMesh combinedMesh, [NotNull] ConversionDetails details, [NotNull] out (string FileName, TexturedMaterial Material)[] materialList) {
             var materialCount = combinedMesh.SubMeshes.Length;
             var materials = new PmxMaterial[materialCount];
             materialList = new (string, TexturedMaterial)[materialCount];
@@ -714,240 +492,463 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private IReadOnlyList<PmxMorph> AddEmotionMorphs([NotNull] PrettyMesh mesh) {
-            var morphs = new List<PmxMorph>();
-
+        private PmxMorph[] AddEmotionMorphs([NotNull] PrettyMesh mesh) {
             var s = mesh.Shape;
 
-            if (s != null) {
-                Debug.Assert(s.Channels.Length == s.Shapes.Length, "s.Channels.Count == s.Shapes.Count");
-                Debug.Assert(s.Channels.Length == s.FullWeights.Length, "s.Channels.Count == s.FullWeights.Count");
+            if (s == null) {
+                return Array.Empty<PmxMorph>();
+            }
 
-                var morphCount = s.Channels.Length;
+            Debug.Assert(s.Channels.Length == s.Shapes.Length, "s.Channels.Count == s.Shapes.Count");
+            Debug.Assert(s.Channels.Length == s.FullWeights.Length, "s.Channels.Count == s.FullWeights.Count");
 
-                for (var i = 0; i < morphCount; i++) {
-                    var channel = s.Channels[i];
-                    var shape = s.Shapes[i];
-                    var vertices = s.Vertices;
-                    var morph = new PmxMorph();
+            var morphCount = s.Channels.Length;
+            var morphs = new List<PmxMorph>();
 
-                    // Some models has the name "blendShape1.[morph]" (ch_gs001_201xxx), and some "[long serial prefix]_blendShape[n].[morph]" (ch_ss001_017kth)
-                    var morphNameDotIndex = channel.Name.LastIndexOf('.');
-                    string morphName;
+            for (var i = 0; i < morphCount; i++) {
+                var channel = s.Channels[i];
+                var shape = s.Shapes[i];
+                var vertices = s.Vertices;
+                var morph = new PmxMorph();
 
-                    if (morphNameDotIndex < 0) {
-                        morphName = channel.Name;
-                    } else {
-                        morphName = channel.Name.Substring(morphNameDotIndex + 1);
-                    }
+                // Some models has the name "blendShape1.[morph]" (ch_gs001_201xxx), and some "[long serial prefix]_blendShape[n].[morph]" (ch_ss001_017kth)
+                var morphNameDotIndex = channel.Name.LastIndexOf('.');
+                string morphName;
 
-                    if (_conversionConfig.TranslateFacialExpressionNamesToMmd) {
-                        morph.Name = MorphUtils.LookupMorphName(morphName);
-                    } else {
-                        morph.Name = morphName;
-                    }
-
-                    morph.NameEnglish = morphName;
-
-                    morph.OffsetKind = MorphOffsetKind.Vertex;
-
-                    var offsets = new List<PmxBaseMorph>();
-
-                    for (var j = shape.FirstVertex; j < shape.FirstVertex + shape.VertexCount; ++j) {
-                        var v = vertices[(int)j];
-                        var m = new PmxVertexMorph();
-
-                        var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
-
-                        if (_conversionConfig.ScaleToPmxSize) {
-                            offset = offset * _scalingConfig.ScaleUnityToPmx;
-                        }
-
-                        m.Index = (int)v.Index;
-                        m.Offset = offset;
-
-                        offsets.Add(m);
-                    }
-
-                    morph.Offsets = offsets.ToArray();
-
-                    morphs.Add(morph);
+                if (morphNameDotIndex < 0) {
+                    morphName = channel.Name;
+                } else {
+                    morphName = channel.Name.Substring(morphNameDotIndex + 1);
                 }
 
-                // Now some custom morphs for our model to be compatible with TDA.
-                do {
-                    PmxMorph CreateCompositeMorph(string mltdTruncMorphName, params string[] truncNames) {
-                        int FindIndex<T>(IReadOnlyList<T> list, T item) {
-                            var comparer = EqualityComparer<T>.Default;
+                if (_conversionConfig.TranslateFacialExpressionNamesToMmd) {
+                    morph.Name = MorphUtils.LookupMorphName(morphName);
+                } else {
+                    morph.Name = morphName;
+                }
 
-                            for (var i = 0; i < list.Count; ++i) {
-                                if (comparer.Equals(item, list[i])) {
-                                    return i;
-                                }
-                            }
+                morph.NameEnglish = morphName;
 
-                            return -1;
-                        }
+                morph.OffsetKind = MorphOffsetKind.Vertex;
 
-                        var morph = new PmxMorph();
+                var offsets = new List<PmxBaseMorph>();
 
-                        if (_conversionConfig.TranslateFacialExpressionNamesToMmd) {
-                            morph.Name = MorphUtils.LookupMorphName(mltdTruncMorphName);
-                        } else {
-                            morph.Name = mltdTruncMorphName;
-                        }
+                for (var j = shape.FirstVertex; j < shape.FirstVertex + shape.VertexCount; ++j) {
+                    var v = vertices[(int)j];
+                    var m = new PmxVertexMorph();
 
-                        morph.NameEnglish = mltdTruncMorphName;
+                    var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
 
-                        var offsets = new List<PmxBaseMorph>();
-                        var vertices = s.Vertices;
-
-                        var matchedChannels = truncNames.Select(name => {
-                            // name: e.g. "E_metoji_l"
-                            // ch_ex005_016tsu has "blendShape2.E_metoji_l" instead of the common one "blendShape1.E_metoji_l"
-                            // so the old method (string equal to full name) breaks.
-                            var chan = s.Channels.SingleOrDefault(ch => ch.Name.EndsWith(name));
-
-                            if (chan == null) {
-                                Trace.WriteLine($"Warning: required blend channel not found: {name}");
-                            }
-
-                            return chan;
-                        }).ToArray();
-
-                        foreach (var channel in matchedChannels) {
-                            if (channel == null) {
-                                continue;
-                            }
-
-                            var channelIndex = FindIndex(s.Channels, channel);
-                            var shape = s.Shapes[channelIndex];
-
-                            morph.OffsetKind = MorphOffsetKind.Vertex;
-
-                            for (var j = shape.FirstVertex; j < shape.FirstVertex + shape.VertexCount; ++j) {
-                                var v = vertices[(int)j];
-                                var m = new PmxVertexMorph();
-
-                                var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
-
-                                if (_conversionConfig.ScaleToPmxSize) {
-                                    offset = offset * _scalingConfig.ScaleUnityToPmx;
-                                }
-
-                                m.Index = (int)v.Index;
-                                m.Offset = offset;
-
-                                offsets.Add(m);
-                            }
-                        }
-
-                        morph.Offsets = offsets.ToArray();
-
-                        return morph;
+                    if (_conversionConfig.ScaleToPmxSize) {
+                        offset = offset * _scalingConfig.ScaleUnityToPmx;
                     }
 
-                    morphs.Add(CreateCompositeMorph("E_metoji", "E_metoji_l", "E_metoji_r"));
-                } while (false);
+                    m.Index = (int)v.Index;
+                    m.Offset = offset;
+
+                    offsets.Add(m);
+                }
+
+                morph.Offsets = offsets.ToArray();
+
+                morphs.Add(morph);
             }
+
+            // Now some custom morphs for our model to be compatible with TDA.
+            morphs.Add(CreateCompositeMorph(s, "E_metoji", "E_metoji_l", "E_metoji_r"));
 
             return morphs.ToArray();
         }
 
         [NotNull, ItemNotNull]
-        private static IReadOnlyList<PmxNode> AddNodes([NotNull, ItemNotNull] IReadOnlyList<PmxBone> bones, [NotNull, ItemNotNull] IReadOnlyList<PmxMorph> morphs) {
+        private static PmxNode[] AddBoneNodesAsGroups([NotNull, ItemNotNull] PmxBone[] bones, [NotNull, ItemNotNull] PmxMorph[] morphs) {
             var nodes = new List<PmxNode>();
 
-            PmxNode CreateBoneGroup(string groupNameJp, string groupNameEn, params string[] boneNames) {
-                var node = new PmxNode();
-
-                node.Name = groupNameJp;
-                node.NameEnglish = groupNameEn;
-
-                var boneNodes = new List<NodeElement>();
-
-                foreach (var boneName in boneNames) {
-                    var bone = bones.SingleOrDefault(b => b.Name == boneName);
-
-                    if (bone != null) {
-                        boneNodes.Add(new NodeElement {
-                            ElementType = ElementType.Bone,
-                            Index = bone.BoneIndex
-                        });
-                    } else {
-                        Debug.Print("Warning: bone node not found: {0}", boneName);
-                    }
-                }
-
-                node.Elements = boneNodes.ToArray();
-
-                return node;
-            }
-
-            PmxNode CreateEmotionNode() {
-                var node = new PmxNode();
-
-                node.Name = "表情";
-                node.NameEnglish = "Facial Expressions";
-
-                var elements = new List<NodeElement>();
-
-                var counter = 0;
-
-                foreach (var _ in morphs) {
-                    var elem = new NodeElement();
-
-                    elem.ElementType = ElementType.Morph;
-                    elem.Index = counter;
-
-                    elements.Add(elem);
-
-                    ++counter;
-                }
-
-                node.Elements = elements.ToArray();
-
-                return node;
-            }
-
-            nodes.Add(CreateBoneGroup("Root", "Root", "操作中心"));
-            nodes.Add(CreateEmotionNode());
-            nodes.Add(CreateBoneGroup("センター", "center", "全ての親", "センター"));
-            nodes.Add(CreateBoneGroup("ＩＫ", "IK", "左足IK親", "左足ＩＫ", "左つま先ＩＫ", "右足IK親", "右足ＩＫ", "右つま先ＩＫ"));
-            nodes.Add(CreateBoneGroup("体(上)", "Upper Body", "上半身", "上半身2", "首", "頭"));
-            nodes.Add(CreateBoneGroup("腕", "Arms", "左肩", "左腕", "左ひじ", "左手首", "右肩", "右腕", "右ひじ", "右手首"));
-            nodes.Add(CreateBoneGroup("手", "Hands", "左親指１", "左親指２", "左親指３", "左人指１", "左人指２", "左人指３", "左ダミー", "左中指１", "左中指２", "左中指３", "左薬指１", "左薬指２", "左薬指３", "左小指１", "左小指２", "左小指３",
+            nodes.Add(CreateBoneGroup(bones, "Root", "Root", "操作中心"));
+            nodes.Add(CreateEmotionNode(morphs));
+            nodes.Add(CreateBoneGroup(bones, "センター", "Center", "全ての親", "センター"));
+            nodes.Add(CreateBoneGroup(bones, "ＩＫ", "IK", "左足IK親", "左足ＩＫ", "左つま先ＩＫ", "右足IK親", "右足ＩＫ", "右つま先ＩＫ"));
+            nodes.Add(CreateBoneGroup(bones, "体(上)", "Upper Body", "上半身", "上半身2", "首", "頭"));
+            nodes.Add(CreateBoneGroup(bones, "腕", "Arms", "左肩", "左腕", "左ひじ", "左手首", "右肩", "右腕", "右ひじ", "右手首"));
+            nodes.Add(CreateBoneGroup(bones, "手", "Hands", "左親指１", "左親指２", "左親指３", "左人指１", "左人指２", "左人指３", "左ダミー", "左中指１", "左中指２", "左中指３", "左薬指１", "左薬指２", "左薬指３", "左小指１", "左小指２", "左小指３",
                 "右親指１", "右親指２", "右親指３", "右人指１", "右人指２", "右人指３", "右ダミー", "右中指１", "右中指２", "右中指３", "右薬指１", "右薬指２", "右薬指３", "右小指１", "右小指２", "右小指３"));
-            nodes.Add(CreateBoneGroup("体(下)", "Lower Body", "グルーブ", "腰", "下半身"));
-            nodes.Add(CreateBoneGroup("足", "Legs", "左足", "左ひざ", "左足首", "左つま先", "右足", "右ひざ", "右足首", "右つま先"));
-            nodes.Add(CreateBoneGroup("その他", "Others", "両目", "左目", "右目"));
+            nodes.Add(CreateBoneGroup(bones, "体(下)", "Lower Body", "グルーブ", "腰", "下半身"));
+            nodes.Add(CreateBoneGroup(bones, "足", "Legs", "左足", "左ひざ", "左足首", "左つま先", "右足", "右ひざ", "右足首", "右つま先"));
+            nodes.Add(CreateBoneGroup(bones, "その他", "Others", "両目", "左目", "右目"));
 
             return nodes.ToArray();
         }
 
+        [NotNull]
+        private static PmxNode CreateBoneGroup([NotNull, ItemNotNull] PmxBone[] bones, [NotNull] string groupNameJp, [NotNull] string groupNameEn, [NotNull, ItemNotNull] params string[] boneNames) {
+            var node = new PmxNode();
+
+            node.Name = groupNameJp;
+            node.NameEnglish = groupNameEn;
+
+            var boneNodes = new List<NodeElement>();
+
+            foreach (var boneName in boneNames) {
+                var bone = bones.Find(b => b.Name == boneName);
+
+                if (bone != null) {
+                    boneNodes.Add(new NodeElement {
+                        ElementType = ElementType.Bone,
+                        Index = bone.BoneIndex
+                    });
+                } else {
+                    Debug.WriteLine($"Warning: bone node not found: {boneName}");
+                }
+            }
+
+            node.Elements = boneNodes.ToArray();
+
+            return node;
+        }
+
+        [NotNull]
+        private static PmxNode CreateEmotionNode([NotNull, ItemNotNull] PmxMorph[] morphs) {
+            var node = new PmxNode();
+
+            node.Name = "表情";
+            node.NameEnglish = "Facial Expressions";
+
+            var elements = new List<NodeElement>();
+            var morphCount = morphs.Length;
+
+            for (var i = 0; i < morphCount; ++i) {
+                var elem = new NodeElement();
+
+                elem.ElementType = ElementType.Morph;
+                elem.Index = i;
+
+                elements.Add(elem);
+            }
+
+            node.Elements = elements.ToArray();
+
+            return node;
+        }
+
+        [NotNull]
+        private PmxMorph CreateCompositeMorph([NotNull] BlendShapeData blendShape, [NotNull] string mltdTruncMorphName, [NotNull, ItemNotNull] params string[] truncNames) {
+            var morph = new PmxMorph();
+
+            if (_conversionConfig.TranslateFacialExpressionNamesToMmd) {
+                morph.Name = MorphUtils.LookupMorphName(mltdTruncMorphName);
+            } else {
+                morph.Name = mltdTruncMorphName;
+            }
+
+            morph.NameEnglish = mltdTruncMorphName;
+
+            var offsets = new List<PmxBaseMorph>();
+            var vertices = blendShape.Vertices;
+
+            var matchedChannels = truncNames.Select(name => {
+                // name: e.g. "E_metoji_l"
+                // ch_ex005_016tsu has "blendShape2.E_metoji_l" instead of the common one "blendShape1.E_metoji_l"
+                // so the old method (string equal to full name) breaks.
+                var chan = blendShape.Channels.SingleOrDefault(ch => ch.Name.EndsWith(name));
+
+                if (chan == null) {
+                    Trace.WriteLine($"Warning: required blend channel not found: {name}");
+                }
+
+                return chan;
+            }).ToArray();
+
+            foreach (var channel in matchedChannels) {
+                if (channel == null) {
+                    continue;
+                }
+
+                var channelIndex = blendShape.Channels.IndexOf(channel);
+                var shape = blendShape.Shapes[channelIndex];
+
+                morph.OffsetKind = MorphOffsetKind.Vertex;
+
+                for (var j = shape.FirstVertex; j < shape.FirstVertex + shape.VertexCount; ++j) {
+                    var v = vertices[(int)j];
+                    var m = new PmxVertexMorph();
+
+                    var offset = v.Vertex.ToOpenTK().FixUnityToOpenTK();
+
+                    if (_conversionConfig.ScaleToPmxSize) {
+                        offset = offset * _scalingConfig.ScaleUnityToPmx;
+                    }
+
+                    m.Index = (int)v.Index;
+                    m.Offset = offset;
+
+                    offsets.Add(m);
+                }
+            }
+
+            morph.Offsets = offsets.ToArray();
+
+            return morph;
+        }
+
+        [NotNull, ItemNotNull]
+        // ReSharper disable once InconsistentNaming
+        private static PmxBone[] CreateLegIK([NotNull, ItemNotNull] List<PmxBone> bones, [NotNull] string leftRightJp, [NotNull] string leftRightEn) {
+            var startBoneCount = bones.Count;
+
+            PmxBone ikParent = new PmxBone(), ikBone = new PmxBone();
+
+            ikParent.Name = $"{leftRightJp}足IK親";
+            ikParent.NameEnglish = $"leg IKP_{leftRightEn}";
+            ikBone.Name = $"{leftRightJp}足ＩＫ";
+            ikBone.NameEnglish = $"leg IK_{leftRightEn}";
+
+            PmxBone master;
+
+            do {
+                master = bones.Find(b => b.Name == "全ての親");
+
+                if (master == null) {
+                    throw new ArgumentException("Missing master bone.");
+                }
+            } while (false);
+
+            ikParent.ParentIndex = bones.IndexOf(master);
+            ikBone.ParentIndex = startBoneCount; // IKP
+            ikParent.SetFlag(BoneFlags.ToBone);
+            ikBone.SetFlag(BoneFlags.ToBone);
+            ikParent.To_Bone = startBoneCount + 1; // IK
+            ikBone.To_Bone = -1;
+
+            PmxBone ankle, knee, leg;
+
+            do {
+                var ankleName = $"{leftRightJp}足首";
+                ankle = bones.Find(b => b.Name == ankleName);
+                var kneeName = $"{leftRightJp}ひざ";
+                knee = bones.Find(b => b.Name == kneeName);
+                var legName = $"{leftRightJp}足";
+                leg = bones.Find(b => b.Name == legName);
+
+                if (ankle == null) {
+                    throw new ArgumentException("Missing ankle bone.");
+                }
+
+                if (knee == null) {
+                    throw new ArgumentException("Missing knee bone.");
+                }
+
+                if (leg == null) {
+                    throw new ArgumentException("Missing leg bone.");
+                }
+            } while (false);
+
+            ikBone.CurrentPosition = ikBone.InitialPosition = ankle.InitialPosition;
+            ikParent.CurrentPosition = ikParent.InitialPosition = new Vector3(ikBone.InitialPosition.X, 0, ikBone.InitialPosition.Z);
+
+            ikParent.SetFlag(BoneFlags.Translation | BoneFlags.Rotation);
+            ikBone.SetFlag(BoneFlags.Translation | BoneFlags.Rotation | BoneFlags.IK);
+
+            var ik = new PmxIK();
+
+            ik.LoopCount = 10;
+            ik.AngleLimit = MathHelper.DegreesToRadians(114.5916f);
+            ik.TargetBoneIndex = bones.IndexOf(ankle);
+
+            var links = new IKLink[2];
+
+            links[0] = new IKLink();
+            links[0].BoneIndex = bones.IndexOf(knee);
+            links[0].IsLimited = true;
+            links[0].LowerBound = new Vector3(MathHelper.DegreesToRadians(-180), 0, 0);
+            links[0].UpperBound = new Vector3(MathHelper.DegreesToRadians(-0.5f), 0, 0);
+            links[1] = new IKLink();
+            links[1].BoneIndex = bones.IndexOf(leg);
+
+            ik.Links = links;
+            ikBone.IK = ik;
+
+            return new[] {
+                ikParent, ikBone
+            };
+        }
+
+        [NotNull, ItemNotNull]
+        private static PmxBone[] CreateToeIK([NotNull, ItemNotNull] List<PmxBone> bones, [NotNull] string leftRightJp, [NotNull] string leftRightEn) {
+            PmxBone ikParent, ikBone = new PmxBone();
+
+            do {
+                var parentName = $"{leftRightJp}足ＩＫ";
+
+                ikParent = bones.Find(b => b.Name == parentName);
+
+                Debug.Assert(ikParent != null, nameof(ikParent) + " != null");
+            } while (false);
+
+            ikBone.Name = $"{leftRightJp}つま先ＩＫ";
+            ikBone.NameEnglish = $"toe IK_{leftRightEn}";
+
+            ikBone.ParentIndex = bones.IndexOf(ikParent);
+
+            ikBone.SetFlag(BoneFlags.ToBone);
+            ikBone.To_Bone = -1;
+
+            PmxBone toe, ankle;
+
+            do {
+                var toeName = $"{leftRightJp}つま先";
+                toe = bones.Find(b => b.Name == toeName);
+                var ankleName = $"{leftRightJp}足首";
+                ankle = bones.Find(b => b.Name == ankleName);
+
+                if (toe == null) {
+                    throw new ArgumentException("Missing toe bone.");
+                }
+
+                if (ankle == null) {
+                    throw new ArgumentException("Missing ankle bone.");
+                }
+            } while (false);
+
+            ikBone.CurrentPosition = ikBone.InitialPosition = toe.InitialPosition;
+            ikBone.SetFlag(BoneFlags.Translation | BoneFlags.Rotation | BoneFlags.IK);
+
+            var ik = new PmxIK();
+
+            ik.LoopCount = 10;
+            ik.AngleLimit = MathHelper.DegreesToRadians(114.5916f);
+            ik.TargetBoneIndex = bones.IndexOf(toe);
+
+            var links = new IKLink[1];
+
+            links[0] = new IKLink();
+            links[0].BoneIndex = bones.IndexOf(ankle);
+
+            ik.Links = links.ToArray();
+            ikBone.IK = ik;
+
+            return new[] {
+                ikBone
+            };
+        }
+
+        private static (int VertexStart1, int VertexCount1, int VertexStart2, int VertexCount2) FindEyesVerticesRange([NotNull] CompositeMesh combinedMesh) {
+            var meshNameIndex = -1;
+
+            Debug.Assert(combinedMesh != null, nameof(combinedMesh) + " != null");
+
+            for (var i = 0; i < combinedMesh.Names.Length; i++) {
+                var meshName = combinedMesh.Names[i];
+
+                if (meshName == "eyes") {
+                    meshNameIndex = i;
+                    break;
+                }
+            }
+
+            if (meshNameIndex < 0) {
+                throw new ArgumentException("Mesh \"eyes\" is missing.");
+            }
+
+            var subMeshMaps = combinedMesh.ParentMeshIndices.Enumerate().Where(s => s.Value == meshNameIndex).ToArray();
+
+            Debug.Assert(subMeshMaps.Length == 2, "There should be 2 sub mesh maps.");
+            Debug.Assert(subMeshMaps[1].Index - subMeshMaps[0].Index == 1, "The first sub mesh map should contain one element.");
+
+            var vertexStart1 = (int)combinedMesh.SubMeshes[subMeshMaps[0].Index].FirstVertex;
+            var vertexCount1 = (int)combinedMesh.SubMeshes[subMeshMaps[0].Index].VertexCount;
+            var vertexStart2 = (int)combinedMesh.SubMeshes[subMeshMaps[1].Index].FirstVertex;
+            var vertexCount2 = (int)combinedMesh.SubMeshes[subMeshMaps[1].Index].VertexCount;
+
+            return (vertexStart1, vertexCount1, vertexStart2, vertexCount2);
+        }
+
+        private static Vector3 GetEyeBonePosition([NotNull, ItemNotNull] PmxVertex[] vertices, int vertexStart, int vertexCount) {
+            var centerPos = Vector3.Zero;
+            var leftMostPos = new Vector3(float.MinValue, 0, 0);
+            var rightMostPos = new Vector3(float.MaxValue, 0, 0);
+            int leftMostIndex = -1, rightMostIndex = -1;
+
+            for (var i = vertexStart; i < vertexStart + vertexCount; ++i) {
+                var pos = vertices[i].Position;
+
+                centerPos += pos;
+
+                if (pos.X > leftMostPos.X) {
+                    leftMostPos = pos;
+                    leftMostIndex = i;
+                }
+
+                if (pos.X < rightMostPos.X) {
+                    rightMostPos = pos;
+                    rightMostIndex = i;
+                }
+            }
+
+            Debug.Assert(leftMostIndex >= 0, nameof(leftMostIndex) + " >= 0");
+            Debug.Assert(rightMostIndex >= 0, nameof(rightMostIndex) + " >= 0");
+
+            centerPos = centerPos / vertexCount;
+
+            // "Eyeball". You got the idea?
+            var leftMostNorm = vertices[leftMostIndex].Normal;
+            var rightMostNorm = vertices[rightMostIndex].Normal;
+
+            var k1 = leftMostNorm.Z / leftMostNorm.X;
+            var k2 = rightMostNorm.Z / rightMostNorm.X;
+            float x1 = leftMostPos.X, x2 = rightMostPos.X, z1 = leftMostPos.Z, z2 = rightMostPos.Z;
+
+            var d1 = (z2 - k2 * x2 + k2 * x1 - z1) / (k1 - k2);
+
+            var x = x1 + d1;
+            var z = z1 + k1 * d1;
+
+            return new Vector3(x, centerPos.Y, z);
+        }
+
+        private static Vector3 GetEyesBonePosition([NotNull, ItemNotNull] PmxVertex[] vertices, int vertexStart1, int vertexCount1, int vertexStart2, int vertexCount2) {
+            var result = new Vector3();
+
+            for (var i = vertexStart1; i < vertexStart1 + vertexCount1; ++i) {
+                result += vertices[i].Position;
+            }
+
+            for (var i = vertexStart2; i < vertexStart2 + vertexCount2; ++i) {
+                result += vertices[i].Position;
+            }
+
+            result = result / (vertexCount1 + vertexCount2);
+
+            return new Vector3(0, result.Y + 0.5f, -0.6f);
+        }
+
         [CanBeNull]
         private static BoneNode GetDirectSingleChildOf([NotNull] BoneNode b) {
-            var l = new List<BoneNode>();
+            var foundAndSingle = false;
+            BoneNode result = null;
 
             foreach (var c in b.Children) {
                 var isGenerated = BoneLookup.IsNameGenerated(c.Path);
 
-                if (!isGenerated) {
-                    l.Add(c);
+                if (isGenerated) {
+                    continue;
+                }
+
+                if (result == null) {
+                    result = c;
+                    foundAndSingle = true;
+                } else {
+                    foundAndSingle = false;
                 }
             }
 
-            if (l.Count == 1) {
-                return l[0];
-            } else {
-                return null;
-            }
+            return foundAndSingle ? result : null;
         }
 
         [NotNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string GetExportedTextureFileName([NotNull] string texturePrefix, int textureIndex) {
-            return $"{texturePrefix}{textureIndex.ToString("00")}.png";
+            var textureIndexStr = textureIndex.ToString("00");
+            return $"{texturePrefix}{textureIndexStr}.png";
         }
 
     }

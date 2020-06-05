@@ -16,13 +16,13 @@ namespace Imas.Data.Serialized.Sway {
         public string Top { get; internal set; } = string.Empty;
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<SwayManager> Managers { get; internal set; } = Array.Empty<SwayManager>();
+        public SwayManager[] Managers { get; internal set; } = Array.Empty<SwayManager>();
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<SwayCollider> Colliders { get; internal set; } = Array.Empty<SwayCollider>();
+        public SwayCollider[] Colliders { get; internal set; } = Array.Empty<SwayCollider>();
 
         [NotNull, ItemNotNull]
-        public IReadOnlyList<SwayBone> SwayBones { get; internal set; } = Array.Empty<SwayBone>();
+        public SwayBone[] SwayBones { get; internal set; } = Array.Empty<SwayBone>();
 
     }
 }

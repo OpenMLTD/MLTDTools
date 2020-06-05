@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Extensions;
+using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 
 namespace OpenMLTD.MillionDance.Entities.Internal {
@@ -25,12 +26,11 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
             LocalPosition = initialPosition;
             LocalRotation = initialRotation;
 
-            Name = path.Replace("BODY_SCALE/", string.Empty);
-        }
-
-        public BoneNode([CanBeNull] BoneNode parent, int index, [NotNull] string path, Vector3 initialPosition, Quaternion initialRotation, Matrix4 bindPoseInverse)
-            : this(parent, index, path, initialPosition, initialRotation) {
-            //_bindingPoseInverse = bindPoseInverse;
+            if (path.Contains(BoneLookup.BoneNamePart_BodyScale)) {
+                Name = path.Replace(BoneLookup.BoneNamePart_BodyScale, string.Empty);
+            } else {
+                Name = path;
+            }
         }
 
         [CanBeNull]
@@ -49,8 +49,10 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
 
         public int Level { get; internal set; }
 
+        // Do not modify this list directly
+        // TODO: use something like "internal list" for this property
         [NotNull, ItemNotNull]
-        public IReadOnlyList<BoneNode> Children => _children;
+        public List<BoneNode> Children => _children;
 
         public bool IsDirty { get; private set; } = true;
 
@@ -94,9 +96,19 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
 
         internal Vector3 InitialPositionWorld { get; set; }
 
-        internal Matrix4 BindingPoseInverse => _bindingPoseInverse.Value;
+        internal Matrix4 BindingPoseInverse {
+            get {
+                Debug.Assert(_bindingPoseInverse != null, nameof(_bindingPoseInverse) + " != null");
+                return _bindingPoseInverse.Value;
+            }
+        }
 
-        internal Matrix4 BindingPose => _bindingPose.Value;
+        internal Matrix4 BindingPose {
+            get {
+                Debug.Assert(_bindingPose != null, nameof(_bindingPose) + " != null");
+                return _bindingPose.Value;
+            }
+        }
 
         internal void AddChild([NotNull] BoneNode node) {
             if (!_children.Contains(node)) {
@@ -155,7 +167,7 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
 
             _localMatrix = CreateTransformMatrix(t, q);
             _worldMatrix = ComputeWorldMatrix();
-            _skinMatrix = _bindingPoseInverse.Value * _worldMatrix;
+            _skinMatrix = BindingPoseInverse * _worldMatrix;
 
             CurrentPosition = Vector3.TransformPosition(InitialPositionWorld, _skinMatrix);
         }
@@ -187,34 +199,25 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TestStartsWithIn([NotNull] string str, [NotNull, ItemNotNull] IReadOnlyList<string> startWithList) {
-            return startWithList.Any(str.StartsWith);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TestEndsWith([NotNull] string str, [NotNull, ItemNotNull] IReadOnlyList<string> endWithList) {
-            return endWithList.Any(str.EndsWith);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TestContains([NotNull] string str, [NotNull, ItemNotNull] IReadOnlyCollection<string> collection) {
-            return collection.Any(str.Contains);
-        }
-
         [NotNull, ItemNotNull]
         private readonly List<BoneNode> _children = new List<BoneNode>();
 
+        [CanBeNull]
         private Matrix4? _bindingPoseInverse;
+
+        [CanBeNull]
         private Matrix4? _bindingPose;
 
         private Vector3 _localPosition = Vector3.Zero;
+
         private Quaternion _localRotation = Quaternion.Identity;
 
         private bool _isInitialized;
 
         private Matrix4 _localMatrix;
+
         private Matrix4 _worldMatrix;
+
         private Matrix4 _skinMatrix;
 
     }

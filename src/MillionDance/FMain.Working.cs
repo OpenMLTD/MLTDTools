@@ -165,6 +165,7 @@ namespace OpenMLTD.MillionDance {
                                 case InputParams.FallbackFacialExpressionSource.Landscape: {
                                     if (yoko.HasFacialExpressionFrames()) {
                                         facialExpr = yoko;
+                                        Log("Using facial expressions: landscape.");
                                     } else if (tate.HasFacialExpressionFrames()) {
                                         Log("Facial expressions are not found in landscape, but found in portrait. Use portrait instead.");
                                         facialExpr = tate;
@@ -179,6 +180,7 @@ namespace OpenMLTD.MillionDance {
                                 case InputParams.FallbackFacialExpressionSource.Portrait:
                                     if (yoko.HasFacialExpressionFrames()) {
                                         facialExpr = yoko;
+                                        Log("Using facial expressions: portrait.");
                                     } else if (tate.HasFacialExpressionFrames()) {
                                         Log("Facial expressions are not found in portrait, but found in landscape. Use landscape instead.");
                                         facialExpr = tate;

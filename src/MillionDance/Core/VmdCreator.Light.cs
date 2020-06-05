@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Vmd;
+using OpenMLTD.MillionDance.Extensions;
 using OpenTK;
 
 namespace OpenMLTD.MillionDance.Core {
@@ -10,7 +10,7 @@ namespace OpenMLTD.MillionDance.Core {
 
         [NotNull]
         public VmdMotion CreateLight([CanBeNull] ScenarioObject lights) {
-            IReadOnlyList<VmdLightFrame> frames;
+            VmdLightFrame[] frames;
 
             if (ProcessLightFrames && lights != null) {
                 frames = CreateLightFrames(lights);
@@ -22,9 +22,9 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private IReadOnlyList<VmdLightFrame> CreateLightFrames([NotNull] ScenarioObject scenarioObject) {
+        private VmdLightFrame[] CreateLightFrames([NotNull] ScenarioObject scenarioObject) {
             var lightFrameList = new List<VmdLightFrame>();
-            var lightControls = scenarioObject.Scenario.Where(s => s.Type == ScenarioDataType.LightColor).ToArray();
+            var lightControls = scenarioObject.Scenario.WhereToArray(s => s.Type == ScenarioDataType.LightColor);
 
             foreach (var lightControl in lightControls) {
                 var n = (int)((float)lightControl.AbsoluteTime * 60.0f);
@@ -46,7 +46,7 @@ namespace OpenMLTD.MillionDance.Core {
                 lightFrameList.Add(frame);
             }
 
-            return lightFrameList;
+            return lightFrameList.ToArray();
         }
 
     }

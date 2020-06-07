@@ -15,17 +15,19 @@
 
         Type14 = 14,
 
+        FineEvent = 41,
+
         LipSync = 43,
 
         FacialExpression = 45,
 
         LightColor = 51,
 
-        Type53 = 53,
+        AppealStart = 53,
 
-        Type54 = 54,
+        AppealPose = 54,
 
-        Type55 = 55,
+        AppealEnd = 55,
 
         ShowTapButtons = 56,
 

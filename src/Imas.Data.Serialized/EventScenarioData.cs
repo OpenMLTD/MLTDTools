@@ -49,6 +49,7 @@ namespace Imas.Data.Serialized {
         [ScriptableObjectProperty(Name = "col2")]
         public ColorRGBA Color2 { get; set; }
 
+        [NotNull]
         [ScriptableObjectProperty(Name = "cols")]
         public float[] Colors { get; set; } = Array.Empty<float>();
 
@@ -72,6 +73,7 @@ namespace Imas.Data.Serialized {
         /// This array actually instructs whether the corresponding singer should *sing* (i.e. enable lip sync), not should *mute*.
         /// The blame goes to BNSI staffs.
         /// </summary>
+        [NotNull]
         [ScriptableObjectProperty(Name = "mute")]
         public bool[] IsSinging { get; set; } = Array.Empty<bool>();
 
@@ -83,6 +85,7 @@ namespace Imas.Data.Serialized {
         [ScriptableObjectProperty(Name = "eye_y")]
         public float EyeY { get; set; }
 
+        [NotNull]
         public Vector4[] Formation { get; set; } = Array.Empty<Vector4>();
 
         public bool Appeal { get; set; }
@@ -97,9 +100,11 @@ namespace Imas.Data.Serialized {
 
         public bool Delay { get; set; }
 
+        [NotNull]
         [ScriptableObjectProperty(Name = "clratio")]
         public int[] ColorRatio { get; set; } = Array.Empty<int>();
 
+        [NotNull]
         [ScriptableObjectProperty(Name = "clcols")]
         public int[] ColorColumns { get; set; } = Array.Empty<int>();
 
@@ -109,6 +114,24 @@ namespace Imas.Data.Serialized {
         [CanBeNull]
         [ScriptableObjectProperty(Name = "vjparam")]
         public VjParam VjParam { get; set; }
+
+        // Added in newer versions
+
+        public int SeekFrame { get; set; }
+
+        [ScriptableObjectProperty(Name = "fvalue")]
+        public float FValue { get; set; }
+
+        [ScriptableObjectProperty(Name = "fvalue2")]
+        public float FValue2 { get; set; }
+
+        public int Idol2 { get; set; }
+
+        public int Param2 { get; set; }
+
+        [NotNull]
+        [ScriptableObjectProperty(Name = "vecs1")]
+        public object[] Vectors1 { get; set; } = Array.Empty<object>();
 
     }
 }

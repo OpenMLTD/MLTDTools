@@ -1,5 +1,6 @@
 using System;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
+using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization {
     /// <inheritdoc />
@@ -18,6 +19,9 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
         /// The assigned type must implement <see cref="INamingConvention"/> interface.
         /// </summary>
         public Type NamingConventionType { get; set; }
+
+        [NotNull]
+        public static readonly ScriptableObjectAttribute Default = new ScriptableObjectAttribute();
 
     }
 }

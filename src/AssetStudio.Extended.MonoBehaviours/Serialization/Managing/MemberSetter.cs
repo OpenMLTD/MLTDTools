@@ -2,10 +2,9 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using AssetStudio.Extended.MonoBehaviours.Serialization;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Utilities {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
     /// <summary>
     /// Accelerated member setter, faster than <see cref="FieldInfo.SetValue(object, object)"/> and <see cref="PropertyInfo.SetValue(object, object)"/>.
     /// However there is compilation cost, so caching should be used.

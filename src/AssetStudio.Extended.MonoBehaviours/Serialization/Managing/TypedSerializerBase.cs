@@ -90,7 +90,15 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
                 Debug.Assert(typeHint != null);
 
                 if (typeHint.IsArray) {
-                    rawValue = DeserializeArray(arr, typeHint, level);
+                    var rank = typeHint.GetArrayRank();
+
+                    Debug.Assert(rank > 0, nameof(rank) + " > 0");
+
+                    if (rank != 1) {
+                        throw new NotSupportedException("Multi-rank arrays are not supported yet.");
+                    }
+
+                    rawValue = DeserializeRank1Array(arr, typeHint, level);
                 } else {
                     rawValue = DeserializeCollection(arr, typeHint, level);
                 }
@@ -105,7 +113,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
         }
 
         [NotNull]
-        private Array DeserializeArray([NotNull, ItemCanBeNull] object[] array, [NotNull] Type arrayType, int level) {
+        private Array DeserializeRank1Array([NotNull, ItemCanBeNull] object[] array, [NotNull] Type arrayType, int level) {
             var elementType = arrayType.GetElementType();
 
             Debug.Assert(elementType != null);

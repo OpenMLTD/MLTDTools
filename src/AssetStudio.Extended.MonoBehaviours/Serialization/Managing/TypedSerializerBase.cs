@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -35,7 +34,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
         }
 
         [NotNull]
-        public object DeserializeObject([NotNull] CustomType structure, int level) {
+        private object DeserializeObject([NotNull] CustomType structure, int level) {
             var containerType = ContainerType;
 
             var options = containerType.GetCustomAttribute<ScriptableObjectAttribute>() ?? ScriptableObjectAttribute.Default;
@@ -44,7 +43,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
             FieldInfo[] fields;
 
             var allProperties = containerType.GetProperties(InternalBindings);
-            var allFields = containerType.GetFields(InternalBindings).Where(field => {
+            var allFields = containerType.GetFields(InternalBindings).WhereToArray(field => {
                 var compilerGenerated = field.GetCustomAttribute<CompilerGeneratedAttribute>();
                 // Filter out compiler generated fields.
                 return compilerGenerated == null;
@@ -52,12 +51,12 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
 
             switch (options.PopulationStrategy) {
                 case PopulationStrategy.OptIn:
-                    properties = allProperties.Where(prop => prop.GetCustomAttribute<ScriptableObjectPropertyAttribute>() != null).ToArray();
-                    fields = allFields.Where(field => field.GetCustomAttribute<ScriptableObjectPropertyAttribute>() != null).ToArray();
+                    properties = allProperties.WhereToArray(prop => prop.GetCustomAttribute<ScriptableObjectPropertyAttribute>() != null);
+                    fields = allFields.WhereToArray(field => field.GetCustomAttribute<ScriptableObjectPropertyAttribute>() != null);
                     break;
                 case PopulationStrategy.OptOut:
-                    properties = allProperties.Where(prop => prop.GetCustomAttribute<ScriptableObjectIgnoreAttribute>() == null).ToArray();
-                    fields = allFields.Where(field => field.GetCustomAttribute<ScriptableObjectIgnoreAttribute>() == null).ToArray();
+                    properties = allProperties.WhereToArray(prop => prop.GetCustomAttribute<ScriptableObjectIgnoreAttribute>() == null);
+                    fields = allFields.WhereToArray(field => field.GetCustomAttribute<ScriptableObjectIgnoreAttribute>() == null);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(options.PopulationStrategy), options.PopulationStrategy, null);
@@ -70,7 +69,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
 
             var obj = Activator.CreateInstance(containerType, true);
 
-            ApplyObjectMembers(obj, structure, options, naming, level);
+            ApplyObjectMembers(obj, structure.Variables, options, naming, level);
 
             return obj;
         }
@@ -125,7 +124,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
 
             for (var i = 0; i < arrayLength; i += 1) {
                 var element = DeserializeValue(array[i], elementType, level + 1);
-                var convertedValue = manager.TryConvertValueType(SerializingHelper.NonNullTypeOf(element), elementType, element, null);
+                var convertedValue = manager.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(element), elementType, element, null);
                 result.SetValue(convertedValue, i);
             }
 
@@ -161,7 +160,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
 
             foreach (var item in array) {
                 var element = DeserializeValue(item, elementType, level + 1);
-                var convertedValue = manager.TryConvertValueType(SerializingHelper.NonNullTypeOf(element), elementType, element, null);
+                var convertedValue = manager.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(element), elementType, element, null);
                 addMethod.Invoke(element, new[] { convertedValue });
             }
 
@@ -198,10 +197,10 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
 
             foreach (var kv in dictionary) {
                 var key = DeserializeValue(kv.Key, keyType, level + 1);
-                var convertedKey = manager.TryConvertValueType(SerializingHelper.NonNullTypeOf(key), keyType, key, null);
+                var convertedKey = manager.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(key), keyType, key, null);
 
                 var value = DeserializeValue(kv.Value, valueType, level + 1);
-                var convertedValue = manager.TryConvertValueType(SerializingHelper.NonNullTypeOf(value), valueType, value, null);
+                var convertedValue = manager.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(value), valueType, value, null);
 
                 addMethod.Invoke(result, new[] { convertedKey, convertedValue });
             }
@@ -209,7 +208,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
             return result;
         }
 
-        private void ApplyObjectMembers([NotNull] object obj, [NotNull] IReadOnlyDictionary<string, object> container, [NotNull] ScriptableObjectAttribute options, [CanBeNull] INamingConvention naming, int level) {
+        private void ApplyObjectMembers([NotNull] object obj, [NotNull] Dictionary<string, object> container, [NotNull] ScriptableObjectAttribute options, [CanBeNull] INamingConvention naming, int level) {
             foreach (var kv in container) {
                 if (level == 0 && FilteredNames.Contains(kv.Key)) {
                     continue;

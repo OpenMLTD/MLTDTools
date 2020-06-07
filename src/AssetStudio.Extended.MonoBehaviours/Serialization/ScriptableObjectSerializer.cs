@@ -1,22 +1,17 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using AssetStudio.Extended.MonoBehaviours.Extensions;
 using AssetStudio.Extended.MonoBehaviours.Serialization.DefaultConverters;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Managing;
-using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 using JetBrains.Annotations;
-using PropOrField = AssetStudio.Extended.MonoBehaviours.Serialization.Managing.MemberSetter;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization {
     public sealed class ScriptableObjectSerializer {
 
         public ScriptableObjectSerializer() {
             _manager = new SerializerManager();
+
+            // In old versions(?) Unity serializes booleans as bytes
+            WithConverter<ByteToBooleanConverter>();
         }
 
         [NotNull]
@@ -60,10 +55,9 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
             // We should actually read the contents and deserialize an object
             var structure = StructureReader.ReadMembers(typeNodes, monoBehavior.reader);
 
-            Debug.Assert(structure.Count == 1);
+            Debug.Assert(structure.Length == 1);
 
-            var structureValues = structure.Values.ToArray();
-            var rootObject = structureValues[0];
+            var rootObject = structure[0].Value;
 
             Debug.Assert(rootObject != null);
             Debug.Assert(rootObject is CustomType);

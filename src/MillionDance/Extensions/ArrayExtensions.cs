@@ -110,6 +110,10 @@ namespace OpenMLTD.MillionDance.Extensions {
 
         [NotNull, ItemCanBeNull]
         public static TResultItem[] SelectToArray<TItem, TResultItem>([NotNull, ItemCanBeNull] this TItem[] array, [NotNull] Func<TItem, TResultItem> map) {
+            if (array.Length == 0) {
+                return Array.Empty<TResultItem>();
+            }
+
             var list = new List<TResultItem>();
 
             foreach (var item in array) {
@@ -134,7 +138,12 @@ namespace OpenMLTD.MillionDance.Extensions {
 
         [NotNull, ItemCanBeNull]
         public static T[] WhereToArray<T>([NotNull, ItemCanBeNull] this T[] array, [NotNull] Predicate<T> predicate) {
+            if (array.Length == 0) {
+                return Array.Empty<T>();
+            }
+
             var list = WhereToList(array, predicate);
+
             return list.ToArray();
         }
 

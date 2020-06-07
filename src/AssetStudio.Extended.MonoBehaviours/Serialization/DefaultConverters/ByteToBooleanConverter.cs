@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization.DefaultConverters {
+    [UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature, ImplicitUseTargetFlags.Itself)]
     internal sealed class ByteToBooleanConverter : ISimpleTypeConverter {
 
         public bool CanConvertFrom(Type sourceType) {

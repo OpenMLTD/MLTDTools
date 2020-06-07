@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
 
@@ -6,21 +7,29 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
     internal static class StructureReader {
 
         [NotNull]
-        public static IReadOnlyDictionary<string, object> ReadMembers([NotNull, ItemNotNull] List<TypeTreeNode> typeNodes, [NotNull] ObjectReader reader) {
+        public static KeyValuePair<string, object>[] ReadMembers([NotNull, ItemNotNull] IReadOnlyList<TypeTreeNode> typeNodes, [NotNull] ObjectReader reader) {
             reader.Reset();
 
-            var dict = new Dictionary<string, object>();
             var typeNodeCount = typeNodes.Count;
+
+            var set = new HashSet<string>();
+            var result = new List<KeyValuePair<string, object>>();
 
             for (var i = 0; i < typeNodeCount; i += 1) {
                 var (name, value) = ReadMemberValue(typeNodes, ref i, reader);
-                dict.Add(name, value);
+
+                if (set.Contains(name)) {
+                    throw new ArgumentException($"Object name already exists: '{name}'.", nameof(name));
+                }
+
+                set.Add(name);
+                result.Add(new KeyValuePair<string, object>(name, value));
             }
 
-            return dict;
+            return result.ToArray();
         }
 
-        private static (string Name, object Value) ReadMemberValue([NotNull, ItemNotNull] List<TypeTreeNode> typeNodes, ref int nodeIndex, [NotNull] BinaryReader reader) {
+        private static (string Name, object Value) ReadMemberValue([NotNull, ItemNotNull] IReadOnlyList<TypeTreeNode> typeNodes, ref int nodeIndex, [NotNull] BinaryReader reader) {
             var typeNode = typeNodes[nodeIndex];
 
             object value;
@@ -165,7 +174,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
 
 
         [NotNull, ItemNotNull]
-        private static List<TypeTreeNode> GetChildTypeNodes([NotNull, ItemNotNull] List<TypeTreeNode> typeNodes, int index) {
+        private static List<TypeTreeNode> GetChildTypeNodes([NotNull, ItemNotNull] IReadOnlyList<TypeTreeNode> typeNodes, int index) {
             var startItem = typeNodes[index];
 
             var result = new List<TypeTreeNode> {

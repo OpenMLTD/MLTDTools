@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace AssetStudio.Extended.MonoBehaviours.Serialization {
     internal sealed class CustomType : IReadOnlyDictionary<string, object> {
 
-        public CustomType([NotNull] string typeName, [NotNull] IReadOnlyDictionary<string, object> variables) {
+        public CustomType([NotNull] string typeName, [NotNull] Dictionary<string, object> variables) {
             TypeName = typeName;
             Variables = variables;
         }
@@ -15,8 +15,9 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
         [NotNull]
         public string TypeName { get; }
 
+        // Should keep immutable
         [NotNull]
-        public IReadOnlyDictionary<string, object> Variables {
+        public Dictionary<string, object> Variables {
             [DebuggerStepThrough]
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;

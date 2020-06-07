@@ -80,6 +80,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
                 }
             }
 
+            // Treat enum as inline, special case of integers
             if (acceptedType.IsEnum) {
                 if (ReferenceEquals(value, null)) {
                     throw new ApplicationException("Not possible.");
@@ -95,7 +96,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
             }
 
             var converterType = setter.Attribute?.ConverterType;
-            var convertedValue = Manager.TryConvertValueType(serializedValueType, acceptedType, value, converterType);
+            var convertedValue = Manager.TryConvertTypeOfValue(serializedValueType, acceptedType, value, converterType);
 
             setter.SetValueDirect(obj, convertedValue);
         }

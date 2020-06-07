@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using AssetStudio.Extended.MonoBehaviours.Extensions;
-using AssetStudio.Extended.MonoBehaviours.Serialization.DefaultConverters;
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
@@ -10,11 +9,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
 
         public SerializerManager() {
             _serializers = new ConditionalWeakTable<Type, TypedSerializerBase>();
-
             _createdTypeConverters = new Dictionary<Type, ISimpleTypeConverter>(10);
-
-            // In old versions(?) Unity serializes booleans as bytes
-            RegisterConverter<ByteToBooleanConverter>();
         }
 
         [NotNull]
@@ -53,13 +48,24 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
         }
 
         [CanBeNull]
-        public ISimpleTypeConverter GetConverterOf([NotNull] Type converterType) {
-            _createdTypeConverters.TryGetValue(converterType, out var result);
-            return result;
+        public object TryConvertTypeOfValue([NotNull] Type serializedValueType, [NotNull] Type acceptedType, [CanBeNull] object value, [CanBeNull] Type converterTypeHint) {
+            if (acceptedType.IsAssignableFrom(serializedValueType)) {
+                return value;
+            }
+
+            var converter = FindConverter(serializedValueType, acceptedType, converterTypeHint);
+
+            if (converter != null) {
+                var convertedValue = SerializingHelper.ConvertValue(converter, serializedValueType, acceptedType, value);
+
+                return convertedValue;
+            } else {
+                return value;
+            }
         }
 
         [NotNull]
-        public ISimpleTypeConverter GetOrRegisterConverter([NotNull] Type converterType) {
+        private ISimpleTypeConverter GetOrRegisterConverter([NotNull] Type converterType) {
             if (!converterType.ImplementsInterface(typeof(ISimpleTypeConverter))) {
                 throw new ArgumentException("Converter does not implement " + nameof(ISimpleTypeConverter) + ".");
             }
@@ -77,26 +83,19 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
         }
 
         [CanBeNull]
-        public object TryConvertValueType([NotNull] Type serializedValueType, [NotNull] Type acceptedType, [CanBeNull] object value, [CanBeNull] Type converterTypeHint) {
-            if (acceptedType == serializedValueType) {
-                return value;
-            }
-
-            var converter = FindConverter(serializedValueType, acceptedType, converterTypeHint);
-
-            if (converter != null) {
-                var convertedValue = SerializingHelper.ConvertValue(converter, serializedValueType, acceptedType, value);
-
-                return convertedValue;
-            } else {
-                return value;
-            }
-        }
-
-        [CanBeNull]
-        public ISimpleTypeConverter FindConverter([NotNull] Type sourceType, [NotNull] Type destinationType, [CanBeNull] Type converterTypeHint) {
+        private ISimpleTypeConverter FindConverter([NotNull] Type sourceType, [NotNull] Type destinationType, [CanBeNull] Type converterTypeHint) {
             ISimpleTypeConverter converter;
 
+            // Try with hinted converter type first
+            if (converterTypeHint != null) {
+                converter = GetOrRegisterConverter(converterTypeHint);
+
+                if (converter.CanConvertFrom(sourceType) && converter.CanConvertTo(destinationType)) {
+                    return converter;
+                }
+            }
+
+            // If the type hint failed, search all registered converters
             foreach (var kv in _createdTypeConverters) {
                 converter = kv.Value;
 
@@ -105,17 +104,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
                 }
             }
 
-            if (converterTypeHint == null) {
-                return null;
-            }
-
-            converter = GetOrRegisterConverter(converterTypeHint);
-
-            if (!(converter.CanConvertFrom(sourceType) && converter.CanConvertTo(destinationType))) {
-                return null;
-            }
-
-            return converter;
+            return null;
         }
 
         [NotNull]

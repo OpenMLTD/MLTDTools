@@ -43,20 +43,17 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
             FieldInfo[] fields;
 
             var allProperties = containerType.GetProperties(InternalBindings);
-            var allFields = containerType.GetFields(InternalBindings).WhereToArray(field => {
-                var compilerGenerated = field.GetCustomAttribute<CompilerGeneratedAttribute>();
-                // Filter out compiler generated fields.
-                return compilerGenerated == null;
-            });
+            // Filter out compiler generated fields.
+            var allFields = containerType.GetFields(InternalBindings).WhereToArray(field => !Attribute.IsDefined(field, typeof(CompilerGeneratedAttribute)));
 
             switch (options.PopulationStrategy) {
                 case PopulationStrategy.OptIn:
-                    properties = allProperties.WhereToArray(prop => prop.GetCustomAttribute<ScriptableObjectPropertyAttribute>() != null);
-                    fields = allFields.WhereToArray(field => field.GetCustomAttribute<ScriptableObjectPropertyAttribute>() != null);
+                    properties = allProperties.WhereToArray(prop => Attribute.IsDefined(prop, typeof(ScriptableObjectPropertyAttribute)));
+                    fields = allFields.WhereToArray(field => Attribute.IsDefined(field, typeof(ScriptableObjectPropertyAttribute)));
                     break;
                 case PopulationStrategy.OptOut:
-                    properties = allProperties.WhereToArray(prop => prop.GetCustomAttribute<ScriptableObjectIgnoreAttribute>() == null);
-                    fields = allFields.WhereToArray(field => field.GetCustomAttribute<ScriptableObjectIgnoreAttribute>() == null);
+                    properties = allProperties.WhereToArray(prop => !Attribute.IsDefined(prop, typeof(ScriptableObjectIgnoreAttribute)));
+                    fields = allFields.WhereToArray(field => !Attribute.IsDefined(field, typeof(ScriptableObjectIgnoreAttribute)));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(options.PopulationStrategy), options.PopulationStrategy, null);
@@ -65,9 +62,10 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
             _properties = properties;
             _fields = fields;
 
-            var naming = options.NamingConventionType != null ? (INamingConvention)Activator.CreateInstance(options.NamingConventionType, true) : null;
+            var naming = options.NamingConventionType != null ? (INamingConvention)Manager.CreateInstance(options.NamingConventionType, true) : null;
 
-            var obj = Activator.CreateInstance(containerType, true);
+            // Attention! Fields of the created object are not initialized because we don't call its constructor.
+            var obj = FormatterServices.GetSafeUninitializedObject(containerType);
 
             ApplyObjectMembers(obj, structure.Variables, options, naming, level);
 
@@ -154,7 +152,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
                 throw new SerializationException("No Add() method found.");
             }
 
-            var result = Activator.CreateInstance(typeHint, true);
+            var result = Manager.CreateInstance(typeHint, true);
 
             var manager = Manager;
 
@@ -191,7 +189,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
                 throw new SerializationException("No Add() method found.");
             }
 
-            var result = Activator.CreateInstance(typeHint, true);
+            var result = Manager.CreateInstance(typeHint, true);
 
             var manager = Manager;
 

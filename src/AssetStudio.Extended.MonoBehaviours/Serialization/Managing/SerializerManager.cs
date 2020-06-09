@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using AssetStudio.Extended.MonoBehaviours.Extensions;
 using JetBrains.Annotations;
@@ -9,6 +10,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
 
         public SerializerManager() {
             _serializers = new ConditionalWeakTable<Type, TypedSerializerBase>();
+            _constructors = new ConditionalWeakTable<Type, ConstructorInfo>();
             _createdTypeConverters = new Dictionary<Type, ISimpleTypeConverter>(10);
         }
 
@@ -37,7 +39,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
                 throw new InvalidCastException("The converter does not implement " + nameof(ISimpleTypeConverter) + ".");
             }
 
-            var converter = Activator.CreateInstance(converterType, true);
+            var converter = CreateInstance(converterType, true);
 
             RegisterConverter((ISimpleTypeConverter)converter);
         }
@@ -65,6 +67,25 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
         }
 
         [NotNull]
+        public object CreateInstance([NotNull] Type type, bool nonPublic) {
+            ConditionalWeakTable<Type, ConstructorInfo>.CreateValueCallback creator;
+
+            if (nonPublic) {
+                creator = GetDefaultConstructorWithNonPublic;
+            } else {
+                creator = GetDefaultConstructorPublicOnly;
+            }
+
+            var ctor = _constructors.GetValue(type, creator);
+
+            if (ctor == null) {
+                throw new ArgumentNullException(nameof(ctor), "Cannot find default constructor.");
+            }
+
+            return ctor.Invoke(Array.Empty<object>());
+        }
+
+        [NotNull]
         private ISimpleTypeConverter GetOrRegisterConverter([NotNull] Type converterType) {
             if (!converterType.ImplementsInterface(typeof(ISimpleTypeConverter))) {
                 throw new ArgumentException("Converter does not implement " + nameof(ISimpleTypeConverter) + ".");
@@ -75,7 +96,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
             if (_createdTypeConverters.ContainsKey(converterType)) {
                 converter = _createdTypeConverters[converterType];
             } else {
-                converter = (ISimpleTypeConverter)Activator.CreateInstance(converterType, true);
+                converter = (ISimpleTypeConverter)CreateInstance(converterType, true);
                 _createdTypeConverters[converterType] = converter;
             }
 
@@ -113,8 +134,38 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
             return serializer;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [CanBeNull]
+        private static ConstructorInfo GetDefaultConstructorPublicOnly([NotNull] Type type) {
+            return GetDefaultConstructor(type, false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [CanBeNull]
+        private static ConstructorInfo GetDefaultConstructorWithNonPublic([NotNull] Type type) {
+            return GetDefaultConstructor(type, true);
+        }
+
+        [CanBeNull]
+        private static ConstructorInfo GetDefaultConstructor([NotNull] Type type, bool nonPublic) {
+            BindingFlags flags;
+
+            if (nonPublic) {
+                flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            } else {
+                flags = BindingFlags.Public | BindingFlags.Instance;
+            }
+
+            var ctor = type.GetConstructor(flags, null, Type.EmptyTypes, null);
+
+            return ctor;
+        }
+
         [NotNull]
         private readonly ConditionalWeakTable<Type, TypedSerializerBase> _serializers;
+
+        [NotNull]
+        private readonly ConditionalWeakTable<Type, ConstructorInfo> _constructors;
 
         [NotNull]
         private readonly Dictionary<Type, ISimpleTypeConverter> _createdTypeConverters;

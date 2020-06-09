@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
@@ -26,7 +27,8 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
         [CanBeNull]
         public static object CreateDefaultOf([NotNull] Type type) {
             if (type.IsValueType) {
-                return Activator.CreateInstance(type);
+                // For structs we don't need to call its constructor
+                return FormatterServices.GetSafeUninitializedObject(type);
             } else {
                 return null;
             }

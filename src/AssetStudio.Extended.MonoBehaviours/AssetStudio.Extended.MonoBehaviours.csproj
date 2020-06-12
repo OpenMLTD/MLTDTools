@@ -55,15 +55,15 @@
         <Compile Include="Serialization\Serialized\ObjectArray.cs" />
         <Compile Include="Serialization\Serialized\ObjectDictionary.cs" />
         <Compile Include="Serialization\Serialized\RawData.cs" />
+        <Compile Include="Serialization\Serializers\Common\ConstructorManager.cs" />
+        <Compile Include="Serialization\Serializers\Common\TypeConverterManager.cs" />
         <Compile Include="Serialization\Serializers\ISerializationContext.cs" />
         <Compile Include="Serialization\Serializers\ITypedSerializer.cs" />
         <Compile Include="Serialization\Serializers\SerializationContextCreator.cs" />
         <Compile Include="Serialization\Serializers\SerializationContextBase.cs" />
-        <Compile Include="Serialization\Serializers\Dynamic\ConstructorManager.cs" />
         <Compile Include="Serialization\Serializers\Dynamic\MemberSetter.cs" />
         <Compile Include="Serialization\Serializers\Dynamic\DynamicSerializationContext.cs" />
         <Compile Include="Serialization\Serializers\Dynamic\TypedSerializerManager.cs" />
-        <Compile Include="Serialization\Serializers\Dynamic\TypeConverterManager.cs" />
         <Compile Include="Serialization\Serializers\Dynamic\TypedSerializer.cs" />
         <Compile Include="Serialization\Serializers\Dynamic\TypedSerializer.Setters.cs" />
         <Compile Include="Serialization\Serializers\TypedSerializerBase.cs" />

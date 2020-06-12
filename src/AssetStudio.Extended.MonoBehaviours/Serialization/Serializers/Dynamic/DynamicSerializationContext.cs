@@ -1,4 +1,5 @@
 ﻿using System;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Common;
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic {
@@ -13,25 +14,19 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
             Serializers = new TypedSerializerManager(this);
         }
 
-        [NotNull]
-        public ConstructorManager Activator { get; }
+        public override ConstructorManager Activator { get; }
 
-        [NotNull]
-        public TypeConverterManager Converters { get; }
+        public override TypeConverterManager Converters { get; }
 
         [NotNull]
         public TypedSerializerManager Serializers { get; }
 
-        public override ITypedSerializer GetSerializerOf(Type type) {
-            return Serializers.GetSerializerOf(type);
+        public override ITypedSerializer GetSerializerOf(Type containerType) {
+            return Serializers.GetSerializerOf(containerType);
         }
 
         public override void RegisterConverter(ISimpleTypeConverter converter) {
             Converters.RegisterConverter(converter);
-        }
-
-        public override void RegisterConverter(Type converterType) {
-            Converters.RegisterConverter(converterType);
         }
 
     }

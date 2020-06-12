@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 using JetBrains.Annotations;
 
@@ -9,7 +10,11 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
     partial class TypedSerializer {
 
         [NotNull]
-        private MemberSetter FindSetterByName([NotNull] string name, [CanBeNull] INamingConvention naming) {
+        private MemberSetter FindSetterByName([NotNull] string serializedName, [CanBeNull] INamingConvention naming) {
+            if (_createdSetters.ContainsKey(serializedName)) {
+                return _createdSetters[serializedName];
+            }
+
             var properties = _properties;
 
             Debug.Assert(properties != null, nameof(properties) + " != null");
@@ -18,11 +23,10 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
 
             Debug.Assert(fields != null, nameof(fields) + " != null");
 
-            MemberSetter result;
+            MemberSetter result = null;
+            ScriptableObjectPropertyAttribute sopa;
 
             foreach (var prop in properties) {
-                ScriptableObjectPropertyAttribute sopa;
-
                 if (_propertyAttributeCache.ContainsKey(prop)) {
                     sopa = _propertyAttributeCache[prop];
                 } else {
@@ -30,45 +34,39 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
                     _propertyAttributeCache[prop] = sopa;
                 }
 
-                var propName = !string.IsNullOrEmpty(sopa?.Name) ? sopa.Name : (naming != null ? naming.GetCorrected(prop.Name) : prop.Name);
+                var propName = GetCorrectedMemberName(sopa, naming, prop.Name);
 
-                if (propName == name) {
-                    if (_createdSetters.ContainsKey(propName)) {
-                        result = _createdSetters[propName];
-                    } else {
-                        result = new MemberSetter(prop, sopa);
-                        _createdSetters[propName] = result;
-                    }
-
-                    return result;
+                if (string.Equals(propName, serializedName, StringComparison.Ordinal)) {
+                    result = new MemberSetter(prop, sopa);
+                    break;
                 }
             }
 
-            foreach (var field in fields) {
-                ScriptableObjectPropertyAttribute sopa;
-
-                if (_fieldAttributeCache.ContainsKey(field)) {
-                    sopa = _fieldAttributeCache[field];
-                } else {
-                    sopa = field.GetCustomAttribute<ScriptableObjectPropertyAttribute>();
-                    _fieldAttributeCache[field] = sopa;
-                }
-
-                var fieldName = !string.IsNullOrEmpty(sopa?.Name) ? sopa.Name : (naming != null ? naming.GetCorrected(field.Name) : field.Name);
-
-                if (fieldName == name) {
-                    if (_createdSetters.ContainsKey(fieldName)) {
-                        result = _createdSetters[fieldName];
+            if (result == null) {
+                foreach (var field in fields) {
+                    if (_fieldAttributeCache.ContainsKey(field)) {
+                        sopa = _fieldAttributeCache[field];
                     } else {
+                        sopa = field.GetCustomAttribute<ScriptableObjectPropertyAttribute>();
+                        _fieldAttributeCache[field] = sopa;
+                    }
+
+                    var fieldName = GetCorrectedMemberName(sopa, naming, field.Name);
+
+                    if (string.Equals(fieldName, serializedName, StringComparison.Ordinal)) {
                         result = new MemberSetter(field, sopa);
-                        _createdSetters[fieldName] = result;
+                        break;
                     }
-
-                    return result;
                 }
             }
 
-            return MemberSetter.Null;
+            if (result == null) {
+                result = MemberSetter.Null;
+            }
+
+            _createdSetters[serializedName] = result;
+
+            return result;
         }
 
         private void SetValue([NotNull] MemberSetter setter, [CanBeNull] object obj, [CanBeNull] object value, [NotNull] Type serializedValueType) {
@@ -99,6 +97,12 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
             var convertedValue = Context.Converters.TryConvertTypeOfValue(serializedValueType, acceptedType, value, converterType);
 
             setter.SetValueDirect(obj, convertedValue);
+        }
+
+        [NotNull]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string GetCorrectedMemberName([CanBeNull] ScriptableObjectPropertyAttribute sopa, [CanBeNull] INamingConvention naming, [NotNull] string fallback) {
+            return !string.IsNullOrEmpty(sopa?.Name) ? sopa.Name : (naming != null ? naming.GetCorrected(fallback) : fallback);
         }
 
         [NotNull]

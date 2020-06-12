@@ -1,28 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using AssetStudio.Extended.MonoBehaviours.Extensions;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Common {
     internal sealed class TypeConverterManager {
 
-        public TypeConverterManager([NotNull] DynamicSerializationContext context) {
+        public TypeConverterManager([NotNull] ISerializationContext context) {
             Context = context;
             _createdTypeConverters = new Dictionary<Type, ISimpleTypeConverter>(10);
         }
 
         [NotNull]
-        public DynamicSerializationContext Context { get; }
-
-        public void RegisterConverter([NotNull] Type converterType) {
-            if (!converterType.ImplementsInterface(typeof(ISimpleTypeConverter))) {
-                throw new InvalidCastException("The converter does not implement " + nameof(ISimpleTypeConverter) + ".");
-            }
-
-            var converter = Context.Activator.CreateInstance(converterType, true);
-
-            RegisterConverter((ISimpleTypeConverter)converter);
-        }
+        public ISerializationContext Context { get; }
 
         public void RegisterConverter([NotNull] ISimpleTypeConverter converter) {
             var converterType = converter.GetType();

@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Common {
     internal sealed class ConstructorManager {
 
         public ConstructorManager() {

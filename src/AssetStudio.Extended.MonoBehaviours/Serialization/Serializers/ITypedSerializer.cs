@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers {
-    public interface ITypedSerializer {
+    internal interface ITypedSerializer {
 
         /// <summary>
         /// Deserialize a typed complex object.

@@ -6,13 +6,14 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using AssetStudio.Extended.MonoBehaviours.Extensions;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Serialized;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic {
     // TODO: use this as a template to create runtime serializer classes
     internal sealed partial class TypedSerializer : TypedSerializerBase {
 
-        public TypedSerializer([NotNull] StaticSerializationContext context, [NotNull] Type containerType) {
+        public TypedSerializer([NotNull] DynamicSerializationContext context, [NotNull] Type containerType) {
             Context = context;
             ContainerType = containerType;
 
@@ -23,7 +24,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
         }
 
         [NotNull]
-        public StaticSerializationContext Context { get; }
+        public DynamicSerializationContext Context { get; }
 
         [NotNull]
         public Type ContainerType { get; }
@@ -86,10 +87,10 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
                 Debug.Assert(typeHint != null);
                 var serializer = Context.Serializers.GetSerializerOf(typeHint);
                 rawValue = serializer.DeserializeObject(ct, level + 1);
-            } else if (value is IDictionary<object, object> dict) {
+            } else if (value is ObjectDictionary dict) {
                 Debug.Assert(typeHint != null);
                 rawValue = DeserializeDictionary(dict, typeHint, level);
-            } else if (value is object[] arr) {
+            } else if (value is ObjectArray arr) {
                 Debug.Assert(typeHint != null);
 
                 if (typeHint.IsArray) {
@@ -116,11 +117,12 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
         }
 
         [NotNull]
-        private Array DeserializeRank1Array([NotNull, ItemCanBeNull] object[] array, [NotNull] Type arrayType, int level) {
+        private Array DeserializeRank1Array([NotNull] ObjectArray arr, [NotNull] Type arrayType, int level) {
             var elementType = arrayType.GetElementType();
 
             Debug.Assert(elementType != null);
 
+            var array = arr.Array;
             var arrayLength = array.Length;
             var result = Array.CreateInstance(elementType, arrayLength);
 
@@ -136,7 +138,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
         }
 
         [NotNull]
-        private object DeserializeCollection([NotNull, ItemCanBeNull] object[] array, [NotNull] Type typeHint, int level) {
+        private object DeserializeCollection([NotNull] ObjectArray array, [NotNull] Type typeHint, int level) {
             var collectionInterfaceType = typeHint.GetGenericInterfaceImplementation(typeof(ICollection<>));
 
             if (collectionInterfaceType == null) {
@@ -162,7 +164,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
 
             var converters = Context.Converters;
 
-            foreach (var item in array) {
+            foreach (var item in array.Array) {
                 var element = DeserializeValue(item, elementType, level + 1);
                 var convertedValue = converters.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(element), elementType, element, null);
                 addMethod.Invoke(element, new[] { convertedValue });
@@ -172,7 +174,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
         }
 
         [NotNull]
-        private object DeserializeDictionary([NotNull] IDictionary<object, object> dictionary, [NotNull] Type typeHint, int level) {
+        private object DeserializeDictionary([NotNull] ObjectDictionary dictionary, [NotNull] Type typeHint, int level) {
             var collectionInterfaceType = typeHint.GetGenericInterfaceImplementation(typeof(IDictionary<,>));
 
             if (collectionInterfaceType == null) {
@@ -199,7 +201,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
 
             var converters = Context.Converters;
 
-            foreach (var kv in dictionary) {
+            foreach (var kv in dictionary.Dictionary) {
                 var key = DeserializeValue(kv.Key, keyType, level + 1);
                 var convertedKey = converters.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(key), keyType, key, null);
 

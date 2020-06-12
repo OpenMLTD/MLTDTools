@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Serialized;
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization {
@@ -98,6 +99,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
                     var second = GetChildTypeNodes(map, 4 + first.Count);
 
                     var dict = new Dictionary<object, object>();
+                    Type keyType = null, valueType = null;
 
                     for (var j = 0; j < count; j += 1) {
                         var tmp1 = 0;
@@ -105,10 +107,26 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
                         var tmp2 = 0;
                         var (_, valueObject) = ReadMemberValue(second, ref tmp2, reader);
 
+                        if (keyType == null && !ReferenceEquals(keyObject, null)) {
+                            keyType = SerializingHelper.NonNullTypeOf(keyObject);
+                        }
+
+                        if (valueType == null && !ReferenceEquals(valueObject, null)) {
+                            valueType = SerializingHelper.NonNullTypeOf(valueObject);
+                        }
+
                         dict.Add(keyObject, valueObject);
                     }
 
-                    value = dict;
+                    if (keyType == null) {
+                        keyType = typeof(object);
+                    }
+
+                    if (valueType == null) {
+                        valueType = typeof(object);
+                    }
+
+                    value = new ObjectDictionary(dict, keyType, valueType);
 
                     break;
                 }
@@ -136,14 +154,24 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
                         nodeIndex += vector.Count - 1;
 
                         var array = new object[count];
+                        Type elementType = null;
 
                         for (var j = 0; j < count; j += 1) {
                             var tmp = 3;
                             var (_, item) = ReadMemberValue(vector, ref tmp, reader);
+
+                            if (elementType == null && !ReferenceEquals(item, null)) {
+                                elementType = SerializingHelper.NonNullTypeOf(item);
+                            }
+
                             array[j] = item;
                         }
 
-                        value = array;
+                        if (elementType == null) {
+                            elementType = typeof(object);
+                        }
+
+                        value = new ObjectArray(array, elementType);
                     } else {
                         // Object
                         var classTree = GetChildTypeNodes(typeNodes, nodeIndex);

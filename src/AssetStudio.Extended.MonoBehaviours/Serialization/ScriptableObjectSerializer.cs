@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using AssetStudio.Extended.MonoBehaviours.Serialization.DefaultConverters;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Serialized;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Serializers;
 using JetBrains.Annotations;
 
@@ -8,7 +9,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
     public sealed class ScriptableObjectSerializer {
 
         public ScriptableObjectSerializer() {
-            _context = new Lazy<ISerializationContext>(SerializationContextCreator.CreateStatic);
+            _context = new Lazy<ISerializationContext>(SerializationContextCreator.Create);
 
             // In old versions(?) Unity serializes booleans as bytes
             WithConverter<ByteToBooleanConverter>();

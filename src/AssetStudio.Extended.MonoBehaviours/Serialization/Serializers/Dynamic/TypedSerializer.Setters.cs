@@ -5,7 +5,7 @@ using System.Reflection;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic {
     partial class TypedSerializer {
 
         [NotNull]

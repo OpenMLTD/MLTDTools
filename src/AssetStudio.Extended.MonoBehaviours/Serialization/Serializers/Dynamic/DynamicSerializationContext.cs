@@ -1,10 +1,13 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
-    internal sealed class StaticSerializationContext : SerializationContextBase {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic {
+    internal sealed class DynamicSerializationContext : SerializationContextBase {
 
-        public StaticSerializationContext() {
+        /// <summary>
+        /// All information are loaded with reflection on demand, thus dynamic.
+        /// </summary>
+        public DynamicSerializationContext() {
             Activator = new ConstructorManager();
             Converters = new TypeConverterManager(this);
             Serializers = new TypedSerializerManager(this);

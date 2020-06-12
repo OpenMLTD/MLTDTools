@@ -2,16 +2,16 @@
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic {
     internal sealed class TypedSerializerManager {
 
-        public TypedSerializerManager([NotNull] StaticSerializationContext context) {
+        public TypedSerializerManager([NotNull] DynamicSerializationContext context) {
             Context = context;
             _serializers = new ConditionalWeakTable<Type, ITypedSerializer>();
         }
 
         [NotNull]
-        public StaticSerializationContext Context { get; }
+        public DynamicSerializationContext Context { get; }
 
         [NotNull]
         public ITypedSerializer GetSerializerOf([NotNull] Type type) {

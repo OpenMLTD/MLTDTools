@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using AssetStudio.Extended.MonoBehaviours.Extensions;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic {
     internal sealed class TypeConverterManager {
 
-        public TypeConverterManager([NotNull] StaticSerializationContext context) {
+        public TypeConverterManager([NotNull] DynamicSerializationContext context) {
             Context = context;
             _createdTypeConverters = new Dictionary<Type, ISimpleTypeConverter>(10);
         }
 
         [NotNull]
-        public StaticSerializationContext Context { get; }
+        public DynamicSerializationContext Context { get; }
 
         public void RegisterConverter([NotNull] Type converterType) {
             if (!converterType.ImplementsInterface(typeof(ISimpleTypeConverter))) {

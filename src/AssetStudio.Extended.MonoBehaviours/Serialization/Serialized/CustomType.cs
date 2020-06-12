@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serialized {
     public sealed class CustomType : IReadOnlyDictionary<string, object> {
 
         internal CustomType([NotNull] string typeName, [NotNull] Dictionary<string, object> variables) {

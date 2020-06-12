@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using AssetStudio.Extended.MonoBehaviours.Serialization.Serialized;
+using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers {
     public interface ITypedSerializer {

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
     /// <summary>
     /// Accelerated member setter, faster than <see cref="FieldInfo.SetValue(object, object)"/> and <see cref="PropertyInfo.SetValue(object, object)"/>.
     /// However there is compilation cost, so caching should be used.

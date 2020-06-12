@@ -52,11 +52,18 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Serialization\CustomType.cs" />
         <Compile Include="Serialization\DefaultConverters\ByteToBooleanConverter.cs" />
-        <Compile Include="Serialization\Managing\MemberSetter.cs" />
-        <Compile Include="Serialization\Managing\SerializingHelper.cs" />
-        <Compile Include="Serialization\Managing\TypedSerializerBase.cs" />
-        <Compile Include="Serialization\Managing\SerializerManager.cs" />
-        <Compile Include="Serialization\Managing\TypedSerializerBase.Setters.cs" />
+        <Compile Include="Serialization\Serializers\ISerializationContext.cs" />
+        <Compile Include="Serialization\Serializers\ITypedSerializer.cs" />
+        <Compile Include="Serialization\Serializers\SerializationContextCreator.cs" />
+        <Compile Include="Serialization\Serializers\SerializationContextBase.cs" />
+        <Compile Include="Serialization\Serializers\Static\ConstructorManager.cs" />
+        <Compile Include="Serialization\Serializers\Static\MemberSetter.cs" />
+        <Compile Include="Serialization\Serializers\Static\StaticSerializationContext.cs" />
+        <Compile Include="Serialization\Serializers\Static\TypedSerializerManager.cs" />
+        <Compile Include="Serialization\Serializers\Static\TypeConverterManager.cs" />
+        <Compile Include="Serialization\Serializers\Static\TypedSerializer.cs" />
+        <Compile Include="Serialization\Serializers\Static\TypedSerializer.Setters.cs" />
+        <Compile Include="Serialization\Serializers\TypedSerializerBase.cs" />
         <Compile Include="Serialization\RawData.cs" />
         <Compile Include="Serialization\ScriptableObjectAttribute.cs" />
         <Compile Include="Serialization\ScriptableObjectIgnoreAttribute.cs" />
@@ -65,6 +72,7 @@
         <Compile Include="Serialization\Naming\CamelCaseNamingConvention.cs" />
         <Compile Include="Serialization\Naming\INamingConvention.cs" />
         <Compile Include="Serialization\PopulationStrategy.cs" />
+        <Compile Include="Serialization\SerializingHelper.cs" />
         <Compile Include="Serialization\StructureReader.cs" />
     </ItemGroup>
     <ItemGroup>

@@ -5,8 +5,8 @@ using System.Reflection;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
-    partial class TypedSerializerBase {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
+    partial class TypedSerializer {
 
         [NotNull]
         private MemberSetter FindSetterByName([NotNull] string name, [CanBeNull] INamingConvention naming) {
@@ -96,7 +96,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
             }
 
             var converterType = setter.Attribute?.ConverterType;
-            var convertedValue = Manager.TryConvertTypeOfValue(serializedValueType, acceptedType, value, converterType);
+            var convertedValue = Context.Converters.TryConvertTypeOfValue(serializedValueType, acceptedType, value, converterType);
 
             setter.SetValueDirect(obj, convertedValue);
         }

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization {
     internal static class SerializingHelper {
 
         public static bool IsNumericType([NotNull] Type type) {

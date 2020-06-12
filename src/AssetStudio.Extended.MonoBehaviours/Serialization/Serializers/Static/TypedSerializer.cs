@@ -8,12 +8,12 @@ using AssetStudio.Extended.MonoBehaviours.Extensions;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 using JetBrains.Annotations;
 
-namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
+namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Static {
     // TODO: use this as a template to create runtime serializer classes
-    internal sealed partial class TypedSerializerBase {
+    internal sealed partial class TypedSerializer : TypedSerializerBase {
 
-        public TypedSerializerBase([NotNull] SerializerManager manager, [NotNull] Type containerType) {
-            Manager = manager;
+        public TypedSerializer([NotNull] StaticSerializationContext context, [NotNull] Type containerType) {
+            Context = context;
             ContainerType = containerType;
 
             _propertyAttributeCache = new Dictionary<PropertyInfo, ScriptableObjectPropertyAttribute>();
@@ -23,18 +23,29 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
         }
 
         [NotNull]
-        public SerializerManager Manager { get; }
+        public StaticSerializationContext Context { get; }
 
         [NotNull]
         public Type ContainerType { get; }
 
-        [NotNull]
-        public object DeserializeObject([NotNull] CustomType structure) {
-            return DeserializeObject(structure, 0);
+        protected override object DeserializeObject(CustomType structure, int level) {
+            InitializeOnContainerType();
+
+            // Attention! Fields of the created object are not initialized because we don't call its constructor.
+            var obj = FormatterServices.GetSafeUninitializedObject(ContainerType);
+
+            Debug.Assert(_options != null, nameof(_options) + " != null");
+
+            ApplyObjectMembers(obj, structure.MutableVariables, _options, _naming, level);
+
+            return obj;
         }
 
-        [NotNull]
-        private object DeserializeObject([NotNull] CustomType structure, int level) {
+        private void InitializeOnContainerType() {
+            if (_isInitialized) {
+                return;
+            }
+
             var containerType = ContainerType;
 
             var options = containerType.GetCustomAttribute<ScriptableObjectAttribute>() ?? ScriptableObjectAttribute.Default;
@@ -61,15 +72,10 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
 
             _properties = properties;
             _fields = fields;
+            _options = options;
+            _naming = options.NamingConventionType != null ? (INamingConvention)Context.Activator.CreateInstance(options.NamingConventionType, true) : null;
 
-            var naming = options.NamingConventionType != null ? (INamingConvention)Manager.CreateInstance(options.NamingConventionType, true) : null;
-
-            // Attention! Fields of the created object are not initialized because we don't call its constructor.
-            var obj = FormatterServices.GetSafeUninitializedObject(containerType);
-
-            ApplyObjectMembers(obj, structure.Variables, options, naming, level);
-
-            return obj;
+            _isInitialized = true;
         }
 
         [CanBeNull]
@@ -78,7 +84,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
 
             if (value is CustomType ct) {
                 Debug.Assert(typeHint != null);
-                var serializer = Manager.GetSerializerOf(typeHint);
+                var serializer = Context.Serializers.GetSerializerOf(typeHint);
                 rawValue = serializer.DeserializeObject(ct, level + 1);
             } else if (value is IDictionary<object, object> dict) {
                 Debug.Assert(typeHint != null);
@@ -118,11 +124,11 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
             var arrayLength = array.Length;
             var result = Array.CreateInstance(elementType, arrayLength);
 
-            var manager = Manager;
+            var converters = Context.Converters;
 
             for (var i = 0; i < arrayLength; i += 1) {
                 var element = DeserializeValue(array[i], elementType, level + 1);
-                var convertedValue = manager.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(element), elementType, element, null);
+                var convertedValue = converters.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(element), elementType, element, null);
                 result.SetValue(convertedValue, i);
             }
 
@@ -152,13 +158,13 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
                 throw new SerializationException("No Add() method found.");
             }
 
-            var result = Manager.CreateInstance(typeHint, true);
+            var result = Context.Activator.CreateInstance(typeHint, true);
 
-            var manager = Manager;
+            var converters = Context.Converters;
 
             foreach (var item in array) {
                 var element = DeserializeValue(item, elementType, level + 1);
-                var convertedValue = manager.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(element), elementType, element, null);
+                var convertedValue = converters.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(element), elementType, element, null);
                 addMethod.Invoke(element, new[] { convertedValue });
             }
 
@@ -189,16 +195,16 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
                 throw new SerializationException("No Add() method found.");
             }
 
-            var result = Manager.CreateInstance(typeHint, true);
+            var result = Context.Activator.CreateInstance(typeHint, true);
 
-            var manager = Manager;
+            var converters = Context.Converters;
 
             foreach (var kv in dictionary) {
                 var key = DeserializeValue(kv.Key, keyType, level + 1);
-                var convertedKey = manager.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(key), keyType, key, null);
+                var convertedKey = converters.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(key), keyType, key, null);
 
                 var value = DeserializeValue(kv.Value, valueType, level + 1);
-                var convertedValue = manager.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(value), valueType, value, null);
+                var convertedValue = converters.TryConvertTypeOfValue(SerializingHelper.NonNullTypeOf(value), valueType, value, null);
 
                 addMethod.Invoke(result, new[] { convertedKey, convertedValue });
             }
@@ -238,11 +244,19 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Managing {
         [NotNull]
         private readonly Dictionary<FieldInfo, ScriptableObjectPropertyAttribute> _fieldAttributeCache;
 
+        private bool _isInitialized;
+
         [CanBeNull, ItemNotNull]
         private PropertyInfo[] _properties;
 
         [CanBeNull, ItemNotNull]
         private FieldInfo[] _fields;
+
+        [CanBeNull]
+        private ScriptableObjectAttribute _options;
+
+        [CanBeNull]
+        private INamingConvention _naming;
 
         [NotNull, ItemNotNull]
         private static readonly string[] FilteredNames = {

@@ -1,14 +1,14 @@
 using System;
 using System.Diagnostics;
 using AssetStudio.Extended.MonoBehaviours.Serialization.DefaultConverters;
-using AssetStudio.Extended.MonoBehaviours.Serialization.Managing;
+using AssetStudio.Extended.MonoBehaviours.Serialization.Serializers;
 using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.MonoBehaviours.Serialization {
     public sealed class ScriptableObjectSerializer {
 
         public ScriptableObjectSerializer() {
-            _manager = new SerializerManager();
+            _context = new Lazy<ISerializationContext>(SerializationContextCreator.CreateStatic);
 
             // In old versions(?) Unity serializes booleans as bytes
             WithConverter<ByteToBooleanConverter>();
@@ -17,19 +17,18 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
         [NotNull]
         public ScriptableObjectSerializer WithConverter<T>()
             where T : ISimpleTypeConverter {
-            _manager.RegisterConverter<T>();
-            return this;
+            return WithConverter(typeof(T));
         }
 
         [NotNull]
         public ScriptableObjectSerializer WithConverter([NotNull] Type converterType) {
-            _manager.RegisterConverter(converterType);
+            _context.Value.RegisterConverter(converterType);
             return this;
         }
 
         [NotNull]
         public ScriptableObjectSerializer WithConverter([NotNull] ISimpleTypeConverter converter) {
-            _manager.RegisterConverter(converter);
+            _context.Value.RegisterConverter(converter);
             return this;
         }
 
@@ -62,15 +61,15 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization {
             Debug.Assert(rootObject != null);
             Debug.Assert(rootObject is CustomType);
 
-            var serializer = _manager.GetSerializerOf(type);
+            var serializer = _context.Value.GetSerializerOf(type);
 
-            var obj = serializer.DeserializeObject((CustomType)rootObject);
+            var obj = serializer.DeserializeObject((CustomType)rootObject, 0);
 
             return obj;
         }
 
         [NotNull]
-        private readonly SerializerManager _manager;
+        private readonly Lazy<ISerializationContext> _context;
 
     }
 }

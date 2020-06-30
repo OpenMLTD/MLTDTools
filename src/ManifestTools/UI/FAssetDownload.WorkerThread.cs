@@ -41,6 +41,8 @@ namespace OpenMLTD.ManifestTools.UI {
                 _shouldStop = true;
 
                 _thread.Join();
+
+                _form.OnAllDownloadsComplete(false);
             }
 
             private async void DoWork() {
@@ -54,6 +56,7 @@ namespace OpenMLTD.ManifestTools.UI {
                     }
 
                     if (_shouldStop) {
+                        _form.OnAllDownloadsComplete(false);
                         return;
                     }
 
@@ -72,12 +75,17 @@ namespace OpenMLTD.ManifestTools.UI {
                         return;
                     }
 
+                    if (_shouldStop) {
+                        _form.OnAllDownloadsComplete(false);
+                        return;
+                    }
+
                     downloaded[i] = true;
 
                     _form.ProgressFile(i, jobCount, localName);
                 }
 
-                _form.OnAllDownloadsComplete();
+                _form.OnAllDownloadsComplete(true);
             }
 
             private void AlertInMainThread([NotNull] Exception ex) {

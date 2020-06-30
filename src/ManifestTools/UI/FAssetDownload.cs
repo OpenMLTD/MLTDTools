@@ -150,8 +150,6 @@ namespace OpenMLTD.ManifestTools.UI {
 
             panel1.Enabled = true;
             panel4.Enabled = true;
-            btnGo.Enabled = true;
-            btnCancel.Enabled = false;
         }
 
         private void RadResLatest_Click(object sender, EventArgs e) {
@@ -267,7 +265,7 @@ namespace OpenMLTD.ManifestTools.UI {
             }
         }
 
-        private void OnAllDownloadsComplete() {
+        private void OnAllDownloadsComplete(bool successful) {
             btnGo.Enabled = false;
             btnCancel.Enabled = false;
         }

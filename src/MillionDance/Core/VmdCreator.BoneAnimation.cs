@@ -77,6 +77,8 @@ namespace OpenMLTD.MillionDance.Core {
             var boneNameCache = new Dictionary<string, string>();
 
             var transform60FpsTo30Fps = _conversionConfig.Transform60FpsTo30Fps;
+            var scaleToVmdSize = _conversionConfig.ScaleToVmdSize;
+            var unityToVmdScale = _scalingConfig.ScaleUnityToVmd;
 
             // OK, now perform iterations
             for (var i = 0; i < resultFrameCount; ++i) {
@@ -143,8 +145,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                         t = t.FixUnityToOpenTK();
 
-                        if (_conversionConfig.ScaleToVmdSize) {
-                            t = t * _scalingConfig.ScaleUnityToVmd;
+                        if (scaleToVmdSize) {
+                            t = t * unityToVmdScale;
                         }
 
                         targetBone.LocalPosition = t;

@@ -32,15 +32,10 @@ namespace OpenMLTD.MillionDance.Core {
             get => 1 / ScalePmxToUnity;
         }
 
-        public float ScaleVmdToUnity {
-            get {
-                if (_conversionConfig.ApplyPmxCharacterHeight) {
-                    return DefaultScaleMmdToUnity / CharacterHeightScalingFactor;
-                } else {
-                    return DefaultScaleMmdToUnity;
-                }
-            }
-        }
+        // This should remain constant. The only values that need to scale are the positional movements.
+        // They are idol's position projected on stage, which have nothing to do with idol heights, i.e. you have
+        // to run the same distance no matter how tall you are.
+        public float ScaleVmdToUnity { get; } = DefaultScaleMmdToUnity;
 
         public float ScaleUnityToVmd {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -465,28 +465,66 @@ namespace OpenMLTD.MillionDance.Core {
                 material.EdgeSize = 1.0f;
                 material.TextureFileName = GetExportedTextureFileName(details.TexturePrefix, i);
 
-                string toonStr = null;
-                var materialFlags = MaterialFlags.Shadow | MaterialFlags.CullNone | MaterialFlags.Edge;
+                string toonStr;
+                MaterialFlags materialFlags;
 
-                if (materialName.Contains("face") || materialName.Contains("hair")) {
-                    // Facial skin and hair, should not apply toon
-                    toonStr = null;
-                } else if (materialName.Contains("skin")) {
-                    if (details.ApplyToon) {
-                        // Only apply toon on body, not on head. (Shadows on head is pre-baked.)
-                        // (What about accessories on head? Currently we also apply toon on them.)
-                        // "BNSI seems to call this technique 'lively toon'?" - wikisong
-                        toonStr = details.SkinToonNumber.ToString("00");
+                var materialCategory = CategorizeMaterial(materialName);
+
+                switch (materialCategory) {
+                    case MaterialKind.BodySkin: {
+                        if (details.ApplyToon) {
+                            // Only apply toon on body, not on head. (Shadows on head is pre-baked.)
+                            // (What about accessories on head? Currently we also apply toon on them.)
+                            // "BNSI seems to call this technique 'lively toon'?" - wikisong
+                            toonStr = details.SkinToonNumber.ToString("00");
+                        } else {
+                            toonStr = null;
+                        }
+
+                        materialFlags = MaterialFlags.Shadow | MaterialFlags.CullNone | MaterialFlags.Edge | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap;
+
+                        break;
                     }
-
-                    materialFlags = materialFlags | MaterialFlags.Shadow | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap;
-                } else {
-                    if (details.ApplyToon) {
-                        // Clothes
-                        toonStr = details.ClothesToonNumber.ToString("00");
+                    case MaterialKind.FacialSkin: {
+                        toonStr = null;
+                        materialFlags = MaterialFlags.Shadow | MaterialFlags.CullNone | MaterialFlags.Edge | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap;
+                        break;
                     }
+                    case MaterialKind.Hair: {
+                        toonStr = null;
+                        materialFlags = MaterialFlags.Shadow | MaterialFlags.CullNone | MaterialFlags.Edge | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap;
+                        break;
+                    }
+                    case MaterialKind.Eyes: {
+                        toonStr = null;
+                        materialFlags = MaterialFlags.CullNone;
+                        break;
+                    }
+                    case MaterialKind.Clothes: {
+                        if (details.ApplyToon) {
+                            toonStr = details.ClothesToonNumber.ToString("00");
+                        } else {
+                            toonStr = null;
+                        }
 
-                    materialFlags = materialFlags | MaterialFlags.Shadow | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap;
+                        materialFlags = MaterialFlags.Shadow | MaterialFlags.CullNone | MaterialFlags.Edge | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap;
+
+                        break;
+                    }
+                    case MaterialKind.Accessories: {
+                        if (details.ApplyToon) {
+                            toonStr = details.ClothesToonNumber.ToString("00");
+                        } else {
+                            toonStr = null;
+                        }
+
+                        // Don't draw edge on "cut" materials otherwise it looks really weird
+                        materialFlags = MaterialFlags.Shadow | MaterialFlags.CullNone | MaterialFlags.SelfShadow | MaterialFlags.SelfShadowMap;
+
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(materialCategory), materialCategory, null);
                 }
 
                 if (toonStr != null) {
@@ -960,6 +998,38 @@ namespace OpenMLTD.MillionDance.Core {
         private static string GetExportedTextureFileName([NotNull] string texturePrefix, int textureIndex) {
             var textureIndexStr = textureIndex.ToString("00");
             return $"{texturePrefix}{textureIndexStr}.png";
+        }
+
+        private static MaterialKind CategorizeMaterial([NotNull] string materialName) {
+            if (materialName.Contains("skin")) {
+                return MaterialKind.BodySkin;
+            } else if (materialName.Contains("face")) {
+                return MaterialKind.FacialSkin;
+            } else if (materialName.Contains("hair")) {
+                return MaterialKind.Hair;
+            } else if (materialName.Contains("eye")) {
+                return MaterialKind.Eyes;
+            } else if (materialName.Contains("cut") || materialName.Contains("acc") || materialName.Contains("chr")) {
+                return MaterialKind.Accessories;
+            } else {
+                return MaterialKind.Clothes;
+            }
+        }
+
+        private enum MaterialKind {
+
+            BodySkin = 0,
+
+            FacialSkin = 1,
+
+            Hair = 2,
+
+            Eyes = 3,
+
+            Clothes = 4,
+
+            Accessories = 5,
+
         }
 
     }

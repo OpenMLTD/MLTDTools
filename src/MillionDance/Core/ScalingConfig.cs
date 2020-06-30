@@ -32,7 +32,15 @@ namespace OpenMLTD.MillionDance.Core {
             get => 1 / ScalePmxToUnity;
         }
 
-        public float ScaleVmdToUnity { get; } = DefaultScaleMmdToUnity;
+        public float ScaleVmdToUnity {
+            get {
+                if (_conversionConfig.ApplyPmxCharacterHeight) {
+                    return DefaultScaleMmdToUnity / CharacterHeightScalingFactor;
+                } else {
+                    return DefaultScaleMmdToUnity;
+                }
+            }
+        }
 
         public float ScaleUnityToVmd {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

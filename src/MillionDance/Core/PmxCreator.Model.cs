@@ -160,13 +160,13 @@ namespace OpenMLTD.MillionDance.Core {
 
         [NotNull]
         private static int[] AddIndices([NotNull] CompositeMesh combinedMesh) {
-            var indicies = new int[combinedMesh.Indices.Length];
+            var indices = new int[combinedMesh.Indices.Length];
 
-            for (var i = 0; i < indicies.Length; ++i) {
-                indicies[i] = unchecked((int)combinedMesh.Indices[i]);
+            for (var i = 0; i < indices.Length; ++i) {
+                indices[i] = unchecked((int)combinedMesh.Indices[i]);
             }
 
-            return indicies;
+            return indices;
         }
 
         [NotNull, ItemNotNull]

@@ -144,7 +144,7 @@ namespace OpenMLTD.MillionDance.Core {
                         t = t.FixUnityToOpenTK();
 
                         if (_conversionConfig.ScaleToVmdSize) {
-                            t = t * _scalingConfig.ScaleUnityToPmx;
+                            t = t * _scalingConfig.ScaleUnityToVmd;
                         }
 
                         targetBone.LocalPosition = t;

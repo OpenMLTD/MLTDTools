@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using AssetStudio;
 using AssetStudio.Extended.MonoBehaviours.Serialization;
 using AssetStudio.Extended.MonoBehaviours.Serialization.Naming;
 using JetBrains.Annotations;
@@ -69,6 +68,9 @@ namespace Imas.Data.Serialized {
         /// </summary>
         public int Idol { get; set; }
 
+        [ScriptableObjectProperty(Name = "camNo")]
+        public int CameraNumber { get; set; }
+
         /// <summary>
         /// This array actually instructs whether the corresponding singer should *sing* (i.e. enable lip sync), not should *mute*.
         /// The blame goes to BNSI staffs.
@@ -86,7 +88,7 @@ namespace Imas.Data.Serialized {
         public float EyeY { get; set; }
 
         [NotNull]
-        public Vector4[] Formation { get; set; } = Array.Empty<Vector4>();
+        public Vector4f[] Formation { get; set; } = Array.Empty<Vector4f>();
 
         public bool Appeal { get; set; }
 
@@ -132,6 +134,8 @@ namespace Imas.Data.Serialized {
         [NotNull]
         [ScriptableObjectProperty(Name = "vecs1")]
         public object[] Vectors1 { get; set; } = Array.Empty<object>();
+
+        public bool Bool1 { get; set; }
 
     }
 }

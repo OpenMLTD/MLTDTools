@@ -69,7 +69,8 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
             return result;
         }
 
-        private void SetValue([NotNull] MemberSetter setter, [CanBeNull] object obj, [CanBeNull] object value, [NotNull] Type serializedValueType) {
+        [CanBeNull]
+        private object SetValue([NotNull] MemberSetter setter, [CanBeNull] object obj, [CanBeNull] object value, [NotNull] Type serializedValueType) {
             var acceptedType = setter.GetValueType();
 
             if (ReferenceEquals(value, null)) {
@@ -87,16 +88,14 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
                 if (SerializingHelper.IsNumericType(serializedValueType)) {
                     var enumValue = Enum.ToObject(acceptedType, value);
 
-                    setter.SetValueDirect(obj, enumValue);
-
-                    return;
+                    return setter.SetValueDirect(obj, enumValue);
                 }
             }
 
             var converterType = setter.Attribute?.ConverterType;
             var convertedValue = Context.Converters.TryConvertTypeOfValue(serializedValueType, acceptedType, value, converterType);
 
-            setter.SetValueDirect(obj, convertedValue);
+            return setter.SetValueDirect(obj, convertedValue);
         }
 
         [NotNull]

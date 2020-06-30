@@ -23,6 +23,8 @@
 
         LightColor = 51,
 
+        FormationChange = 52,
+
         AppealStart = 53,
 
         AppealPose = 54,

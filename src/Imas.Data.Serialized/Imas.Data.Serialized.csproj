@@ -66,6 +66,7 @@
     <Compile Include="Sway\SwayController.cs" />
     <Compile Include="Sway\SwayManager.cs" />
     <Compile Include="TexTargetName.cs" />
+    <Compile Include="Vector4f.cs" />
     <Compile Include="VjParam.cs" />
   </ItemGroup>
   <ItemGroup>

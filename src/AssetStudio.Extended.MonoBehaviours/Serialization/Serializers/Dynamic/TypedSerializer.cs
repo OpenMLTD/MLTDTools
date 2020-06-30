@@ -37,7 +37,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
 
             Debug.Assert(_options != null, nameof(_options) + " != null");
 
-            ApplyObjectMembers(obj, structure.MutableVariables, _options, _naming, level);
+            obj = ApplyObjectMembers(obj, structure.MutableVariables, _options, _naming, level);
 
             return obj;
         }
@@ -214,7 +214,8 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
             return result;
         }
 
-        private void ApplyObjectMembers([NotNull] object obj, [NotNull] Dictionary<string, object> container, [NotNull] ScriptableObjectAttribute options, [CanBeNull] INamingConvention naming, int level) {
+        [CanBeNull]
+        private object ApplyObjectMembers([CanBeNull] object obj, [NotNull] Dictionary<string, object> container, [NotNull] ScriptableObjectAttribute options, [CanBeNull] INamingConvention naming, int level) {
             foreach (var kv in container) {
                 if (level == 0 && FilteredNames.Contains(kv.Key)) {
                     continue;
@@ -234,8 +235,10 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
                 var rawValue = DeserializeValue(kv.Value, acceptedType, level);
                 var rawValueType = SerializingHelper.NonNullTypeOf(rawValue);
 
-                SetValue(setter, obj, rawValue, rawValueType);
+                obj = SetValue(setter, obj, rawValue, rawValueType);
             }
+
+            return obj;
         }
 
         private const BindingFlags InternalBindings = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;

@@ -37,7 +37,13 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
 
         public bool IsValid { get; }
 
-        public void SetValueDirect([CanBeNull] object obj, [CanBeNull] object value) {
+        // We have to return the modified object.
+        // If `obj` is a boxed value type, only calling setters/setting fields will not reflect the changes
+        // on the original (which is constructed by activator). So we have to unbox, modify, and then box again.
+        // There will be a little efficiency loss, but it's still better than naively using PropertyInfo and
+        // FieldInfo. For reference types there is no such a problem.
+        [CanBeNull]
+        public object SetValueDirect([CanBeNull] object obj, [CanBeNull] object value) {
             if (!IsValid) {
                 throw new InvalidOperationException();
             }
@@ -46,7 +52,11 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
                 throw new InvalidOperationException("Value setter is not ready.");
             }
 
-            _valueSetter.Invoke(obj, value);
+            if (ReferenceEquals(obj, null)) {
+                return null;
+            } else {
+                return _valueSetter.Invoke(obj, value);
+            }
         }
 
         [NotNull]
@@ -67,38 +77,53 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
         }
 
         [NotNull]
-        private static Action<object, object> CompileFieldSetter([NotNull] FieldInfo field) {
+        private static Func<object, object, object> CompileFieldSetter([NotNull] FieldInfo field) {
             var instanceParam = Expression.Parameter(typeof(object), "instance");
             var valueParam = Expression.Parameter(typeof(object), "value");
 
             Debug.Assert(field.DeclaringType != null);
 
+            var variable = Expression.Variable(field.DeclaringType, "this");
             var convertedInstance = Expression.Convert(instanceParam, field.DeclaringType);
+            var assignThis = Expression.Assign(variable, convertedInstance);
+
             var convertedValue = Expression.Convert(valueParam, field.FieldType);
+            var fieldAccess = Expression.Field(variable, field);
+            var assignValue = Expression.Assign(fieldAccess, convertedValue);
 
-            var fieldAccess = Expression.Field(convertedInstance, field);
-            var assign = Expression.Assign(fieldAccess, convertedValue);
+            var label = Expression.Label(typeof(object));
+            var convertedReturn = Expression.Convert(variable, typeof(object));
+            var ret = Expression.Return(label, convertedReturn, typeof(object));
 
-            var lambda = Expression.Lambda<Action<object, object>>(assign, instanceParam, valueParam);
+            var block = Expression.Block(new[] { variable }, assignThis, assignValue, ret, Expression.Label(label, Expression.Default(typeof(object))));
+
+            var lambda = Expression.Lambda<Func<object, object, object>>(block, instanceParam, valueParam);
             var del = lambda.Compile();
 
             return del;
         }
 
         [NotNull]
-        private static Action<object, object> CompilePropertySetter([NotNull] PropertyInfo property) {
+        private static Func<object, object, object> CompilePropertySetter([NotNull] PropertyInfo property) {
             var instanceParam = Expression.Parameter(typeof(object), "instance");
             var valueParam = Expression.Parameter(typeof(object), "value");
 
             Debug.Assert(property.DeclaringType != null);
 
+            var variable = Expression.Variable(property.DeclaringType, "this");
             var convertedInstance = Expression.Convert(instanceParam, property.DeclaringType);
+            var assignThis = Expression.Assign(variable, convertedInstance);
+
             var convertedValue = Expression.Convert(valueParam, property.PropertyType);
+            var setterCall = Expression.Call(variable, property.SetMethod, convertedValue);
 
-            // Including private setters
-            var setterCall = Expression.Call(convertedInstance, property.SetMethod, convertedValue);
+            var label = Expression.Label(typeof(object));
+            var convertedReturn = Expression.Convert(convertedInstance, typeof(object));
+            var ret = Expression.Return(label, convertedReturn, typeof(object));
 
-            var lambda = Expression.Lambda<Action<object, object>>(setterCall, instanceParam, valueParam);
+            var block = Expression.Block(new[] { variable }, assignThis, setterCall, ret, Expression.Label(label, Expression.Default(typeof(object))));
+
+            var lambda = Expression.Lambda<Func<object, object, object>>(block, instanceParam, valueParam);
             var del = lambda.Compile();
 
             return del;
@@ -111,7 +136,7 @@ namespace AssetStudio.Extended.MonoBehaviours.Serialization.Serializers.Dynamic 
         public static readonly MemberSetter Null = new MemberSetter();
 
         [NotNull]
-        private readonly Action<object, object> _valueSetter;
+        private readonly Func<object, object, object> _valueSetter;
 
         [CanBeNull]
         private readonly PropertyInfo _property;

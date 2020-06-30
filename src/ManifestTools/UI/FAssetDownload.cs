@@ -191,8 +191,9 @@ namespace OpenMLTD.ManifestTools.UI {
             var progressBarValue = pb.Minimum + (int)((pb.Maximum - pb.Minimum) * progress);
             pb.Value = progressBarValue;
 
-            var percentage = (int)(progress * 10000) / 100;
-            var percentageStr = $"{percentage.ToString("F2")}%";
+            var percentage = ((int)(progress * 10000)) / 100f;
+            var percValStr = percentage.ToString("F2");
+            var percentageStr = $"{percValStr}%";
             lblCurrent.Text = $"{percentageStr}: {fileName}";
 
             lvState.Items[index].Text = "√";

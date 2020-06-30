@@ -329,6 +329,7 @@
             this.MinimizeBox = false;
             this.Name = "FAssetDownload";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.ShowInTaskbar = false;
             this.Text = "Asset Download";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

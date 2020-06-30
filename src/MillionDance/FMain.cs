@@ -37,7 +37,7 @@ namespace OpenMLTD.MillionDance {
             btnInputHead.Click -= BtnInputHead_Click;
             btnInputBody.Click -= BtnInputBody_Click;
             btnInputDance.Click -= BtnInputDance_Click;
-            btnInputFacialExpression.Click -= BtnInputFacialExpression_Click;
+            btnInputScenario.Click -= BtnInputScenario_Click;
             btnInputCamera.Click -= BtnInputCamera_Click;
             btnOutputModel.Click -= BtnOutputModel_Click;
             btnOutputCharAnim.Click -= BtnOutputCharAnim_Click;
@@ -65,7 +65,7 @@ namespace OpenMLTD.MillionDance {
             btnInputHead.Click += BtnInputHead_Click;
             btnInputBody.Click += BtnInputBody_Click;
             btnInputDance.Click += BtnInputDance_Click;
-            btnInputFacialExpression.Click += BtnInputFacialExpression_Click;
+            btnInputScenario.Click += BtnInputScenario_Click;
             btnInputCamera.Click += BtnInputCamera_Click;
             btnOutputModel.Click += BtnOutputModel_Click;
             btnOutputCharAnim.Click += BtnOutputCharAnim_Click;
@@ -187,10 +187,10 @@ namespace OpenMLTD.MillionDance {
             }
         }
 
-        private void BtnInputFacialExpression_Click(object sender, EventArgs e) {
-            var (r, ok) = SelectOpenFile("Song Control Asset Bundle (scrobj_*.unity3d)|scrobj_*.unity3d");
+        private void BtnInputScenario_Click(object sender, EventArgs e) {
+            var (r, ok) = SelectOpenFile("Scenario Asset Bundle (scrobj_*.unity3d)|scrobj_*.unity3d");
             if (ok) {
-                txtInputFacialExpression.Text = r;
+                txtInputScenario.Text = r;
             }
         }
 
@@ -308,9 +308,9 @@ namespace OpenMLTD.MillionDance {
                     }
                 }
 
-                if (chkGenerateLipSync.Checked || chkGenerateFacialExpression.Checked) {
-                    if (!File.Exists(txtInputFacialExpression.Text)) {
-                        Alert($"Facial expression data \"{txtInputFacialExpression.Text}\" does not exist.");
+                if (chkGenerateCharAnim.Checked || chkGenerateLipSync.Checked || chkGenerateFacialExpression.Checked) {
+                    if (!File.Exists(txtInputScenario.Text)) {
+                        Alert($"Scenario data \"{txtInputScenario.Text}\" does not exist.");
                         return false;
                     }
                 }
@@ -372,9 +372,9 @@ namespace OpenMLTD.MillionDance {
                     }
                 }
 
-                if (chkGenerateLipSync.Checked || chkGenerateFacialExpression.Checked) {
-                    if (!Regex.IsMatch(txtInputFacialExpression.Text, @"scrobj_[a-z0-9]{6}\.unity3d$", RegexOptions.CultureInvariant)) {
-                        Alert($"File \"{txtInputFacialExpression.Text}\" does not look like a mixed data file from the game containing facial expressions.");
+                if (chkGenerateCharAnim.Checked || chkGenerateLipSync.Checked || chkGenerateFacialExpression.Checked) {
+                    if (!Regex.IsMatch(txtInputScenario.Text, @"scrobj_[a-z0-9]{6}\.unity3d$", RegexOptions.CultureInvariant)) {
+                        Alert($"File \"{txtInputScenario.Text}\" does not look like a scenario data file from the game.");
                         return false;
                     }
                 }
@@ -415,7 +415,7 @@ namespace OpenMLTD.MillionDance {
                 ip.InputHead = txtInputHead.Text;
                 ip.InputBody = txtInputBody.Text;
                 ip.InputDance = txtInputDance.Text;
-                ip.InputFacialExpression = txtInputFacialExpression.Text;
+                ip.InputScenario = txtInputScenario.Text;
                 ip.InputCamera = txtInputCamera.Text;
 
                 ip.OutputModel = txtOutputModel.Text;
@@ -551,9 +551,9 @@ namespace OpenMLTD.MillionDance {
             txtInputDance.Enabled = b;
             btnInputDance.Enabled = b;
 
-            b = lipSync || facialExpr;
-            txtInputFacialExpression.Enabled = b;
-            btnInputFacialExpression.Enabled = b;
+            b = charAnim || lipSync || facialExpr;
+            txtInputScenario.Enabled = b;
+            btnInputScenario.Enabled = b;
 
             b = camAnim;
             txtInputCamera.Enabled = b;

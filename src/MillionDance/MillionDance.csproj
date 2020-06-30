@@ -189,6 +189,7 @@
     <Compile Include="Utilities\RotationDebug.cs" />
     <Compile Include="Core\UnityRotation.cs" />
     <Compile Include="Core\VmdCreator.cs" />
+    <Compile Include="Utilities\TimedList`2.cs" />
     <Compile Include="Utilities\UrlOpener.cs" />
   </ItemGroup>
   <ItemGroup>

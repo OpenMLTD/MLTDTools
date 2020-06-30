@@ -30,6 +30,9 @@ namespace Imas.Data.Serialized {
 
         public long Duration { get; set; }
 
+        [ScriptableObjectProperty(Name = "absEndTime")]
+        public double AbsoluteEndTime { get; set; }
+
         /// <summary>
         /// Lyrics text may contain LF (<code>'\n'</code>), so remember to replace it with <see cref="string.Empty"/>.
         /// </summary>
@@ -47,6 +50,9 @@ namespace Imas.Data.Serialized {
 
         [ScriptableObjectProperty(Name = "col2")]
         public ColorRGBA Color2 { get; set; }
+
+        [ScriptableObjectProperty(Name = "col3")]
+        public ColorRGBA Color3 { get; set; }
 
         [NotNull]
         [ScriptableObjectProperty(Name = "cols")]
@@ -91,6 +97,8 @@ namespace Imas.Data.Serialized {
         public Vector4f[] Formation { get; set; } = Array.Empty<Vector4f>();
 
         public bool Appeal { get; set; }
+
+        public int Layer { get; set; }
 
         [ScriptableObjectProperty(Name = "cheeklv")]
         public int CheekLevel { get; set; }

@@ -132,11 +132,46 @@ namespace OpenMLTD.MillionDance {
                     dance = null;
                 }
 
+                ScenarioObject formationInfo;
+
+                if (p.GenerateCharacterMotion) {
+                    var (main, yoko, tate) = ResourceLoader.LoadScenario(p.InputScenario);
+                    if (main == null) {
+                        Log("Cannot load base scenario object.");
+                        break;
+                    }
+
+                    if (main.HasFormationChangeFrames()) {
+                        formationInfo = main;
+                    } else {
+                        Log("Main scenario object does not contain facial expressions. Trying with landscape and portrait.");
+
+                        if (yoko == null || tate == null) {
+                            Log("Cannot load either landscape or portrait.");
+                            break;
+                        }
+
+                        if (yoko.HasFormationChangeFrames()) {
+                            Log("Using formation info from landscape.");
+                            formationInfo = yoko;
+                        } else if (tate.HasFormationChangeFrames()) {
+                            Log("Using formation info from portrait.");
+                            formationInfo = tate;
+                        } else {
+                            Log("No scenario object contains formation info.");
+                            formationInfo = null;
+                            break;
+                        }
+                    }
+                } else {
+                    formationInfo = null;
+                }
+
                 ScenarioObject lipSync, facialExpr;
 
                 if (p.GenerateLipSync || p.GenerateFacialExpressions) {
                     Log("Loading lip sync and facial expression...");
-                    var (main, yoko, tate) = ResourceLoader.LoadScenario(p.InputFacialExpression);
+                    var (main, yoko, tate) = ResourceLoader.LoadScenario(p.InputScenario);
                     if (main == null) {
                         Log("Cannot load base scenario object.");
                         break;
@@ -308,7 +343,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var danceVmd = creator.CreateCharacterAnimation(dance, combinedAvatar, pmx);
+                        var danceVmd = creator.CreateCharacterAnimation(dance, formationInfo, combinedAvatar, pmx, p.SongPosition);
 
                         Log("Saving character motion...");
 

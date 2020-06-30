@@ -14,5 +14,15 @@ namespace OpenMLTD.MillionDance.Entities.Extensions {
             return false;
         }
 
+        public static bool HasFormationChangeFrames([NotNull] this ScenarioObject scrobj) {
+            foreach (var obj in scrobj.Scenario) {
+                if (obj.Type == ScenarioDataType.FormationChange) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }

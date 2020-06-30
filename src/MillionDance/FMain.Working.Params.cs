@@ -21,7 +21,7 @@ namespace OpenMLTD.MillionDance {
 
             public string InputDance { get; set; }
 
-            public string InputFacialExpression { get; set; }
+            public string InputScenario { get; set; }
 
             public string InputCamera { get; set; }
 

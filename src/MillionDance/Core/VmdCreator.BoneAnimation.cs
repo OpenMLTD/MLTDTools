@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using AssetStudio.Extended.CompositeModels;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
+using OpenMLTD.MillionDance.Entities.Extensions;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Entities.Vmd;
@@ -15,7 +17,7 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx) {
+        private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [CanBeNull] ScenarioObject scenario, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx, int idolPosition) {
             var boneLookup = new BoneLookup(_conversionConfig);
 
             var mltdHierarchy = boneLookup.BuildBoneHierarchy(avatar);
@@ -80,6 +82,8 @@ namespace OpenMLTD.MillionDance.Core {
             var scaleToVmdSize = _conversionConfig.ScaleToVmdSize;
             var unityToVmdScale = _scalingConfig.ScaleUnityToVmd;
 
+            var formationList = CollectFormationChanges(scenario);
+
             // OK, now perform iterations
             for (var i = 0; i < resultFrameCount; ++i) {
                 if (transform60FpsTo30Fps) {
@@ -89,6 +93,15 @@ namespace OpenMLTD.MillionDance.Core {
                 }
 
                 var keyFrameIndexStart = i * animatedBoneCount;
+
+                var bb = formationList.TryGetCurrentValue(i, out var formations);
+                Vector4 idolPosOffset;
+
+                if (formations == null || formations.Length < idolPosition) {
+                    idolPosOffset = Vector4.Zero;
+                } else {
+                    idolPosOffset = formations[idolPosition - 1];
+                }
 
                 for (var j = 0; j < animatedBoneCount; ++j) {
                     var keyFrame = animation.KeyFrames[keyFrameIndexStart + j];
@@ -140,6 +153,12 @@ namespace OpenMLTD.MillionDance.Core {
                         var y = keyFrame.PositionY.Value;
                         // ReSharper disable once PossibleInvalidOperationException
                         var z = keyFrame.PositionZ.Value;
+
+                        if (string.Equals(keyFrame.Path, "MODEL_00", StringComparison.Ordinal)) {
+                            x += idolPosOffset.X;
+                            y += idolPosOffset.Y;
+                            z += idolPosOffset.Z;
+                        }
 
                         var t = new Vector3(x, y, z);
 
@@ -238,6 +257,46 @@ namespace OpenMLTD.MillionDance.Core {
             }
 
             return boneFrameList.ToArray();
+        }
+
+        [NotNull]
+        private TimedList<int, Vector4[]> CollectFormationChanges([CanBeNull] ScenarioObject scenario) {
+            var result = new TimedList<int, Vector4[]>();
+
+            if (scenario == null) {
+                return result;
+            }
+
+            if (scenario.HasFormationChangeFrames()) {
+                var events = scenario.Scenario.WhereToArray(s => s.Type == ScenarioDataType.FormationChange);
+
+                foreach (var ev in events) {
+                    Debug.Assert(ev != null, nameof(ev) + " != null");
+
+                    // TODO: What does 'Param' field mean here? And 'Layer'?
+                    // e.g. Glow Map (glowmp) has param=279, layer=0,1,2
+                    // Currently we only handle non-appeal formations
+                    if (ev.Layer != 0) {
+                        continue;
+                    }
+
+                    var frameIndex = (int)Math.Round(ev.AbsoluteTime * FrameRate.Mltd);
+
+                    var formations = ev.Formation;
+                    Debug.Assert(formations != null && formations.Length > 0);
+
+                    var f = new Vector4[formations.Length];
+
+                    for (var i = 0; i < formations.Length; i += 1) {
+                        var v = formations[i];
+                        f[i] = new Vector4(v.X, v.Y, v.Z, v.W);
+                    }
+
+                    result.AddOrUpdate(frameIndex, f);
+                }
+            }
+
+            return result;
         }
 
         // Set the bones that appear in the animation file as "key bone"

@@ -30,8 +30,8 @@
             this.chkGenerateCharAnim = new System.Windows.Forms.CheckBox();
             this.chkGenerateModel = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btnInputFacialExpression = new System.Windows.Forms.Button();
-            this.txtInputFacialExpression = new System.Windows.Forms.TextBox();
+            this.btnInputScenario = new System.Windows.Forms.Button();
+            this.txtInputScenario = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.btnInputCamera = new System.Windows.Forms.Button();
             this.txtInputCamera = new System.Windows.Forms.TextBox();
@@ -202,8 +202,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.btnInputFacialExpression);
-            this.groupBox2.Controls.Add(this.txtInputFacialExpression);
+            this.groupBox2.Controls.Add(this.btnInputScenario);
+            this.groupBox2.Controls.Add(this.txtInputScenario);
             this.groupBox2.Controls.Add(this.label13);
             this.groupBox2.Controls.Add(this.btnInputCamera);
             this.groupBox2.Controls.Add(this.txtInputCamera);
@@ -224,30 +224,30 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Input Files";
             // 
-            // btnInputFacialExpression
+            // btnInputScenario
             // 
-            this.btnInputFacialExpression.Location = new System.Drawing.Point(222, 103);
-            this.btnInputFacialExpression.Name = "btnInputFacialExpression";
-            this.btnInputFacialExpression.Size = new System.Drawing.Size(32, 21);
-            this.btnInputFacialExpression.TabIndex = 14;
-            this.btnInputFacialExpression.Text = "...";
-            this.btnInputFacialExpression.UseVisualStyleBackColor = true;
+            this.btnInputScenario.Location = new System.Drawing.Point(222, 103);
+            this.btnInputScenario.Name = "btnInputScenario";
+            this.btnInputScenario.Size = new System.Drawing.Size(32, 21);
+            this.btnInputScenario.TabIndex = 14;
+            this.btnInputScenario.Text = "...";
+            this.btnInputScenario.UseVisualStyleBackColor = true;
             // 
-            // txtInputFacialExpression
+            // txtInputScenario
             // 
-            this.txtInputFacialExpression.Location = new System.Drawing.Point(70, 104);
-            this.txtInputFacialExpression.Name = "txtInputFacialExpression";
-            this.txtInputFacialExpression.Size = new System.Drawing.Size(146, 20);
-            this.txtInputFacialExpression.TabIndex = 13;
+            this.txtInputScenario.Location = new System.Drawing.Point(70, 104);
+            this.txtInputScenario.Name = "txtInputScenario";
+            this.txtInputScenario.Size = new System.Drawing.Size(146, 20);
+            this.txtInputScenario.TabIndex = 13;
             // 
             // label13
             // 
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(17, 107);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(38, 13);
+            this.label13.Size = new System.Drawing.Size(52, 13);
             this.label13.TabIndex = 12;
-            this.label13.Text = "Facial:";
+            this.label13.Text = "Scenario:";
             // 
             // btnInputCamera
             // 
@@ -1129,7 +1129,7 @@
 
         private System.Windows.Forms.Button btnInputDance;
 
-        private System.Windows.Forms.Button btnInputFacialExpression;
+        private System.Windows.Forms.Button btnInputScenario;
 
         private System.Windows.Forms.Button btnInputHead;
 
@@ -1247,7 +1247,7 @@
 
         private System.Windows.Forms.TextBox txtInputDance;
 
-        private System.Windows.Forms.TextBox txtInputFacialExpression;
+        private System.Windows.Forms.TextBox txtInputScenario;
 
         private System.Windows.Forms.TextBox txtInputHead;
 

@@ -80,6 +80,9 @@ namespace OpenMLTD.MillionDance.Core {
             // In case that vertex count is more than skin count (ill-formed MLTD models: ch_ex005_022ser)
             var skinCount = combinedMesh.Skin.Length;
 
+            var shouldScaleToPmxSize = _conversionConfig.ScaleToPmxSize;
+            var scaleUnityToPmx = _scalingConfig.ScaleUnityToPmx;
+
             for (var i = 0; i < vertexCount; ++i) {
                 var vertex = new PmxVertex();
 
@@ -89,8 +92,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                 vertex.Position = position.ToOpenTK().FixUnityToOpenTK();
 
-                if (_conversionConfig.ScaleToPmxSize) {
-                    vertex.Position = vertex.Position * _scalingConfig.ScaleUnityToPmx;
+                if (shouldScaleToPmxSize) {
+                    vertex.Position = vertex.Position * scaleUnityToPmx;
                 }
 
                 vertex.Normal = normal.ToOpenTK().FixUnityToOpenTK();
@@ -173,6 +176,9 @@ namespace OpenMLTD.MillionDance.Core {
 
             var hierarchy = _boneLookup.BuildBoneHierarchy(combinedAvatar);
 
+            var considerIdolHeight = _conversionConfig.ApplyPmxCharacterHeight;
+            var factor = _scalingConfig.CharacterHeightScalingFactor;
+
             for (var i = 0; i < boneCount; ++i) {
                 var bone = new PmxBone();
                 var transform = combinedAvatar.AvatarSkeletonPose.Transforms[i];
@@ -186,6 +192,11 @@ namespace OpenMLTD.MillionDance.Core {
                 // PMX's bone positions are in world coordinate system.
                 // Unity's are in local coords.
                 bone.InitialPosition = boneNode.InitialPositionWorld;
+
+                if (considerIdolHeight) {
+                    bone.InitialPosition = bone.InitialPosition * factor;
+                }
+
                 bone.CurrentPosition = bone.InitialPosition;
 
                 bone.ParentIndex = boneNode.Parent?.Index ?? -1;

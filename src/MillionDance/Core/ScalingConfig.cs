@@ -12,10 +12,15 @@ namespace OpenMLTD.MillionDance.Core {
         // Setting this value to character's real height can affect how tall the exported model is. Useful for height comparison. XD
         public float CharacterHeight { get; set; } = 1.6f;
 
+        public float CharacterHeightScalingFactor {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => CharacterHeight / StandardCharacterHeight;
+        }
+
         public float ScalePmxToUnity {
             get {
                 if (_conversionConfig.ApplyPmxCharacterHeight) {
-                    return DefaultScaleMmdToUnity / (CharacterHeight / StandardCharacterHeight);
+                    return DefaultScaleMmdToUnity / CharacterHeightScalingFactor;
                 } else {
                     return DefaultScaleMmdToUnity;
                 }

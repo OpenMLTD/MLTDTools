@@ -94,13 +94,13 @@ namespace OpenMLTD.MillionDance.Core {
 
                 var keyFrameIndexStart = i * animatedBoneCount;
 
-                var bb = formationList.TryGetCurrentValue(i, out var formations);
-                Vector4 idolPosOffset;
+                formationList.TryGetCurrentValue(i, out var formations);
+                Vector4 idolOffset;
 
                 if (formations == null || formations.Length < idolPosition) {
-                    idolPosOffset = Vector4.Zero;
+                    idolOffset = Vector4.Zero;
                 } else {
-                    idolPosOffset = formations[idolPosition - 1];
+                    idolOffset = formations[idolPosition - 1];
                 }
 
                 for (var j = 0; j < animatedBoneCount; ++j) {
@@ -155,9 +155,9 @@ namespace OpenMLTD.MillionDance.Core {
                         var z = keyFrame.PositionZ.Value;
 
                         if (string.Equals(keyFrame.Path, "MODEL_00", StringComparison.Ordinal)) {
-                            x += idolPosOffset.X;
-                            y += idolPosOffset.Y;
-                            z += idolPosOffset.Z;
+                            x += idolOffset.X;
+                            y += idolOffset.Y;
+                            z += idolOffset.Z;
                         }
 
                         var t = new Vector3(x, y, z);
@@ -182,6 +182,11 @@ namespace OpenMLTD.MillionDance.Core {
                         var y = keyFrame.AngleY.Value;
                         // ReSharper disable once PossibleInvalidOperationException
                         var z = keyFrame.AngleZ.Value;
+
+                        if (string.Equals(keyFrame.Path, "MODEL_00", StringComparison.Ordinal)) {
+                            // The W component stores rotation
+                            y += idolOffset.W;
+                        }
 
                         var q = UnityRotation.EulerDeg(x, y, z);
 

@@ -44,27 +44,24 @@ Similar to [Hca2Wav](https://github.com/OpenCGSS/DereTore/tree/master/Apps/Hca2W
 
 Export manifest description to a text file.
 
+If you prefer GUI than command line, please use the manifest exporting function in Manifest Tools.
+
 **MLTD Information Viewer**
 
-View resource manifest, card information and costume information from MLTD database files.
+View <del>resource manifest</del> (please use Manifest Tools instead), card information and costume information from MLTD database files.
 
 **Manifest Tools**
 
 A collection of manifest-related utilities: viewing, downloading, diff-ing, exporting, etc.
 
-**Scenario Editor**
-
-WIP
-
 **MillionDance**
 
-Export models, character and camera motions to MMD equivalents. (alpha)
+Export models, dance animations, morphs and camera motions to MMD equivalents. It is currently in alpha state.
 
 [Manual](https://github.com/OpenMLTD/MLTDTools/wiki/MillionDance-Manual)
 
-Ouput data tested in [MikuMikuMoving](https://sites.google.com/site/mikumikumovingeng/) (MMM) but not [MikuMikuDance](http://www.geocities.jp/higuchuu4/index_e.htm) (MMD) because the number of frames is huge.
-It is suggested to use MMM for enhanced performance. Also, some conversion seems to fail only when the output is used with MMD; maybe I'll
-investigate this issue some day.
+Output animation data can be played in [MikuMikuMoving](https://sites.google.com/site/mikumikumovingeng/) (MMM) but not [MikuMikuDance](http://www.geocities.jp/higuchuu4/index_e.htm) (MMD) because the number of frames is huge due to technical limitations.
+Animation conversion seems to fail only when you load the output with MMD; maybe I'll investigate this issue some day. Also, MMM takes much less time reading such big files.
 
 **MLTD Dance Viewer**
 
@@ -75,9 +72,9 @@ Theoretically it can be applied to other Unity games, with a little modification
 
 *Requires OpenGL 4.0+*
 
-**Facial Expression Mapping Editor**
+**TDFacial**
 
-A utility to use with MillionDance.
+Facial expression mapping editor utility to use with MillionDance.
 
 [Manual](https://github.com/OpenMLTD/MLTDTools/wiki/TDFacial-Manual)
 

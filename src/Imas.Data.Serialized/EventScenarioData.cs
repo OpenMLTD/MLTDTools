@@ -118,7 +118,7 @@ namespace Imas.Data.Serialized {
         [ScriptableObjectProperty(Name = "clcols")]
         public int[] ColorColumns { get; set; } = Array.Empty<int>();
 
-        [ScriptableObjectProperty(Name = "camcut")]
+        [ScriptableObjectProperty(Name = "camCut")]
         public int CameraCut { get; set; }
 
         [CanBeNull]

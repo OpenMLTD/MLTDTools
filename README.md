@@ -40,6 +40,10 @@ Similar to [AcbMaker](https://github.com/OpenCGSS/DereTore/tree/master/Apps/AcbM
 
 Similar to [Hca2Wav](https://github.com/OpenCGSS/DereTore/tree/master/Apps/Hca2Wav) in DereTore, but uses MLTD's HCA cipher by default.
 
+**ExtractAcb**
+
+Extracts ACB file from the song bundles (`song3_*.acb.unity3d`).
+
 **Manifest Exporter** (obsolete)
 
 Export manifest description to a text file.

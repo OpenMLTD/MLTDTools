@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AssetStudio.Extended.CompositeModels;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
@@ -10,11 +9,11 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull]
-        public VmdMotion CreateCharacterAnimation([CanBeNull] IBodyAnimationSource bodyAnimationSource, [CanBeNull] ScenarioObject scenario, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel, int idolPosition) {
+        public VmdMotion CreateCharacterAnimation([CanBeNull] IBodyAnimationSource bodyAnimationSource, [CanBeNull] ScenarioObject scenario, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel, int formationNumber) {
             VmdBoneFrame[] frames;
 
             if (ProcessBoneFrames && (bodyAnimationSource != null && avatar != null && mltdPmxModel != null)) {
-                frames = CreateBoneFrames(bodyAnimationSource, scenario, avatar, mltdPmxModel, idolPosition);
+                frames = CreateBoneFrames(bodyAnimationSource, scenario, avatar, mltdPmxModel, formationNumber);
             } else {
                 frames = Array.Empty<VmdBoneFrame>();
             }

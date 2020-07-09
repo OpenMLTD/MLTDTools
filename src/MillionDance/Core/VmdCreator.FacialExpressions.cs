@@ -13,11 +13,11 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull]
-        public VmdMotion CreateLipSync([CanBeNull] ScenarioObject baseScenario, int songPosition) {
+        public VmdMotion CreateLipSync([CanBeNull] ScenarioObject baseScenario, int formationNumber) {
             VmdFacialFrame[] frames;
 
             if (ProcessFacialFrames && baseScenario != null) {
-                frames = CreateLipSyncFrames(baseScenario, songPosition);
+                frames = CreateLipSyncFrames(baseScenario, formationNumber);
             } else {
                 frames = null;
             }
@@ -26,11 +26,11 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull]
-        public VmdMotion CreateFacialExpressions([CanBeNull] ScenarioObject facialExpr, int songPosition) {
+        public VmdMotion CreateFacialExpressions([CanBeNull] ScenarioObject facialExpr, int formationNumber) {
             VmdFacialFrame[] frames;
 
             if (ProcessFacialFrames && facialExpr != null) {
-                frames = CreateFacialExpressionFrames(facialExpr, songPosition);
+                frames = CreateFacialExpressionFrames(facialExpr, formationNumber);
             } else {
                 frames = null;
             }
@@ -39,7 +39,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private VmdFacialFrame[] CreateLipSyncFrames([NotNull] ScenarioObject lipSync, int idolPosition) {
+        private VmdFacialFrame[] CreateLipSyncFrames([NotNull] ScenarioObject lipSync, int formationNumber) {
             var frameList = new List<VmdFacialFrame>();
 
             var lipSyncControls = lipSync.Scenario.WhereToArray(s => s.Type == ScenarioDataType.LipSync);
@@ -76,7 +76,7 @@ namespace OpenMLTD.MillionDance.Core {
                     AddSilenceFrame(frameList, 0);
                 }
 
-                var isSinging = IsSingingAt(singControls, singControlTimes, sync.AbsoluteTime, idolPosition);
+                var isSinging = IsSingingAt(singControls, singControlTimes, sync.AbsoluteTime, formationNumber);
                 var shouldUpdateLastFrameTime = true;
 
                 if (isSinging) {
@@ -241,10 +241,10 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private VmdFacialFrame[] CreateFacialExpressionFrames([NotNull] ScenarioObject facialExpr, int idolPosition) {
+        private VmdFacialFrame[] CreateFacialExpressionFrames([NotNull] ScenarioObject facialExpr, int formationNumber) {
             var frameList = new List<VmdFacialFrame>();
 
-            var expControls = facialExpr.Scenario.WhereToArray(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == idolPosition - 1);
+            var expControls = facialExpr.Scenario.WhereToArray(s => s.Type == ScenarioDataType.FacialExpression && s.Idol == formationNumber - 1);
 
             Debug.Assert(expControls.Length > 0, "Expression controls should exist.");
 
@@ -380,7 +380,7 @@ namespace OpenMLTD.MillionDance.Core {
             return frame;
         }
 
-        private static bool IsSingingAt([NotNull, ItemNotNull] EventScenarioData[] singControls, [NotNull] double[] singControlTimes, double lipSyncTime, int position) {
+        private static bool IsSingingAt([NotNull, ItemNotNull] EventScenarioData[] singControls, [NotNull] double[] singControlTimes, double lipSyncTime, int formationNumber) {
             const bool isSingingByDefault = true;
 
             Debug.Assert(singControls.Length == singControlTimes.Length);
@@ -417,9 +417,9 @@ namespace OpenMLTD.MillionDance.Core {
             }
 
             var isSinging = control.IsSinging;
-            Debug.Assert(isSinging.Length >= position);
+            Debug.Assert(isSinging.Length >= formationNumber);
 
-            return isSinging[position - 1];
+            return isSinging[formationNumber - 1];
         }
 
         [NotNull, ItemNotNull]

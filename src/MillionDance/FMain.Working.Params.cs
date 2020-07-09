@@ -73,7 +73,9 @@ namespace OpenMLTD.MillionDance {
 
             public uint FixedFov { get; set; }
 
-            public int SongPosition { get; set; }
+            public int MotionNumber { get; set; }
+
+            public int FormationNumber { get; set; }
 
             public string FacialExpressionMappingFilePath { get; set; }
 

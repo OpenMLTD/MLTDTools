@@ -216,7 +216,8 @@ namespace OpenMLTD.MillionDance {
         }
 
         private void FMain_Load(object sender, EventArgs e) {
-            cboOptSongPosition.SelectedIndex = 0;
+            cboOptMotionNumber.SelectedIndex = 0;
+            cboOptFormationNumber.SelectedIndex = 0;
             cboGameToonSkinNumber.SelectedIndex = 5 - 1; // toon05, looks closest to MLTD models
             cboGameToonClothesNumber.SelectedIndex = 4 - 1; // toon 04, less yellow-ish
 
@@ -444,7 +445,8 @@ namespace OpenMLTD.MillionDance {
                 ip.ScaleVmd = chkOptScaleVmd.Checked;
                 ip.UseMvdForCamera = radOptCamFormatMvd.Checked;
                 ip.FixedFov = ip.UseMvdForCamera ? Convert.ToUInt32(txtOptFixedFov.Text) : 0;
-                ip.SongPosition = cboOptSongPosition.SelectedIndex + 1;
+                ip.MotionNumber = cboOptMotionNumber.SelectedIndex + 1;
+                ip.FormationNumber = cboOptFormationNumber.SelectedIndex + 1;
 
                 ip.FacialExpressionMappingFilePath = txtOptFEMappings.Text;
                 ip.PreferredFacialExpressionSource = radFESourceLandscape.Checked ? InputParams.FallbackFacialExpressionSource.Landscape : InputParams.FallbackFacialExpressionSource.Portrait;

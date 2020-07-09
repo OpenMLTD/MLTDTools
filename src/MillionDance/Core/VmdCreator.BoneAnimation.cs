@@ -17,7 +17,7 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [CanBeNull] ScenarioObject scenario, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx, int idolPosition) {
+        private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [CanBeNull] ScenarioObject scenario, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx, int formationNumber) {
             var boneLookup = new BoneLookup(_conversionConfig);
 
             var mltdHierarchy = boneLookup.BuildBoneHierarchy(avatar);
@@ -97,10 +97,10 @@ namespace OpenMLTD.MillionDance.Core {
                 formationList.TryGetCurrentValue(i, out var formations);
                 Vector4 idolOffset;
 
-                if (formations == null || formations.Length < idolPosition) {
+                if (formations == null || formations.Length < formationNumber) {
                     idolOffset = Vector4.Zero;
                 } else {
-                    idolOffset = formations[idolPosition - 1];
+                    idolOffset = formations[formationNumber - 1];
                 }
 
                 for (var j = 0; j < animatedBoneCount; ++j) {
@@ -265,7 +265,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull]
-        private TimedList<int, Vector4[]> CollectFormationChanges([CanBeNull] ScenarioObject scenario) {
+        private static TimedList<int, Vector4[]> CollectFormationChanges([CanBeNull] ScenarioObject scenario) {
             var result = new TimedList<int, Vector4[]>();
 
             if (scenario == null) {

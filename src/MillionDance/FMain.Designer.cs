@@ -78,7 +78,7 @@
             this.txtOptFEMappings = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
-            this.cboOptSongPosition = new System.Windows.Forms.ComboBox();
+            this.cboOptMotionNumber = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.txtOptFixedFov = new System.Windows.Forms.TextBox();
@@ -114,6 +114,8 @@
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.lnkHelp = new System.Windows.Forms.LinkLabel();
+            this.label24 = new System.Windows.Forms.Label();
+            this.cboOptFormationNumber = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -645,13 +647,15 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.cboOptFormationNumber);
+            this.tabPage2.Controls.Add(this.label24);
             this.tabPage2.Controls.Add(this.panel4);
             this.tabPage2.Controls.Add(this.label19);
             this.tabPage2.Controls.Add(this.btnOptSelectFEMappings);
             this.tabPage2.Controls.Add(this.txtOptFEMappings);
             this.tabPage2.Controls.Add(this.label18);
             this.tabPage2.Controls.Add(this.label17);
-            this.tabPage2.Controls.Add(this.cboOptSongPosition);
+            this.tabPage2.Controls.Add(this.cboOptMotionNumber);
             this.tabPage2.Controls.Add(this.label14);
             this.tabPage2.Controls.Add(this.label12);
             this.tabPage2.Controls.Add(this.txtOptFixedFov);
@@ -673,7 +677,7 @@
             // 
             this.panel4.Controls.Add(this.radFESourcePortrait);
             this.panel4.Controls.Add(this.radFESourceLandscape);
-            this.panel4.Location = new System.Drawing.Point(172, 166);
+            this.panel4.Location = new System.Drawing.Point(172, 195);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(204, 24);
             this.panel4.TabIndex = 15;
@@ -703,7 +707,7 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(7, 171);
+            this.label19.Location = new System.Drawing.Point(7, 200);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(161, 13);
             this.label19.TabIndex = 14;
@@ -711,7 +715,7 @@
             // 
             // btnOptSelectFEMappings
             // 
-            this.btnOptSelectFEMappings.Location = new System.Drawing.Point(371, 139);
+            this.btnOptSelectFEMappings.Location = new System.Drawing.Point(371, 168);
             this.btnOptSelectFEMappings.Name = "btnOptSelectFEMappings";
             this.btnOptSelectFEMappings.Size = new System.Drawing.Size(32, 21);
             this.btnOptSelectFEMappings.TabIndex = 13;
@@ -720,7 +724,7 @@
             // 
             // txtOptFEMappings
             // 
-            this.txtOptFEMappings.Location = new System.Drawing.Point(172, 140);
+            this.txtOptFEMappings.Location = new System.Drawing.Point(172, 169);
             this.txtOptFEMappings.Name = "txtOptFEMappings";
             this.txtOptFEMappings.Size = new System.Drawing.Size(193, 20);
             this.txtOptFEMappings.TabIndex = 12;
@@ -729,7 +733,7 @@
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(7, 143);
+            this.label18.Location = new System.Drawing.Point(7, 172);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(139, 13);
             this.label18.TabIndex = 11;
@@ -745,29 +749,37 @@
             this.label17.TabIndex = 10;
             this.label17.Text = "(default = 20)";
             // 
-            // cboOptSongPosition
+            // cboOptMotionNumber
             // 
-            this.cboOptSongPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboOptSongPosition.FormattingEnabled = true;
-            this.cboOptSongPosition.Items.AddRange(new object[] {
+            this.cboOptMotionNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboOptMotionNumber.FormattingEnabled = true;
+            this.cboOptMotionNumber.Items.AddRange(new object[] {
             "1 (center)",
             "2 (center left)",
             "3 (center right)",
             "4 (left-most)",
-            "5 (right-most)"});
-            this.cboOptSongPosition.Location = new System.Drawing.Point(261, 114);
-            this.cboOptSongPosition.Name = "cboOptSongPosition";
-            this.cboOptSongPosition.Size = new System.Drawing.Size(107, 21);
-            this.cboOptSongPosition.TabIndex = 9;
+            "5 (right-most)",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"});
+            this.cboOptMotionNumber.Location = new System.Drawing.Point(261, 114);
+            this.cboOptMotionNumber.Name = "cboOptMotionNumber";
+            this.cboOptMotionNumber.Size = new System.Drawing.Size(107, 21);
+            this.cboOptMotionNumber.TabIndex = 9;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(7, 117);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(243, 13);
+            this.label14.Size = new System.Drawing.Size(182, 13);
             this.label14.TabIndex = 8;
-            this.label14.Text = "Idol position (affects dance, lip sync && expression):";
+            this.label14.Text = "Motion no. (affects dance animation):";
             // 
             // label12
             // 
@@ -1077,6 +1089,38 @@
             this.lnkHelp.TabStop = true;
             this.lnkHelp.Text = "Usage help";
             // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(7, 144);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(239, 13);
+            this.label24.TabIndex = 16;
+            this.label24.Text = "Formation no. (affects facial animation && position):";
+            // 
+            // cboOptFormationNumber
+            // 
+            this.cboOptFormationNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboOptFormationNumber.FormattingEnabled = true;
+            this.cboOptFormationNumber.Items.AddRange(new object[] {
+            "1 (center)",
+            "2 (center left)",
+            "3 (center right)",
+            "4 (left-most)",
+            "5 (right-most)",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"});
+            this.cboOptFormationNumber.Location = new System.Drawing.Point(261, 141);
+            this.cboOptFormationNumber.Name = "cboOptFormationNumber";
+            this.cboOptFormationNumber.Size = new System.Drawing.Size(107, 21);
+            this.cboOptFormationNumber.TabIndex = 18;
+            // 
             // FMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1141,7 +1185,7 @@
 
         private System.Windows.Forms.Button btnOutputModel;
 
-        private System.Windows.Forms.ComboBox cboOptSongPosition;
+        private System.Windows.Forms.ComboBox cboOptMotionNumber;
 
         private System.Windows.Forms.CheckBox chkGenerateCameraMotion;
 
@@ -1285,5 +1329,7 @@
         private System.Windows.Forms.ComboBox cboGameToonClothesNumber;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.LinkLabel lnkHelp;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.ComboBox cboOptFormationNumber;
     }
 }

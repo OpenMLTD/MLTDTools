@@ -117,10 +117,10 @@ namespace OpenMLTD.MillionDance {
 
                 if (p.GenerateCharacterMotion) {
                     Log("Loading dance motion...");
-                    var loadedDance = ResourceLoader.LoadDance(p.InputDance, p.SongPosition);
+                    var loadedDance = ResourceLoader.LoadDance(p.InputDance, p.MotionNumber);
                     (dance, _, _) = loadedDance.AnimationSet;
                     if (dance == null) {
-                        if (1 <= loadedDance.SuggestedPosition && loadedDance.SuggestedPosition <= 5) {
+                        if (MltdAnimation.MinMotion <= loadedDance.SuggestedPosition && loadedDance.SuggestedPosition <= MltdAnimation.MaxMotion) {
                             Log($"Cannot load dance data. However, this file may contain animation for idol at position {loadedDance.SuggestedPosition.ToString()}. Please check whether you selected the correct idol position (in 'Motions' tab).");
                         } else {
                             Log("Cannot load dance data. Please check whether you selected a dance data file.");
@@ -159,7 +159,6 @@ namespace OpenMLTD.MillionDance {
                             formationInfo = tate;
                         } else {
                             Log("No scenario object contains formation info.");
-                            formationInfo = null;
                             break;
                         }
                     }
@@ -343,7 +342,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var danceVmd = creator.CreateCharacterAnimation(dance, formationInfo, combinedAvatar, pmx, p.SongPosition);
+                        var danceVmd = creator.CreateCharacterAnimation(dance, formationInfo, combinedAvatar, pmx, p.FormationNumber);
 
                         Log("Saving character motion...");
 
@@ -362,7 +361,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var lipVmd = creator.CreateLipSync(lipSync, p.SongPosition);
+                        var lipVmd = creator.CreateLipSync(lipSync, p.FormationNumber);
 
                         Log("Saving lip sync...");
 
@@ -381,7 +380,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var facialVmd = creator.CreateFacialExpressions(facialExpr, p.SongPosition);
+                        var facialVmd = creator.CreateFacialExpressions(facialExpr, p.FormationNumber);
 
                         Log("Saving facial expressions...");
 

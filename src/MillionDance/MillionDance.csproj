@@ -68,6 +68,7 @@
     <Compile Include="Core\IO\ResourceLoader.cs" />
     <Compile Include="Core\IO\ResourceLoader.LoadedDance.cs" />
     <Compile Include="Core\IO\VmdWriter.cs" />
+    <Compile Include="Core\MltdAnimation.cs" />
     <Compile Include="Core\MotionFormat.cs" />
     <Compile Include="Core\MvdCreator.Camera.cs" />
     <Compile Include="Core\MvdCreator.cs" />

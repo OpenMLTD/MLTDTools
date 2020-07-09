@@ -174,7 +174,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         [NotNull]
-        public static LoadedDance LoadDance([NotNull] string filePath, int songPosition) {
+        public static LoadedDance LoadDance([NotNull] string filePath, int motionNumber) {
             IBodyAnimationSource danSource = null, apaSource = null, apgSource = null;
             var danceAnimationLoaded = false;
             var suggestedPosition = InvalidDancePosition;
@@ -189,7 +189,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             if (!danceAnimationLoaded) {
                 // First try with legacy bundles
-                var (dan, apa, apg) = LoadDanceLegacy(filePath, songPosition, out suggestedPosition);
+                var (dan, apa, apg) = LoadDanceLegacy(filePath, motionNumber, out suggestedPosition);
 
                 if (dan != null) {
                     danSource = new LegacyBodyAnimationSource(dan);
@@ -207,7 +207,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             if (!danceAnimationLoaded) {
                 // If failed, try the new one (from ~mid 2018?)
-                var (dan, apa, apg) = LoadDanceCompiled(filePath, songPosition, out suggestedPosition);
+                var (dan, apa, apg) = LoadDanceCompiled(filePath, motionNumber, out suggestedPosition);
 
                 if (dan != null) {
                     danSource = new CompiledBodyAnimationSource(dan);
@@ -270,12 +270,12 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         [NotNull]
-        private static AnimationSet<CharacterImasMotionAsset> LoadDanceLegacy([NotNull] string filePath, int songPosition, out int suggestedPosition) {
+        private static AnimationSet<CharacterImasMotionAsset> LoadDanceLegacy([NotNull] string filePath, int motionNumber, out int suggestedPosition) {
             CharacterImasMotionAsset dan = null, apa = null, apg = null;
 
-            var danComp = $"{songPosition:00}_dan.imo";
-            var apaComp = $"{songPosition:00}_apa.imo";
-            var apgComp = $"{songPosition:00}_apg.imo";
+            var danComp = $"{motionNumber:00}_dan.imo";
+            var apaComp = $"{motionNumber:00}_apa.imo";
+            var apgComp = $"{motionNumber:00}_apg.imo";
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
@@ -315,12 +315,12 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         [NotNull]
-        private static AnimationSet<AnimationClip> LoadDanceCompiled([NotNull] string filePath, int songPosition, out int suggestedPosition) {
+        private static AnimationSet<AnimationClip> LoadDanceCompiled([NotNull] string filePath, int motionNumber, out int suggestedPosition) {
             AnimationClip dan = null, apa = null, apg = null;
 
-            var danComp = $"{songPosition:00}_dan";
-            var apaComp = $"{songPosition:00}_apa";
-            var apgComp = $"{songPosition:00}_apg";
+            var danComp = $"{motionNumber:00}_dan";
+            var apaComp = $"{motionNumber:00}_apa";
+            var apgComp = $"{motionNumber:00}_apg";
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);

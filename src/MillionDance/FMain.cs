@@ -424,7 +424,7 @@ namespace OpenMLTD.MillionDance {
                 ip.TransformTo30Fps = radOptAnimFrameRate30.Checked;
                 ip.ScaleVmd = chkOptScaleVmd.Checked;
                 ip.UseMvdForCamera = radOptCamFormatMvd.Checked;
-                ip.FixedFov = ip.UseMvdForCamera ? Convert.ToUInt32(txtOptFixedFov.Text) : 0;
+                ip.FixedFov = ip.UseMvdForCamera ? 0 : Convert.ToUInt32(txtOptFixedFov.Text);
                 ip.MotionNumber = cboOptMotionNumber.SelectedIndex + 1;
                 ip.FormationNumber = cboOptFormationNumber.SelectedIndex + 1;
 

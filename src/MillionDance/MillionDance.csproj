@@ -119,7 +119,6 @@
     <Compile Include="FMain.Working.Params.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GlobalizationHelper.cs" />
     <Compile Include="Utilities\AnalysesUtils.cs" />
     <Compile Include="Utilities\BoneLookup.cs" />
     <Compile Include="Core\ScalingConfig.cs" />

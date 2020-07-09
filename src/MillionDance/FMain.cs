@@ -221,9 +221,7 @@ namespace OpenMLTD.MillionDance {
             cboGameToonSkinNumber.SelectedIndex = 5 - 1; // toon05, looks closest to MLTD models
             cboGameToonClothesNumber.SelectedIndex = 4 - 1; // toon 04, less yellow-ish
 
-            // globalization: Decimal point affects parsing result. Bear in mind.
-            // In custom numeric format string, the "." means decimal point, which will be correctly translated to target culture.
-            var defaultCharHeightStr = ScalingConfig.StandardCharacterHeight.ToString("0.00", GlobalizationHelper.Culture);
+            var defaultCharHeightStr = ScalingConfig.StandardCharacterHeightInCentimeters.ToString();
 
             label16.Text = $"(standard = {defaultCharHeightStr})";
             txtOptCharHeight.Text = defaultCharHeightStr;
@@ -277,24 +275,8 @@ namespace OpenMLTD.MillionDance {
                 }
 
                 if (chkOptApplyCharHeight.Checked) {
-                    if (!float.TryParse(txtOptCharHeight.Text, NumberStyles.Float, GlobalizationHelper.Culture, out var height) || height <= 0.1f) {
+                    if (!uint.TryParse(txtOptCharHeight.Text, out var height) || (height <= 100 || 200 <= height)) {
                         Alert("Please enter a valid idol height.");
-                    }
-
-                    if (height < 1.0f || 2.0f < height) {
-                        var heightStr = height.ToString(GlobalizationHelper.Culture);
-                        // Don't mind multiple string concatenations. It only executes once. :D
-                        var message = "You entered a strange value for idol height." +
-                                      " This may be caused by the differences of decimal point among countries." +
-                                      " A wrong value may let this program generate wrong mesh and bones for the model." +
-                                      Environment.NewLine + Environment.NewLine +
-                                      $"The number in the numeric format of your culture ({GlobalizationHelper.Culture.DisplayName}) is: {heightStr}" +
-                                      Environment.NewLine + Environment.NewLine +
-                                      "Are you sure that you entered a correct value?";
-
-                        if (!Confirm(message)) {
-                            return false;
-                        }
                     }
                 }
 
@@ -345,10 +327,7 @@ namespace OpenMLTD.MillionDance {
                 }
 
                 if (radOptCamFormatVmd.Checked) {
-                    // globalization: The type is uint32 so only thousand separator appears. In either way,
-                    // it will raise a parse error if the user does not conform the UI locale (e.g. input
-                    // "12,345" in French locale, or "12.345" in US locale).
-                    if (!uint.TryParse(txtOptFixedFov.Text, NumberStyles.Integer, GlobalizationHelper.Culture, out var u) || u == 0) {
+                    if (!uint.TryParse(txtOptFixedFov.Text, out var u) || u == 0) {
                         Alert($"FOV value \"{txtOptFixedFov.Text}\" should be a valid positive integer.");
                         return false;
                     }
@@ -428,7 +407,8 @@ namespace OpenMLTD.MillionDance {
                 ip.MotionSource = radOptMotionSourceMltd.Checked ? MotionFormat.Mltd : MotionFormat.Mmd;
                 ip.ScalePmx = chkOptScalePmx.Checked;
                 ip.ConsiderIdolHeight = chkOptApplyCharHeight.Checked;
-                ip.IdolHeight = ip.ConsiderIdolHeight ? Convert.ToSingle(txtOptCharHeight.Text) : 0;
+                var idolHeightInCm = Convert.ToUInt32(txtOptCharHeight) / 100.0f;
+                ip.IdolHeight = ip.ConsiderIdolHeight ? idolHeightInCm : 0;
                 ip.TranslateBoneNames = chkOptTranslateBoneNames.Checked;
                 ip.AppendLegIkBones = chkOptAppendLegIKBones.Checked;
                 ip.FixCenterBones = chkOptFixCenterBones.Checked;

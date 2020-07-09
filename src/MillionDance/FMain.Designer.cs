@@ -52,7 +52,6 @@
             this.label22 = new System.Windows.Forms.Label();
             this.cboGameToonSkinNumber = new System.Windows.Forms.ComboBox();
             this.chkGameToon = new System.Windows.Forms.CheckBox();
-            this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.txtOptCharHeight = new System.Windows.Forms.TextBox();
             this.chkOptImportPhysics = new System.Windows.Forms.CheckBox();
@@ -70,6 +69,8 @@
             this.radOptMotionSourceMltd = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.cboOptFormationNumber = new System.Windows.Forms.ComboBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.radFESourcePortrait = new System.Windows.Forms.RadioButton();
             this.radFESourceLandscape = new System.Windows.Forms.RadioButton();
@@ -114,8 +115,7 @@
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.lnkHelp = new System.Windows.Forms.LinkLabel();
-            this.label24 = new System.Windows.Forms.Label();
-            this.cboOptFormationNumber = new System.Windows.Forms.ComboBox();
+            this.label16 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -363,12 +363,12 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label16);
             this.tabPage1.Controls.Add(this.label23);
             this.tabPage1.Controls.Add(this.cboGameToonClothesNumber);
             this.tabPage1.Controls.Add(this.label22);
             this.tabPage1.Controls.Add(this.cboGameToonSkinNumber);
             this.tabPage1.Controls.Add(this.chkGameToon);
-            this.tabPage1.Controls.Add(this.label16);
             this.tabPage1.Controls.Add(this.label15);
             this.tabPage1.Controls.Add(this.txtOptCharHeight);
             this.tabPage1.Controls.Add(this.chkOptImportPhysics);
@@ -461,23 +461,14 @@
             this.chkGameToon.Text = "Game styled toon";
             this.chkGameToon.UseVisualStyleBackColor = true;
             // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(254, 52);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(87, 13);
-            this.label16.TabIndex = 24;
-            this.label16.Text = "(standard = 1.60)";
-            // 
             // label15
             // 
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(237, 52);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(15, 13);
+            this.label15.Size = new System.Drawing.Size(21, 13);
             this.label15.TabIndex = 23;
-            this.label15.Text = "m";
+            this.label15.Text = "cm";
             // 
             // txtOptCharHeight
             // 
@@ -485,7 +476,7 @@
             this.txtOptCharHeight.Name = "txtOptCharHeight";
             this.txtOptCharHeight.Size = new System.Drawing.Size(58, 20);
             this.txtOptCharHeight.TabIndex = 22;
-            this.txtOptCharHeight.Text = "1.60";
+            this.txtOptCharHeight.Text = "160";
             this.txtOptCharHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // chkOptImportPhysics
@@ -672,6 +663,38 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Motions";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // cboOptFormationNumber
+            // 
+            this.cboOptFormationNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboOptFormationNumber.FormattingEnabled = true;
+            this.cboOptFormationNumber.Items.AddRange(new object[] {
+            "1 (center)",
+            "2 (center left)",
+            "3 (center right)",
+            "4 (left-most)",
+            "5 (right-most)",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"});
+            this.cboOptFormationNumber.Location = new System.Drawing.Point(261, 141);
+            this.cboOptFormationNumber.Name = "cboOptFormationNumber";
+            this.cboOptFormationNumber.Size = new System.Drawing.Size(107, 21);
+            this.cboOptFormationNumber.TabIndex = 18;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(7, 144);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(239, 13);
+            this.label24.TabIndex = 16;
+            this.label24.Text = "Formation no. (affects facial animation && position):";
             // 
             // panel4
             // 
@@ -1089,37 +1112,14 @@
             this.lnkHelp.TabStop = true;
             this.lnkHelp.Text = "Usage help";
             // 
-            // label24
+            // label16
             // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(7, 144);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(239, 13);
-            this.label24.TabIndex = 16;
-            this.label24.Text = "Formation no. (affects facial animation && position):";
-            // 
-            // cboOptFormationNumber
-            // 
-            this.cboOptFormationNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboOptFormationNumber.FormattingEnabled = true;
-            this.cboOptFormationNumber.Items.AddRange(new object[] {
-            "1 (center)",
-            "2 (center left)",
-            "3 (center right)",
-            "4 (left-most)",
-            "5 (right-most)",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13"});
-            this.cboOptFormationNumber.Location = new System.Drawing.Point(261, 141);
-            this.cboOptFormationNumber.Name = "cboOptFormationNumber";
-            this.cboOptFormationNumber.Size = new System.Drawing.Size(107, 21);
-            this.cboOptFormationNumber.TabIndex = 18;
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(255, 52);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(78, 13);
+            this.label16.TabIndex = 30;
+            this.label16.Text = "(standard=160)";
             // 
             // FMain
             // 
@@ -1235,8 +1235,6 @@
 
         private System.Windows.Forms.Label label15;
 
-        private System.Windows.Forms.Label label16;
-
         private System.Windows.Forms.Label label17;
 
         private System.Windows.Forms.Label label18;
@@ -1331,5 +1329,6 @@
         private System.Windows.Forms.LinkLabel lnkHelp;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.ComboBox cboOptFormationNumber;
+        private System.Windows.Forms.Label label16;
     }
 }

@@ -407,7 +407,7 @@ namespace OpenMLTD.MillionDance {
                 ip.MotionSource = radOptMotionSourceMltd.Checked ? MotionFormat.Mltd : MotionFormat.Mmd;
                 ip.ScalePmx = chkOptScalePmx.Checked;
                 ip.ConsiderIdolHeight = chkOptApplyCharHeight.Checked;
-                var idolHeightInCm = Convert.ToUInt32(txtOptCharHeight) / 100.0f;
+                var idolHeightInCm = Convert.ToUInt32(txtOptCharHeight.Text) / 100.0f;
                 ip.IdolHeight = ip.ConsiderIdolHeight ? idolHeightInCm : 0;
                 ip.TranslateBoneNames = chkOptTranslateBoneNames.Checked;
                 ip.AppendLegIkBones = chkOptAppendLegIKBones.Checked;

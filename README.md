@@ -16,7 +16,7 @@ Tools for [THE iDOLM@STER Million Live! Theater Days](https://millionlive.idolma
 **Downloads:**
 
 - [Releases](https://github.com/OpenMLTD/MLTDTools/releases)
-- [CI auto build](https://ci.appveyor.com/api/projects/hozuki/mltdtools/artifacts/miritore-appveyor-latest.zip) (unstable) (Windows)
+- [CI auto build](https://ci.appveyor.com/api/projects/hozuki/mltdtools/artifacts/miritore-appveyor-latest.zip) (unstable, but may contain latest fixes) (Windows)
 
 Requires .NET Framework 4.7.2.
 

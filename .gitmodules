@@ -3,4 +3,4 @@
 	url = https://github.com/OpenCGSS/DereTore.git
 [submodule "thirdparty/AssetStudio"]
 	path = thirdparty/AssetStudio
-	url = https://github.com/Perfare/AssetStudio.git
+	url = https://github.com/hozuki/AssetStudio.git

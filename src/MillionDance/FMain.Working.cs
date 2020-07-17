@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
-using AssetStudio;
 using AssetStudio.Extended.CompositeModels;
 using Imas.Data.Serialized;
 using Imas.Data.Serialized.Sway;
@@ -16,6 +14,7 @@ using Newtonsoft.Json;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Core.IO;
 using OpenMLTD.MillionDance.Entities.Extensions;
+using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Pmx;
 using OpenMLTD.MillionDance.Utilities;
 using OpenMLTD.MLTDTools.Applications.TDFacial.Entities;
@@ -257,7 +256,7 @@ namespace OpenMLTD.MillionDance {
                 {
                     PmxModel pmx;
                     string texPrefix;
-                    (string FileName, TexturedMaterial Material)[] materialList;
+                    BakedMaterial[] materialList;
 
                     if (p.GenerateModel || p.GenerateCharacterMotion) {
                         // Now file names are like "ch_pr001_201xxx.unity3d".
@@ -312,23 +311,23 @@ namespace OpenMLTD.MillionDance {
                             }
                         }
 
-                        foreach (var (subFileName, mat) in materialList) {
-                            var textureFilePath = Path.Combine(modelDir, subFileName);
+                        foreach (var material in materialList) {
+                            var textureFilePath = Path.Combine(modelDir, material.TextureName);
 
-                            using (var image = mat.MainTexture.ConvertToBitmap(mat.ExtraProperties.ShouldFlip)) {
-                                // Only auto composite textures for eyes (with highlights)
-                                if (mat.SubTexture != null && mat.MaterialName.Contains("eye")) {
-                                    using (var subTex = mat.SubTexture.ConvertToBitmap(mat.ExtraProperties.ShouldFlip)) {
-                                        using (var g = Graphics.FromImage(image)) {
-                                            g.DrawImageUnscaled(subTex, 0, 0);
-                                        }
-                                    }
+                            // Sometimes it throws AccessViolationException and the thread immediately halts (on ss001_016tsu,
+                            // with hair/hairh composited; no exception when only eyes are composited)
+                            using (var memoryStream = new MemoryStream()) {
+                                material.BakedTexture.Save(memoryStream, ImageFormat.Png);
+
+                                using (var fileStream = File.Open(textureFilePath, FileMode.Create, FileAccess.Write, FileShare.Write)) {
+                                    memoryStream.Position = 0;
+                                    memoryStream.CopyTo(fileStream);
                                 }
-
-                                // Sometimes it throws AccessViolationException and the thread immediately halts (on ss001_016tsu,
-                                // with hair/hairh composited; no exception when only eyes are composited)
-                                image.Save(textureFilePath, ImageFormat.Png);
                             }
+                        }
+
+                        foreach (var material in materialList) {
+                            material.Dispose();
                         }
                     }
 
@@ -445,6 +444,8 @@ namespace OpenMLTD.MillionDance {
             cc.SkeletonFormat = ip.MotionSource == MotionFormat.Mltd ? SkeletonFormat.Mltd : SkeletonFormat.Mmd;
             cc.TranslateFacialExpressionNamesToMmd = ip.TranslateFacialExpressionNames;
             cc.ImportPhysics = ip.ImportPhysics;
+            cc.AddHairHighlights = ip.AddHairHighlights;
+            cc.AddEyesHighlights = ip.AddEyesHighlights;
 
             cc.Transform60FpsTo30Fps = ip.TransformTo30Fps;
             cc.ScaleToVmdSize = ip.ScaleVmd;

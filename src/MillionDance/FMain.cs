@@ -420,6 +420,8 @@ namespace OpenMLTD.MillionDance {
                 ip.ApplyGameStyledToon = chkGameToon.Checked;
                 ip.SkinToonNumber = cboGameToonSkinNumber.SelectedIndex + 1;
                 ip.ClothesToonNumber = cboGameToonClothesNumber.SelectedIndex + 1;
+                ip.AddHairHighlights = chkOptAddHighlightHair.Checked;
+                ip.AddEyesHighlights = chkOptAddHighlightEyes.Checked;
 
                 ip.TransformTo30Fps = radOptAnimFrameRate30.Checked;
                 ip.ScaleVmd = chkOptScaleVmd.Checked;

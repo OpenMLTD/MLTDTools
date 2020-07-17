@@ -1,10 +1,13 @@
 ﻿namespace OpenMLTD.MillionDance.Entities.Pmx {
-    public enum SphereMode {
+    public enum SphereTextureMode {
 
         None = 0,
-        Mul = 1,
+
+        Multiply = 1,
+
         Add = 2,
-        SubTex = 3
+
+        SubTexture = 3,
 
     }
 }

@@ -47,6 +47,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.chkOptAddHighlightEyes = new System.Windows.Forms.CheckBox();
+            this.chkOptAddHighlightHair = new System.Windows.Forms.CheckBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.cboGameToonClothesNumber = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
@@ -115,7 +119,6 @@
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.lnkHelp = new System.Windows.Forms.LinkLabel();
-            this.label16 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -358,11 +361,14 @@
             this.tabControl1.Location = new System.Drawing.Point(288, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(417, 303);
+            this.tabControl1.Size = new System.Drawing.Size(417, 324);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.chkOptAddHighlightEyes);
+            this.tabPage1.Controls.Add(this.chkOptAddHighlightHair);
+            this.tabPage1.Controls.Add(this.label25);
             this.tabPage1.Controls.Add(this.label16);
             this.tabPage1.Controls.Add(this.label23);
             this.tabPage1.Controls.Add(this.cboGameToonClothesNumber);
@@ -386,10 +392,52 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(409, 277);
+            this.tabPage1.Size = new System.Drawing.Size(409, 298);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Model";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // chkOptAddHighlightEyes
+            // 
+            this.chkOptAddHighlightEyes.AutoSize = true;
+            this.chkOptAddHighlightEyes.Checked = true;
+            this.chkOptAddHighlightEyes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkOptAddHighlightEyes.Location = new System.Drawing.Point(195, 275);
+            this.chkOptAddHighlightEyes.Name = "chkOptAddHighlightEyes";
+            this.chkOptAddHighlightEyes.Size = new System.Drawing.Size(49, 17);
+            this.chkOptAddHighlightEyes.TabIndex = 33;
+            this.chkOptAddHighlightEyes.Text = "Eyes";
+            this.chkOptAddHighlightEyes.UseVisualStyleBackColor = true;
+            // 
+            // chkOptAddHighlightHair
+            // 
+            this.chkOptAddHighlightHair.AutoSize = true;
+            this.chkOptAddHighlightHair.Checked = true;
+            this.chkOptAddHighlightHair.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkOptAddHighlightHair.Location = new System.Drawing.Point(131, 275);
+            this.chkOptAddHighlightHair.Name = "chkOptAddHighlightHair";
+            this.chkOptAddHighlightHair.Size = new System.Drawing.Size(45, 17);
+            this.chkOptAddHighlightHair.TabIndex = 32;
+            this.chkOptAddHighlightHair.Text = "Hair";
+            this.chkOptAddHighlightHair.UseVisualStyleBackColor = true;
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(6, 276);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(76, 13);
+            this.label25.TabIndex = 31;
+            this.label25.Text = "Add highlights:";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(255, 52);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(78, 13);
+            this.label16.TabIndex = 30;
+            this.label16.Text = "(standard=160)";
             // 
             // label23
             // 
@@ -659,7 +707,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(409, 277);
+            this.tabPage2.Size = new System.Drawing.Size(409, 298);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Motions";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1076,12 +1124,12 @@
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(288, 321);
+            this.txtLog.Location = new System.Drawing.Point(288, 346);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(331, 162);
+            this.txtLog.Size = new System.Drawing.Size(331, 137);
             this.txtLog.TabIndex = 4;
             // 
             // btnGo
@@ -1095,7 +1143,7 @@
             // 
             // btnClearLog
             // 
-            this.btnClearLog.Location = new System.Drawing.Point(625, 321);
+            this.btnClearLog.Location = new System.Drawing.Point(625, 342);
             this.btnClearLog.Name = "btnClearLog";
             this.btnClearLog.Size = new System.Drawing.Size(76, 27);
             this.btnClearLog.TabIndex = 6;
@@ -1111,15 +1159,6 @@
             this.lnkHelp.TabIndex = 7;
             this.lnkHelp.TabStop = true;
             this.lnkHelp.Text = "Usage help";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(255, 52);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(78, 13);
-            this.label16.TabIndex = 30;
-            this.label16.Text = "(standard=160)";
             // 
             // FMain
             // 
@@ -1330,5 +1369,8 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.ComboBox cboOptFormationNumber;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.CheckBox chkOptAddHighlightEyes;
+        private System.Windows.Forms.CheckBox chkOptAddHighlightHair;
+        private System.Windows.Forms.Label label25;
     }
 }

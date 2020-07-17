@@ -81,31 +81,32 @@ namespace OpenMLTD.MillionDance.Core {
                 }
 
                 var frame = animation.CameraFrames[i];
+
                 var mvdFrame = new MvdCameraFrame(frameIndex);
 
-                var pos = new Vector3(frame.PositionX, frame.PositionY, frame.PositionZ);
+                var position = new Vector3(frame.PositionX, frame.PositionY, frame.PositionZ);
 
-                pos = pos.FixUnityToOpenTK();
+                position = position.FixUnityToMmd();
 
                 if (_conversionConfig.ScaleToVmdSize) {
-                    pos = pos * _scalingConfig.ScaleUnityToVmd;
+                    position = position * _scalingConfig.ScaleUnityToVmd;
                 }
 
-                mvdFrame.Position = pos;
+                mvdFrame.Position = position;
 
                 var target = new Vector3(frame.TargetX, frame.TargetY, frame.TargetZ);
 
-                target = target.FixUnityToOpenTK();
+                target = target.FixUnityToMmd();
 
                 if (_conversionConfig.ScaleToVmdSize) {
                     target = target * _scalingConfig.ScaleUnityToVmd;
                 }
 
-                var delta = target - pos;
+                var delta = target - position;
 
                 mvdFrame.Distance = delta.Length;
 
-                var lookAtMatrix = Matrix4.LookAt(pos, target, Vector3.UnitY);
+                var lookAtMatrix = Matrix4.LookAt(position, target, Vector3.UnitY);
                 var q = lookAtMatrix.ExtractRotation();
 
                 var rot = q.DecomposeRad();
@@ -166,9 +167,11 @@ namespace OpenMLTD.MillionDance.Core {
         // https://photo.stackexchange.com/questions/41273/how-to-calculate-the-fov-in-degrees-from-focal-length-or-distance
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static float FocalLengthToFov(float focalLength) {
-            // By experiments, MLTD seems to use a 15mm or 16mm camera.
-            const float sensorSize = 12; // unit: mm, as the unit of MLTD camera frame is also mm
-            var fovRad = 2 * (float)Math.Atan((sensorSize / 2) / focalLength);
+            // MLTD uses physical camera
+            // unit: mm, as the unit of MLTD camera frame is also mm
+            const float sensorSizeX = 50.0f / 2;
+            const float sensorSizeY = 25.0f / 2;
+            var fovRad = 2 * (float)Math.Atan((sensorSizeY / 2) / focalLength);
             var fovDeg = MathHelper.RadiansToDegrees(fovRad);
 
             return fovDeg;

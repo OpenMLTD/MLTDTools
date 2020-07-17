@@ -50,7 +50,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                 var pos = new Vector3(frame.PositionX, frame.PositionY, frame.PositionZ);
 
-                pos = pos.FixUnityToOpenTK();
+                pos = pos.FixUnityToMmd();
 
                 if (_conversionConfig.ScaleToVmdSize) {
                     pos = pos * _scalingConfig.ScaleUnityToVmd;
@@ -60,7 +60,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                 var target = new Vector3(frame.TargetX, frame.TargetY, frame.TargetZ);
 
-                target = target.FixUnityToOpenTK();
+                target = target.FixUnityToMmd();
 
                 if (_conversionConfig.ScaleToVmdSize) {
                     target = target * _scalingConfig.ScaleUnityToVmd;

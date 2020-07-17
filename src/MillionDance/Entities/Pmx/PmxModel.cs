@@ -11,6 +11,8 @@ namespace OpenMLTD.MillionDance.Entities.Pmx {
 
         public string NameEnglish { get; internal set; } = string.Empty;
 
+        public int UvaCount { get; internal set; }
+
         [NotNull]
         public string Comment { get; internal set; } = string.Empty;
 

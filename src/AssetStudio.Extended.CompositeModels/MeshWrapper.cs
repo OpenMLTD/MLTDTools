@@ -68,6 +68,12 @@ namespace AssetStudio.Extended.CompositeModels {
 
             UV1 = ReadVector2Array(mesh.m_UV0);
 
+            if (mesh.m_UV1 != null) {
+                Debug.Assert(mesh.m_UV0.Length == mesh.m_UV1.Length, "mesh.m_UV0.Length == mesh.m_UV1.Length");
+            }
+
+            UV2 = ReadNullableVector2Array(mesh.m_UV1, mesh.m_UV0.Length / 2);
+
             if (mesh.m_Tangents != null) {
                 Tangents = ReadVector3Array(mesh.m_Tangents);
             }
@@ -99,6 +105,8 @@ namespace AssetStudio.Extended.CompositeModels {
 
         public override Vector2[] UV1 { get; }
 
+        public override Vector2?[] UV2 { get; }
+
         public override Vector3[] Tangents { get; }
 
         public override uint[] BoneNameHashes { get; }
@@ -122,6 +130,29 @@ namespace AssetStudio.Extended.CompositeModels {
                 var y = array[index + 1];
 
                 result[i] = new Vector2(x, y);
+            }
+
+            return result;
+        }
+
+        [NotNull, ItemCanBeNull]
+        private static Vector2?[] ReadNullableVector2Array([CanBeNull] float[] array, int count) {
+            if (array != null) {
+                count = Math.Max(Math.Min(count, array.Length / 2), 0);
+            } else {
+                count = Math.Max(count, 0);
+            }
+
+            var result = new Vector2?[count];
+
+            if (array != null) {
+                for (var i = 0; i < count; i += 1) {
+                    var index = i * 2;
+                    var x = array[index];
+                    var y = array[index + 1];
+
+                    result[i] = new Vector2(x, y);
+                }
             }
 
             return result;

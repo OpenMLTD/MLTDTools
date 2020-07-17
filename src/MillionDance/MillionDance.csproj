@@ -23,6 +23,7 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -33,6 +34,7 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=2020.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
@@ -89,6 +91,7 @@
     <Compile Include="Entities\Extensions\ScenarioObjectExtensions.cs" />
     <Compile Include="Entities\Internal\AnimationSet.cs" />
     <Compile Include="Entities\Internal\AnimationSet`1.cs" />
+    <Compile Include="Entities\Internal\BakedMaterial.cs" />
     <Compile Include="Entities\Internal\CameraAnimation.cs" />
     <Compile Include="Entities\Internal\CameraFrame.cs" />
     <Compile Include="Entities\Mltd\CompiledBodyAnimationSource.cs" />
@@ -165,7 +168,7 @@
     <Compile Include="Entities\Pmx\SoftBodyFlags.cs" />
     <Compile Include="Entities\Pmx\SoftBodyMaterialConfig.cs" />
     <Compile Include="Entities\Pmx\SoftBodyShape.cs" />
-    <Compile Include="Entities\Pmx\SphereMode.cs" />
+    <Compile Include="Entities\Pmx\SphereTextureMode.cs" />
     <Compile Include="Entities\Pmx\VertexPin.cs" />
     <Compile Include="Entities\Vmd\IkControl.cs" />
     <Compile Include="Entities\Vmd\VmdBaseFrame.cs" />
@@ -185,6 +188,8 @@
     <Compile Include="Core\PmxCreator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\DirectBitmapAccess.cs" />
+    <Compile Include="Utilities\GeometryHelper.cs" />
     <Compile Include="Utilities\MorphUtils.cs" />
     <Compile Include="Utilities\RotationDebug.cs" />
     <Compile Include="Core\UnityRotation.cs" />

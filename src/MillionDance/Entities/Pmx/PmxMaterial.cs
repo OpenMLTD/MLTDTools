@@ -37,10 +37,9 @@ namespace OpenMLTD.MillionDance.Entities.Pmx {
 
         public MaterialFlags Flags { get; internal set; }
 
-        public SphereMode SphereMode { get; internal set; }
+        public SphereTextureMode SphereTextureMode { get; internal set; }
 
         public int AppliedFaceVertexCount { get; internal set; }
 
     }
-
 }

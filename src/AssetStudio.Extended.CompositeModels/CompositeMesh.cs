@@ -43,8 +43,9 @@ namespace AssetStudio.Extended.CompositeModels {
             var vertexList = new List<Vector3>();
             var normalList = new List<Vector3>();
             var colorList = new List<Vector4>();
-            // We only handle UV1 here.
             var uv1List = new List<Vector2>();
+            // uv2 is the optional secondary UV (highlight etc.)
+            var uv2List = new List<Vector2?>();
             var tangentList = new List<Vector3>();
             var boneNameHashList = new List<uint>();
             var parentMeshIndices = new List<int>();
@@ -137,6 +138,7 @@ namespace AssetStudio.Extended.CompositeModels {
                 }
 
                 uv1List.AddRange(mesh.UV1);
+                uv2List.AddRange(mesh.UV2);
 
                 vertexStart += (uint)mesh.VertexCount;
                 indexStart += (uint)mesh.Indices.Length;
@@ -157,6 +159,7 @@ namespace AssetStudio.Extended.CompositeModels {
             Normals = normalList.ToArray();
             Colors = colorList.ToArray();
             UV1 = uv1List.ToArray();
+            UV2 = uv2List.ToArray();
             Tangents = tangentList.ToArray();
             BoneNameHashes = boneNameHashList.ToArray();
             ParentMeshIndices = parentMeshIndices.ToArray();
@@ -181,6 +184,8 @@ namespace AssetStudio.Extended.CompositeModels {
         public override Vector4[] Colors { get; }
 
         public override Vector2[] UV1 { get; }
+
+        public override Vector2?[] UV2 { get; }
 
         public override Vector3[] Tangents { get; }
 

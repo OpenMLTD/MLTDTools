@@ -17,7 +17,7 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
 
             parent?.AddChild(this);
 
-            initialPosition = initialPosition.FixUnityToOpenTK();
+            initialPosition = initialPosition.FixUnityToMmd();
             initialRotation = initialRotation.FixUnityToOpenTK();
 
             InitialPosition = initialPosition;

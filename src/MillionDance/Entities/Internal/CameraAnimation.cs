@@ -7,6 +7,7 @@ using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Extensions;
+using OpenMLTD.MillionDance.Utilities;
 
 namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class CameraAnimation {
@@ -184,11 +185,6 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
             throw new ArgumentException("Maybe time is invalid.");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float Lerp(float from, float to, float t) {
-            return from * (1 - t) + to * t;
-        }
-
         // https://developer.blender.org/diffusion/B/browse/master/source/blender/blenkernel/intern/fcurve.c;e50a3dd4c4e9a9898df31e444d1002770b4efb9c$2212
 
         // Key: some mathematics
@@ -214,7 +210,7 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
 
             if (isInf1) {
                 if (isInf2) {
-                    return Lerp(value1, value2, t);
+                    return GeometryHelper.Lerp(value1, value2, t);
                 } else {
                     var cp = value2 - tan2 / 3 * factor;
                     return Bezier(value1, cp, value2, t);

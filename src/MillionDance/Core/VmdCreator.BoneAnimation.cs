@@ -162,7 +162,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                         var t = new Vector3(x, y, z);
 
-                        t = t.FixUnityToOpenTK();
+                        t = t.FixUnityToMmd();
 
                         if (scaleToVmdSize) {
                             t = t * unityToVmdScale;

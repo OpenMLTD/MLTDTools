@@ -35,6 +35,9 @@ namespace AssetStudio.Extended.CompositeModels {
         [NotNull]
         public abstract Vector2[] UV1 { get; }
 
+        [NotNull, ItemCanBeNull]
+        public abstract Vector2?[] UV2 { get; }
+
         [CanBeNull]
         public abstract Vector3[] Tangents { get; }
 

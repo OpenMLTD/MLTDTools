@@ -65,6 +65,10 @@ namespace OpenMLTD.MillionDance {
 
             public int ClothesToonNumber { get; set; }
 
+            public bool AddHairHighlights { get; set; }
+
+            public bool AddEyesHighlights { get; set; }
+
             public bool TransformTo30Fps { get; set; }
 
             public bool ScaleVmd { get; set; }

@@ -22,7 +22,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
             EnsureNotDisposed();
 
             WriteHeader();
-            WriteElementFormats();
+            WriteElementFormats(model);
 
             WritePmxModel(model);
         }
@@ -40,8 +40,6 @@ namespace OpenMLTD.MillionDance.Core.IO {
         private float DetailedVersion { get; } = 2.0f;
 
         private PmxStringEncoding StringEncoding { get; } = PmxStringEncoding.Utf16;
-
-        private int UvaCount { get; } = 0;
 
         private int VertexElementSize { get; } = 4;
 
@@ -79,7 +77,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
             _writer.Write(model.Vertices.Length);
 
             foreach (var vertex in model.Vertices) {
-                WritePmxVertex(vertex);
+                WritePmxVertex(model, vertex);
             }
         }
 
@@ -163,12 +161,12 @@ namespace OpenMLTD.MillionDance.Core.IO {
             }
         }
 
-        private void WritePmxVertex([NotNull] PmxVertex vertex) {
+        private void WritePmxVertex([NotNull] PmxModel model, [NotNull] PmxVertex vertex) {
             _writer.Write(vertex.Position);
             _writer.Write(vertex.Normal);
             _writer.Write(vertex.UV);
 
-            for (var i = 0; i < UvaCount && i < PmxVertex.MaxUvaCount; ++i) {
+            for (var i = 0; i < model.UvaCount && i < PmxVertex.MaxUvaCount; ++i) {
                 _writer.Write(vertex.Uva[i]);
             }
 
@@ -228,7 +226,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
             _writer.WriteInt32AsVarLenInt(texNameIndex, TexElementSize);
             var sphereTexNameIndex = GetTextureIndex(textureNames, material.SphereTextureFileName);
             _writer.WriteInt32AsVarLenInt(sphereTexNameIndex, TexElementSize);
-            _writer.Write((byte)material.SphereMode);
+            _writer.Write((byte)material.SphereTextureMode);
 
             var mappedToonTexture = !IsNormalToonTexture(material.ToonTextureFileName, out var toon);
 
@@ -549,7 +547,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
             _writer.Write(DetailedVersion);
         }
 
-        private void WriteElementFormats() {
+        private void WriteElementFormats([NotNull] PmxModel model) {
             byte[] elementSizes;
             byte elementSizeEntryCount;
 
@@ -567,7 +565,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
                     elementSizeEntryCount = 8;
                     elementSizes = new byte[elementSizeEntryCount];
                     elementSizes[0] = (byte)StringEncoding;
-                    elementSizes[1] = (byte)UvaCount;
+                    elementSizes[1] = (byte)model.UvaCount;
                     elementSizes[2] = (byte)VertexElementSize;
                     elementSizes[3] = (byte)TexElementSize;
                     elementSizes[4] = (byte)MaterialElementSize;

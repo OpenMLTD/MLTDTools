@@ -40,11 +40,19 @@ namespace OpenMLTD.MillionDance.Core {
 
         public bool ImportPhysics { get; internal set; }
 
+        public bool AddHairHighlights { get; internal set; }
+
+        public bool AddEyesHighlights { get; internal set; }
+
         // VMD
 
         public bool Transform60FpsTo30Fps { get; internal set; }
 
         public bool ScaleToVmdSize { get; internal set; }
+
+        public int GetAdditionalUvCount() {
+            return AddHairHighlights || AddEyesHighlights ? 1 : 0;
+        }
 
         [NotNull]
         public IReadOnlyDictionary<int, IReadOnlyDictionary<string, float>> FacialExpressionMappings { get; internal set; }
@@ -64,6 +72,8 @@ namespace OpenMLTD.MillionDance.Core {
                 SkeletonFormat = SkeletonFormat.Mltd,
                 TranslateFacialExpressionNamesToMmd = true,
                 ImportPhysics = true,
+                AddHairHighlights = true,
+                AddEyesHighlights = true,
                 Transform60FpsTo30Fps = false,
                 ScaleToVmdSize = true,
                 FacialExpressionMappings = ConvertDictionary(VmdCreator.DefaultFacialExpressionTable)
@@ -85,6 +95,8 @@ namespace OpenMLTD.MillionDance.Core {
                 SkeletonFormat = SkeletonFormat.Mmd,
                 TranslateFacialExpressionNamesToMmd = true,
                 ImportPhysics = true,
+                AddHairHighlights = true,
+                AddEyesHighlights = true,
                 Transform60FpsTo30Fps = true,
                 ScaleToVmdSize = true,
                 FacialExpressionMappings = ConvertDictionary(VmdCreator.DefaultFacialExpressionTable)

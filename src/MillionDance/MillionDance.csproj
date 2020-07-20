@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationHelper.cs" />
+    <Compile Include="Core\CameraOrientation.cs" />
     <Compile Include="Core\ConversionConfig.cs" />
     <Compile Include="Core\FrameRate.cs" />
     <Compile Include="Core\IBodyAnimationSource.cs" />

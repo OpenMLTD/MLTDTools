@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
@@ -65,6 +66,9 @@ namespace OpenMLTD.MillionDance.Core {
 
             var cameraFrameList = new List<MvdCameraFrame>();
 
+            var scaleToVmdSize = _conversionConfig.ScaleToVmdSize;
+            var unityToVmdScale = _scalingConfig.ScaleUnityToVmd;
+
             for (var i = 0; i < animationFrameCount; ++i) {
                 if (_conversionConfig.Transform60FpsTo30Fps) {
                     if (i % 2 == 1) {
@@ -88,8 +92,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                 position = position.FixUnityToMmd();
 
-                if (_conversionConfig.ScaleToVmdSize) {
-                    position = position * _scalingConfig.ScaleUnityToVmd;
+                if (scaleToVmdSize) {
+                    position = position * unityToVmdScale;
                 }
 
                 mvdFrame.Position = position;
@@ -98,8 +102,8 @@ namespace OpenMLTD.MillionDance.Core {
 
                 target = target.FixUnityToMmd();
 
-                if (_conversionConfig.ScaleToVmdSize) {
-                    target = target * _scalingConfig.ScaleUnityToVmd;
+                if (scaleToVmdSize) {
+                    target = target * unityToVmdScale;
                 }
 
                 var delta = target - position;
@@ -109,27 +113,7 @@ namespace OpenMLTD.MillionDance.Core {
                 var lookAtMatrix = Matrix4.LookAt(position, target, Vector3.UnitY);
                 var q = lookAtMatrix.ExtractRotation();
 
-                var rot = q.DecomposeRad();
-
-                rot.Z = MathHelper.DegreesToRadians(frame.AngleZ);
-
-                rot.Y = MathHelper.Pi - rot.Y;
-
-                if (rot.Y < 0) {
-                    rot.Y += MathHelper.TwoPi;
-                }
-
-                if (delta.Z < 0) {
-                    rot.Y = -(MathHelper.Pi + rot.Y);
-                }
-
-                rot.Z = -rot.Z;
-
-                if (rot.X < -MathHelper.PiOver2) {
-                    rot.X = rot.X + MathHelper.Pi;
-                } else if (rot.X > MathHelper.PiOver2) {
-                    rot.X = -(MathHelper.Pi - rot.X);
-                }
+                var rot = CameraOrientation.ComputeMmdOrientation(in q, frame.AngleZ);
 
                 mvdFrame.Rotation = rot;
 
@@ -169,8 +153,7 @@ namespace OpenMLTD.MillionDance.Core {
         private static float FocalLengthToFov(float focalLength) {
             // MLTD uses physical camera
             // unit: mm, as the unit of MLTD camera frame is also mm
-            const float sensorSizeX = 50.0f / 2;
-            const float sensorSizeY = 25.0f / 2;
+            const float sensorSizeY = 22.0f / 2;
             var fovRad = 2 * (float)Math.Atan((sensorSizeY / 2) / focalLength);
             var fovDeg = MathHelper.RadiansToDegrees(fovRad);
 

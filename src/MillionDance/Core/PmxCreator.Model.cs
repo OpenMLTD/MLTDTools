@@ -1249,7 +1249,7 @@ namespace OpenMLTD.MillionDance.Core {
                 return MaterialKind.Hair;
             } else if (materialName.Contains("eye")) {
                 return MaterialKind.Eyes;
-            } else if (materialName.Contains("cut") || materialName.Contains("acc") || materialName.Contains("chr")) {
+            } else if (materialName.Contains("cut") || materialName.Contains("rct") || materialName.Contains("acc") || materialName.Contains("chr")) {
                 return MaterialKind.Accessories;
             } else {
                 return MaterialKind.Clothes;

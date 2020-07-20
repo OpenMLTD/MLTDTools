@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mvd;
 using OpenMLTD.MillionDance.Extensions;
-using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 
 namespace OpenMLTD.MillionDance.Core {
@@ -110,12 +108,11 @@ namespace OpenMLTD.MillionDance.Core {
 
                 mvdFrame.Distance = delta.Length;
 
-                var lookAtMatrix = Matrix4.LookAt(position, target, Vector3.UnitY);
-                var q = lookAtMatrix.ExtractRotation();
+                var q = CameraOrientation.QuaternionLookAt(in position, in target, in Vector3.UnitY);
 
-                var rot = CameraOrientation.ComputeMmdOrientation(in q, frame.AngleZ);
+                var rotation = CameraOrientation.ComputeMmdOrientation(in q, frame.AngleZ);
 
-                mvdFrame.Rotation = rot;
+                mvdFrame.Rotation = rotation;
 
                 // MVD has good support of dynamic FOV. So here we can animate its value.
                 var fov = FocalLengthToFov(frame.FocalLength);

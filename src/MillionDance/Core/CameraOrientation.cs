@@ -17,27 +17,35 @@ namespace OpenMLTD.MillionDance.Core {
             return result;
         }
 
+        // https://stackoverflow.com/a/51170230
+        public static Quaternion QuaternionLookAt(in Vector3 position, in Vector3 target, in Vector3 up) {
+            // Global "forward" = +Z
+            var front = Vector3.UnitZ;
+
+            var forward = Vector3.Normalize(target - position);
+
+            var rotAxis = Vector3.Cross(forward, front);
+
+            if (rotAxis.LengthSquared.Equals(0)) {
+                rotAxis = up;
+            } else {
+                rotAxis = rotAxis.Normalized();
+            }
+
+            var dot = Vector3.Dot(forward, front);
+            var rotAngle = (float)Math.Acos(dot);
+
+            return Quaternion.FromAxisAngle(rotAxis, rotAngle);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Vector3 ComputeOrientation(in Quaternion rawLookAt) {
             var result = QuaternionToEuler(in rawLookAt, RotationSequence.Yxz);
 
-            var xSign = CosineSign(result.Y);
-            result.X = xSign * result.X;
+            result.X = -result.X;
+            result.Y = result.Y + MathHelper.Pi;
 
             return result;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int CosineSign(float rad) {
-            while (rad < -MathHelper.Pi) {
-                rad += MathHelper.TwoPi;
-            }
-
-            while (rad > MathHelper.Pi) {
-                rad -= MathHelper.TwoPi;
-            }
-
-            return -MathHelper.PiOver2 <= rad && rad < MathHelper.PiOver2 ? 1 : -1;
         }
 
         // http://bediyap.com/programming/convert-quaternion-to-euler-rotations/

@@ -346,21 +346,21 @@ namespace OpenMLTD.MillionDance {
                 }
 
                 if (chkGenerateCharAnim.Checked) {
-                    if (!Regex.IsMatch(txtInputDance.Text, @"dan_[a-z0-9]{6}_0[12345](?:\.imo)?\.unity3d$", RegexOptions.CultureInvariant)) {
+                    if (!Regex.IsMatch(txtInputDance.Text, @"dan_[a-z0-9]{5}[a-z0-9+]_0[12345](?:\.imo)?\.unity3d$", RegexOptions.CultureInvariant)) {
                         Alert($"File \"{txtInputDance.Text}\" does not look like a dance data file from the game.");
                         return false;
                     }
                 }
 
                 if (chkGenerateCharAnim.Checked || chkGenerateLipSync.Checked || chkGenerateFacialExpression.Checked) {
-                    if (!Regex.IsMatch(txtInputScenario.Text, @"scrobj_[a-z0-9]{6}\.unity3d$", RegexOptions.CultureInvariant)) {
+                    if (!Regex.IsMatch(txtInputScenario.Text, @"scrobj_[a-z0-9]{5}[a-z0-9+]\.unity3d$", RegexOptions.CultureInvariant)) {
                         Alert($"File \"{txtInputScenario.Text}\" does not look like a scenario data file from the game.");
                         return false;
                     }
                 }
 
                 if (chkGenerateCameraMotion.Checked) {
-                    if (!Regex.IsMatch(txtInputCamera.Text, @"cam_[a-z0-9]{6}(?:\.imo)?\.unity3d$", RegexOptions.CultureInvariant)) {
+                    if (!Regex.IsMatch(txtInputCamera.Text, @"cam_[a-z0-9]{5}[a-z0-9+](?:\.imo)?\.unity3d$", RegexOptions.CultureInvariant)) {
                         Alert($"File \"{txtInputCamera.Text}\" does not look like a camera data file from the game.");
                         return false;
                     }

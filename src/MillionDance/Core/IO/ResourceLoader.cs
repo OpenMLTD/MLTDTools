@@ -131,13 +131,15 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
         [NotNull]
         public static AnimationSet<CharacterImasMotionAsset> LoadCamera([NotNull] string filePath) {
-            CharacterImasMotionAsset cam = null, apa = null, apg = null;
+            CharacterImasMotionAsset cam = null, apa = null, apg = null, bpg = null;
 
             const string defCamEnds = "_cam.imo";
             const string apaCamEnds = "_apa.imo";
             const string apgCamEnds = "_apg.imo";
+            const string bpgCamEnds = "_bpg.imo";
             const string apaPortraitCamEnds = "_tate_apa.imo";
             const string apgPortraitCamEnds = "_tate_apg.imo";
+            const string bpgPortraitCamEnds = "_tate_bpg.imo"; // should not exist
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
@@ -162,21 +164,23 @@ namespace OpenMLTD.MillionDance.Core.IO {
                         apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                     } else if (behaviour.m_Name.EndsWith(apgCamEnds) && !behaviour.m_Name.EndsWith(apgPortraitCamEnds)) {
                         apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(bpgCamEnds) && !behaviour.m_Name.EndsWith(bpgPortraitCamEnds)) {
+                        bpg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                     }
 
-                    if (cam != null && apa != null && apg != null) {
+                    if (cam != null && apa != null && apg != null && bpg != null) {
                         break;
                     }
                 }
             }
 
-            return AnimationSet.Create(cam, apa, apg);
+            return AnimationSet.Create(cam, apg, apa, bpg);
         }
 
         [NotNull]
-        public static LoadedDance LoadDance([NotNull] string filePath, int motionNumber) {
-            IBodyAnimationSource danSource = null, apaSource = null, apgSource = null;
-            var danceAnimationLoaded = false;
+        public static LoadedDance LoadDance([NotNull] string filePath, int motionNumber, int formationNumber) {
+            IBodyAnimationSource defaultSource = null, anotherSource = null, specialSource = null, gorgeousSource = null;
+            bool anyAnimationLoaded;
             var suggestedPosition = InvalidDancePosition;
 
             // About number of main dance animations and special/another appeal animations:
@@ -187,43 +191,51 @@ namespace OpenMLTD.MillionDance.Core.IO {
             // (i.e. RE@DY!! [ready0], n=5). For each dance animation, there is a dan_ object; for each appeal animation, there
             // is an apa_ or apg_ object. So there isn't really a guarantee when dan, apa or apg is non-null.
 
-            if (!danceAnimationLoaded) {
+            {
                 // First try with legacy bundles
-                var (dan, apa, apg) = LoadDanceLegacy(filePath, motionNumber, out suggestedPosition);
+                var loaded = LoadDanceLegacy(filePath, motionNumber, formationNumber, out suggestedPosition);
 
-                if (dan != null) {
-                    danSource = new LegacyBodyAnimationSource(dan);
-                    danceAnimationLoaded = true;
+                anyAnimationLoaded = loaded.Default != null || loaded.Special != null || loaded.Another != null || loaded.Gorgeous != null;
+
+                if (loaded.Default != null) {
+                    defaultSource = new LegacyBodyAnimationSource(loaded.Default);
                 }
 
-                if (apa != null) {
-                    apaSource = new LegacyBodyAnimationSource(apa);
+                if (loaded.Special != null) {
+                    specialSource = new LegacyBodyAnimationSource(loaded.Special);
                 }
 
-                if (apg != null) {
-                    apgSource = new LegacyBodyAnimationSource(apg);
+                if (loaded.Another != null) {
+                    anotherSource = new LegacyBodyAnimationSource(loaded.Another);
+                }
+
+                if (loaded.Gorgeous != null) {
+                    gorgeousSource = new LegacyBodyAnimationSource(loaded.Gorgeous);
                 }
             }
 
-            if (!danceAnimationLoaded) {
+            if (!anyAnimationLoaded) {
                 // If failed, try the new one (from ~mid 2018?)
-                var (dan, apa, apg) = LoadDanceCompiled(filePath, motionNumber, out suggestedPosition);
+                var loaded = LoadDanceCompiled(filePath, motionNumber, formationNumber, out suggestedPosition);
 
-                if (dan != null) {
-                    danSource = new CompiledBodyAnimationSource(dan);
-                    danceAnimationLoaded = true;
+                if (loaded.Default != null) {
+                    defaultSource = new CompiledBodyAnimationSource(loaded.Default);
                 }
 
-                if (apa != null) {
-                    apaSource = new CompiledBodyAnimationSource(apa);
+                if (loaded.Special != null) {
+                    specialSource = new CompiledBodyAnimationSource(loaded.Special);
                 }
 
-                if (apg != null) {
-                    apgSource = new CompiledBodyAnimationSource(apg);
+                if (loaded.Another != null) {
+                    anotherSource = new CompiledBodyAnimationSource(loaded.Another);
+                }
+
+                if (loaded.Gorgeous != null) {
+                    gorgeousSource = new CompiledBodyAnimationSource(loaded.Gorgeous);
                 }
             }
 
-            var animationSet = AnimationSet.Create(danSource, apaSource, apgSource);
+            var animationSet = AnimationSet.Create(defaultSource, specialSource, anotherSource, gorgeousSource);
 
             return new LoadedDance(animationSet, suggestedPosition);
         }
@@ -270,12 +282,13 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         [NotNull]
-        private static AnimationSet<CharacterImasMotionAsset> LoadDanceLegacy([NotNull] string filePath, int motionNumber, out int suggestedPosition) {
-            CharacterImasMotionAsset dan = null, apa = null, apg = null;
+        private static AnimationSet<CharacterImasMotionAsset> LoadDanceLegacy([NotNull] string filePath, int motionNumber, int formationNumber, out int suggestedPosition) {
+            CharacterImasMotionAsset dan = null, apa = null, apg = null, bpg = null;
 
             var danComp = $"{motionNumber:00}_dan.imo";
-            var apaComp = $"{motionNumber:00}_apa.imo";
-            var apgComp = $"{motionNumber:00}_apg.imo";
+            var apaComp = $"{formationNumber:00}_apa.imo";
+            var apgComp = $"{formationNumber:00}_apg.imo";
+            var bpgComp = $"{formationNumber:00}_bpg.imo";
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
@@ -301,9 +314,11 @@ namespace OpenMLTD.MillionDance.Core.IO {
                         apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                     } else if (behaviour.m_Name.Contains(apgComp)) {
                         apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.Contains(bpgComp)) {
+                        bpg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
                     }
 
-                    if (dan != null && apa != null && apg != null) {
+                    if (dan != null && apa != null && apg != null && bpg != null) {
                         break;
                     }
                 }
@@ -311,16 +326,17 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             suggestedPosition = GetSuggestedDancePosition(manager);
 
-            return AnimationSet.Create(dan, apa, apg);
+            return AnimationSet.Create(dan, apg, apa, bpg);
         }
 
         [NotNull]
-        private static AnimationSet<AnimationClip> LoadDanceCompiled([NotNull] string filePath, int motionNumber, out int suggestedPosition) {
-            AnimationClip dan = null, apa = null, apg = null;
+        private static AnimationSet<AnimationClip> LoadDanceCompiled([NotNull] string filePath, int motionNumber, int formationNumber, out int suggestedPosition) {
+            AnimationClip dan = null, apa = null, apg = null, bpg = null;
 
             var danComp = $"{motionNumber:00}_dan";
-            var apaComp = $"{motionNumber:00}_apa";
-            var apgComp = $"{motionNumber:00}_apg";
+            var apaComp = $"{formationNumber:00}_apa";
+            var apgComp = $"{formationNumber:00}_apg";
+            var bpgComp = $"{formationNumber:00}_bpg";
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
@@ -343,9 +359,11 @@ namespace OpenMLTD.MillionDance.Core.IO {
                         apa = clip;
                     } else if (clip.m_Name.Contains(apgComp)) {
                         apg = clip;
+                    } else if (clip.m_Name.Contains(bpgComp)) {
+                        bpg = clip;
                     }
 
-                    if (dan != null && apa != null && apg != null) {
+                    if (dan != null && apa != null && apg != null && bpg != null) {
                         break;
                     }
                 }
@@ -353,7 +371,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             suggestedPosition = GetSuggestedDancePosition(manager);
 
-            return AnimationSet.Create(dan, apa, apg);
+            return AnimationSet.Create(dan, apg, apa, bpg);
         }
 
         public static (SwayController Body, SwayController Head) LoadSwayControllers([NotNull] string bodyFilePath, [NotNull] string headFilePath) {

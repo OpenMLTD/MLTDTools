@@ -95,7 +95,7 @@ namespace OpenMLTD.MillionDance.Utilities {
             boneList.AssertAllUnique();
 
 #if DEBUG
-            Debug.Print("Model bones:");
+            Debug.WriteLine("Model bones:");
 
             for (var i = 0; i < boneList.Count; i++) {
                 var bone = boneList[i];

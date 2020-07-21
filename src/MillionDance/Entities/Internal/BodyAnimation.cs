@@ -11,12 +11,16 @@ using OpenMLTD.MillionDance.Extensions;
 namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class BodyAnimation {
 
-        private BodyAnimation([NotNull, ItemNotNull] KeyFrame[] keyFrames, float duration, int boneCount) {
+        private BodyAnimation([NotNull, ItemNotNull] KeyFrame[] keyFrames, float duration, int frameCount, int boneCount) {
             KeyFrames = keyFrames;
             Duration = duration;
+            FrameCount = frameCount;
             BoneCount = boneCount;
         }
 
+        /// <summary>
+        /// All keyframes, stored in "batches". Each "batch" contains frames whose number equals <see cref="BoneCount"/>.
+        /// </summary>
         [NotNull, ItemNotNull]
         public KeyFrame[] KeyFrames { get; }
 
@@ -24,11 +28,16 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
 
         public int BoneCount { get; }
 
+        /// <summary>
+        /// The number of animation frames. Each frame represents a complete snapshot of the model state.
+        /// </summary>
+        public int FrameCount { get; }
+
         [NotNull]
         internal static BodyAnimation CreateFrom([NotNull] CharacterImasMotionAsset danceMotion) {
-            var (frames, boneCount) = ComputeKeyFrames(danceMotion.Curves);
+            var (frames, frameCount, boneCount) = ComputeKeyFrames(danceMotion.Curves);
 
-            return new BodyAnimation(frames, danceMotion.Duration, boneCount);
+            return new BodyAnimation(frames, danceMotion.Duration, frameCount, boneCount);
         }
 
         [NotNull]
@@ -82,15 +91,15 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
                 curves[i] = curve;
             }
 
-            var (frames, boneCount) = ComputeKeyFrames(curves);
+            var (frames, _, boneCount) = ComputeKeyFrames(curves);
 
             var frameRate = denseClip.m_SampleRate;
             var duration = frameCount / frameRate;
 
-            return new BodyAnimation(frames, duration, boneCount);
+            return new BodyAnimation(frames, duration, frameCount, boneCount);
         }
 
-        private static (KeyFrame[] Frames, int BoneCount) ComputeKeyFrames([NotNull, ItemNotNull] Curve[] curves) {
+        private static (KeyFrame[] Frames, int FrameCount, int BoneCount) ComputeKeyFrames([NotNull, ItemNotNull] Curve[] curves) {
             var frameCount = curves.Max(curve => curve.Values.Length);
             var frameDict = new Dictionary<string, List<KeyFrame>>();
 
@@ -337,7 +346,7 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
                 return string.Compare(f1.Path, f2.Path, StringComparison.Ordinal);
             });
 
-            return (totalList.ToArray(), frameDict.Count);
+            return (totalList.ToArray(), frameCount, frameDict.Count);
         }
 
         [NotNull]

@@ -21,6 +21,8 @@
 
         FacialExpression = 45,
 
+        Type50 = 50,
+
         LightColor = 51,
 
         FormationChange = 52,
@@ -35,6 +37,8 @@
 
         BeginTapButtonsAnimation = 57,
 
+        CameraControl = 58,
+
         SingControl = 59,
 
         Type63 = 63,
@@ -47,7 +51,7 @@
 
         Type67 = 67,
 
-        Type68 = 68,
+        DanceAnimationSeekFrame = 68,
 
         Type72 = 72,
 

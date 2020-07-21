@@ -36,6 +36,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=2020.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
       <HintPath>..\packages\JetBrains.Annotations.2020.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
@@ -62,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationHelper.cs" />
+    <Compile Include="Core\AppealHelper.cs" />
     <Compile Include="Core\CameraOrientation.cs" />
     <Compile Include="Core\ConversionConfig.cs" />
     <Compile Include="Core\FrameRate.cs" />
@@ -86,7 +90,6 @@
     <Compile Include="Core\VmdCreator.FacialExpressions.cs" />
     <Compile Include="Core\VmdCreator.FacialExpressionTable.cs" />
     <Compile Include="Core\VmdCreator.Light.cs" />
-    <Compile Include="Entities\Extensions\AnimationSetExtensions.cs" />
     <Compile Include="Entities\Extensions\KeyTypeExtension.cs" />
     <Compile Include="Entities\Extensions\PropertyTypeExtension.cs" />
     <Compile Include="Entities\Extensions\ScenarioObjectExtensions.cs" />
@@ -117,12 +120,8 @@
     <Compile Include="FMain.Designer.cs">
       <DependentUpon>FMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FMain.Working.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FMain.Working.Params.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="MainWorkerInputParams.cs" />
+    <Compile Include="MainWorker.cs" />
     <Compile Include="Utilities\AnalysesUtils.cs" />
     <Compile Include="Utilities\BoneLookup.cs" />
     <Compile Include="Core\ScalingConfig.cs" />
@@ -238,6 +237,9 @@
     <EmbeddedResource Include="FMain.resx">
       <DependentUpon>FMain.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace OpenMLTD.MillionDance.Entities.Extensions {
     internal static class ScenarioObjectExtensions {
 
-        public static bool HasFacialExpressionFrames([NotNull] this ScenarioObject scrobj) {
+        public static bool HasFacialExpressionEvents([NotNull] this ScenarioObject scrobj) {
             foreach (var obj in scrobj.Scenario) {
                 if (obj.Type == ScenarioDataType.FacialExpression) {
                     return true;
@@ -14,9 +14,19 @@ namespace OpenMLTD.MillionDance.Entities.Extensions {
             return false;
         }
 
-        public static bool HasFormationChangeFrames([NotNull] this ScenarioObject scrobj) {
+        public static bool HasFormationChangeEvents([NotNull] this ScenarioObject scrobj) {
             foreach (var obj in scrobj.Scenario) {
                 if (obj.Type == ScenarioDataType.FormationChange) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool HasSeekFrameEvents([NotNull] this ScenarioObject scrobj) {
+            foreach (var obj in scrobj.Scenario) {
+                if (obj.Type == ScenarioDataType.DanceAnimationSeekFrame) {
                     return true;
                 }
             }

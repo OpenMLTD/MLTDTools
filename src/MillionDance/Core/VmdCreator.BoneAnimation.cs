@@ -17,7 +17,7 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource bodyMotionSource, [CanBeNull] ScenarioObject scenario, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx, int formationNumber) {
+        private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource mainDance, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx, [NotNull] ScenarioObject baseScenario, [CanBeNull] ScenarioObject formationInfo, [CanBeNull] IBodyAnimationSource danceAppeal, int formationNumber, MainWorkerInputParams.FullComoboAppealType appealType) {
             var boneLookup = new BoneLookup(_conversionConfig);
 
             var mltdHierarchy = boneLookup.BuildBoneHierarchy(avatar);
@@ -42,13 +42,14 @@ namespace OpenMLTD.MillionDance.Core {
                 pmxBone.Initialize();
             }
 
-            var animation = bodyMotionSource.Convert();
+            var mainAnimation = mainDance.Convert();
+            var appealAnimation = danceAppeal?.Convert();
             var mltdBoneCount = mltdHierarchy.Length;
-            var animatedBoneCount = animation.BoneCount;
-            var keyFrameCount = animation.KeyFrames.Length;
+            var animatedBoneCount = mainAnimation.BoneCount;
+            var keyFrameCount = mainAnimation.KeyFrames.Length;
 
             {
-                var names1 = animation.KeyFrames.Take(animatedBoneCount)
+                var names1 = mainAnimation.KeyFrames.Take(animatedBoneCount)
                     .Select(kf => kf.Path).ToArray();
                 var names = names1.Select(boneLookup.GetVmdBoneNameFromBonePath).ToArray();
 
@@ -64,7 +65,11 @@ namespace OpenMLTD.MillionDance.Core {
 
             Debug.Assert(keyFrameCount % animatedBoneCount == 0, "keyFrameCount % animatedBoneCount == 0");
 
-            var resultFrameCount = keyFrameCount / animatedBoneCount;
+            // Use this value to export visible frames only
+            var resultFrameCount = (int)(mainAnimation.Duration * FrameRate.Mltd);
+            // Use this value to export all frames, including invisible frames in normal MVs (e.g. seek targets)
+            // var resultFrameCount = keyFrameCount / animatedBoneCount;
+
             var boneFrameList = new List<VmdBoneFrame>();
 
             // Reduce memory pressure of allocating new delegates (see mltdHierarchy.FirstOrDefault(...))
@@ -82,19 +87,46 @@ namespace OpenMLTD.MillionDance.Core {
             var scaleToVmdSize = _conversionConfig.ScaleToVmdSize;
             var unityToVmdScale = _scalingConfig.ScaleUnityToVmd;
 
-            var formationList = CollectFormationChanges(scenario);
+            var baseFormationList = CollectFormationChanges(formationInfo, MainWorkerInputParams.FullComoboAppealType.None);
+            var appealFormationList = CollectFormationChanges(formationInfo, appealType);
+            var appealTimes = AppealHelper.CollectAppealTimeInfo(baseScenario);
+            var seekFrameControls = CollectSeekFrames(baseScenario, formationNumber);
+
+            var seekFrameCounter = 0;
+            var lastSoughtFrame = -1;
 
             // OK, now perform iterations
-            for (var i = 0; i < resultFrameCount; ++i) {
+            for (var naturalFrameIndex = 0; naturalFrameIndex < resultFrameCount; ++naturalFrameIndex) {
                 if (transform60FpsTo30Fps) {
-                    if (i % 2 == 1) {
+                    if (naturalFrameIndex % 2 == 1) {
                         continue;
                     }
                 }
 
-                var keyFrameIndexStart = i * animatedBoneCount;
+                var shouldUseAppeal = appealType != MainWorkerInputParams.FullComoboAppealType.None && (appealTimes.StartFrame <= naturalFrameIndex && naturalFrameIndex < appealTimes.EndFrame) && appealAnimation != null;
 
-                formationList.TryGetCurrentValue(i, out var formations);
+                var animation = shouldUseAppeal ? appealAnimation : mainAnimation;
+
+                int keyFrameIndexStart;
+
+                if (shouldUseAppeal) {
+                    var indexInAppeal = naturalFrameIndex - appealTimes.StartFrame;
+
+                    if (indexInAppeal >= appealAnimation.FrameCount) {
+                        indexInAppeal = appealAnimation.FrameCount - 1;
+                    }
+
+                    keyFrameIndexStart = indexInAppeal * animatedBoneCount;
+                } else {
+                    var actualFrameIndex = CalculateSeekFrameTarget(naturalFrameIndex, seekFrameControls, ref lastSoughtFrame, ref seekFrameCounter);
+
+                    keyFrameIndexStart = actualFrameIndex * animatedBoneCount;
+                }
+
+                var formationList = shouldUseAppeal ? appealFormationList : baseFormationList;
+
+                formationList.TryGetCurrentValue(naturalFrameIndex, out var formations);
+
                 Vector4 idolOffset;
 
                 if (formations == null || formations.Length < formationNumber) {
@@ -155,9 +187,11 @@ namespace OpenMLTD.MillionDance.Core {
                         var z = keyFrame.PositionZ.Value;
 
                         if (string.Equals(keyFrame.Path, "MODEL_00", StringComparison.Ordinal)) {
-                            x += idolOffset.X;
-                            y += idolOffset.Y;
-                            z += idolOffset.Z;
+                            var worldRotation = Quaternion.FromAxisAngle(Vector3.UnitY, MathHelper.DegreesToRadians(idolOffset.W));
+                            var newOrigin = worldRotation * new Vector3(x, y, z);
+                            var newPosition = newOrigin + idolOffset.Xyz;
+
+                            (x, y, z) = (newPosition.X, newPosition.Y, newPosition.Z);
                         }
 
                         var t = new Vector3(x, y, z);
@@ -239,16 +273,16 @@ namespace OpenMLTD.MillionDance.Core {
                         t = t - (pmxBone.InitialPosition - pmxBone.Parent.InitialPosition);
                     }
 
-                    int frameIndex;
+                    int vmdFrameIndex;
 
                     if (_conversionConfig.Transform60FpsTo30Fps) {
-                        frameIndex = i / 2;
+                        vmdFrameIndex = naturalFrameIndex / 2;
                     } else {
-                        frameIndex = i;
+                        vmdFrameIndex = naturalFrameIndex;
                     }
 
                     var vmdBoneName = boneLookup.GetVmdBoneNameFromBoneName(mltdBone.Path);
-                    var boneFrame = new VmdBoneFrame(frameIndex, vmdBoneName);
+                    var boneFrame = new VmdBoneFrame(vmdFrameIndex, vmdBoneName);
 
                     boneFrame.Position = t;
                     boneFrame.Rotation = q;
@@ -264,40 +298,86 @@ namespace OpenMLTD.MillionDance.Core {
             return boneFrameList.ToArray();
         }
 
+        private static int CalculateSeekFrameTarget(int naturalFrameIndex, [NotNull] TimedList<int, int> seekFrameControls, ref int lastSoughtFrame, ref int seekFrameCounter) {
+            if (seekFrameControls.TryGetCurrentValue(naturalFrameIndex, out var targetFrame)) {
+                int result;
+
+                if (targetFrame != lastSoughtFrame) {
+                    seekFrameCounter = 0;
+                    lastSoughtFrame = targetFrame;
+                    result = targetFrame;
+                } else {
+                    result = lastSoughtFrame + seekFrameCounter;
+                }
+
+                seekFrameCounter += 1;
+
+                return result;
+            } else {
+                // Use natural frame index
+                return naturalFrameIndex;
+            }
+        }
+
         [NotNull]
-        private static TimedList<int, Vector4[]> CollectFormationChanges([CanBeNull] ScenarioObject scenario) {
+        private static TimedList<int, int> CollectSeekFrames([CanBeNull] ScenarioObject scenario, int formationNumber) {
+            var result = new TimedList<int, int>();
+
+            if (scenario == null) {
+                return result;
+            }
+
+            if (scenario.HasSeekFrameEvents()) {
+                var events = scenario.Scenario.WhereToArray(s => s.Type == ScenarioDataType.DanceAnimationSeekFrame);
+
+                foreach (var ev in events) {
+                    Debug.Assert(ev != null, nameof(ev) + " != null");
+
+                    if (ev.Idol != formationNumber + 10) {
+                        continue;
+                    }
+
+                    var frameIndex = (int)Math.Round(ev.AbsoluteTime * FrameRate.Mltd);
+                    var targetFrame = ev.SeekFrame;
+
+                    result.AddOrUpdate(frameIndex, targetFrame);
+                }
+            }
+
+            return result;
+        }
+
+        [NotNull]
+        private static TimedList<int, Vector4[]> CollectFormationChanges([CanBeNull] ScenarioObject scenario, MainWorkerInputParams.FullComoboAppealType appealType) {
             var result = new TimedList<int, Vector4[]>();
 
             if (scenario == null) {
                 return result;
             }
 
-            if (scenario.HasFormationChangeFrames()) {
+            if (scenario.HasFormationChangeEvents()) {
                 var events = scenario.Scenario.WhereToArray(s => s.Type == ScenarioDataType.FormationChange);
 
                 foreach (var ev in events) {
                     Debug.Assert(ev != null, nameof(ev) + " != null");
 
-                    // TODO: What does 'Param' field mean here? And 'Layer'?
-                    // e.g. Glow Map (glowmp) has param=279, layer=0,1,2
-                    // Currently we only handle non-appeal formations
-                    if (ev.Layer != 0) {
-                        continue;
+                    // Layer=0: applied to all appeal variants (including no appeal)
+                    // Layer>0: applied to that appeal only
+                    if (ev.Layer == 0 || ev.Layer == (int)appealType) {
+                        var formations = ev.Formation;
+                        Debug.Assert(formations != null && formations.Length > 0);
+
+                        var frameIndex = (int)Math.Round(ev.AbsoluteTime * FrameRate.Mltd);
+
+                        var f = new Vector4[formations.Length];
+
+                        for (var i = 0; i < formations.Length; i += 1) {
+                            var v = formations[i];
+                            f[i] = new Vector4(v.X, v.Y, v.Z, v.W);
+                        }
+
+                        result.AddOrUpdate(frameIndex, f);
                     }
-
-                    var frameIndex = (int)Math.Round(ev.AbsoluteTime * FrameRate.Mltd);
-
-                    var formations = ev.Formation;
-                    Debug.Assert(formations != null && formations.Length > 0);
-
-                    var f = new Vector4[formations.Length];
-
-                    for (var i = 0; i < formations.Length; i += 1) {
-                        var v = formations[i];
-                        f[i] = new Vector4(v.X, v.Y, v.Z, v.W);
-                    }
-
-                    result.AddOrUpdate(frameIndex, f);
                 }
             }
 
@@ -311,7 +391,7 @@ namespace OpenMLTD.MillionDance.Core {
             if (bone != null) {
                 bone.IsMltdKeyBone = true;
             } else {
-                Debug.Print("Warning: trying to mark bone {0} as MLTD key bone but the bone is missing from the model.", name);
+                Debug.WriteLine($"Warning: trying to mark bone {name} as MLTD key bone but the bone is missing from the model.");
             }
         }
 

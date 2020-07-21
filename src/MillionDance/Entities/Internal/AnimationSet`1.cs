@@ -8,10 +8,11 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
     /// <typeparam name="T">The type containing animation data</typeparam>
     internal sealed class AnimationSet<T> {
 
-        public AnimationSet([CanBeNull] T @default, [CanBeNull] T another, [CanBeNull] T special) {
+        public AnimationSet([CanBeNull] T @default, [CanBeNull] T another, [CanBeNull] T special, [CanBeNull] T gorgeous) {
             Default = @default;
             Special = special;
             Another = another;
+            Gorgeous = gorgeous;
         }
 
         /// <summary>
@@ -37,6 +38,15 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
         /// </summary>
         [CanBeNull]
         public T Special {
+            [DebuggerStepThrough]
+            get;
+        }
+
+        /// <summary>
+        /// Animations for gorgeous appeal (bpg)
+        /// </summary>
+        [CanBeNull]
+        public T Gorgeous {
             [DebuggerStepThrough]
             get;
         }

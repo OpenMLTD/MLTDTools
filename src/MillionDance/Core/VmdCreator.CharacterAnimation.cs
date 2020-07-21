@@ -9,11 +9,11 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull]
-        public VmdMotion CreateCharacterAnimation([CanBeNull] IBodyAnimationSource bodyAnimationSource, [CanBeNull] ScenarioObject scenario, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel, int formationNumber) {
+        public VmdMotion CreateCharacterAnimation([CanBeNull] IBodyAnimationSource mainDance, [NotNull] ScenarioObject baseScenario, [CanBeNull] ScenarioObject formationInfo, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel, [CanBeNull] IBodyAnimationSource danceAppeal, int formationNumber, MainWorkerInputParams.FullComoboAppealType appealType) {
             VmdBoneFrame[] frames;
 
-            if (ProcessBoneFrames && (bodyAnimationSource != null && avatar != null && mltdPmxModel != null)) {
-                frames = CreateBoneFrames(bodyAnimationSource, scenario, avatar, mltdPmxModel, formationNumber);
+            if (ProcessBoneFrames && (mainDance != null && avatar != null && mltdPmxModel != null)) {
+                frames = CreateBoneFrames(mainDance, avatar, mltdPmxModel, baseScenario, formationInfo, danceAppeal, formationNumber, appealType);
             } else {
                 frames = Array.Empty<VmdBoneFrame>();
             }

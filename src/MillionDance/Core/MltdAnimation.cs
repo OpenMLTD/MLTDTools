@@ -7,7 +7,7 @@
 
         public const int MinFormation = 1;
 
-        public const int MaxFormation = 13;
+        public const int MaxFormation = 39;
 
     }
 }

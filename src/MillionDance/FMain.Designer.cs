@@ -23,6 +23,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FMain));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chkGenerateFacialExpression = new System.Windows.Forms.CheckBox();
             this.chkGenerateLipSync = new System.Windows.Forms.CheckBox();
@@ -73,22 +74,35 @@
             this.radOptMotionSourceMltd = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label27 = new System.Windows.Forms.Label();
+            this.btnOptSelectExternalDanceAppealFile = new System.Windows.Forms.Button();
+            this.txtOptExternalDanceAppealFile = new System.Windows.Forms.TextBox();
+            this.cboOptAppealType = new System.Windows.Forms.ComboBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.btnOptSelectFEMappings = new System.Windows.Forms.Button();
+            this.txtOptFEMappings = new System.Windows.Forms.TextBox();
             this.cboOptFormationNumber = new System.Windows.Forms.ComboBox();
             this.label24 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.radFESourcePortrait = new System.Windows.Forms.RadioButton();
             this.radFESourceLandscape = new System.Windows.Forms.RadioButton();
             this.label19 = new System.Windows.Forms.Label();
-            this.btnOptSelectFEMappings = new System.Windows.Forms.Button();
-            this.txtOptFEMappings = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
             this.cboOptMotionNumber = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.txtOptFixedFov = new System.Windows.Forms.TextBox();
             this.chkOptScaleVmd = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.radOptAnimFrameRate30 = new System.Windows.Forms.RadioButton();
             this.radOptAnimFrameRate60 = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.radOptCamFormatMvd = new System.Windows.Forms.RadioButton();
+            this.radOptCamFormatVmd = new System.Windows.Forms.RadioButton();
+            this.label10 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnOutputFacialExpression = new System.Windows.Forms.Button();
             this.txtOutputFacialExpression = new System.Windows.Forms.TextBox();
@@ -111,14 +125,6 @@
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.lnkHelp = new System.Windows.Forms.LinkLabel();
-            this.label10 = new System.Windows.Forms.Label();
-            this.radOptCamFormatVmd = new System.Windows.Forms.RadioButton();
-            this.radOptCamFormatMvd = new System.Windows.Forms.RadioButton();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.label11 = new System.Windows.Forms.Label();
-            this.txtOptFixedFov = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -127,8 +133,8 @@
             this.tabPage2.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -686,6 +692,11 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label27);
+            this.tabPage2.Controls.Add(this.btnOptSelectExternalDanceAppealFile);
+            this.tabPage2.Controls.Add(this.txtOptExternalDanceAppealFile);
+            this.tabPage2.Controls.Add(this.cboOptAppealType);
+            this.tabPage2.Controls.Add(this.label26);
             this.tabPage2.Controls.Add(this.label18);
             this.tabPage2.Controls.Add(this.btnOptSelectFEMappings);
             this.tabPage2.Controls.Add(this.txtOptFEMappings);
@@ -712,6 +723,80 @@
             this.tabPage2.Text = "Motions";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(26, 138);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(138, 13);
+            this.label27.TabIndex = 21;
+            this.label27.Text = "Ext. dance ap. file (if exists):";
+            // 
+            // btnOptSelectExternalDanceAppealFile
+            // 
+            this.btnOptSelectExternalDanceAppealFile.Location = new System.Drawing.Point(371, 134);
+            this.btnOptSelectExternalDanceAppealFile.Name = "btnOptSelectExternalDanceAppealFile";
+            this.btnOptSelectExternalDanceAppealFile.Size = new System.Drawing.Size(32, 21);
+            this.btnOptSelectExternalDanceAppealFile.TabIndex = 23;
+            this.btnOptSelectExternalDanceAppealFile.Text = "...";
+            this.btnOptSelectExternalDanceAppealFile.UseVisualStyleBackColor = true;
+            // 
+            // txtOptExternalDanceAppealFile
+            // 
+            this.txtOptExternalDanceAppealFile.Location = new System.Drawing.Point(172, 135);
+            this.txtOptExternalDanceAppealFile.Name = "txtOptExternalDanceAppealFile";
+            this.txtOptExternalDanceAppealFile.Size = new System.Drawing.Size(193, 20);
+            this.txtOptExternalDanceAppealFile.TabIndex = 22;
+            // 
+            // cboOptAppealType
+            // 
+            this.cboOptAppealType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboOptAppealType.FormattingEnabled = true;
+            this.cboOptAppealType.Items.AddRange(new object[] {
+            "No appeal (default)",
+            "Special appeal (スペシャルピール)",
+            "Another appeal (アナザーアピール)",
+            "Gorgeous appeal (ゴージャスアピール)"});
+            this.cboOptAppealType.Location = new System.Drawing.Point(109, 108);
+            this.cboOptAppealType.Name = "cboOptAppealType";
+            this.cboOptAppealType.Size = new System.Drawing.Size(256, 21);
+            this.cboOptAppealType.TabIndex = 20;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(7, 111);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(96, 13);
+            this.label26.TabIndex = 19;
+            this.label26.Text = "Full combo appeal:";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(7, 186);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(139, 13);
+            this.label18.TabIndex = 11;
+            this.label18.Text = "Facial expression mappings:";
+            // 
+            // btnOptSelectFEMappings
+            // 
+            this.btnOptSelectFEMappings.Location = new System.Drawing.Point(371, 182);
+            this.btnOptSelectFEMappings.Name = "btnOptSelectFEMappings";
+            this.btnOptSelectFEMappings.Size = new System.Drawing.Size(32, 21);
+            this.btnOptSelectFEMappings.TabIndex = 13;
+            this.btnOptSelectFEMappings.Text = "...";
+            this.btnOptSelectFEMappings.UseVisualStyleBackColor = true;
+            // 
+            // txtOptFEMappings
+            // 
+            this.txtOptFEMappings.Location = new System.Drawing.Point(172, 183);
+            this.txtOptFEMappings.Name = "txtOptFEMappings";
+            this.txtOptFEMappings.Size = new System.Drawing.Size(193, 20);
+            this.txtOptFEMappings.TabIndex = 12;
+            this.txtOptFEMappings.Text = "Resources/facial_expr.json";
+            // 
             // cboOptFormationNumber
             // 
             this.cboOptFormationNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -729,10 +814,36 @@
             "10",
             "11",
             "12",
-            "13"});
-            this.cboOptFormationNumber.Location = new System.Drawing.Point(261, 81);
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39"});
+            this.cboOptFormationNumber.Location = new System.Drawing.Point(252, 81);
             this.cboOptFormationNumber.Name = "cboOptFormationNumber";
-            this.cboOptFormationNumber.Size = new System.Drawing.Size(107, 21);
+            this.cboOptFormationNumber.Size = new System.Drawing.Size(113, 21);
             this.cboOptFormationNumber.TabIndex = 18;
             // 
             // label24
@@ -740,15 +851,15 @@
             this.label24.AutoSize = true;
             this.label24.Location = new System.Drawing.Point(7, 84);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(239, 13);
+            this.label24.Size = new System.Drawing.Size(229, 13);
             this.label24.TabIndex = 16;
-            this.label24.Text = "Formation no. (affects position && facial animation):";
+            this.label24.Text = "Formation no. (affects position, facial && appeal):";
             // 
             // panel4
             // 
             this.panel4.Controls.Add(this.radFESourcePortrait);
             this.panel4.Controls.Add(this.radFESourceLandscape);
-            this.panel4.Location = new System.Drawing.Point(172, 108);
+            this.panel4.Location = new System.Drawing.Point(170, 161);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(204, 24);
             this.panel4.TabIndex = 15;
@@ -778,37 +889,11 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(7, 109);
+            this.label19.Location = new System.Drawing.Point(7, 162);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(161, 13);
             this.label19.TabIndex = 14;
             this.label19.Text = "Prefer facial expressions used in:";
-            // 
-            // btnOptSelectFEMappings
-            // 
-            this.btnOptSelectFEMappings.Location = new System.Drawing.Point(371, 129);
-            this.btnOptSelectFEMappings.Name = "btnOptSelectFEMappings";
-            this.btnOptSelectFEMappings.Size = new System.Drawing.Size(32, 21);
-            this.btnOptSelectFEMappings.TabIndex = 13;
-            this.btnOptSelectFEMappings.Text = "...";
-            this.btnOptSelectFEMappings.UseVisualStyleBackColor = true;
-            // 
-            // txtOptFEMappings
-            // 
-            this.txtOptFEMappings.Location = new System.Drawing.Point(172, 130);
-            this.txtOptFEMappings.Name = "txtOptFEMappings";
-            this.txtOptFEMappings.Size = new System.Drawing.Size(193, 20);
-            this.txtOptFEMappings.TabIndex = 12;
-            this.txtOptFEMappings.Text = "Resources/facial_expr.json";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(7, 133);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(139, 13);
-            this.label18.TabIndex = 11;
-            this.label18.Text = "Facial expression mappings:";
             // 
             // cboOptMotionNumber
             // 
@@ -828,9 +913,9 @@
             "11",
             "12",
             "13"});
-            this.cboOptMotionNumber.Location = new System.Drawing.Point(261, 54);
+            this.cboOptMotionNumber.Location = new System.Drawing.Point(252, 54);
             this.cboOptMotionNumber.Name = "cboOptMotionNumber";
-            this.cboOptMotionNumber.Size = new System.Drawing.Size(107, 21);
+            this.cboOptMotionNumber.Size = new System.Drawing.Size(113, 21);
             this.cboOptMotionNumber.TabIndex = 9;
             // 
             // label14
@@ -838,9 +923,19 @@
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(7, 57);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(198, 13);
+            this.label14.Size = new System.Drawing.Size(150, 13);
             this.label14.TabIndex = 8;
-            this.label14.Text = "Motion file no. (affects dance animation):";
+            this.label14.Text = "Motion file no. (affects dance):";
+            // 
+            // txtOptFixedFov
+            // 
+            this.txtOptFixedFov.Enabled = false;
+            this.txtOptFixedFov.Location = new System.Drawing.Point(109, 231);
+            this.txtOptFixedFov.Name = "txtOptFixedFov";
+            this.txtOptFixedFov.Size = new System.Drawing.Size(60, 20);
+            this.txtOptFixedFov.TabIndex = 6;
+            this.txtOptFixedFov.Text = "20";
+            this.txtOptFixedFov.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // chkOptScaleVmd
             // 
@@ -858,7 +953,7 @@
             // 
             this.panel2.Controls.Add(this.radOptAnimFrameRate30);
             this.panel2.Controls.Add(this.radOptAnimFrameRate60);
-            this.panel2.Location = new System.Drawing.Point(172, 5);
+            this.panel2.Location = new System.Drawing.Point(170, 5);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(170, 24);
             this.panel2.TabIndex = 1;
@@ -866,7 +961,7 @@
             // radOptAnimFrameRate30
             // 
             this.radOptAnimFrameRate30.AutoSize = true;
-            this.radOptAnimFrameRate30.Location = new System.Drawing.Point(108, 3);
+            this.radOptAnimFrameRate30.Location = new System.Drawing.Point(82, 3);
             this.radOptAnimFrameRate30.Name = "radOptAnimFrameRate30";
             this.radOptAnimFrameRate30.Size = new System.Drawing.Size(54, 17);
             this.radOptAnimFrameRate30.TabIndex = 3;
@@ -893,6 +988,75 @@
             this.label6.Size = new System.Drawing.Size(106, 13);
             this.label6.TabIndex = 0;
             this.label6.Text = "Animation frame rate:";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Enabled = false;
+            this.label17.Location = new System.Drawing.Point(201, 234);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(69, 13);
+            this.label17.TabIndex = 10;
+            this.label17.Text = "(default = 20)";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Enabled = false;
+            this.label12.Location = new System.Drawing.Point(172, 234);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(25, 13);
+            this.label12.TabIndex = 7;
+            this.label12.Text = "deg";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(26, 234);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(59, 13);
+            this.label11.TabIndex = 5;
+            this.label11.Text = "Fixed FOV:";
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.radOptCamFormatMvd);
+            this.panel3.Controls.Add(this.radOptCamFormatVmd);
+            this.panel3.Location = new System.Drawing.Point(102, 205);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(301, 24);
+            this.panel3.TabIndex = 4;
+            // 
+            // radOptCamFormatMvd
+            // 
+            this.radOptCamFormatMvd.AutoSize = true;
+            this.radOptCamFormatMvd.Checked = true;
+            this.radOptCamFormatMvd.Location = new System.Drawing.Point(150, 3);
+            this.radOptCamFormatMvd.Name = "radOptCamFormatMvd";
+            this.radOptCamFormatMvd.Size = new System.Drawing.Size(121, 17);
+            this.radOptCamFormatMvd.TabIndex = 6;
+            this.radOptCamFormatMvd.TabStop = true;
+            this.radOptCamFormatMvd.Text = "MVD (dynamic FOV)";
+            this.radOptCamFormatMvd.UseVisualStyleBackColor = true;
+            // 
+            // radOptCamFormatVmd
+            // 
+            this.radOptCamFormatVmd.AutoSize = true;
+            this.radOptCamFormatVmd.Location = new System.Drawing.Point(7, 3);
+            this.radOptCamFormatVmd.Name = "radOptCamFormatVmd";
+            this.radOptCamFormatVmd.Size = new System.Drawing.Size(104, 17);
+            this.radOptCamFormatVmd.TabIndex = 5;
+            this.radOptCamFormatVmd.Text = "VMD (fixed FOV)";
+            this.radOptCamFormatVmd.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(7, 210);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(78, 13);
+            this.label10.TabIndex = 3;
+            this.label10.Text = "Camera format:";
             // 
             // groupBox3
             // 
@@ -1081,85 +1245,6 @@
             this.lnkHelp.TabStop = true;
             this.lnkHelp.Text = "Usage help";
             // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(7, 157);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(78, 13);
-            this.label10.TabIndex = 3;
-            this.label10.Text = "Camera format:";
-            // 
-            // radOptCamFormatVmd
-            // 
-            this.radOptCamFormatVmd.AutoSize = true;
-            this.radOptCamFormatVmd.Location = new System.Drawing.Point(3, 3);
-            this.radOptCamFormatVmd.Name = "radOptCamFormatVmd";
-            this.radOptCamFormatVmd.Size = new System.Drawing.Size(104, 17);
-            this.radOptCamFormatVmd.TabIndex = 5;
-            this.radOptCamFormatVmd.Text = "VMD (fixed FOV)";
-            this.radOptCamFormatVmd.UseVisualStyleBackColor = true;
-            // 
-            // radOptCamFormatMvd
-            // 
-            this.radOptCamFormatMvd.AutoSize = true;
-            this.radOptCamFormatMvd.Checked = true;
-            this.radOptCamFormatMvd.Location = new System.Drawing.Point(150, 3);
-            this.radOptCamFormatMvd.Name = "radOptCamFormatMvd";
-            this.radOptCamFormatMvd.Size = new System.Drawing.Size(121, 17);
-            this.radOptCamFormatMvd.TabIndex = 6;
-            this.radOptCamFormatMvd.TabStop = true;
-            this.radOptCamFormatMvd.Text = "MVD (dynamic FOV)";
-            this.radOptCamFormatMvd.UseVisualStyleBackColor = true;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.radOptCamFormatMvd);
-            this.panel3.Controls.Add(this.radOptCamFormatVmd);
-            this.panel3.Location = new System.Drawing.Point(102, 152);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(301, 24);
-            this.panel3.TabIndex = 4;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(26, 181);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(59, 13);
-            this.label11.TabIndex = 5;
-            this.label11.Text = "Fixed FOV:";
-            // 
-            // txtOptFixedFov
-            // 
-            this.txtOptFixedFov.Enabled = false;
-            this.txtOptFixedFov.Location = new System.Drawing.Point(102, 178);
-            this.txtOptFixedFov.Name = "txtOptFixedFov";
-            this.txtOptFixedFov.Size = new System.Drawing.Size(60, 20);
-            this.txtOptFixedFov.TabIndex = 6;
-            this.txtOptFixedFov.Text = "20";
-            this.txtOptFixedFov.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Enabled = false;
-            this.label12.Location = new System.Drawing.Point(165, 181);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(25, 13);
-            this.label12.TabIndex = 7;
-            this.label12.Text = "deg";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Enabled = false;
-            this.label17.Location = new System.Drawing.Point(194, 181);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(69, 13);
-            this.label17.TabIndex = 10;
-            this.label17.Text = "(default = 20)";
-            // 
             // FMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1174,6 +1259,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "FMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -1193,10 +1279,10 @@
             this.panel4.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1364,5 +1450,10 @@
         private System.Windows.Forms.RadioButton radOptCamFormatMvd;
         private System.Windows.Forms.RadioButton radOptCamFormatVmd;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Button btnOptSelectExternalDanceAppealFile;
+        private System.Windows.Forms.TextBox txtOptExternalDanceAppealFile;
+        private System.Windows.Forms.ComboBox cboOptAppealType;
+        private System.Windows.Forms.Label label26;
     }
 }

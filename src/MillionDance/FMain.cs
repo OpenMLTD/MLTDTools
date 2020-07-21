@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows.Forms;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
@@ -50,6 +48,8 @@ namespace OpenMLTD.MillionDance {
             btnOptSelectFEMappings.Click -= BtnOptSelectFEMappings_Click;
             chkGameToon.CheckedChanged -= ChkGameToon_CheckedChanged;
             lnkHelp.LinkClicked -= LnkHelp_LinkClicked;
+            cboOptAppealType.SelectedIndexChanged -= CboOptAppealType_SelectedIndexChanged;
+            btnOptSelectExternalDanceAppealFile.Click -= BtnOptSelectExternalAppealFile_Click;
         }
 
         private void RegisterEventHandlers() {
@@ -78,6 +78,25 @@ namespace OpenMLTD.MillionDance {
             btnOptSelectFEMappings.Click += BtnOptSelectFEMappings_Click;
             chkGameToon.CheckedChanged += ChkGameToon_CheckedChanged;
             lnkHelp.LinkClicked += LnkHelp_LinkClicked;
+            cboOptAppealType.SelectedIndexChanged += CboOptAppealType_SelectedIndexChanged;
+            btnOptSelectExternalDanceAppealFile.Click += BtnOptSelectExternalAppealFile_Click;
+        }
+
+        private void BtnOptSelectExternalAppealFile_Click(object sender, EventArgs e) {
+            var (path, ok) = SelectOpenFile("External Appeal Data (*_ap.imo.unity3d)|*_ap.imo.unity3d");
+
+            if (!ok) {
+                return;
+            }
+
+            txtOptExternalDanceAppealFile.Text = path;
+        }
+
+        private void CboOptAppealType_SelectedIndexChanged(object sender, EventArgs e) {
+            var externalFileEnabled = cboOptAppealType.SelectedIndex > 0;
+            label27.Enabled = externalFileEnabled;
+            txtOptExternalDanceAppealFile.Enabled = externalFileEnabled;
+            btnOptSelectExternalDanceAppealFile.Enabled = externalFileEnabled;
         }
 
         private void LnkHelp_LinkClicked(object sender, EventArgs e) {
@@ -220,6 +239,7 @@ namespace OpenMLTD.MillionDance {
             cboOptFormationNumber.SelectedIndex = 0;
             cboGameToonSkinNumber.SelectedIndex = 5 - 1; // toon05, looks closest to MLTD models
             cboGameToonClothesNumber.SelectedIndex = 4 - 1; // toon 04, less yellow-ish
+            cboOptAppealType.SelectedIndex = 0;
 
             var defaultCharHeightStr = ScalingConfig.StandardCharacterHeightInCentimeters.ToString();
 
@@ -380,11 +400,20 @@ namespace OpenMLTD.MillionDance {
                     }
                 }
 
+                if (cboOptAppealType.SelectedIndex > 0) {
+                    if (!string.IsNullOrWhiteSpace(txtOptExternalDanceAppealFile.Text)) {
+                        if (!Regex.IsMatch(txtOptExternalDanceAppealFile.Text, @"dan_[a-z0-9]{5}[a-z0-9+]_ap\.imo\.unity3d$", RegexOptions.CultureInvariant)) {
+                            Alert($"File \"{txtOptExternalDanceAppealFile.Text}\" does not look like an external appeal data file from the game.");
+                            return false;
+                        }
+                    }
+                }
+
                 return true;
             }
 
-            InputParams PrepareInputParams() {
-                var ip = new InputParams();
+            MainWorkerInputParams PrepareInputParams() {
+                var ip = new MainWorkerInputParams();
 
                 ip.GenerateModel = chkGenerateModel.Checked;
                 ip.GenerateCharacterMotion = chkGenerateCharAnim.Checked;
@@ -429,16 +458,18 @@ namespace OpenMLTD.MillionDance {
                 ip.FixedFov = ip.UseMvdForCamera ? 0 : Convert.ToUInt32(txtOptFixedFov.Text);
                 ip.MotionNumber = cboOptMotionNumber.SelectedIndex + 1;
                 ip.FormationNumber = cboOptFormationNumber.SelectedIndex + 1;
+                ip.AppealType = (MainWorkerInputParams.FullComoboAppealType)cboOptAppealType.SelectedIndex;
+                ip.ExternalDanceAppealFile = txtOptExternalDanceAppealFile.Text;
 
                 ip.FacialExpressionMappingFilePath = txtOptFEMappings.Text;
-                ip.PreferredFacialExpressionSource = radFESourceLandscape.Checked ? InputParams.FallbackFacialExpressionSource.Landscape : InputParams.FallbackFacialExpressionSource.Portrait;
+                ip.PreferredFacialExpressionSource = radFESourceLandscape.Checked ? MainWorkerInputParams.FallbackFacialExpressionSource.Landscape : MainWorkerInputParams.FallbackFacialExpressionSource.Portrait;
 
                 return ip;
             }
 
             txtLog.Clear();
 
-            InputParams p;
+            MainWorkerInputParams p;
 
             try {
                 if (!CheckInputParams()) {
@@ -451,12 +482,9 @@ namespace OpenMLTD.MillionDance {
                 return;
             }
 
-            var thread = new Thread(DoWork);
+            var worker = new MainWorker(this, p);
 
-            thread.Name = "Conversion thread";
-            thread.IsBackground = true;
-
-            thread.Start(p);
+            worker.Start();
 
             EnableMainControls(false);
         }
@@ -564,11 +592,11 @@ namespace OpenMLTD.MillionDance {
             btnOutputCameraMotion.Enabled = b;
         }
 
-        private void Log([NotNull] string text) {
+        internal void Log([NotNull] string text) {
             if (InvokeRequired) {
-                Invoke(() => {
+                Invoke(new Action(() => {
                     Log(text);
-                });
+                }));
 
                 return;
             }
@@ -595,7 +623,7 @@ namespace OpenMLTD.MillionDance {
             btnGo.Enabled = b;
         }
 
-        private void EnableMainControls(bool enabled) {
+        internal void EnableMainControls(bool enabled) {
             groupBox1.Enabled = enabled;
             groupBox2.Enabled = enabled;
             groupBox3.Enabled = enabled;

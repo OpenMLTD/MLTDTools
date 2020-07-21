@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using AssetStudio.Extended.CompositeModels;
 using Imas.Data.Serialized;
@@ -20,7 +21,26 @@ using OpenMLTD.MillionDance.Utilities;
 using OpenMLTD.MLTDTools.Applications.TDFacial.Entities;
 
 namespace OpenMLTD.MillionDance {
-    partial class FMain {
+    internal sealed class MainWorker {
+
+        public MainWorker([NotNull] FMain form, [NotNull] MainWorkerInputParams inputParams) {
+            _form = form;
+            _inputParams = inputParams;
+        }
+
+        public void Start() {
+            var thread = new Thread(DoWork);
+
+            thread.Name = "Conversion thread";
+            thread.IsBackground = true;
+
+            thread.Start(_inputParams);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Log([NotNull] string message) {
+            _form.Log(message);
+        }
 
         private void DoWork([NotNull] object state) {
             try {
@@ -33,11 +53,11 @@ namespace OpenMLTD.MillionDance {
                 Log("Error occurred.");
                 Log(exDesc);
 
-                Invoke(() => {
+                InvokeInForm(() => {
                     MessageBox.Show(exDesc, ApplicationHelper.GetApplicationTitle(), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 });
             } finally {
-                Invoke(() => EnableMainControls(true));
+                InvokeInForm(() => _form.EnableMainControls(true));
             }
         }
 
@@ -46,7 +66,7 @@ namespace OpenMLTD.MillionDance {
 
             Log("Worker started.");
 
-            var p = (InputParams)state;
+            var p = (MainWorkerInputParams)state;
 
             var conversionConfig = PrepareConversionConfig(p);
             var scalingConfig = new ScalingConfig(conversionConfig);
@@ -113,49 +133,140 @@ namespace OpenMLTD.MillionDance {
                 }
 
                 IBodyAnimationSource dance;
+                IBodyAnimationSource danceAppeal = null;
 
                 if (p.GenerateCharacterMotion) {
                     Log("Loading dance motion...");
-                    var loadedDance = ResourceLoader.LoadDance(p.InputDance, p.MotionNumber);
-                    (dance, _, _) = loadedDance.AnimationSet;
+                    var loadedDance = ResourceLoader.LoadDance(p.InputDance, p.MotionNumber, p.FormationNumber);
+                    IBodyAnimationSource apSpecial, apAnother, apGorgeous;
+                    (dance, apSpecial, apAnother, apGorgeous) = (loadedDance.AnimationSet.Default, loadedDance.AnimationSet.Special, loadedDance.AnimationSet.Another, loadedDance.AnimationSet.Gorgeous);
                     if (dance == null) {
                         if (MltdAnimation.MinMotion <= loadedDance.SuggestedPosition && loadedDance.SuggestedPosition <= MltdAnimation.MaxMotion) {
-                            Log($"Cannot load dance data. However, this file may contain animation for idol at position {loadedDance.SuggestedPosition.ToString()}. Please check whether you selected the correct idol position (in 'Motions' tab).");
+                            Log($"Cannot load dance data. However, this file may contain animation for idol using motion {loadedDance.SuggestedPosition.ToString()}. Please check whether you selected the correct motion number (in 'Motions' tab).");
                         } else {
                             Log("Cannot load dance data. Please check whether you selected a dance data file.");
                         }
 
                         break;
                     }
+
+                    if (p.AppealType != MainWorkerInputParams.FullComoboAppealType.None) {
+                        Log($"Trying to load dance appeal: {p.AppealType}");
+
+                        switch (p.AppealType) {
+                            case MainWorkerInputParams.FullComoboAppealType.Special: {
+                                if (apSpecial != null) {
+                                    danceAppeal = apSpecial;
+                                }
+
+                                break;
+                            }
+                            case MainWorkerInputParams.FullComoboAppealType.Another: {
+                                if (apAnother != null) {
+                                    danceAppeal = apAnother;
+                                }
+
+                                break;
+                            }
+                            case MainWorkerInputParams.FullComoboAppealType.Gorgeous: {
+                                if (apGorgeous != null) {
+                                    danceAppeal = apGorgeous;
+                                }
+
+                                break;
+                            }
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+
+                        if (danceAppeal == null) {
+                            Log($"Selected dance appeal for idol {p.FormationNumber.ToString()} is not found in the main dance data file. Trying with external file.");
+
+                            if (string.IsNullOrWhiteSpace(p.ExternalDanceAppealFile)) {
+                                Log("External dance appeal file is empty. Please set the path to the file.");
+                                break;
+                            }
+
+                            var externalAppealData = ResourceLoader.LoadDance(p.ExternalDanceAppealFile, p.MotionNumber, p.FormationNumber);
+                            (apSpecial, apAnother, apGorgeous) = (externalAppealData.AnimationSet.Special, externalAppealData.AnimationSet.Another, externalAppealData.AnimationSet.Gorgeous);
+
+                            switch (p.AppealType) {
+                                case MainWorkerInputParams.FullComoboAppealType.Special: {
+                                    if (apSpecial != null) {
+                                        danceAppeal = apSpecial;
+                                    }
+
+                                    break;
+                                }
+                                case MainWorkerInputParams.FullComoboAppealType.Another: {
+                                    if (apAnother != null) {
+                                        danceAppeal = apAnother;
+                                    }
+
+                                    break;
+                                }
+                                case MainWorkerInputParams.FullComoboAppealType.Gorgeous: {
+                                    if (apGorgeous != null) {
+                                        danceAppeal = apGorgeous;
+                                    }
+
+                                    break;
+                                }
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+
+                            if (danceAppeal == null) {
+                                Log("Cannot load dance appeal data. Possible causes: 1) the file is not an appeal data file; 2) this song does not have the appeal you selected; 3) there is no corresponding appeal for selected position (e.g. each appeal of クルリウタ [Kururi Uta] only matches 3 out of 5 characters). Using default option (no appeal).");
+                            }
+                        }
+                    }
                 } else {
                     dance = null;
+                    danceAppeal = null;
                 }
 
+                ScenarioObject baseScenario, landscapeScenario, portraitScenario;
                 ScenarioObject formationInfo;
 
-                if (p.GenerateCharacterMotion) {
-                    var (main, yoko, tate) = ResourceLoader.LoadScenario(p.InputScenario);
-                    if (main == null) {
+                if (p.GenerateCharacterMotion || p.GenerateLipSync || p.GenerateFacialExpressions) {
+                    (baseScenario, landscapeScenario, portraitScenario) = ResourceLoader.LoadScenario(p.InputScenario);
+                    if (baseScenario == null) {
                         Log("Cannot load base scenario object.");
                         break;
                     }
 
-                    if (main.HasFormationChangeFrames()) {
-                        formationInfo = main;
+                    if (landscapeScenario == null) {
+                        Log("Cannot load landscape scenario.");
+                        break;
+                    }
+
+                    if (portraitScenario == null) {
+                        Log("Cannot load portrait scenario.");
+                        break;
+                    }
+                } else {
+                    baseScenario = null;
+                    landscapeScenario = null;
+                    portraitScenario = null;
+                }
+
+                if (p.GenerateCharacterMotion) {
+                    Debug.Assert(baseScenario != null, nameof(baseScenario) + " != null");
+                    Debug.Assert(landscapeScenario != null, nameof(landscapeScenario) + " != null");
+                    Debug.Assert(portraitScenario != null, nameof(portraitScenario) + " != null");
+
+                    if (baseScenario.HasFormationChangeEvents()) {
+                        formationInfo = baseScenario;
                     } else {
                         Log("Main scenario object does not contain facial expressions. Trying with landscape and portrait.");
 
-                        if (yoko == null || tate == null) {
-                            Log("Cannot load either landscape or portrait.");
-                            break;
-                        }
-
-                        if (yoko.HasFormationChangeFrames()) {
+                        if (landscapeScenario.HasFormationChangeEvents()) {
                             Log("Using formation info from landscape.");
-                            formationInfo = yoko;
-                        } else if (tate.HasFormationChangeFrames()) {
+                            formationInfo = landscapeScenario;
+                        } else if (portraitScenario.HasFormationChangeEvents()) {
                             Log("Using formation info from portrait.");
-                            formationInfo = tate;
+                            formationInfo = portraitScenario;
                         } else {
                             Log("No scenario object contains formation info.");
                             break;
@@ -165,61 +276,53 @@ namespace OpenMLTD.MillionDance {
                     formationInfo = null;
                 }
 
-                ScenarioObject lipSync, facialExpr;
+                ScenarioObject lipSyncInfo, facialExprInfo;
 
                 if (p.GenerateLipSync || p.GenerateFacialExpressions) {
-                    Log("Loading lip sync and facial expression...");
-                    var (main, yoko, tate) = ResourceLoader.LoadScenario(p.InputScenario);
-                    if (main == null) {
-                        Log("Cannot load base scenario object.");
-                        break;
-                    }
+                    Debug.Assert(baseScenario != null, nameof(baseScenario) + " != null");
+                    Debug.Assert(landscapeScenario != null, nameof(landscapeScenario) + " != null");
+                    Debug.Assert(portraitScenario != null, nameof(portraitScenario) + " != null");
 
                     if (p.GenerateLipSync) {
-                        lipSync = main;
+                        lipSyncInfo = baseScenario;
                     } else {
-                        lipSync = null;
+                        lipSyncInfo = null;
                     }
 
                     if (p.GenerateFacialExpressions) {
-                        if (main.HasFacialExpressionFrames()) {
-                            facialExpr = main;
+                        if (baseScenario.HasFacialExpressionEvents()) {
+                            facialExprInfo = baseScenario;
                         } else {
                             Log("Main scenario object does not contain facial expressions. Trying with landscape and portrait.");
-
-                            if (yoko == null || tate == null) {
-                                Log("Cannot load either landscape or portrait.");
-                                break;
-                            }
 
                             var foundFacialExpr = true;
 
                             switch (p.PreferredFacialExpressionSource) {
-                                case InputParams.FallbackFacialExpressionSource.Landscape: {
-                                    if (yoko.HasFacialExpressionFrames()) {
-                                        facialExpr = yoko;
+                                case MainWorkerInputParams.FallbackFacialExpressionSource.Landscape: {
+                                    if (landscapeScenario.HasFacialExpressionEvents()) {
+                                        facialExprInfo = landscapeScenario;
                                         Log("Using facial expressions: landscape.");
-                                    } else if (tate.HasFacialExpressionFrames()) {
+                                    } else if (portraitScenario.HasFacialExpressionEvents()) {
                                         Log("Facial expressions are not found in landscape, but found in portrait. Use portrait instead.");
-                                        facialExpr = tate;
+                                        facialExprInfo = portraitScenario;
                                     } else {
                                         Log("No scenario object contains facial expressions.");
-                                        facialExpr = null;
+                                        facialExprInfo = null;
                                         foundFacialExpr = false;
                                     }
 
                                     break;
                                 }
-                                case InputParams.FallbackFacialExpressionSource.Portrait:
-                                    if (yoko.HasFacialExpressionFrames()) {
-                                        facialExpr = yoko;
+                                case MainWorkerInputParams.FallbackFacialExpressionSource.Portrait:
+                                    if (portraitScenario.HasFacialExpressionEvents()) {
+                                        facialExprInfo = portraitScenario;
                                         Log("Using facial expressions: portrait.");
-                                    } else if (tate.HasFacialExpressionFrames()) {
+                                    } else if (landscapeScenario.HasFacialExpressionEvents()) {
                                         Log("Facial expressions are not found in portrait, but found in landscape. Use landscape instead.");
-                                        facialExpr = tate;
+                                        facialExprInfo = landscapeScenario;
                                     } else {
                                         Log("No scenario object contains facial expressions.");
-                                        facialExpr = null;
+                                        facialExprInfo = null;
                                         foundFacialExpr = false;
                                     }
 
@@ -233,26 +336,66 @@ namespace OpenMLTD.MillionDance {
                             }
                         }
                     } else {
-                        facialExpr = null;
+                        facialExprInfo = null;
                     }
                 } else {
-                    lipSync = null;
-                    facialExpr = null;
+                    lipSyncInfo = null;
+                    facialExprInfo = null;
                 }
 
                 CharacterImasMotionAsset camera;
+                CharacterImasMotionAsset cameraAppeal = null;
 
                 if (p.GenerateCameraMotion) {
                     Log("Loading camera motion...");
-                    (camera, _, _) = ResourceLoader.LoadCamera(p.InputCamera);
+                    CharacterImasMotionAsset apSpecial, apAnother, apGorgeous;
+                    var loadedCamera = ResourceLoader.LoadCamera(p.InputCamera);
+                    (camera, apSpecial, apAnother, apGorgeous) = (loadedCamera.Default, loadedCamera.Special, loadedCamera.Another, loadedCamera.Gorgeous);
                     if (camera == null) {
                         Log("Cannot load camera data.");
                         break;
+                    }
+
+                    if (p.AppealType != MainWorkerInputParams.FullComoboAppealType.None) {
+                        Log($"Trying to load appeal for camera: {p.AppealType}");
+
+                        switch (p.AppealType) {
+                            case MainWorkerInputParams.FullComoboAppealType.Special: {
+                                if (apSpecial != null) {
+                                    cameraAppeal = apSpecial;
+                                }
+
+                                break;
+                            }
+                            case MainWorkerInputParams.FullComoboAppealType.Another: {
+                                if (apAnother != null) {
+                                    cameraAppeal = apAnother;
+                                }
+
+                                break;
+                            }
+                            case MainWorkerInputParams.FullComoboAppealType.Gorgeous: {
+                                if (apGorgeous != null) {
+                                    cameraAppeal = apGorgeous;
+                                }
+
+                                break;
+                            }
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+
+                        // Otherwise not possible; camera appeals are always stored in the main camera file
+                        if (cameraAppeal == null) {
+                            Log("Cannot load camera appeal data. Please check whether this song actually has the appeal you selected.");
+                            break;
+                        }
                     }
                 } else {
                     camera = null;
                 }
 
+                // And now the job starts!
                 {
                     PmxModel pmx;
                     string texPrefix;
@@ -314,8 +457,6 @@ namespace OpenMLTD.MillionDance {
                         foreach (var material in materialList) {
                             var textureFilePath = Path.Combine(modelDir, material.TextureName);
 
-                            // Sometimes it throws AccessViolationException and the thread immediately halts (on ss001_016tsu,
-                            // with hair/hairh composited; no exception when only eyes are composited)
                             using (var memoryStream = new MemoryStream()) {
                                 material.BakedTexture.Save(memoryStream, ImageFormat.Png);
 
@@ -341,7 +482,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var danceVmd = creator.CreateCharacterAnimation(dance, formationInfo, combinedAvatar, pmx, p.FormationNumber);
+                        var danceVmd = creator.CreateCharacterAnimation(dance, baseScenario, formationInfo, combinedAvatar, pmx, danceAppeal, p.FormationNumber, p.AppealType);
 
                         Log("Saving character motion...");
 
@@ -360,7 +501,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var lipVmd = creator.CreateLipSync(lipSync, p.FormationNumber);
+                        var lipVmd = creator.CreateLipSync(lipSyncInfo, p.FormationNumber);
 
                         Log("Saving lip sync...");
 
@@ -379,7 +520,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var facialVmd = creator.CreateFacialExpressions(facialExpr, p.FormationNumber);
+                        var facialVmd = creator.CreateFacialExpressions(facialExprInfo, p.FormationNumber);
 
                         Log("Saving facial expressions...");
 
@@ -429,7 +570,7 @@ namespace OpenMLTD.MillionDance {
             } while (false);
         }
 
-        private static ConversionConfig PrepareConversionConfig([NotNull] InputParams ip) {
+        private static ConversionConfig PrepareConversionConfig([NotNull] MainWorkerInputParams ip) {
             var cc = new ConversionConfig();
 
             cc.MotionFormat = ip.MotionSource;
@@ -473,9 +614,20 @@ namespace OpenMLTD.MillionDance {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Invoke([NotNull] Action action) {
-            Invoke((Delegate)action);
+        private void InvokeInForm([NotNull] Action action) {
+            _form.Invoke(action);
         }
+
+        private bool InvokeRequired {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _form.InvokeRequired;
+        }
+
+        [NotNull]
+        private readonly FMain _form;
+
+        [NotNull]
+        private readonly MainWorkerInputParams _inputParams;
 
     }
 }

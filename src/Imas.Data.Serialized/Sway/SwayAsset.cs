@@ -199,7 +199,7 @@ namespace Imas.Data.Serialized.Sway {
                             break;
                         }
 
-                        Debug.Print("Unknown manager property key/value: {0} / {1}", kv.Key, kv.Value);
+                        Debug.WriteLine($"Unknown manager property key/value: {kv.Key} / {kv.Value}");
                         setAProp = false;
                     } while (false);
                 }
@@ -282,7 +282,7 @@ namespace Imas.Data.Serialized.Sway {
                         collider.BridgeTargetPath = kv.Value;
                         break;
                     default:
-                        Debug.Print("Unknown collider property key/value: {0} / {1}", kv.Key, kv.Value);
+                        Debug.WriteLine($"Unknown collider property key/value: {kv.Key} / {kv.Value}");
                         setAProp = false;
                         break;
                 }
@@ -424,7 +424,7 @@ namespace Imas.Data.Serialized.Sway {
                         bone.SideLinkPath = kv.Value;
                         break;
                     default:
-                        Debug.Print("Unknown bone property key/value: {0} / {1}", kv.Key, kv.Value);
+                        Debug.WriteLine($"Unknown bone property key/value: {kv.Key} / {kv.Value}");
                         setAProp = false;
                         break;
                 }

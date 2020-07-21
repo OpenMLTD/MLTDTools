@@ -17,7 +17,7 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull, ItemNotNull]
-        private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource mainDance, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx, [NotNull] ScenarioObject baseScenario, [CanBeNull] ScenarioObject formationInfo, [CanBeNull] IBodyAnimationSource danceAppeal, int formationNumber, MainWorkerInputParams.FullComoboAppealType appealType) {
+        private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource mainDance, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx, [NotNull] ScenarioObject baseScenario, [CanBeNull] ScenarioObject formationInfo, [CanBeNull] IBodyAnimationSource danceAppeal, int formationNumber, AppealType appealType) {
             var boneLookup = new BoneLookup(_conversionConfig);
 
             var mltdHierarchy = boneLookup.BuildBoneHierarchy(avatar);
@@ -87,7 +87,7 @@ namespace OpenMLTD.MillionDance.Core {
             var scaleToVmdSize = _conversionConfig.ScaleToVmdSize;
             var unityToVmdScale = _scalingConfig.ScaleUnityToVmd;
 
-            var baseFormationList = CollectFormationChanges(formationInfo, MainWorkerInputParams.FullComoboAppealType.None);
+            var baseFormationList = CollectFormationChanges(formationInfo, AppealType.None);
             var appealFormationList = CollectFormationChanges(formationInfo, appealType);
             var appealTimes = AppealHelper.CollectAppealTimeInfo(baseScenario);
             var seekFrameControls = CollectSeekFrames(baseScenario, formationNumber);
@@ -103,7 +103,7 @@ namespace OpenMLTD.MillionDance.Core {
                     }
                 }
 
-                var shouldUseAppeal = appealType != MainWorkerInputParams.FullComoboAppealType.None && (appealTimes.StartFrame <= naturalFrameIndex && naturalFrameIndex < appealTimes.EndFrame) && appealAnimation != null;
+                var shouldUseAppeal = appealType != AppealType.None && (appealTimes.StartFrame <= naturalFrameIndex && naturalFrameIndex < appealTimes.EndFrame) && appealAnimation != null;
 
                 var animation = shouldUseAppeal ? appealAnimation : mainAnimation;
 
@@ -348,7 +348,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull]
-        private static TimedList<int, Vector4[]> CollectFormationChanges([CanBeNull] ScenarioObject scenario, MainWorkerInputParams.FullComoboAppealType appealType) {
+        private static TimedList<int, Vector4[]> CollectFormationChanges([CanBeNull] ScenarioObject scenario, AppealType appealType) {
             var result = new TimedList<int, Vector4[]>();
 
             if (scenario == null) {

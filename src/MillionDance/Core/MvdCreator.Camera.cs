@@ -12,11 +12,11 @@ namespace OpenMLTD.MillionDance.Core {
     partial class MvdCreator {
 
         [NotNull]
-        public MvdMotion CreateCameraMotion([CanBeNull] CharacterImasMotionAsset cameraMotion) {
+        public MvdMotion CreateCameraMotion([CanBeNull] CharacterImasMotionAsset mainCamera, [NotNull] ScenarioObject baseScenario, [CanBeNull] CharacterImasMotionAsset cameraAppeal, AppealType appealType) {
             MvdCameraMotion[] cameraFrames;
 
-            if (ProcessCameraFrames && cameraMotion != null) {
-                cameraFrames = CreateCameraMotions(cameraMotion);
+            if (ProcessCameraFrames && mainCamera != null) {
+                cameraFrames = CreateCameraMotions(mainCamera, baseScenario, cameraAppeal, appealType);
             } else {
                 cameraFrames = Array.Empty<MvdCameraMotion>();
             }
@@ -33,9 +33,9 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private MvdCameraMotion[] CreateCameraMotions([NotNull] CharacterImasMotionAsset cameraMotion) {
+        private MvdCameraMotion[] CreateCameraMotions([NotNull] CharacterImasMotionAsset mainCamera, [NotNull] ScenarioObject baseScenario, [CanBeNull] CharacterImasMotionAsset cameraAppeal, AppealType appealType) {
             var camera = CreateCamera();
-            var cameraFrames = CreateFrames(cameraMotion);
+            var cameraFrames = CreateFrames(mainCamera, baseScenario, cameraAppeal, appealType);
             var cameraPropertyFrames = CreatePropertyFrames();
 
             var result = new MvdCameraMotion(camera, cameraFrames, cameraPropertyFrames);
@@ -58,33 +58,54 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private MvdCameraFrame[] CreateFrames([NotNull] CharacterImasMotionAsset cameraMotion) {
-            var animation = CameraAnimation.CreateFrom(cameraMotion);
-            var animationFrameCount = animation.CameraFrames.Length;
+        private MvdCameraFrame[] CreateFrames([NotNull] CharacterImasMotionAsset mainCamera, [NotNull] ScenarioObject baseScenario, [CanBeNull] CharacterImasMotionAsset cameraAppeal, AppealType appealType) {
+            var mainAnimation = CameraAnimation.CreateFrom(mainCamera);
+            var appealAnimation = cameraAppeal != null ? CameraAnimation.CreateFrom(cameraAppeal) : null;
+            var animationFrameCount = mainAnimation.CameraFrames.Length;
 
             var cameraFrameList = new List<MvdCameraFrame>();
+
+            var appealTimes = AppealHelper.CollectAppealTimeInfo(baseScenario);
 
             var scaleToVmdSize = _conversionConfig.ScaleToVmdSize;
             var unityToVmdScale = _scalingConfig.ScaleUnityToVmd;
 
-            for (var i = 0; i < animationFrameCount; ++i) {
+            for (var mltdFrameIndex = 0; mltdFrameIndex < animationFrameCount; ++mltdFrameIndex) {
                 if (_conversionConfig.Transform60FpsTo30Fps) {
-                    if (i % 2 == 1) {
+                    if (mltdFrameIndex % 2 == 1) {
                         continue;
                     }
                 }
 
-                int frameIndex;
+                // When entering and leaving the appeal, there is also a camera control event (type 58) with `layer` > 0 (see CollectFormationChanges() for the meaning of `layer`).
+                var shouldUseAppeal = appealType != AppealType.None && (appealTimes.StartFrame <= mltdFrameIndex && mltdFrameIndex < appealTimes.EndFrame) && appealAnimation != null;
+                var animation = shouldUseAppeal ? appealAnimation : mainAnimation;
+
+                int mvdFrameIndex;
 
                 if (_conversionConfig.Transform60FpsTo30Fps) {
-                    frameIndex = i / 2;
+                    mvdFrameIndex = mltdFrameIndex / 2;
                 } else {
-                    frameIndex = i;
+                    mvdFrameIndex = mltdFrameIndex;
                 }
 
-                var frame = animation.CameraFrames[i];
+                int projectedFrameIndex;
 
-                var mvdFrame = new MvdCameraFrame(frameIndex);
+                if (shouldUseAppeal) {
+                    var indexInAppeal = mltdFrameIndex - appealTimes.StartFrame;
+
+                    if (indexInAppeal >= appealAnimation.FrameCount) {
+                        indexInAppeal = appealAnimation.FrameCount - 1;
+                    }
+
+                    projectedFrameIndex = indexInAppeal;
+                } else {
+                    projectedFrameIndex = mltdFrameIndex;
+                }
+
+                var frame = animation.CameraFrames[projectedFrameIndex];
+
+                var mvdFrame = new MvdCameraFrame(mvdFrameIndex);
 
                 var position = new Vector3(frame.PositionX, frame.PositionY, frame.PositionZ);
 

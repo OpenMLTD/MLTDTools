@@ -132,15 +132,15 @@ namespace OpenMLTD.MillionDance {
                     headSway = null;
                 }
 
-                IBodyAnimationSource dance;
+                IBodyAnimationSource mainDance;
                 IBodyAnimationSource danceAppeal = null;
 
                 if (p.GenerateCharacterMotion) {
                     Log("Loading dance motion...");
                     var loadedDance = ResourceLoader.LoadDance(p.InputDance, p.MotionNumber, p.FormationNumber);
                     IBodyAnimationSource apSpecial, apAnother, apGorgeous;
-                    (dance, apSpecial, apAnother, apGorgeous) = (loadedDance.AnimationSet.Default, loadedDance.AnimationSet.Special, loadedDance.AnimationSet.Another, loadedDance.AnimationSet.Gorgeous);
-                    if (dance == null) {
+                    (mainDance, apSpecial, apAnother, apGorgeous) = (loadedDance.AnimationSet.Default, loadedDance.AnimationSet.Special, loadedDance.AnimationSet.Another, loadedDance.AnimationSet.Gorgeous);
+                    if (mainDance == null) {
                         if (MltdAnimation.MinMotion <= loadedDance.SuggestedPosition && loadedDance.SuggestedPosition <= MltdAnimation.MaxMotion) {
                             Log($"Cannot load dance data. However, this file may contain animation for idol using motion {loadedDance.SuggestedPosition.ToString()}. Please check whether you selected the correct motion number (in 'Motions' tab).");
                         } else {
@@ -150,25 +150,25 @@ namespace OpenMLTD.MillionDance {
                         break;
                     }
 
-                    if (p.AppealType != MainWorkerInputParams.FullComoboAppealType.None) {
+                    if (p.AppealType != AppealType.None) {
                         Log($"Trying to load dance appeal: {p.AppealType}");
 
                         switch (p.AppealType) {
-                            case MainWorkerInputParams.FullComoboAppealType.Special: {
+                            case AppealType.Special: {
                                 if (apSpecial != null) {
                                     danceAppeal = apSpecial;
                                 }
 
                                 break;
                             }
-                            case MainWorkerInputParams.FullComoboAppealType.Another: {
+                            case AppealType.Another: {
                                 if (apAnother != null) {
                                     danceAppeal = apAnother;
                                 }
 
                                 break;
                             }
-                            case MainWorkerInputParams.FullComoboAppealType.Gorgeous: {
+                            case AppealType.Gorgeous: {
                                 if (apGorgeous != null) {
                                     danceAppeal = apGorgeous;
                                 }
@@ -191,21 +191,21 @@ namespace OpenMLTD.MillionDance {
                             (apSpecial, apAnother, apGorgeous) = (externalAppealData.AnimationSet.Special, externalAppealData.AnimationSet.Another, externalAppealData.AnimationSet.Gorgeous);
 
                             switch (p.AppealType) {
-                                case MainWorkerInputParams.FullComoboAppealType.Special: {
+                                case AppealType.Special: {
                                     if (apSpecial != null) {
                                         danceAppeal = apSpecial;
                                     }
 
                                     break;
                                 }
-                                case MainWorkerInputParams.FullComoboAppealType.Another: {
+                                case AppealType.Another: {
                                     if (apAnother != null) {
                                         danceAppeal = apAnother;
                                     }
 
                                     break;
                                 }
-                                case MainWorkerInputParams.FullComoboAppealType.Gorgeous: {
+                                case AppealType.Gorgeous: {
                                     if (apGorgeous != null) {
                                         danceAppeal = apGorgeous;
                                     }
@@ -222,14 +222,14 @@ namespace OpenMLTD.MillionDance {
                         }
                     }
                 } else {
-                    dance = null;
+                    mainDance = null;
                     danceAppeal = null;
                 }
 
                 ScenarioObject baseScenario, landscapeScenario, portraitScenario;
                 ScenarioObject formationInfo;
 
-                if (p.GenerateCharacterMotion || p.GenerateLipSync || p.GenerateFacialExpressions) {
+                if (p.GenerateCharacterMotion || p.GenerateLipSync || p.GenerateFacialExpressions || p.GenerateCameraMotion) {
                     (baseScenario, landscapeScenario, portraitScenario) = ResourceLoader.LoadScenario(p.InputScenario);
                     if (baseScenario == null) {
                         Log("Cannot load base scenario object.");
@@ -343,38 +343,38 @@ namespace OpenMLTD.MillionDance {
                     facialExprInfo = null;
                 }
 
-                CharacterImasMotionAsset camera;
+                CharacterImasMotionAsset mainCamera;
                 CharacterImasMotionAsset cameraAppeal = null;
 
                 if (p.GenerateCameraMotion) {
                     Log("Loading camera motion...");
                     CharacterImasMotionAsset apSpecial, apAnother, apGorgeous;
                     var loadedCamera = ResourceLoader.LoadCamera(p.InputCamera);
-                    (camera, apSpecial, apAnother, apGorgeous) = (loadedCamera.Default, loadedCamera.Special, loadedCamera.Another, loadedCamera.Gorgeous);
-                    if (camera == null) {
+                    (mainCamera, apSpecial, apAnother, apGorgeous) = (loadedCamera.Default, loadedCamera.Special, loadedCamera.Another, loadedCamera.Gorgeous);
+                    if (mainCamera == null) {
                         Log("Cannot load camera data.");
                         break;
                     }
 
-                    if (p.AppealType != MainWorkerInputParams.FullComoboAppealType.None) {
+                    if (p.AppealType != AppealType.None) {
                         Log($"Trying to load appeal for camera: {p.AppealType}");
 
                         switch (p.AppealType) {
-                            case MainWorkerInputParams.FullComoboAppealType.Special: {
+                            case AppealType.Special: {
                                 if (apSpecial != null) {
                                     cameraAppeal = apSpecial;
                                 }
 
                                 break;
                             }
-                            case MainWorkerInputParams.FullComoboAppealType.Another: {
+                            case AppealType.Another: {
                                 if (apAnother != null) {
                                     cameraAppeal = apAnother;
                                 }
 
                                 break;
                             }
-                            case MainWorkerInputParams.FullComoboAppealType.Gorgeous: {
+                            case AppealType.Gorgeous: {
                                 if (apGorgeous != null) {
                                     cameraAppeal = apGorgeous;
                                 }
@@ -392,7 +392,7 @@ namespace OpenMLTD.MillionDance {
                         }
                     }
                 } else {
-                    camera = null;
+                    mainCamera = null;
                 }
 
                 // And now the job starts!
@@ -482,7 +482,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var danceVmd = creator.CreateCharacterAnimation(dance, baseScenario, formationInfo, combinedAvatar, pmx, danceAppeal, p.FormationNumber, p.AppealType);
+                        var danceVmd = creator.CreateCharacterAnimation(mainDance, baseScenario, formationInfo, combinedAvatar, pmx, danceAppeal, p.FormationNumber, p.AppealType);
 
                         Log("Saving character motion...");
 
@@ -540,7 +540,7 @@ namespace OpenMLTD.MillionDance {
                                 ProcessLightFrames = false,
                             };
 
-                            var motion = creator.CreateCameraMotion(camera);
+                            var motion = creator.CreateCameraMotion(mainCamera, baseScenario, cameraAppeal, p.AppealType);
 
                             Log("Writing camera motion...");
 
@@ -557,7 +557,7 @@ namespace OpenMLTD.MillionDance {
 
                             creator.FixedFov = p.FixedFov;
 
-                            var motion = creator.CreateCameraMotion(camera);
+                            var motion = creator.CreateCameraMotion(mainCamera);
 
                             Log("Writing camera motion...");
 

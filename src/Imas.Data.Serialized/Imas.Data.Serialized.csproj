@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppealType.cs" />
     <Compile Include="CharacterImasMotionAsset.cs" />
     <Compile Include="ColorRGBA.cs" />
     <Compile Include="Curve.cs" />

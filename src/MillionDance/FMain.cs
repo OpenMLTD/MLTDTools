@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Imas.Data.Serialized;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Utilities;
@@ -311,7 +312,7 @@ namespace OpenMLTD.MillionDance {
                     }
                 }
 
-                if (chkGenerateCharAnim.Checked || chkGenerateLipSync.Checked || chkGenerateFacialExpression.Checked) {
+                if (chkGenerateCharAnim.Checked || chkGenerateLipSync.Checked || chkGenerateFacialExpression.Checked || chkGenerateCameraMotion.Checked) {
                     if (!File.Exists(txtInputScenario.Text)) {
                         Alert($"Scenario data \"{txtInputScenario.Text}\" does not exist.");
                         return false;
@@ -372,7 +373,7 @@ namespace OpenMLTD.MillionDance {
                     }
                 }
 
-                if (chkGenerateCharAnim.Checked || chkGenerateLipSync.Checked || chkGenerateFacialExpression.Checked) {
+                if (chkGenerateCharAnim.Checked || chkGenerateLipSync.Checked || chkGenerateFacialExpression.Checked || chkGenerateCameraMotion.Checked) {
                     if (!Regex.IsMatch(txtInputScenario.Text, @"scrobj_[a-z0-9]{5}[a-z0-9+]\.unity3d$", RegexOptions.CultureInvariant)) {
                         Alert($"File \"{txtInputScenario.Text}\" does not look like a scenario data file from the game.");
                         return false;
@@ -458,7 +459,7 @@ namespace OpenMLTD.MillionDance {
                 ip.FixedFov = ip.UseMvdForCamera ? 0 : Convert.ToUInt32(txtOptFixedFov.Text);
                 ip.MotionNumber = cboOptMotionNumber.SelectedIndex + 1;
                 ip.FormationNumber = cboOptFormationNumber.SelectedIndex + 1;
-                ip.AppealType = (MainWorkerInputParams.FullComoboAppealType)cboOptAppealType.SelectedIndex;
+                ip.AppealType = (AppealType)cboOptAppealType.SelectedIndex;
                 ip.ExternalDanceAppealFile = txtOptExternalDanceAppealFile.Text;
 
                 ip.FacialExpressionMappingFilePath = txtOptFEMappings.Text;
@@ -563,7 +564,7 @@ namespace OpenMLTD.MillionDance {
             txtInputDance.Enabled = b;
             btnInputDance.Enabled = b;
 
-            b = charAnim || lipSync || facialExpr;
+            b = charAnim || lipSync || facialExpr || camAnim;
             txtInputScenario.Enabled = b;
             btnInputScenario.Enabled = b;
 

@@ -12,15 +12,18 @@ using OpenMLTD.MillionDance.Utilities;
 namespace OpenMLTD.MillionDance.Entities.Internal {
     public sealed class CameraAnimation {
 
-        private CameraAnimation([NotNull, ItemNotNull] CameraFrame[] frames, float duration) {
+        private CameraAnimation([NotNull, ItemNotNull] CameraFrame[] frames, float duration, int frameCount) {
             CameraFrames = frames;
             Duration = duration;
+            FrameCount = frameCount;
         }
 
         [NotNull, ItemNotNull]
         public CameraFrame[] CameraFrames { get; }
 
         public float Duration { get; }
+
+        public int FrameCount { get; }
 
         [NotNull]
         public static CameraAnimation CreateFrom([NotNull] CharacterImasMotionAsset cameraMotion) {
@@ -86,7 +89,7 @@ namespace OpenMLTD.MillionDance.Entities.Internal {
                 cameraFrames[i] = frame;
             }
 
-            return new CameraAnimation(cameraFrames, totalDuration);
+            return new CameraAnimation(cameraFrames, totalDuration, frameCount);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

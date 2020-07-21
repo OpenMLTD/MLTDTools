@@ -1,4 +1,5 @@
-﻿using OpenMLTD.MillionDance.Core;
+﻿using Imas.Data.Serialized;
+using OpenMLTD.MillionDance.Core;
 
 namespace OpenMLTD.MillionDance {
     internal sealed class MainWorkerInputParams {
@@ -81,7 +82,7 @@ namespace OpenMLTD.MillionDance {
 
         public string FacialExpressionMappingFilePath { get; set; }
 
-        public FullComoboAppealType AppealType { get; set; }
+        public AppealType AppealType { get; set; }
 
         public string ExternalDanceAppealFile { get; set; }
 
@@ -92,18 +93,6 @@ namespace OpenMLTD.MillionDance {
             Landscape = 0,
 
             Portrait = 1,
-
-        }
-
-        public enum FullComoboAppealType {
-
-            None = 0,
-
-            Special = 1,
-
-            Another = 2,
-
-            Gorgeous = 3,
 
         }
 

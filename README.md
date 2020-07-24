@@ -27,6 +27,7 @@ This repository:
 - DOES NOT PROVIDE TOOLS FOR YOU TO CHEAT. **Cheating is not fun at all. It must be punished.**
 
 For the Unity project for resource generation, please visit [PlatinumTheater](https://github.com/OpenMLTD/PlatinumTheater).
+To preview animations (as in MVs) in Unity, please visit [LeadActress](https://github.com/OpenMLTD/LeadActress).
 
 ## Details
 

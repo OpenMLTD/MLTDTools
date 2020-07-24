@@ -116,7 +116,10 @@ namespace Imas.Data.Serialized.Sway {
 
                         var collider = colliders.Find(col => col.Path == targetPath);
 
-                        Debug.Assert(collider != null);
+                        if (collider == null) {
+                            Debug.WriteLine($"Warning: Cannot find target collider: {targetPath}");
+                            continue;
+                        }
 
                         swayBoneColliders[i] = collider;
                     }

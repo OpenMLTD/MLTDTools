@@ -37,6 +37,8 @@ namespace OpenMLTD.MillionDance.Viewer {
             var manager = new AssetsManager();
             manager.LoadFiles(BodyModelFilePath);
 
+            var lookup = SerializedObjectsLookup.Create(manager);
+
             foreach (var assetFile in manager.assetsFileList) {
                 foreach (var obj in assetFile.Objects) {
                     if (obj.type != ClassIDType.Mesh) {
@@ -49,7 +51,7 @@ namespace OpenMLTD.MillionDance.Viewer {
                         throw new ArgumentNullException(nameof(mesh), "Body mesh is null.");
                     }
 
-                    result = new MeshWrapper(manager.assetsFileList, mesh, TexturedMaterialExtraProperties.Body);
+                    result = new MeshWrapper(lookup, mesh, TexturedMaterialExtraProperties.Body);
 
                     break;
                 }
@@ -65,6 +67,8 @@ namespace OpenMLTD.MillionDance.Viewer {
             var manager = new AssetsManager();
             manager.LoadFiles(HeadModelFilePath);
 
+            var lookup = SerializedObjectsLookup.Create(manager);
+
             foreach (var assetFile in manager.assetsFileList) {
                 foreach (var obj in assetFile.Objects) {
                     if (obj.type != ClassIDType.Mesh) {
@@ -77,7 +81,7 @@ namespace OpenMLTD.MillionDance.Viewer {
                         throw new ArgumentNullException(nameof(mesh), "One of head meshes is null.");
                     }
 
-                    var m = new MeshWrapper(manager.assetsFileList, mesh, TexturedMaterialExtraProperties.Head);
+                    var m = new MeshWrapper(lookup, mesh, TexturedMaterialExtraProperties.Head);
                     meshList.Add(m);
                 }
             }
@@ -106,7 +110,7 @@ namespace OpenMLTD.MillionDance.Viewer {
 
                 var initialPose = avatar.AvatarSkeletonPose.Transforms[boneIndex];
 
-                var bone = new BoneNode(parent, i, bonePath, initialPose.Translation.ToOpenTK(), initialPose.Rotation.ToOpenTK());
+                var bone = new BoneNode(parent, i, bonePath, initialPose.LocalPosition.ToOpenTK(), initialPose.LocalRotation.ToOpenTK());
 
                 boneList.Add(bone);
             }

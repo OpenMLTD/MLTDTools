@@ -9,12 +9,21 @@ using AssetStudio.Extended.MonoBehaviours.Serialization;
 using Imas.Data.Serialized;
 using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
-using OpenMLTD.MillionDance.Entities.Extensions;
 using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mltd;
 
 namespace OpenMLTD.MillionDance.Core.IO {
     internal static partial class ResourceLoader {
+
+        [NotNull]
+        public static TransformHierarchies LoadTransformHierarchies([NotNull] string filePath) {
+            var manager = new AssetsManager();
+            manager.LoadFiles(filePath);
+
+            var hierarchies = TransformHierarchies.FromAssets(manager);
+
+            return hierarchies;
+        }
 
         [CanBeNull]
         public static MeshWrapper LoadBodyMesh([NotNull] string filePath) {
@@ -22,6 +31,8 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
+
+            var lookup = SerializedObjectsLookup.Create(manager);
 
             foreach (var assetFile in manager.assetsFileList) {
                 foreach (var obj in assetFile.Objects) {
@@ -35,7 +46,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
                         throw new ArgumentNullException(nameof(mesh), "Body mesh is null.");
                     }
 
-                    result = new MeshWrapper(manager.assetsFileList, mesh, TexturedMaterialExtraProperties.Body);
+                    result = new MeshWrapper(lookup, mesh, TexturedMaterialExtraProperties.Body);
 
                     break;
                 }
@@ -79,6 +90,8 @@ namespace OpenMLTD.MillionDance.Core.IO {
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
 
+            var lookup = SerializedObjectsLookup.Create(manager);
+
             foreach (var assetFile in manager.assetsFileList) {
                 foreach (var obj in assetFile.Objects) {
                     if (obj.type != ClassIDType.Mesh) {
@@ -91,7 +104,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
                         throw new ArgumentNullException(nameof(mesh), "One of head meshes is null.");
                     }
 
-                    var m = new MeshWrapper(manager.assetsFileList, mesh, TexturedMaterialExtraProperties.Head);
+                    var m = new MeshWrapper(lookup, mesh, TexturedMaterialExtraProperties.Head);
                     meshList.Add(m);
                 }
             }

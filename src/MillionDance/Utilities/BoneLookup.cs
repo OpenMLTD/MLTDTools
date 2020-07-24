@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using AssetStudio.Extended.CompositeModels;
+using AssetStudio.Extended.CompositeModels.Utilities;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
 using OpenMLTD.MillionDance.Entities.Internal;
@@ -17,10 +18,10 @@ namespace OpenMLTD.MillionDance.Utilities {
         public BoneLookup([NotNull] ConversionConfig conversionConfig) {
             switch (conversionConfig.SkeletonFormat) {
                 case SkeletonFormat.Mmd:
-                    _bonePathMap = BonePathMapMmd;
+                    _bonePathMap = _bonePathMapMmd;
                     break;
                 case SkeletonFormat.Mltd:
-                    _bonePathMap = BonePathMapMltd;
+                    _bonePathMap = _bonePathMapMltd;
                     break;
                 default:
                     throw new NotSupportedException("You must choose a skeleton format.");
@@ -58,13 +59,14 @@ namespace OpenMLTD.MillionDance.Utilities {
             _scalingConfig = new ScalingConfig(conversionConfig);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [NotNull, ItemNotNull]
         public BoneNode[] BuildBoneHierarchy([NotNull] PrettyAvatar avatar) {
             return BuildBoneHierarchy(avatar, true);
         }
 
         [NotNull, ItemNotNull]
-        public BoneNode[] BuildBoneHierarchy([NotNull] PrettyAvatar avatar, bool fixKubi) {
+        private BoneNode[] BuildBoneHierarchy([NotNull] PrettyAvatar avatar, bool fixKubi) {
             var boneList = new List<BoneNode>();
             var skeletonNodes = avatar.AvatarSkeleton.Nodes;
             var scaleUnityToPmx = _scalingConfig.ScaleUnityToPmx;
@@ -84,14 +86,70 @@ namespace OpenMLTD.MillionDance.Utilities {
 
                 var initialPose = avatar.AvatarSkeletonPose.Transforms[boneIndex];
 
-                var t = initialPose.Translation.ToOpenTK() * scaleUnityToPmx;
-                var q = initialPose.Rotation.ToOpenTK();
+                var t = initialPose.LocalPosition.ToOpenTK() * scaleUnityToPmx;
+                var q = initialPose.LocalRotation.ToOpenTK();
 
                 var bone = new BoneNode(parent, i, bonePath, t, q);
 
                 boneList.Add(bone);
             }
 
+            PostprocessBoneList(boneList, fixKubi, false);
+
+            return boneList.ToArray();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [NotNull, ItemNotNull]
+        public BoneNode[] BuildBoneHierarchy([NotNull] TransformHierarchies transformHierarchies) {
+            return BuildBoneHierarchy(transformHierarchies, true);
+        }
+
+        [NotNull, ItemNotNull]
+        private BoneNode[] BuildBoneHierarchy([NotNull] TransformHierarchies transformHierarchies, bool fixKubi) {
+            var boneList = new List<BoneNode>();
+
+            {
+                var bonePathList = new List<string>();
+                var orderedTransformHierarchy = transformHierarchies.GetOrderedObjectArray();
+
+                var scaleUnityToPmx = _scalingConfig.ScaleUnityToPmx;
+
+                for (var i = 0; i < orderedTransformHierarchy.Length; i += 1) {
+                    var n = orderedTransformHierarchy[i];
+
+                    var bonePath = n.GetFullName();
+                    bonePathList.Add(bonePath);
+
+                    var parentPath = bonePath.BreakUntilLast('/');
+                    int parentIndex;
+
+                    if (parentPath == bonePath) {
+                        // It's a root bone
+                        parentIndex = -1;
+                    } else {
+                        parentIndex = n.Parent != null ? bonePathList.IndexOf(parentPath) : -1;
+                    }
+
+                    var parent = parentIndex >= 0 ? boneList[parentIndex] : null;
+
+                    var initialPose = n.Transform;
+
+                    var t = initialPose.LocalPosition.ToOpenTK() * scaleUnityToPmx;
+                    var q = initialPose.LocalRotation.ToOpenTK();
+
+                    var bone = new BoneNode(parent, i, bonePath, t, q);
+
+                    boneList.Add(bone);
+                }
+            }
+
+            PostprocessBoneList(boneList, fixKubi, true);
+
+            return boneList.ToArray();
+        }
+
+        private static void PostprocessBoneList([NotNull] List<BoneNode> boneList, bool fixKubi, bool kubiParentIsNull) {
             boneList.AssertAllUnique();
 
 #if DEBUG
@@ -111,20 +169,26 @@ namespace OpenMLTD.MillionDance.Utilities {
                 // Fix "KUBI" (neck) bone's parent
                 var kubiParent = boneList.Find(bn => bn.Path == "MODEL_00/BASE/MUNE1/MUNE2/KUBI");
 
-                Debug.Assert(kubiParent != null);
+                Debug.Assert(kubiParent != null, nameof(kubiParent) + " != null");
 
                 var kubiBone = boneList.Find(bn => bn.Path == "KUBI");
 
-                Debug.Assert(kubiBone != null);
+                Debug.Assert(kubiBone != null, nameof(kubiBone) + " != null");
 
                 kubiParent.AddChild(kubiBone);
 
-                Debug.Assert(kubiBone.Parent != null);
 
-                // Don't forget to remove it from its old parent (or it will be updated twice from two parents).
-                // The original parents and grandparents of KUBI are not needed; they are just like model anchors and shouldn't be animated.
-                // See decompiled model for more information.
-                kubiBone.Parent.RemoveChild(kubiBone);
+                if (kubiParentIsNull) {
+                    // In the Transform-based searching approach, the parent of "KUBI" (in the head model) should be always null.
+                    Debug.Assert(kubiBone.Parent == null, nameof(kubiBone) + "." + nameof(kubiBone.Parent) + " == null");
+                } else {
+                    Debug.Assert(kubiBone.Parent != null, nameof(kubiBone) + "." + nameof(kubiBone.Parent) + " != null");
+
+                    // Don't forget to remove it from its old parent (or it will be updated twice from two parents).
+                    // The original parents and grandparents of KUBI are not needed; they are just like model anchors and shouldn't be animated.
+                    // See decompiled model for more information.
+                    kubiBone.Parent.RemoveChild(kubiBone);
+                }
 
                 kubiBone.Parent = kubiParent;
 
@@ -152,8 +216,6 @@ namespace OpenMLTD.MillionDance.Utilities {
 
                 bone.Level = level;
             }
-
-            return boneList.ToArray();
         }
 
         [NotNull, ItemNotNull]
@@ -205,12 +267,17 @@ namespace OpenMLTD.MillionDance.Utilities {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TranslateBoneName([NotNull] string nameJp) {
+        public static string TranslateBoneName([NotNull] string nameJp, [NotNull] string defaultValue) {
             if (NameJpToEn.ContainsKey(nameJp)) {
                 return NameJpToEn[nameJp];
             } else {
-                return string.Empty;
+                return defaultValue;
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TranslateBoneName([NotNull] string nameJp) {
+            return TranslateBoneName(nameJp, string.Empty);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -241,13 +308,19 @@ namespace OpenMLTD.MillionDance.Utilities {
                     // Bone names in MLTD are always ASCII characters so we can simply use string length
                     // instead of byte length.
                     if (pmxBoneName.Length > 15) {
-                        var boneHash = mltdBoneName.GetHashCode().ToString("x8");
+                        // Note that here we assume that every bone's name (= name of the game object) is different,
+                        // i.e. this can't happen: "a/b/c" and "d/e/c".
+                        // Usually we can use `mltdBoneName` (the complete path), but it can fail on some models: e.g. ex001_a + ex001_003mik, where
+                        // AddSwayBones() 'correspondingBone != null' assertion fails.
+                        var boneHash = pmxBoneName.GetHashCode().ToString("x8");
                         // Prevent the name exceeding max length (15 bytes)
                         pmxBoneName = $"Bone #{boneHash}";
                     }
+
+                    dict.Add(mltdBoneName, pmxBoneName);
                 }
             } else {
-                pmxBoneName = mltdBoneName;
+                pmxBoneName = mltdBoneName.BreakLast('/');
             }
 
             return pmxBoneName;
@@ -306,7 +379,7 @@ namespace OpenMLTD.MillionDance.Utilities {
 
         [NotNull]
         [SuppressMessage("ReSharper", "StringLiteralTypo")]
-        private static readonly Dictionary<string, string> BonePathMapMltd = new Dictionary<string, string> {
+        private readonly Dictionary<string, string> _bonePathMapMltd = new Dictionary<string, string> {
             ["POSITION"] = "操作中心",
             ["POSITION/SCALE_POINT"] = "全ての親",
             ["MODEL_00"] = "センター",
@@ -369,7 +442,7 @@ namespace OpenMLTD.MillionDance.Utilities {
 
         [NotNull]
         [SuppressMessage("ReSharper", "StringLiteralTypo")]
-        private static readonly Dictionary<string, string> BonePathMapMmd = new Dictionary<string, string> {
+        private readonly Dictionary<string, string> _bonePathMapMmd = new Dictionary<string, string> {
             [""] = "操作中心",
             // We can't keep this; they will cause compatibility issues when we manually fix the master and center bones.
             //["POSITION"] = "全ての親",

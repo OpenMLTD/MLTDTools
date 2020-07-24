@@ -21,9 +21,9 @@ namespace OpenMLTD.MillionDance.Extensions {
             return str.Substring(index + 1);
         }
 
-        // e.g. "abc/def/ghi",'/' -> "ghi"
+        // e.g. "abc/def/ghi",'/' -> "abc/def"
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string BreakFirst([NotNull] this string str, char ch) {
+        internal static string BreakUntilLast([NotNull] this string str, char ch) {
             var index = str.LastIndexOf(ch);
 
             if (index < 0) {

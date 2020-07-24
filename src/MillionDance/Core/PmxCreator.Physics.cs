@@ -182,7 +182,7 @@ namespace OpenMLTD.MillionDance.Core {
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    var guessedParentPath = swayBone.Path.BreakFirst('/');
+                    var guessedParentPath = swayBone.Path.BreakUntilLast('/');
                     var parentBody = swayBones.Find(sb => sb.Path == guessedParentPath);
 
                     if (parentBody != null) {
@@ -198,13 +198,16 @@ namespace OpenMLTD.MillionDance.Core {
 
                     var pmxBoneName = _pmxCreator._boneLookup.GetPmxBoneName(mltdBoneName);
 
+                    var correspondingBone = bones.Find(o => o.Name == pmxBoneName);
+
+                    if (correspondingBone == null) {
+                        Trace.WriteLine($"Warning: Semi-root sway bone is missing. Skipping this bone. PMX name: {pmxBoneName}; MLTD name: {mltdBoneName}");
+                        continue;
+                    }
+
                     var body = new PmxRigidBody();
 
                     body.Part = part;
-
-                    var correspondingBone = bones.Find(o => o.Name == pmxBoneName);
-
-                    Debug.Assert(correspondingBone != null, "Semi-root sway: " + nameof(correspondingBone) + " != null");
 
                     body.BoneIndex = correspondingBone.BoneIndex;
 
@@ -300,7 +303,10 @@ namespace OpenMLTD.MillionDance.Core {
 
                     var correspondingBone = bones.Find(o => o.Name == pmxBoneName);
 
-                    Debug.Assert(correspondingBone != null, "Normal sway: " + nameof(correspondingBone) + " != null");
+                    if (correspondingBone == null) {
+                        Trace.WriteLine($"Warning: Normal sway bone is missing. Skipping this bone. PMX name: {pmxBoneName}; MLTD name: {mltdBoneName}");
+                        continue;
+                    }
 
                     switch (part) {
                         case CoordSystemPart.Skirt:
@@ -465,55 +471,52 @@ namespace OpenMLTD.MillionDance.Core {
                         }
                     }
 
-                    var joint = new PmxJoint();
-
-                    joint.BodyIndex1 = bodies.IndexOf(parentBody);
-                    joint.BodyIndex2 = bodies.IndexOf(body);
-
-                    joint.Name = body.Name;
-                    joint.NameEnglish = body.NameEnglish;
-
-                    switch (body.Part) {
-                        case CoordSystemPart.Hair:
-                        case CoordSystemPart.Skirt:
-                            joint.Kind = JointKind.Spring6Dof;
-                            break;
-                        default:
-                            joint.Kind = JointKind.Spring6Dof;
-                            break;
-                    }
-
-                    joint.Position = pmxBone.InitialPosition;
-
                     // Now calculate rotation for this joint.
                     var childBones = bones.WhereToArray(b => b.ParentIndex == pmxBone.BoneIndex);
 
-                    if (childBones.Length > 1) {
-                        Debug.Print("Warning: more than one child bone for joint rotation calculation. Aborting.");
-                        continue;
+                    // Some models may have more than one child bone in the hair chain, e.g. ex001_003mik
+                    foreach (var childBone in childBones) {
+                        var joint = new PmxJoint();
+
+                        joint.BodyIndex1 = bodies.IndexOf(parentBody);
+                        joint.BodyIndex2 = bodies.IndexOf(body);
+
+                        joint.Name = body.Name;
+                        joint.NameEnglish = body.NameEnglish;
+
+                        switch (body.Part) {
+                            case CoordSystemPart.Hair:
+                            case CoordSystemPart.Skirt:
+                                joint.Kind = JointKind.Spring6Dof;
+                                break;
+                            default:
+                                joint.Kind = JointKind.Spring6Dof;
+                                break;
+                        }
+
+                        joint.Position = pmxBone.InitialPosition;
+                        PmxBone rotBone1, rotBone2;
+
+                        if (childBones.Length == 0) {
+                            rotBone1 = parentBone;
+                            rotBone2 = pmxBone;
+                        } else {
+                            rotBone1 = pmxBone;
+                            rotBone2 = childBone;
+                        }
+
+                        Debug.Assert(rotBone2 != null, nameof(rotBone2) + " != null");
+
+                        var delta = rotBone2.InitialPosition - rotBone1.InitialPosition;
+
+                        var qy = (float)Math.Atan2(delta.X, delta.Z);
+                        var qx = (float)Math.Atan2(delta.Y, delta.Z);
+                        const float qz = 0;
+
+                        joint.Rotation = new Vector3(qx, qy, qz);
+
+                        joints.Add(joint);
                     }
-
-                    PmxBone rotBone1, rotBone2;
-
-                    if (childBones.Length == 0) {
-                        rotBone1 = parentBone;
-                        rotBone2 = pmxBone;
-                    } else {
-                        rotBone1 = pmxBone;
-                        rotBone2 = childBones[0];
-                    }
-
-                    var delta = rotBone2.InitialPosition - rotBone1.InitialPosition;
-
-                    var qy = (float)Math.Atan2(delta.X, delta.Z);
-                    var qx = (float)Math.Atan2(delta.Y, delta.Z);
-                    //const float qx = 0;
-                    //var qz = (float)Math.Atan2(delta.X, delta.Y);
-                    const float qz = 0;
-
-                    joint.Rotation = new Vector3(qx, qy, qz);
-
-                    joints.Add(joint);
                 }
             }
 

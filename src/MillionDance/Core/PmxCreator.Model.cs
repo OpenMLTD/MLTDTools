@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using AssetStudio;
 using AssetStudio.Extended.CompositeModels;
+using AssetStudio.Extended.CompositeModels.Utilities;
 using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Entities.Internal;
@@ -16,7 +16,6 @@ using OpenMLTD.MillionDance.Extensions;
 using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 using BlendShapeData = AssetStudio.Extended.CompositeModels.BlendShapeData;
-using Color = System.Drawing.Color;
 using Quaternion = OpenTK.Quaternion;
 using Vector2 = OpenTK.Vector2;
 using Vector3 = OpenTK.Vector3;
@@ -155,7 +154,7 @@ namespace OpenMLTD.MillionDance.Core {
                         vertex.Deformation = Deformation.Bdef2;
                         break;
                     case 3:
-                        throw new NotSupportedException($"Not supported: vertex #{i} has 3 influences.");
+                        throw new NotSupportedException($"Not supported: vertex #{i.ToString()} has 3 influences.");
                     case 4:
                         vertex.Deformation = Deformation.Bdef4;
                         break;
@@ -163,7 +162,7 @@ namespace OpenMLTD.MillionDance.Core {
                         throw new ArgumentOutOfRangeException(nameof(affectiveInfluenceCount), "Unsupported number of bones.");
                 }
 
-                Debug.Assert(skin != null || affectiveInfluenceCount == 0);
+                Debug.Assert(skin != null || affectiveInfluenceCount == 0, nameof(skin) + " != null || " + nameof(affectiveInfluenceCount) + " == 0");
 
                 for (var j = 0; j < affectiveInfluenceCount; ++j) {
                     Debug.Assert(skin != null);
@@ -197,7 +196,7 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private PmxBone[] AddBones([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, [NotNull, ItemNotNull] PmxVertex[] vertices) {
+        private List<PmxBone> GetBonesList([NotNull] CompositeAvatar combinedAvatar) {
             var boneCount = combinedAvatar.AvatarSkeleton.NodeIDs.Length;
             var bones = new List<PmxBone>(boneCount);
 
@@ -214,7 +213,7 @@ namespace OpenMLTD.MillionDance.Core {
                 var pmxBoneName = _boneLookup.GetPmxBoneName(boneNode.Path);
 
                 bone.Name = pmxBoneName;
-                bone.NameEnglish = BoneLookup.TranslateBoneName(pmxBoneName);
+                bone.NameEnglish = BoneLookup.TranslateBoneName(pmxBoneName, pmxBoneName);
 
                 // PMX's bone positions are in world coordinate system.
                 // Unity's are in local coords.
@@ -236,12 +235,12 @@ namespace OpenMLTD.MillionDance.Core {
                     bone.To_Bone = singleDirectChild.Index;
                 } else {
                     // TODO: Fix this; it should point to a world position.
-                    bone.To_Offset = transform.Translation.ToOpenTK().FixUnityToMmd();
+                    bone.To_Offset = transform.LocalPosition.ToOpenTK().FixUnityToMmd();
                 }
 
                 // No use. This is just a flag to specify more details to rotation/translation limitation.
                 //bone.SetFlag(BoneFlags.LocalFrame);
-                bone.InitialRotation = transform.Rotation.ToOpenTK().FixUnityToOpenTK();
+                bone.InitialRotation = transform.LocalRotation.ToOpenTK().FixUnityToOpenTK();
                 bone.CurrentRotation = bone.InitialRotation;
 
                 //bone.Level = boneNode.Level;
@@ -262,6 +261,94 @@ namespace OpenMLTD.MillionDance.Core {
                 bones.Add(bone);
             }
 
+            return bones;
+        }
+
+        [NotNull, ItemNotNull]
+        private List<PmxBone> GetBonesList([NotNull] TransformHierarchies transformHierarchies) {
+            var orderedTransformHierarchy = transformHierarchies.GetOrderedObjectArray();
+            var boneCount = orderedTransformHierarchy.Length;
+            var bones = new List<PmxBone>(boneCount);
+
+            var hierarchy = _boneLookup.BuildBoneHierarchy(transformHierarchies);
+
+            var considerIdolHeight = _conversionConfig.ApplyPmxCharacterHeight;
+            var factor = _scalingConfig.CharacterHeightScalingFactor;
+
+            for (var i = 0; i < boneCount; ++i) {
+                var bone = new PmxBone();
+                var transform = orderedTransformHierarchy[i].Transform;
+                var boneNode = hierarchy[i];
+
+                var pmxBoneName = _boneLookup.GetPmxBoneName(boneNode.Path);
+
+                bone.Name = pmxBoneName;
+                bone.NameEnglish = BoneLookup.TranslateBoneName(pmxBoneName, pmxBoneName);
+
+                // PMX's bone positions are in world coordinate system.
+                // Unity's are in local coords.
+                bone.InitialPosition = boneNode.InitialPositionWorld;
+
+                if (considerIdolHeight) {
+                    bone.InitialPosition = bone.InitialPosition * factor;
+                }
+
+                bone.CurrentPosition = bone.InitialPosition;
+
+                bone.ParentIndex = boneNode.Parent?.Index ?? -1;
+                bone.BoneIndex = i;
+
+                var singleDirectChild = GetDirectSingleChildOf(boneNode);
+
+                if (singleDirectChild != null) {
+                    bone.SetFlag(BoneFlags.ToBone);
+                    bone.To_Bone = singleDirectChild.Index;
+                } else {
+                    // TODO: According to docs it should point to a world position?
+                    bone.To_Offset = transform.LocalPosition.ToOpenTK().FixUnityToMmd();
+                }
+
+                // No use. This is just a flag to specify more details to rotation/translation limitation.
+                //bone.SetFlag(BoneFlags.LocalFrame);
+                bone.InitialRotation = transform.LocalRotation.ToOpenTK().FixUnityToOpenTK();
+                bone.CurrentRotation = bone.InitialRotation;
+
+                //bone.Level = boneNode.Level;
+                bone.Level = 0;
+
+                if (BoneLookup.IsBoneMovable(boneNode.Path)) {
+                    bone.SetFlag(BoneFlags.Rotation | BoneFlags.Translation);
+                } else {
+                    bone.SetFlag(BoneFlags.Rotation);
+                }
+
+                if (_conversionConfig.HideUnityGeneratedBones) {
+                    if (BoneLookup.IsNameGenerated(boneNode.Path)) {
+                        bone.ClearFlag(BoneFlags.Visible);
+                    }
+                }
+
+                bones.Add(bone);
+            }
+
+            return bones;
+        }
+
+        [NotNull, ItemNotNull]
+        private PmxBone[] AddBones([NotNull] TransformHierarchies transformHierarchies, [NotNull] CompositeMesh combinedMesh, [NotNull, ItemNotNull] PmxVertex[] vertices) {
+            var bones = GetBonesList(transformHierarchies);
+            FixBones(bones, combinedMesh, vertices);
+            return bones.ToArray();
+        }
+
+        [NotNull, ItemNotNull]
+        private PmxBone[] AddBones([NotNull] CompositeAvatar combinedAvatar, [NotNull] CompositeMesh combinedMesh, [NotNull, ItemNotNull] PmxVertex[] vertices) {
+            var bones = GetBonesList(combinedAvatar);
+            FixBones(bones, combinedMesh, vertices);
+            return bones.ToArray();
+        }
+
+        private void FixBones([NotNull, ItemNotNull] List<PmxBone> bones, [NotNull] CompositeMesh combinedMesh, [NotNull, ItemNotNull] PmxVertex[] vertices) {
             if (_conversionConfig.FixMmdCenterBones) {
                 // Add master (全ての親) and center (センター), recompute bone hierarchy.
                 PmxBone master = new PmxBone(), center = new PmxBone();
@@ -420,8 +507,6 @@ namespace OpenMLTD.MillionDance.Core {
             for (var i = 0; i < bones.Count; i++) {
                 bones[i].BoneIndex = i;
             }
-
-            return bones.ToArray();
         }
 
         // Change standard T-pose to TDA T-pose

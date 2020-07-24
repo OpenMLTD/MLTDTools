@@ -58,13 +58,18 @@
         <Compile Include="PrettyMesh.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="PrettySkeleton.cs" />
+        <Compile Include="SerializedObjectsLookup.cs" />
         <Compile Include="SkeletonNode.cs" />
         <Compile Include="PrettySkeletonPose.cs" />
         <Compile Include="RawTransform.cs" />
         <Compile Include="PrettySubMesh.cs" />
         <Compile Include="TexturedMaterial.cs" />
         <Compile Include="TexturedMaterialExtraProperties.cs" />
+        <Compile Include="TransformHierarchies.cs" />
+        <Compile Include="TransformObject.cs" />
         <Compile Include="Utilities\EnumerableUtils.cs" />
+        <Compile Include="Utilities\Quaternions.cs" />
+        <Compile Include="Utilities\TransformHierarchiesExtensions.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\thirdparty\AssetStudio\AssetStudio\AssetStudio.csproj">

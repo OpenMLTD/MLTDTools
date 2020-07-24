@@ -1,27 +1,45 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using AssetStudio.Extended.CompositeModels.Utilities;
+using JetBrains.Annotations;
 
 namespace AssetStudio.Extended.CompositeModels {
-    public sealed class RawTransform {
+    public sealed class RawTransform : ICloneable {
 
-        public RawTransform() {
-            Translation = Vector3.Zero;
-            Rotation = IdentityRotation;
-            Scale = Vector3.Zero;
+        public RawTransform()
+            : this(Vector3.Zero, Quaternions.Identity, Vector3.Zero) {
+        }
+
+        public RawTransform(Vector3 localPosition, Quaternion localRotation, Vector3 localScale) {
+            LocalPosition = localPosition;
+            LocalRotation = localRotation;
+            LocalScale = localScale;
         }
 
         internal RawTransform([NotNull] xform transform) {
-            Translation = transform.t;
-            Rotation = transform.q;
-            Scale = transform.s;
+            LocalPosition = transform.t;
+            LocalRotation = transform.q;
+            LocalScale = transform.s;
         }
 
-        public Vector3 Translation { get; set; }
+        internal RawTransform([NotNull] Transform transform) {
+            LocalPosition = transform.m_LocalPosition;
+            LocalRotation = transform.m_LocalRotation;
+            LocalScale = transform.m_LocalScale;
+        }
 
-        public Quaternion Rotation { get; set; }
+        public Vector3 LocalPosition { get; set; }
 
-        public Vector3 Scale { get; set; }
+        public Quaternion LocalRotation { get; set; }
 
-        private static readonly Quaternion IdentityRotation = new Quaternion(0, 0, 0, 1);
+        public Vector3 LocalScale { get; set; }
+
+        public RawTransform Clone() {
+            return new RawTransform(LocalPosition, LocalRotation, LocalScale);
+        }
+
+        object ICloneable.Clone() {
+            return Clone();
+        }
 
     }
 }

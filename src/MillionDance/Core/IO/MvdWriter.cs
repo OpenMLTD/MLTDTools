@@ -175,14 +175,14 @@ namespace OpenMLTD.MillionDance.Core.IO {
             }
         }
 
-        private void WriteVariableLengthString([CanBeNull] string str, [NotNull] Encoding encoding, int advicedLength = 0) {
+        private void WriteVariableLengthString([CanBeNull] string str, [NotNull] Encoding encoding, int advisedLength = 0) {
             if (string.IsNullOrEmpty(str)) {
                 _writer.Write(0);
             } else {
                 var bytes = encoding.GetBytes(str);
 
-                if (advicedLength > 0 && bytes.Length > advicedLength) {
-                    Debug.Print("Warning: string length may be too long.");
+                if (advisedLength > 0 && bytes.Length > advisedLength) {
+                    Trace.WriteLine("Warning: string length may be too long.");
                 }
 
                 _writer.Write(bytes.Length);

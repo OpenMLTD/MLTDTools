@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using AssetStudio.Extended.CompositeModels;
+using AssetStudio.Extended.CompositeModels.Utilities;
 using Imas.Data.Serialized;
 using Imas.Data.Serialized.Sway;
 using JetBrains.Annotations;
@@ -72,12 +73,13 @@ namespace OpenMLTD.MillionDance {
             var scalingConfig = new ScalingConfig(conversionConfig);
 
             if (p.IdolHeight <= 0) {
-                throw new ArgumentOutOfRangeException(nameof(p.IdolHeight), "Invalid idol height.");
+                throw new ArgumentOutOfRangeException(nameof(p.IdolHeight), p.IdolHeight, "Invalid idol height.");
             }
 
             scalingConfig.CharacterHeight = p.IdolHeight;
 
             do {
+                TransformHierarchies combinedHierarchies; // TODO: Do we still need this?
                 CompositeAvatar combinedAvatar;
                 CompositeMesh combinedMesh;
                 int bodyMeshVertexCount;
@@ -91,6 +93,9 @@ namespace OpenMLTD.MillionDance {
                         Log("Cannot load body avatar.");
                         break;
                     }
+
+                    Log("Loading body object hierarchies...");
+                    var bodyHierarchies = ResourceLoader.LoadTransformHierarchies(p.InputBody);
 
                     Log("Loading body mesh...");
                     var bodyMesh = ResourceLoader.LoadBodyMesh(p.InputBody);
@@ -106,7 +111,10 @@ namespace OpenMLTD.MillionDance {
                         break;
                     }
 
-                    Log("Loading head avatar...");
+                    Log("Loading head object hierarchies...");
+                    var headHierarchies = ResourceLoader.LoadTransformHierarchies(p.InputHead);
+
+                    Log("Loading head mesh...");
                     var headMesh = ResourceLoader.LoadHeadMesh(p.InputHead);
                     if (headMesh == null) {
                         Log("Cannot load head mesh.");
@@ -121,10 +129,13 @@ namespace OpenMLTD.MillionDance {
                     }
 
                     Log("Combining avatars and meshes...");
+                    combinedHierarchies = TransformHierarchies.Combine(bodyHierarchies, headHierarchies);
+                    combinedHierarchies = combinedHierarchies.PreserveMltdSpecificOnly();
                     combinedAvatar = CompositeAvatar.FromAvatars(bodyAvatar, headAvatar);
                     combinedMesh = CompositeMesh.FromMeshes(bodyMesh, headMesh);
                     bodyMeshVertexCount = bodyMesh.VertexCount;
                 } else {
+                    combinedHierarchies = null;
                     combinedAvatar = null;
                     combinedMesh = null;
                     bodyMeshVertexCount = 0;
@@ -416,7 +427,7 @@ namespace OpenMLTD.MillionDance {
 
                         Log("Generating model...");
 
-                        Debug.Assert(combinedAvatar != null);
+                        Debug.Assert(combinedHierarchies != null);
                         Debug.Assert(combinedMesh != null);
 
                         var boneLookup = new BoneLookup(conversionConfig);

@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace AssetStudio.Extended.CompositeModels {
     public sealed class MeshWrapper : PrettyMesh {
 
-        public MeshWrapper([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, [NotNull] TexturedMaterialExtraProperties extraMaterialProperties) {
+        public MeshWrapper([NotNull] SerializedObjectsLookup serializedObjectsLookup, [NotNull] Mesh mesh, [NotNull] TexturedMaterialExtraProperties extraMaterialProperties) {
             Name = mesh.m_Name;
 
             {
@@ -16,7 +16,7 @@ namespace AssetStudio.Extended.CompositeModels {
 
                 for (var i = 0; i < mesh.m_SubMeshes.Length; i += 1) {
                     var subMesh = mesh.m_SubMeshes[i];
-                    var material = FindMaterialInfo(assetFiles, mesh, i, extraMaterialProperties);
+                    var material = FindMaterialInfo(serializedObjectsLookup, mesh, i, extraMaterialProperties);
                     var sm = new PrettySubMesh(meshIndexStart, subMesh, material);
                     subMeshes[i] = sm;
                     meshIndexStart += subMesh.indexCount;
@@ -182,25 +182,8 @@ namespace AssetStudio.Extended.CompositeModels {
         }
 
         [NotNull]
-        private static TexturedMaterial FindMaterialInfo([NotNull] IReadOnlyList<SerializedFile> assetFiles, [NotNull] Mesh mesh, int meshIndex, [NotNull] TexturedMaterialExtraProperties extraProperties) {
-            SkinnedMeshRenderer meshRenderer = null;
-
-            foreach (var assetFile in assetFiles) {
-                foreach (var obj in assetFile.Objects) {
-                    if (obj.type != ClassIDType.SkinnedMeshRenderer) {
-                        continue;
-                    }
-
-                    var renderer = obj as SkinnedMeshRenderer;
-
-                    Debug.Assert(renderer != null);
-
-                    if (renderer.m_Mesh.m_PathID == mesh.m_PathID) {
-                        meshRenderer = renderer;
-                        break;
-                    }
-                }
-            }
+        private static TexturedMaterial FindMaterialInfo([NotNull] SerializedObjectsLookup serializedObjectsLookup, [NotNull] Mesh mesh, int meshIndex, [NotNull] TexturedMaterialExtraProperties extraProperties) {
+            var meshRenderer = serializedObjectsLookup.Find<SkinnedMeshRenderer>(renderer => renderer.m_Mesh.m_PathID == mesh.m_PathID);
 
             if (meshRenderer == null) {
                 throw new KeyNotFoundException($"Found no SkinnedMeshRenderer associated with this mesh ({mesh.m_Name}).");
@@ -213,24 +196,7 @@ namespace AssetStudio.Extended.CompositeModels {
             }
 
             var materialPtr = meshRenderer.m_Materials[meshIndex];
-            Material material = null;
-
-            foreach (var assetFile in assetFiles) {
-                foreach (var obj in assetFile.Objects) {
-                    if (obj.type != ClassIDType.Material) {
-                        continue;
-                    }
-
-                    var mat = obj as Material;
-
-                    Debug.Assert(mat != null);
-
-                    if (mat.m_PathID == materialPtr.m_PathID) {
-                        material = mat;
-                        break;
-                    }
-                }
-            }
+            serializedObjectsLookup.TryGet(materialPtr, out var material);
 
             if (material == null) {
                 throw new KeyNotFoundException("Main material is not found by path ID.");
@@ -256,24 +222,7 @@ namespace AssetStudio.Extended.CompositeModels {
                 throw new KeyNotFoundException("Main texture is missing.");
             }
 
-            Texture2D mainTexture = null;
-
-            foreach (var assetFile in assetFiles) {
-                foreach (var obj in assetFile.Objects) {
-                    if (obj.type != ClassIDType.Texture2D) {
-                        continue;
-                    }
-
-                    var tex = obj as Texture2D;
-
-                    Debug.Assert(tex != null);
-
-                    if (tex.m_PathID == mainTexEnv.m_Texture.m_PathID) {
-                        mainTexture = tex;
-                        break;
-                    }
-                }
-            }
+            serializedObjectsLookup.TryGet(mainTexEnv.m_Texture, out Texture2D mainTexture);
 
             if (mainTexture == null) {
                 throw new KeyNotFoundException("Main texture is not found by path ID.");
@@ -282,22 +231,7 @@ namespace AssetStudio.Extended.CompositeModels {
             Texture2D subTexture = null;
 
             if (subTexEnv != null) {
-                foreach (var assetFile in assetFiles) {
-                    foreach (var obj in assetFile.Objects) {
-                        if (obj.type != ClassIDType.Texture2D) {
-                            continue;
-                        }
-
-                        var tex = obj as Texture2D;
-
-                        Debug.Assert(tex != null);
-
-                        if (tex.m_PathID == subTexEnv.m_Texture.m_PathID) {
-                            subTexture = tex;
-                            break;
-                        }
-                    }
-                }
+                serializedObjectsLookup.TryGet(subTexEnv.m_Texture, out subTexture);
 
                 if (subTexture == null) {
                     throw new KeyNotFoundException("Sub texture is not found by path ID.");
@@ -329,10 +263,6 @@ namespace AssetStudio.Extended.CompositeModels {
             }
 
             return result;
-        }
-
-        private sealed class DetailedConfig {
-
         }
 
     }

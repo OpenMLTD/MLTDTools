@@ -557,7 +557,7 @@ namespace OpenMLTD.MillionDance {
 
                             creator.FixedFov = p.FixedFov;
 
-                            var motion = creator.CreateCameraMotion(mainCamera);
+                            var motion = creator.CreateCameraMotion(mainCamera, baseScenario, cameraAppeal, p.AppealType);
 
                             Log("Writing camera motion...");
 

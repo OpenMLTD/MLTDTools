@@ -14,7 +14,7 @@ namespace OpenMLTD.MillionDance.Extensions {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static OpenTK.Vector3 FlipZ(this OpenTK.Vector3 v) {
+        private static OpenTK.Vector3 FlipZ(this OpenTK.Vector3 v) {
             return new OpenTK.Vector3(v.X, v.Y, -v.Z);
         }
 

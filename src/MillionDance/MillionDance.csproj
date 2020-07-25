@@ -112,6 +112,7 @@
     <Compile Include="Entities\OpenTK\Vector2i.cs" />
     <Compile Include="Entities\Pmx\Extensions\PmxPassGroupExtensions.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Extensions\Internal\ArrayEnumerateHelper`1.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FMain.cs">
@@ -191,7 +192,6 @@
     <Compile Include="Utilities\DirectBitmapAccess.cs" />
     <Compile Include="Utilities\GeometryHelper.cs" />
     <Compile Include="Utilities\MorphUtils.cs" />
-    <Compile Include="Utilities\RotationDebug.cs" />
     <Compile Include="Core\UnityRotation.cs" />
     <Compile Include="Core\VmdCreator.cs" />
     <Compile Include="Utilities\TimedList`2.cs" />

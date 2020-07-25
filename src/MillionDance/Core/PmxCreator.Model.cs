@@ -1223,7 +1223,7 @@ namespace OpenMLTD.MillionDance.Core {
                 throw new ArgumentException("Mesh \"eyes\" is missing.");
             }
 
-            var subMeshMaps = combinedMesh.ParentMeshIndices.Enumerate().Where(s => s.Value == meshNameIndex).ToArray();
+            var subMeshMaps = combinedMesh.ParentMeshIndices.EnumerateAll().WhereToArray(s => s.Value == meshNameIndex);
 
             Debug.Assert(subMeshMaps.Length == 2, "There should be 2 sub mesh maps.");
             Debug.Assert(subMeshMaps[1].Index - subMeshMaps[0].Index == 1, "The first sub mesh map should contain one element.");

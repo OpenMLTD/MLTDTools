@@ -6,13 +6,6 @@ namespace OpenMLTD.MillionDance.Utilities {
     internal static class MorphUtils {
 
         [NotNull]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string LookupFullMorphName([NotNull] string mltdMorphName) {
-            var truncMorphName = mltdMorphName.Substring(12); // - "blendShape1."
-            return LookupMorphName(truncMorphName);
-        }
-
-        [NotNull]
         public static string LookupMorphName([NotNull] string mltdTruncMorphName) {
             if (MorphNameMap.ContainsKey(mltdTruncMorphName)) {
                 return MorphNameMap[mltdTruncMorphName];
@@ -21,7 +14,8 @@ namespace OpenMLTD.MillionDance.Utilities {
             }
         }
 
-        private static readonly IReadOnlyDictionary<string, string> MorphNameMap = new Dictionary<string, string> {
+        [NotNull]
+        private static readonly Dictionary<string, string> MorphNameMap = new Dictionary<string, string> {
             ["M_a"] = "あ",
             ["M_i"] = "い",
             ["M_u"] = "う",

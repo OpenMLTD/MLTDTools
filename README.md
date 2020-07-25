@@ -45,12 +45,6 @@ Similar to [Hca2Wav](https://github.com/OpenCGSS/DereTore/tree/master/Apps/Hca2W
 
 Extracts ACB file from the song bundles (`song3_*.acb.unity3d`).
 
-**Manifest Exporter** (obsolete)
-
-Export manifest description to a text file.
-
-If you prefer GUI than command line, please use the manifest exporting function in Manifest Tools.
-
 **MLTD Information Viewer**
 
 View <del>resource manifest</del> (please use Manifest Tools instead), card information and costume information from MLTD database files.

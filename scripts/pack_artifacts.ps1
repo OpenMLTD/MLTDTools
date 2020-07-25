@@ -27,8 +27,8 @@ $subPaths = @(
 [String]::Format("src/AcbPack/bin/{0}", $configuration),
 [String]::Format("src/HcaDec/bin/{0}", $configuration),
 [String]::Format("src/ManifestExport/bin/{0}", $configuration),
-[String]::Format("src/MillionDance/bin/x86/{0}", $configuration), # temporarily fixed to x86 because of AssetStudioUtilities
-[String]::Format("src/MillionDanceView/bin/{0}", $configuration),
+[String]::Format("src/MillionDance/bin/x86/{0}", $configuration), # temporarily pinned to x86 because of AssetStudioUtilities
+[String]::Format("src/MillionDanceView/bin/x86/{0}", $configuration), # temporarily pinned to x86 because of AssetStudioUtilities
 [String]::Format("src/MiriTore.Common/bin/{0}", $configuration),
 [String]::Format("src/MiriTore.Logging/bin/{0}", $configuration),
 [String]::Format("src/MltdInfoViewer/bin/{0}", $configuration),

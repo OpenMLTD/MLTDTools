@@ -10,9 +10,7 @@ namespace OpenMLTD.MLTDTools.Applications.TDFacial.Entities {
         [JsonConstructor]
         public FacialConfig() {
             Version = LatestVersion;
-            Expressions = new List<FacialExpression> {
-                new FacialExpression()
-            };
+            Expressions = new List<FacialExpression>();
         }
 
         [JsonProperty]

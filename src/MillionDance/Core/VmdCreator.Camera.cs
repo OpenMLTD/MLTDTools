@@ -20,7 +20,7 @@ namespace OpenMLTD.MillionDance.Core {
                 frames = null;
             }
 
-            return new VmdMotion(ModelName, null, null, frames, null, null);
+            return new VmdMotion(CameraName, null, null, frames, null, null);
         }
 
         [NotNull, ItemNotNull]
@@ -41,9 +41,9 @@ namespace OpenMLTD.MillionDance.Core {
             foreach (var mvdFrame in mvdFrames) {
                 var vmdFrame = new VmdCameraFrame((int)mvdFrame.FrameNumber);
 
-                vmdFrame.Length = mvdFrame.Distance;
+                vmdFrame.Length = mvdFrame.Distance * 0.1f;
                 vmdFrame.Position = mvdFrame.Position;
-                vmdFrame.Orientation = mvdFrame.Rotation;
+                vmdFrame.Orientation = mvdFrame.Rotation + new Vector3(MathHelper.Pi, 0, MathHelper.Pi);
 
                 // VMD does not have good support for animated FOV. So here just use a constant to avoid "jittering".
                 // The drawback is, some effects (like the first zooming cut in Shooting Stars) will not be able to achieve.

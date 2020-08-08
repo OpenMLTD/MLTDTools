@@ -26,5 +26,7 @@ namespace OpenMLTD.MillionDance.Core {
 
         private const string ModelName = "MODEL_00";
 
+        private const string CameraName = "カメラ・照明";
+
     }
 }

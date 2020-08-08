@@ -728,9 +728,9 @@
             this.label27.AutoSize = true;
             this.label27.Location = new System.Drawing.Point(26, 138);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(138, 13);
+            this.label27.Size = new System.Drawing.Size(135, 13);
             this.label27.TabIndex = 21;
-            this.label27.Text = "Ext. dance ap. file (if exists):";
+            this.label27.Text = "Dance ap.imo file (if exists):";
             // 
             // btnOptSelectExternalDanceAppealFile
             // 
@@ -1014,9 +1014,9 @@
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(26, 234);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(59, 13);
+            this.label11.Size = new System.Drawing.Size(76, 13);
             this.label11.TabIndex = 5;
-            this.label11.Text = "Fixed FOV:";
+            this.label11.Text = "Constant FOV:";
             // 
             // panel3
             // 
@@ -1044,9 +1044,9 @@
             this.radOptCamFormatVmd.AutoSize = true;
             this.radOptCamFormatVmd.Location = new System.Drawing.Point(7, 3);
             this.radOptCamFormatVmd.Name = "radOptCamFormatVmd";
-            this.radOptCamFormatVmd.Size = new System.Drawing.Size(104, 17);
+            this.radOptCamFormatVmd.Size = new System.Drawing.Size(123, 17);
             this.radOptCamFormatVmd.TabIndex = 5;
-            this.radOptCamFormatVmd.Text = "VMD (fixed FOV)";
+            this.radOptCamFormatVmd.Text = "VMD (constant FOV)";
             this.radOptCamFormatVmd.UseVisualStyleBackColor = true;
             // 
             // label10

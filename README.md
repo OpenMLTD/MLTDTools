@@ -59,8 +59,8 @@ Export models, dance animations, morphs and camera motions to MMD equivalents. I
 
 [Manual](https://github.com/OpenMLTD/MLTDTools/wiki/MillionDance-Manual)
 
-Output animation data can be played in [MikuMikuMoving](https://sites.google.com/site/mikumikumovingeng/) (MMM) but not [MikuMikuDance](http://www.geocities.jp/higuchuu4/index_e.htm) (MMD) because the number of frames is huge due to technical limitations.
-Animation conversion seems to fail only when you load the output with MMD; maybe I'll investigate this issue some day. Also, MMM takes much less time reading such big files.
+Output animation data can be played in either [MikuMikuDance](http://www.geocities.jp/higuchuu4/index_e.htm) (MMD) or [MikuMikuMoving](https://sites.google.com/site/mikumikumovingeng/) (MMM). But, the number of frames is huge due to technical limitations.
+MMM is much faster reading motions with large amount of frames. *Don't feed MMD with motions converted in 60 fps. It simply hangs for a long time and then crashes.*
 
 **MLTD Dance Viewer**
 

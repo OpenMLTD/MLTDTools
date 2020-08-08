@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using AssetStudio.Extended.CompositeModels;
 using Imas.Data.Serialized;
 using JetBrains.Annotations;
@@ -137,19 +138,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                 for (var j = 0; j < animatedBoneCount; ++j) {
                     var keyFrame = animation.KeyFrames[keyFrameIndexStart + j];
-                    string mltdBoneName;
-
-                    if (boneNameCache.ContainsKey(keyFrame.Path)) {
-                        mltdBoneName = boneNameCache[keyFrame.Path];
-                    } else {
-                        if (keyFrame.Path.Contains(BoneLookup.BoneNamePart_BodyScale)) {
-                            mltdBoneName = keyFrame.Path.Replace(BoneLookup.BoneNamePart_BodyScale, string.Empty);
-                        } else {
-                            mltdBoneName = keyFrame.Path;
-                        }
-
-                        boneNameCache.Add(keyFrame.Path, mltdBoneName);
-                    }
+                    var mltdBoneName = GetMltdBoneNameWithoutBodyScale(boneNameCache, keyFrame);
 
                     // Uniqueness is asserted above
                     var targetBone = mltdHierarchy.Find(bone => bone.Name == mltdBoneName);
@@ -281,10 +270,13 @@ namespace OpenMLTD.MillionDance.Core {
                         vmdFrameIndex = naturalFrameIndex;
                     }
 
+                    var mltdBoneName = GetMltdBoneNameWithoutBodyScale(boneNameCache, mltdBone.Path);
                     var vmdBoneName = boneLookup.GetVmdBoneNameFromBoneName(mltdBone.Path);
                     var boneFrame = new VmdBoneFrame(vmdFrameIndex, vmdBoneName);
 
-                    boneFrame.Position = t;
+                    var isMovable = BoneLookup.IsBoneMovable(mltdBoneName);
+
+                    boneFrame.Position = isMovable ? t : Vector3.Zero;
                     boneFrame.Rotation = q;
 
                     boneFrameList.Add(boneFrame);
@@ -296,6 +288,31 @@ namespace OpenMLTD.MillionDance.Core {
             }
 
             return boneFrameList.ToArray();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [NotNull]
+        private static string GetMltdBoneNameWithoutBodyScale([NotNull] Dictionary<string, string> boneNameCache, [NotNull] KeyFrame keyFrame) {
+            return GetMltdBoneNameWithoutBodyScale(boneNameCache, keyFrame.Path);
+        }
+
+        [NotNull]
+        private static string GetMltdBoneNameWithoutBodyScale([NotNull] Dictionary<string, string> boneNameCache, [NotNull] string fullBonePath) {
+            string mltdBoneName;
+
+            if (boneNameCache.ContainsKey(fullBonePath)) {
+                mltdBoneName = boneNameCache[fullBonePath];
+            } else {
+                if (fullBonePath.Contains(BoneLookup.BoneNamePart_BodyScale)) {
+                    mltdBoneName = fullBonePath.Replace(BoneLookup.BoneNamePart_BodyScale, string.Empty);
+                } else {
+                    mltdBoneName = fullBonePath;
+                }
+
+                boneNameCache.Add(fullBonePath, mltdBoneName);
+            }
+
+            return mltdBoneName;
         }
 
         private static int CalculateSeekFrameTarget(int naturalFrameIndex, [NotNull] TimedList<int, int> seekFrameControls, ref int lastSoughtFrame, ref int seekFrameCounter) {

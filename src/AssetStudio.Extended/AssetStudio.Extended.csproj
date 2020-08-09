@@ -42,11 +42,18 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="PPtrExtensions.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="TypeExtensions.cs" />
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\thirdparty\AssetStudio\AssetStudio\AssetStudio.csproj">
+        <Project>{7662f8c2-7bfd-442e-a948-a43b4f7eb06e}</Project>
+        <Name>AssetStudio</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

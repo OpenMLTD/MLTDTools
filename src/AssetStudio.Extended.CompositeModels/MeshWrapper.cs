@@ -216,29 +216,38 @@ namespace AssetStudio.Extended.CompositeModels {
                 } else if (kv.Key.Equals("_SubTex", StringComparison.Ordinal)) {
                     subTexEnv = kv.Value;
                 }
+
+                if (mainTexEnv != null && subTexEnv != null) {
+                    break;
+                }
             }
 
-            if (mainTexEnv == null) {
-                throw new KeyNotFoundException("Main texture is missing.");
-            }
+            var hasMainTexture = mainTexEnv != null;
+            var hasSubTexture = subTexEnv != null;
 
-            serializedObjectsLookup.TryGet(mainTexEnv.m_Texture, out Texture2D mainTexture);
+            Texture2D mainTexture = null;
 
-            if (mainTexture == null) {
-                throw new KeyNotFoundException("Main texture is not found by path ID.");
+            if (hasMainTexture) {
+                serializedObjectsLookup.TryGet(mainTexEnv.m_Texture, out mainTexture);
+
+                if (mainTexture == null) {
+                    var pptrStr = mainTexEnv.m_Texture.GetDebugDescription();
+                    Trace.WriteLine($"Warning: Main texture is not found by path ID, use default \"white\" instead. {pptrStr}");
+                }
             }
 
             Texture2D subTexture = null;
 
-            if (subTexEnv != null) {
+            if (hasSubTexture) {
                 serializedObjectsLookup.TryGet(subTexEnv.m_Texture, out subTexture);
 
                 if (subTexture == null) {
-                    throw new KeyNotFoundException("Sub texture is not found by path ID.");
+                    var pptrStr = subTexEnv.m_Texture.GetDebugDescription();
+                    Trace.WriteLine($"Warning: Sub texture is not found by path ID, use default \"white\" instead. {pptrStr}");
                 }
             }
 
-            return new TexturedMaterial(material.m_Name, mainTexture, subTexture, extraProperties);
+            return new TexturedMaterial(material.m_Name, hasMainTexture, mainTexture, hasSubTexture, subTexture, extraProperties);
         }
 
         [NotNull]

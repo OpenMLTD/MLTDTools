@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -16,6 +17,7 @@ using OpenMLTD.MillionDance.Extensions;
 using OpenMLTD.MillionDance.Utilities;
 using OpenTK;
 using BlendShapeData = AssetStudio.Extended.CompositeModels.BlendShapeData;
+using Color = System.Drawing.Color;
 using Quaternion = OpenTK.Quaternion;
 using Vector2 = OpenTK.Vector2;
 using Vector3 = OpenTK.Vector3;
@@ -854,15 +856,46 @@ namespace OpenMLTD.MillionDance.Core {
 
         [NotNull]
         private static BakedMaterial CreateBakedMaterialFromBaseTexture([NotNull] string textureName, [NotNull] TexturedMaterial material) {
-            var baseImage = material.MainTexture.ConvertToBitmap(material.ExtraProperties.ShouldFlip);
+            var mainTexture = material.MainTexture;
+            Bitmap baseImage;
+
+            if (material.HasMainTexture) {
+                if (mainTexture != null) {
+                    baseImage = mainTexture.ConvertToBitmap(material.ExtraProperties.ShouldFlip);
+                } else {
+                    baseImage = Create1x1WhiteBitmap();
+                }
+            } else {
+                throw new InvalidOperationException($"Cannot bake: desired main texture \"{textureName}\" does not exist.");
+            }
 
             return new BakedMaterial(textureName, baseImage);
         }
 
         [NotNull]
-        private static BakedMaterial CreateHighlightBakedMaterial([NotNull] string textureName, [NotNull] TexturedMaterial baseMaterial) {
-            var bitmap = baseMaterial.SubTexture.ConvertToBitmap(baseMaterial.ExtraProperties.ShouldFlip);
-            return new BakedMaterial(textureName, bitmap);
+        private static BakedMaterial CreateHighlightBakedMaterial([NotNull] string textureName, [NotNull] TexturedMaterial material) {
+            var subTexture = material.SubTexture;
+            Bitmap baseImage;
+
+            if (material.HasSubTexture) {
+                if (subTexture != null) {
+                    baseImage = subTexture.ConvertToBitmap(material.ExtraProperties.ShouldFlip);
+                } else {
+                    baseImage = Create1x1WhiteBitmap();
+                }
+            } else {
+                throw new InvalidOperationException($"Cannot bake: desired sub texture \"{textureName}\" does not exist.");
+            }
+
+            return new BakedMaterial(textureName, baseImage);
+        }
+
+        [NotNull]
+        // ReSharper disable once InconsistentNaming
+        private static Bitmap Create1x1WhiteBitmap() {
+            var bitmap = new Bitmap(1, 1, PixelFormat.Format32bppArgb);
+            bitmap.SetPixel(0, 0, Color.White);
+            return bitmap;
         }
 
         [NotNull, ItemNotNull]

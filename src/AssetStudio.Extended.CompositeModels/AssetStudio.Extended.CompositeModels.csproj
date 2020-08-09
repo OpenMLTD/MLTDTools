@@ -76,6 +76,10 @@
         <Project>{7662f8c2-7bfd-442e-a948-a43b4f7eb06e}</Project>
         <Name>AssetStudio</Name>
       </ProjectReference>
+      <ProjectReference Include="..\AssetStudio.Extended\AssetStudio.Extended.csproj">
+        <Project>{0cb033e8-fa03-4349-8ce0-30a996036cd9}</Project>
+        <Name>AssetStudio.Extended</Name>
+      </ProjectReference>
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />

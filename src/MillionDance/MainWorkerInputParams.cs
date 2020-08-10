@@ -88,6 +88,8 @@ namespace OpenMLTD.MillionDance {
 
         public FallbackFacialExpressionSource PreferredFacialExpressionSource { get; set; }
 
+        public bool IgnoreSingControl { get; set; }
+
         public enum FallbackFacialExpressionSource {
 
             Landscape = 0,

@@ -125,6 +125,7 @@
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.lnkHelp = new System.Windows.Forms.LinkLabel();
+            this.chkOptAlwaysSinging = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -692,6 +693,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.chkOptAlwaysSinging);
             this.tabPage2.Controls.Add(this.label27);
             this.tabPage2.Controls.Add(this.btnOptSelectExternalDanceAppealFile);
             this.tabPage2.Controls.Add(this.txtOptExternalDanceAppealFile);
@@ -930,7 +932,7 @@
             // txtOptFixedFov
             // 
             this.txtOptFixedFov.Enabled = false;
-            this.txtOptFixedFov.Location = new System.Drawing.Point(109, 231);
+            this.txtOptFixedFov.Location = new System.Drawing.Point(109, 254);
             this.txtOptFixedFov.Name = "txtOptFixedFov";
             this.txtOptFixedFov.Size = new System.Drawing.Size(60, 20);
             this.txtOptFixedFov.TabIndex = 6;
@@ -993,7 +995,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Enabled = false;
-            this.label17.Location = new System.Drawing.Point(201, 234);
+            this.label17.Location = new System.Drawing.Point(201, 257);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(69, 13);
             this.label17.TabIndex = 10;
@@ -1003,7 +1005,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Enabled = false;
-            this.label12.Location = new System.Drawing.Point(172, 234);
+            this.label12.Location = new System.Drawing.Point(172, 257);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(25, 13);
             this.label12.TabIndex = 7;
@@ -1012,7 +1014,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(26, 234);
+            this.label11.Location = new System.Drawing.Point(26, 257);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(76, 13);
             this.label11.TabIndex = 5;
@@ -1022,7 +1024,7 @@
             // 
             this.panel3.Controls.Add(this.radOptCamFormatMvd);
             this.panel3.Controls.Add(this.radOptCamFormatVmd);
-            this.panel3.Location = new System.Drawing.Point(102, 205);
+            this.panel3.Location = new System.Drawing.Point(102, 228);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(301, 24);
             this.panel3.TabIndex = 4;
@@ -1052,7 +1054,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(7, 210);
+            this.label10.Location = new System.Drawing.Point(7, 233);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(78, 13);
             this.label10.TabIndex = 3;
@@ -1244,6 +1246,16 @@
             this.lnkHelp.TabIndex = 7;
             this.lnkHelp.TabStop = true;
             this.lnkHelp.Text = "Usage help";
+            // 
+            // chkOptAlwaysSinging
+            // 
+            this.chkOptAlwaysSinging.AutoSize = true;
+            this.chkOptAlwaysSinging.Location = new System.Drawing.Point(10, 209);
+            this.chkOptAlwaysSinging.Name = "chkOptAlwaysSinging";
+            this.chkOptAlwaysSinging.Size = new System.Drawing.Size(253, 17);
+            this.chkOptAlwaysSinging.TabIndex = 24;
+            this.chkOptAlwaysSinging.Text = "Always singing (ignore mute controls in scenario)";
+            this.chkOptAlwaysSinging.UseVisualStyleBackColor = true;
             // 
             // FMain
             // 
@@ -1455,5 +1467,6 @@
         private System.Windows.Forms.TextBox txtOptExternalDanceAppealFile;
         private System.Windows.Forms.ComboBox cboOptAppealType;
         private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.CheckBox chkOptAlwaysSinging;
     }
 }

@@ -512,7 +512,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var lipVmd = creator.CreateLipSync(lipSyncInfo, p.FormationNumber);
+                        var lipVmd = creator.CreateLipSync(lipSyncInfo, p.FormationNumber, p.IgnoreSingControl);
 
                         Log("Saving lip sync...");
 

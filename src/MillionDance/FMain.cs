@@ -461,6 +461,7 @@ namespace OpenMLTD.MillionDance {
                 ip.FormationNumber = cboOptFormationNumber.SelectedIndex + 1;
                 ip.AppealType = (AppealType)cboOptAppealType.SelectedIndex;
                 ip.ExternalDanceAppealFile = txtOptExternalDanceAppealFile.Text;
+                ip.IgnoreSingControl = chkOptAlwaysSinging.Checked;
 
                 ip.FacialExpressionMappingFilePath = txtOptFEMappings.Text;
                 ip.PreferredFacialExpressionSource = radFESourceLandscape.Checked ? MainWorkerInputParams.FallbackFacialExpressionSource.Landscape : MainWorkerInputParams.FallbackFacialExpressionSource.Portrait;

@@ -13,11 +13,11 @@ namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
         [NotNull]
-        public VmdMotion CreateLipSync([CanBeNull] ScenarioObject baseScenario, int formationNumber) {
+        public VmdMotion CreateLipSync([CanBeNull] ScenarioObject baseScenario, int formationNumber, bool ignoreSingControl) {
             VmdFacialFrame[] frames;
 
             if (ProcessFacialFrames && baseScenario != null) {
-                frames = CreateLipSyncFrames(baseScenario, formationNumber);
+                frames = CreateLipSyncFrames(baseScenario, formationNumber, ignoreSingControl);
             } else {
                 frames = null;
             }
@@ -39,17 +39,26 @@ namespace OpenMLTD.MillionDance.Core {
         }
 
         [NotNull, ItemNotNull]
-        private VmdFacialFrame[] CreateLipSyncFrames([NotNull] ScenarioObject lipSync, int formationNumber) {
+        private VmdFacialFrame[] CreateLipSyncFrames([NotNull] ScenarioObject lipSync, int formationNumber, bool ignoreSingControl) {
             var frameList = new List<VmdFacialFrame>();
 
             var lipSyncControls = lipSync.Scenario.WhereToArray(s => s.Type == ScenarioDataType.LipSync);
-            var singControlList = lipSync.Scenario.WhereToList(s => s.Type == ScenarioDataType.SingControl);
 
-            // Make sure the events are sorted.
-            singControlList.Sort((s1, s2) => s1.AbsoluteTime.CompareTo(s2.AbsoluteTime));
+            EventScenarioData[] singControls;
+            double[] singControlTimes;
 
-            var singControls = singControlList.ToArray();
-            var singControlTimes = singControls.SelectToArray(s => s.AbsoluteTime);
+            if (ignoreSingControl) {
+                singControls = Array.Empty<EventScenarioData>();
+                singControlTimes = Array.Empty<double>();
+            } else {
+                var singControlList = lipSync.Scenario.WhereToList(s => s.Type == ScenarioDataType.SingControl);
+
+                // Make sure the events are sorted.
+                singControlList.Sort((s1, s2) => s1.AbsoluteTime.CompareTo(s2.AbsoluteTime));
+
+                singControls = singControlList.ToArray();
+                singControlTimes = singControls.SelectToArray(s => s.AbsoluteTime);
+            }
 
             Trace.Assert(lipSyncControls.Length > 0, "Lip-sync controls should exist.");
             Trace.Assert(lipSyncControls[0].Param == (int)LipCode.Closed, "The first control op should be 54.");

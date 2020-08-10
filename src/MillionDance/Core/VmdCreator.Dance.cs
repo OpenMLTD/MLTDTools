@@ -17,6 +17,19 @@ using OpenTK;
 namespace OpenMLTD.MillionDance.Core {
     partial class VmdCreator {
 
+        [NotNull]
+        public VmdMotion CreateDanceMotion([CanBeNull] IBodyAnimationSource mainDance, [NotNull] ScenarioObject baseScenario, [CanBeNull] ScenarioObject formationInfo, [CanBeNull] PrettyAvatar avatar, [CanBeNull] PmxModel mltdPmxModel, [CanBeNull] IBodyAnimationSource danceAppeal, int formationNumber, AppealType appealType) {
+            VmdBoneFrame[] frames;
+
+            if (ProcessBoneFrames && (mainDance != null && avatar != null && mltdPmxModel != null)) {
+                frames = CreateBoneFrames(mainDance, avatar, mltdPmxModel, baseScenario, formationInfo, danceAppeal, formationNumber, appealType);
+            } else {
+                frames = Array.Empty<VmdBoneFrame>();
+            }
+
+            return new VmdMotion(ModelName, frames, null, null, null, null);
+        }
+
         [NotNull, ItemNotNull]
         private VmdBoneFrame[] CreateBoneFrames([NotNull] IBodyAnimationSource mainDance, [NotNull] PrettyAvatar avatar, [NotNull] PmxModel pmx, [NotNull] ScenarioObject baseScenario, [CanBeNull] ScenarioObject formationInfo, [CanBeNull] IBodyAnimationSource danceAppeal, int formationNumber, AppealType appealType) {
             var boneLookup = new BoneLookup(_conversionConfig);

@@ -84,9 +84,8 @@
     <Compile Include="Core\PmxCreator.Physics.cs" />
     <Compile Include="Core\PmxCreator.Physics.PhysicsObject.cs" />
     <Compile Include="Core\SkeletonFormat.cs" />
-    <Compile Include="Core\VmdCreator.BoneAnimation.cs" />
+    <Compile Include="Core\VmdCreator.Dance.cs" />
     <Compile Include="Core\VmdCreator.Camera.cs" />
-    <Compile Include="Core\VmdCreator.CharacterAnimation.cs" />
     <Compile Include="Core\VmdCreator.FacialExpressions.cs" />
     <Compile Include="Core\VmdCreator.FacialExpressionTable.cs" />
     <Compile Include="Core\VmdCreator.Light.cs" />

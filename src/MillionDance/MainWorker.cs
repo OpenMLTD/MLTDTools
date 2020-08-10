@@ -493,7 +493,7 @@ namespace OpenMLTD.MillionDance {
                             ProcessLightFrames = false
                         };
 
-                        var danceVmd = creator.CreateCharacterAnimation(mainDance, baseScenario, formationInfo, combinedAvatar, pmx, danceAppeal, p.FormationNumber, p.AppealType);
+                        var danceVmd = creator.CreateDanceMotion(mainDance, baseScenario, formationInfo, combinedAvatar, pmx, danceAppeal, p.FormationNumber, p.AppealType);
 
                         Log("Saving character motion...");
 

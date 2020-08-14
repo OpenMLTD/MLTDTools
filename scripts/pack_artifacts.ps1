@@ -20,41 +20,67 @@ function Test-TagRelease()
     return $r
 }
 
-[String]$configuration = $env:CONFIGURATION
-[String]$basePath = $env:APPVEYOR_BUILD_FOLDER
-
-$subPaths = @(
-[String]::Format("src/AcbPack/bin/{0}", $configuration),
-[String]::Format("src/HcaDec/bin/{0}", $configuration),
-[String]::Format("src/MillionDance/bin/x86/{0}", $configuration), # temporarily pinned to x86 because of AssetStudioUtilities
-[String]::Format("src/MillionDanceView/bin/x86/{0}", $configuration), # temporarily pinned to x86 because of AssetStudioUtilities
-[String]::Format("src/MiriTore.Common/bin/{0}", $configuration),
-[String]::Format("src/MiriTore.Logging/bin/{0}", $configuration),
-[String]::Format("src/MltdInfoViewer/bin/{0}", $configuration),
-[String]::Format("src/ExtractAcb/bin/{0}", $configuration),
-[String]::Format("src/TDFacial/bin/{0}", $configuration), # remember to include facial_expr.json
-[String]::Format("src/ManifestTools/bin/{0}", $configuration),
-[String]::Empty
-);
-
-foreach ($subPath in $subPaths)
+function Add-ProgramFiles()
 {
-    if ( [String]::IsNullOrEmpty($subPath))
+    [String]$configuration = $env:CONFIGURATION
+    [String]$basePath = $env:APPVEYOR_BUILD_FOLDER
+
+    [String[]]$subPaths = @(
+    [String]::Format("src/AcbPack/bin/{0}", $configuration),
+    [String]::Format("src/HcaDec/bin/{0}", $configuration),
+    [String]::Format("src/MillionDance/bin/x86/{0}", $configuration), # temporarily pinned to x86 because of AssetStudioUtilities
+    [String]::Format("src/MillionDanceView/bin/x86/{0}", $configuration), # temporarily pinned to x86 because of AssetStudioUtilities
+    [String]::Format("src/MiriTore.Common/bin/{0}", $configuration),
+    [String]::Format("src/MiriTore.Logging/bin/{0}", $configuration),
+    [String]::Format("src/MltdInfoViewer/bin/{0}", $configuration),
+    [String]::Format("src/ExtractAcb/bin/{0}", $configuration),
+    [String]::Format("src/TDFacial/bin/{0}", $configuration), # remember to include facial_expr.json
+    [String]::Format("src/ManifestTools/bin/{0}", $configuration),
+    [String]::Empty
+    );
+
+    foreach ($subPath in $subPaths)
     {
-        continue
+        if ( [String]::IsNullOrEmpty($subPath))
+        {
+            continue;
+        }
+
+        [String]$fullDirPath = [System.IO.Path]::Combine($basePath, $subPath);
+        [String]$xmlFilesPattern = [System.IO.Path]::Combine($fullDirPath, "*.xml")
+
+        Remove-Item $xmlFilesPattern
+
+        [String]$allFilesPattern = [System.IO.Path]::Combine($fullDirPath, "*")
+
+        & 7z a $zipName -r $allFilesPattern
     }
-
-    [String]$fullDirPath = [System.IO.Path]::Combine($basePath, $subPath);
-    [String]$xmlFilesPattern = [System.IO.Path]::Combine($fullDirPath, "*.xml")
-
-    Remove-Item $xmlFilesPattern
-
-    [String]$allFilesPattern = [System.IO.Path]::Combine($fullDirPath, "*")
-
-    & 7z a $zipName -r $allFilesPattern
 }
 
-& 7z a miritore.zip "${env:APPVEYOR_BUILD_FOLDER}\README.html"
+function Add-MiscFiles()
+{
+    [String]$buildDir = $env:APPVEYOR_BUILD_FOLDER;
+    [String[]]$subPaths = @(
+    "./README.html",
+    "./version.txt",
+    [String]::Empty
+    );
+
+    foreach ($subPath in $subPaths)
+    {
+        if ( [String]::IsNullOrEmpty($subPath))
+        {
+            continue;
+        }
+
+        [String]$fullPath = [System.IO.Path]::Combine($buildDir, $subPath);
+
+        & 7z a miritore.zip $fullPath
+    }
+}
+
+Add-ProgramFiles
+Add-MiscFiles
 
 [Boolean]$isTagRelease = Test-TagRelease
 [String]$tagRelComp = if ($isTagRelease)

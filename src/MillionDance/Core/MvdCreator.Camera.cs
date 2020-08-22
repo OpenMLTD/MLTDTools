@@ -65,13 +65,14 @@ namespace OpenMLTD.MillionDance.Core {
 
             var cameraFrameList = new List<MvdCameraFrame>();
 
-            var appealTimes = AppealHelper.CollectAppealTimeInfo(baseScenario);
+            var appealTimes = appealType != AppealType.None ? AppealHelper.CollectAppealTimeInfo(baseScenario) : default;
 
+            var transform60FpsTo30Fps = _conversionConfig.Transform60FpsTo30Fps;
             var scaleToVmdSize = _conversionConfig.ScaleToVmdSize;
             var unityToVmdScale = _scalingConfig.ScaleUnityToVmd;
 
             for (var mltdFrameIndex = 0; mltdFrameIndex < animationFrameCount; ++mltdFrameIndex) {
-                if (_conversionConfig.Transform60FpsTo30Fps) {
+                if (transform60FpsTo30Fps) {
                     if (mltdFrameIndex % 2 == 1) {
                         continue;
                     }
@@ -80,14 +81,6 @@ namespace OpenMLTD.MillionDance.Core {
                 // When entering and leaving the appeal, there is also a camera control event (type 58) with `layer` > 0 (see CollectFormationChanges() for the meaning of `layer`).
                 var shouldUseAppeal = appealType != AppealType.None && (appealTimes.StartFrame <= mltdFrameIndex && mltdFrameIndex < appealTimes.EndFrame) && appealAnimation != null;
                 var animation = shouldUseAppeal ? appealAnimation : mainAnimation;
-
-                int mvdFrameIndex;
-
-                if (_conversionConfig.Transform60FpsTo30Fps) {
-                    mvdFrameIndex = mltdFrameIndex / 2;
-                } else {
-                    mvdFrameIndex = mltdFrameIndex;
-                }
 
                 int projectedFrameIndex;
 
@@ -98,16 +91,29 @@ namespace OpenMLTD.MillionDance.Core {
                         indexInAppeal = appealAnimation.FrameCount - 1;
                     }
 
-                    projectedFrameIndex = indexInAppeal;
+                    // `indexInAppeal`, unlike `mltdFrameIndex`, has not been scaled yet
+                    if (transform60FpsTo30Fps) {
+                        projectedFrameIndex = indexInAppeal / 2;
+                    } else {
+                        projectedFrameIndex = indexInAppeal;
+                    }
                 } else {
                     projectedFrameIndex = mltdFrameIndex;
                 }
 
-                var frame = animation.CameraFrames[projectedFrameIndex];
+                var motionFrame = animation.CameraFrames[projectedFrameIndex];
+
+                int mvdFrameIndex;
+
+                if (transform60FpsTo30Fps) {
+                    mvdFrameIndex = mltdFrameIndex / 2;
+                } else {
+                    mvdFrameIndex = mltdFrameIndex;
+                }
 
                 var mvdFrame = new MvdCameraFrame(mvdFrameIndex);
 
-                var position = new Vector3(frame.PositionX, frame.PositionY, frame.PositionZ);
+                var position = new Vector3(motionFrame.PositionX, motionFrame.PositionY, motionFrame.PositionZ);
 
                 position = position.FixUnityToMmd();
 
@@ -117,7 +123,7 @@ namespace OpenMLTD.MillionDance.Core {
 
                 mvdFrame.Position = position;
 
-                var target = new Vector3(frame.TargetX, frame.TargetY, frame.TargetZ);
+                var target = new Vector3(motionFrame.TargetX, motionFrame.TargetY, motionFrame.TargetZ);
 
                 target = target.FixUnityToMmd();
 
@@ -131,12 +137,12 @@ namespace OpenMLTD.MillionDance.Core {
 
                 var q = CameraOrientation.QuaternionLookAt(in position, in target, in Vector3.UnitY);
 
-                var rotation = CameraOrientation.ComputeMmdOrientation(in q, frame.AngleZ);
+                var rotation = CameraOrientation.ComputeMmdOrientation(in q, motionFrame.AngleZ);
 
                 mvdFrame.Rotation = rotation;
 
                 // MVD has good support of dynamic FOV. So here we can animate its value.
-                var fov = FocalLengthToFov(frame.FocalLength);
+                var fov = FocalLengthToFov(motionFrame.FocalLength);
                 mvdFrame.FieldOfView = MathHelper.DegreesToRadians(fov);
 
                 cameraFrameList.Add(mvdFrame);

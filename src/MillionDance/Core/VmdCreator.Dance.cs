@@ -110,36 +110,39 @@ namespace OpenMLTD.MillionDance.Core {
             var lastSoughtFrame = -1;
 
             // OK, now perform iterations
-            for (var naturalFrameIndex = 0; naturalFrameIndex < resultFrameCount; ++naturalFrameIndex) {
+            for (var mltdFrameIndex = 0; mltdFrameIndex < resultFrameCount; ++mltdFrameIndex) {
                 if (transform60FpsTo30Fps) {
-                    if (naturalFrameIndex % 2 == 1) {
+                    if (mltdFrameIndex % 2 == 1) {
                         continue;
                     }
                 }
 
-                var shouldUseAppeal = appealType != AppealType.None && (appealTimes.StartFrame <= naturalFrameIndex && naturalFrameIndex < appealTimes.EndFrame) && appealAnimation != null;
+                var shouldUseAppeal = appealType != AppealType.None && (appealTimes.StartFrame <= mltdFrameIndex && mltdFrameIndex < appealTimes.EndFrame) && appealAnimation != null;
 
                 var animation = shouldUseAppeal ? appealAnimation : mainAnimation;
 
-                int keyFrameIndexStart;
+                int projectedFrameIndex;
 
                 if (shouldUseAppeal) {
-                    var indexInAppeal = naturalFrameIndex - appealTimes.StartFrame;
+                    var indexInAppeal = mltdFrameIndex - appealTimes.StartFrame;
 
                     if (indexInAppeal >= appealAnimation.FrameCount) {
                         indexInAppeal = appealAnimation.FrameCount - 1;
                     }
 
-                    keyFrameIndexStart = indexInAppeal * animatedBoneCount;
+                    // `indexInAppeal`, unlike `mltdFrameIndex`, has not been scaled yet
+                    if (transform60FpsTo30Fps) {
+                        projectedFrameIndex = indexInAppeal / 2;
+                    } else {
+                        projectedFrameIndex = indexInAppeal;
+                    }
                 } else {
-                    var actualFrameIndex = CalculateSeekFrameTarget(naturalFrameIndex, seekFrameControls, ref lastSoughtFrame, ref seekFrameCounter);
-
-                    keyFrameIndexStart = actualFrameIndex * animatedBoneCount;
+                    projectedFrameIndex = CalculateSeekFrameTarget(mltdFrameIndex, seekFrameControls, ref lastSoughtFrame, ref seekFrameCounter);
                 }
 
                 var formationList = shouldUseAppeal ? appealFormationList : baseFormationList;
 
-                formationList.TryGetCurrentValue(naturalFrameIndex, out var formations);
+                formationList.TryGetCurrentValue(mltdFrameIndex, out var formations);
 
                 Vector4 idolOffset;
 
@@ -148,6 +151,8 @@ namespace OpenMLTD.MillionDance.Core {
                 } else {
                     idolOffset = formations[formationNumber - 1];
                 }
+
+                var keyFrameIndexStart = projectedFrameIndex * animatedBoneCount;
 
                 for (var j = 0; j < animatedBoneCount; ++j) {
                     var keyFrame = animation.KeyFrames[keyFrameIndexStart + j];
@@ -278,9 +283,9 @@ namespace OpenMLTD.MillionDance.Core {
                     int vmdFrameIndex;
 
                     if (_conversionConfig.Transform60FpsTo30Fps) {
-                        vmdFrameIndex = naturalFrameIndex / 2;
+                        vmdFrameIndex = mltdFrameIndex / 2;
                     } else {
-                        vmdFrameIndex = naturalFrameIndex;
+                        vmdFrameIndex = mltdFrameIndex;
                     }
 
                     var mltdBoneName = GetMltdBoneNameWithoutBodyScale(boneNameCache, mltdBone.Path);

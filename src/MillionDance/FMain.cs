@@ -51,6 +51,7 @@ namespace OpenMLTD.MillionDance {
             lnkHelp.LinkClicked -= LnkHelp_LinkClicked;
             cboOptAppealType.SelectedIndexChanged -= CboOptAppealType_SelectedIndexChanged;
             btnOptSelectExternalDanceAppealFile.Click -= BtnOptSelectExternalAppealFile_Click;
+            chkOptSpecifyCameraNumber.CheckedChanged -= ChkOptSpecifyCameraNumber_CheckedChanged;
         }
 
         private void RegisterEventHandlers() {
@@ -81,6 +82,11 @@ namespace OpenMLTD.MillionDance {
             lnkHelp.LinkClicked += LnkHelp_LinkClicked;
             cboOptAppealType.SelectedIndexChanged += CboOptAppealType_SelectedIndexChanged;
             btnOptSelectExternalDanceAppealFile.Click += BtnOptSelectExternalAppealFile_Click;
+            chkOptSpecifyCameraNumber.CheckedChanged += ChkOptSpecifyCameraNumber_CheckedChanged;
+        }
+
+        private void ChkOptSpecifyCameraNumber_CheckedChanged(object sender, EventArgs e) {
+            txtOptSpecifiedCameraNumber.Enabled = chkOptSpecifyCameraNumber.Checked;
         }
 
         private void BtnOptSelectExternalAppealFile_Click(object sender, EventArgs e) {
@@ -459,6 +465,7 @@ namespace OpenMLTD.MillionDance {
                 ip.FixedFov = ip.UseMvdForCamera ? 0 : Convert.ToUInt32(txtOptFixedFov.Text);
                 ip.MotionNumber = cboOptMotionNumber.SelectedIndex + 1;
                 ip.FormationNumber = cboOptFormationNumber.SelectedIndex + 1;
+                ip.DesiredCameraNumber = chkOptSpecifyCameraNumber.Checked ? (int)txtOptSpecifiedCameraNumber.Value : (int?)null;
                 ip.AppealType = (AppealType)cboOptAppealType.SelectedIndex;
                 ip.ExternalDanceAppealFile = txtOptExternalDanceAppealFile.Text;
                 ip.IgnoreSingControl = chkOptAlwaysSinging.Checked;

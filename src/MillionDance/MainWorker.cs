@@ -150,9 +150,9 @@ namespace OpenMLTD.MillionDance {
                     Log("Loading dance motion...");
                     var loadedDance = ResourceLoader.LoadDance(p.InputDance, p.MotionNumber, p.FormationNumber);
                     IBodyAnimationSource apSpecial, apAnother, apGorgeous;
-                    (mainDance, apSpecial, apAnother, apGorgeous) = (loadedDance.AnimationSet.Default, loadedDance.AnimationSet.Special, loadedDance.AnimationSet.Another, loadedDance.AnimationSet.Gorgeous);
+                    (mainDance, apSpecial, apAnother, apGorgeous) = (loadedDance.Default, loadedDance.Special, loadedDance.Another, loadedDance.Gorgeous);
                     if (mainDance == null) {
-                        if (MltdAnimation.MinMotion <= loadedDance.SuggestedPosition && loadedDance.SuggestedPosition <= MltdAnimation.MaxMotion) {
+                        if (MltdAnimation.MinDance <= loadedDance.SuggestedPosition && loadedDance.SuggestedPosition <= MltdAnimation.MaxDance) {
                             Log($"Cannot load dance data. However, this file may contain animation for idol using motion {loadedDance.SuggestedPosition.ToString()}. Please check whether you selected the correct motion number (in 'Motions' tab).");
                         } else {
                             Log("Cannot load dance data. Please check whether you selected a dance data file.");
@@ -199,7 +199,7 @@ namespace OpenMLTD.MillionDance {
                             }
 
                             var externalAppealData = ResourceLoader.LoadDance(p.ExternalDanceAppealFile, p.MotionNumber, p.FormationNumber);
-                            (apSpecial, apAnother, apGorgeous) = (externalAppealData.AnimationSet.Special, externalAppealData.AnimationSet.Another, externalAppealData.AnimationSet.Gorgeous);
+                            (apSpecial, apAnother, apGorgeous) = (externalAppealData.Special, externalAppealData.Another, externalAppealData.Gorgeous);
 
                             switch (p.AppealType) {
                                 case AppealType.Special: {
@@ -360,11 +360,15 @@ namespace OpenMLTD.MillionDance {
                 if (p.GenerateCameraMotion) {
                     Log("Loading camera motion...");
                     CharacterImasMotionAsset apSpecial, apAnother, apGorgeous;
-                    var loadedCamera = ResourceLoader.LoadCamera(p.InputCamera);
+                    var loadedCamera = ResourceLoader.LoadCamera(p.InputCamera, p.DesiredCameraNumber);
                     (mainCamera, apSpecial, apAnother, apGorgeous) = (loadedCamera.Default, loadedCamera.Special, loadedCamera.Another, loadedCamera.Gorgeous);
                     if (mainCamera == null) {
                         Log("Cannot load camera data.");
                         break;
+                    }
+
+                    if (p.DesiredCameraNumber.HasValue && loadedCamera.CameraNumber == ResourceLoader.InvalidCameraNumber) {
+                        Log($"Cannot find motion for camera #{p.DesiredCameraNumber.Value.ToString()}, using the first found motion.");
                     }
 
                     if (p.AppealType != AppealType.None) {

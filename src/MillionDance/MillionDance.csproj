@@ -73,7 +73,6 @@
     <Compile Include="Core\IO\MvdWriter.cs" />
     <Compile Include="Core\IO\PmxWriter.cs" />
     <Compile Include="Core\IO\ResourceLoader.cs" />
-    <Compile Include="Core\IO\ResourceLoader.LoadedDance.cs" />
     <Compile Include="Core\IO\VmdWriter.cs" />
     <Compile Include="Core\MltdAnimation.cs" />
     <Compile Include="Core\MotionFormat.cs" />
@@ -96,7 +95,9 @@
     <Compile Include="Entities\Internal\AnimationSet`1.cs" />
     <Compile Include="Entities\Internal\BakedMaterial.cs" />
     <Compile Include="Entities\Internal\CameraAnimation.cs" />
+    <Compile Include="Entities\Internal\CameraAnimationSet`1.cs" />
     <Compile Include="Entities\Internal\CameraFrame.cs" />
+    <Compile Include="Entities\Internal\DanceAnimationSet`1.cs" />
     <Compile Include="Entities\Mltd\CompiledBodyAnimationSource.cs" />
     <Compile Include="Entities\Mltd\LegacyBodyAnimationSource.cs" />
     <Compile Include="Entities\Mvd\InterpolationPair.cs" />

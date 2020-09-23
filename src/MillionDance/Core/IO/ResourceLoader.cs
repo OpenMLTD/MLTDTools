@@ -13,7 +13,7 @@ using OpenMLTD.MillionDance.Entities.Internal;
 using OpenMLTD.MillionDance.Entities.Mltd;
 
 namespace OpenMLTD.MillionDance.Core.IO {
-    internal static partial class ResourceLoader {
+    internal static class ResourceLoader {
 
         [NotNull]
         public static TransformHierarchies LoadTransformHierarchies([NotNull] string filePath) {
@@ -143,58 +143,40 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         [NotNull]
-        public static AnimationSet<CharacterImasMotionAsset> LoadCamera([NotNull] string filePath) {
+        public static CameraAnimationSet<CharacterImasMotionAsset> LoadCamera([NotNull] string filePath, [CanBeNull] int? desiredCameraNumber) {
             CharacterImasMotionAsset cam = null, apa = null, apg = null, bpg = null;
-
-            const string defCamEnds = "_cam.imo";
-            const string apaCamEnds = "_apa.imo";
-            const string apgCamEnds = "_apg.imo";
-            const string bpgCamEnds = "_bpg.imo";
-            const string apaPortraitCamEnds = "_tate_apa.imo";
-            const string apgPortraitCamEnds = "_tate_apg.imo";
-            const string bpgPortraitCamEnds = "_tate_bpg.imo"; // should not exist
 
             var manager = new AssetsManager();
             manager.LoadFiles(filePath);
 
             var ser = new ScriptableObjectSerializer();
+            int cameraNumber;
 
-            foreach (var assetFile in manager.assetsFileList) {
-                foreach (var obj in assetFile.Objects) {
-                    if (obj.type != ClassIDType.MonoBehaviour) {
-                        continue;
-                    }
-
-                    var behaviour = obj as MonoBehaviour;
-
-                    if (behaviour == null) {
-                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
-                    }
-
-                    if (behaviour.m_Name.EndsWith(defCamEnds)) {
-                        cam = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                    } else if (behaviour.m_Name.EndsWith(apaCamEnds) && !behaviour.m_Name.EndsWith(apaPortraitCamEnds)) {
-                        apa = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                    } else if (behaviour.m_Name.EndsWith(apgCamEnds) && !behaviour.m_Name.EndsWith(apgPortraitCamEnds)) {
-                        apg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                    } else if (behaviour.m_Name.EndsWith(bpgCamEnds) && !behaviour.m_Name.EndsWith(bpgPortraitCamEnds)) {
-                        bpg = ser.Deserialize<CharacterImasMotionAsset>(behaviour);
-                    }
-
-                    if (cam != null && apa != null && apg != null && bpg != null) {
+            if (desiredCameraNumber != null) {
+                do {
+                    // Some songs, e.g. Alliance Stardust (alstar), has more than one cameras.
+                    // In these cases the user must select the appropriate camera number.
+                    if (TryLoadSpecifiedCamera(manager, ser, desiredCameraNumber.Value, ref cam, ref apa, ref apg, ref bpg)) {
+                        cameraNumber = desiredCameraNumber.Value;
                         break;
                     }
-                }
+
+                    TryLoadFirstFoundCamera(manager, ser, ref cam, ref apa, ref apg, ref bpg);
+                    cameraNumber = InvalidCameraNumber;
+                } while (false);
+            } else {
+                TryLoadFirstFoundCamera(manager, ser, ref cam, ref apa, ref apg, ref bpg);
+                cameraNumber = UnspecifiedCameraNumber;
             }
 
-            return AnimationSet.Create(cam, apg, apa, bpg);
+            return AnimationSet.CreateCamera(cameraNumber, cam, apg, apa, bpg);
         }
 
         [NotNull]
-        public static LoadedDance LoadDance([NotNull] string filePath, int motionNumber, int formationNumber) {
+        public static DanceAnimationSet<IBodyAnimationSource> LoadDance([NotNull] string filePath, int motionNumber, int formationNumber) {
             IBodyAnimationSource defaultSource = null, anotherSource = null, specialSource = null, gorgeousSource = null;
             bool anyAnimationLoaded;
-            var suggestedPosition = InvalidDancePosition;
+            int suggestedPosition;
 
             // About number of main dance animations and special/another appeal animations:
             // Most songs have 1 dance animation (i.e. animation for 1 idol, multiplied by 3/4/5 etc.) and 1 appeal animation
@@ -206,8 +188,9 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             {
                 // First try with legacy bundles
-                var loaded = LoadDanceLegacy(filePath, motionNumber, formationNumber, out suggestedPosition);
+                var loaded = LoadDanceLegacy(filePath, motionNumber, formationNumber);
 
+                suggestedPosition = loaded.SuggestedPosition;
                 anyAnimationLoaded = loaded.Default != null || loaded.Special != null || loaded.Another != null || loaded.Gorgeous != null;
 
                 if (loaded.Default != null) {
@@ -229,7 +212,9 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             if (!anyAnimationLoaded) {
                 // If failed, try the new one (from ~mid 2018?)
-                var loaded = LoadDanceCompiled(filePath, motionNumber, formationNumber, out suggestedPosition);
+                var loaded = LoadDanceCompiled(filePath, motionNumber, formationNumber);
+
+                suggestedPosition = loaded.SuggestedPosition;
 
                 if (loaded.Default != null) {
                     defaultSource = new CompiledBodyAnimationSource(loaded.Default);
@@ -248,9 +233,9 @@ namespace OpenMLTD.MillionDance.Core.IO {
                 }
             }
 
-            var animationSet = AnimationSet.Create(defaultSource, specialSource, anotherSource, gorgeousSource);
+            var animationSet = AnimationSet.CreateDance(suggestedPosition, defaultSource, specialSource, anotherSource, gorgeousSource);
 
-            return new LoadedDance(animationSet, suggestedPosition);
+            return animationSet;
         }
 
         public static (ScenarioObject, ScenarioObject, ScenarioObject) LoadScenario([NotNull] string filePath) {
@@ -295,7 +280,7 @@ namespace OpenMLTD.MillionDance.Core.IO {
         }
 
         [NotNull]
-        private static AnimationSet<CharacterImasMotionAsset> LoadDanceLegacy([NotNull] string filePath, int motionNumber, int formationNumber, out int suggestedPosition) {
+        private static DanceAnimationSet<CharacterImasMotionAsset> LoadDanceLegacy([NotNull] string filePath, int motionNumber, int formationNumber) {
             CharacterImasMotionAsset dan = null, apa = null, apg = null, bpg = null;
 
             var danComp = $"{motionNumber:00}_dan.imo";
@@ -337,13 +322,13 @@ namespace OpenMLTD.MillionDance.Core.IO {
                 }
             }
 
-            suggestedPosition = GetSuggestedDancePosition(manager);
+            var suggestedPosition = GetSuggestedDancePosition(manager);
 
-            return AnimationSet.Create(dan, apg, apa, bpg);
+            return AnimationSet.CreateDance(suggestedPosition, dan, apg, apa, bpg);
         }
 
         [NotNull]
-        private static AnimationSet<AnimationClip> LoadDanceCompiled([NotNull] string filePath, int motionNumber, int formationNumber, out int suggestedPosition) {
+        private static DanceAnimationSet<AnimationClip> LoadDanceCompiled([NotNull] string filePath, int motionNumber, int formationNumber) {
             AnimationClip dan = null, apa = null, apg = null, bpg = null;
 
             var danComp = $"{motionNumber:00}_dan";
@@ -382,9 +367,90 @@ namespace OpenMLTD.MillionDance.Core.IO {
                 }
             }
 
-            suggestedPosition = GetSuggestedDancePosition(manager);
+            var suggestedPosition = GetSuggestedDancePosition(manager);
 
-            return AnimationSet.Create(dan, apg, apa, bpg);
+            return AnimationSet.CreateDance(suggestedPosition, dan, apg, apa, bpg);
+        }
+
+        private static bool TryLoadSpecifiedCamera([NotNull] AssetsManager manager, [NotNull] ScriptableObjectSerializer serializer, int cameraNumber, [CanBeNull] ref CharacterImasMotionAsset cam, [CanBeNull] ref CharacterImasMotionAsset apa, [CanBeNull] ref CharacterImasMotionAsset apg, [CanBeNull] ref CharacterImasMotionAsset bpg) {
+            var camNumStr = cameraNumber.ToString("00");
+            var defCamEnds = $"_{camNumStr}_cam.imo";
+            var apaCamEnds = $"_{camNumStr}_apa.imo";
+            var apgCamEnds = $"_{camNumStr}_apg.imo";
+            var bpgCamEnds = $"_{camNumStr}_bpg.imo";
+            // var apaPortraitCamEnds = $"_{camNumStr}_tate_apa.imo";
+            // var apgPortraitCamEnds = $"_{camNumStr}_tate_apg.imo";
+            // var bpgPortraitCamEnds = $"_{camNumStr}_tate_bpg.imo"; // should not exist
+
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.MonoBehaviour) {
+                        continue;
+                    }
+
+                    var behaviour = obj as MonoBehaviour;
+
+                    if (behaviour == null) {
+                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                    }
+
+                    if (behaviour.m_Name.EndsWith(defCamEnds)) {
+                        cam = serializer.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apaCamEnds)) {
+                        apa = serializer.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apgCamEnds)) {
+                        apg = serializer.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(bpgCamEnds)) {
+                        bpg = serializer.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    }
+
+                    if (cam != null && apa != null && apg != null && bpg != null) {
+                        break;
+                    }
+                }
+            }
+
+            return cam != null && apa != null && apg != null && bpg != null;
+        }
+
+        private static bool TryLoadFirstFoundCamera([NotNull] AssetsManager manager, [NotNull] ScriptableObjectSerializer serializer, [CanBeNull] ref CharacterImasMotionAsset cam, [CanBeNull] ref CharacterImasMotionAsset apa, [CanBeNull] ref CharacterImasMotionAsset apg, [CanBeNull] ref CharacterImasMotionAsset bpg) {
+            const string defCamEnds = "_cam.imo";
+            const string apaCamEnds = "_apa.imo";
+            const string apgCamEnds = "_apg.imo";
+            const string bpgCamEnds = "_bpg.imo";
+            const string apaPortraitCamEnds = "_tate_apa.imo";
+            const string apgPortraitCamEnds = "_tate_apg.imo";
+            const string bpgPortraitCamEnds = "_tate_bpg.imo"; // should not exist
+
+            foreach (var assetFile in manager.assetsFileList) {
+                foreach (var obj in assetFile.Objects) {
+                    if (obj.type != ClassIDType.MonoBehaviour) {
+                        continue;
+                    }
+
+                    var behaviour = obj as MonoBehaviour;
+
+                    if (behaviour == null) {
+                        throw new ArgumentException("An object serialized as MonoBehaviour is actually not a MonoBehaviour.");
+                    }
+
+                    if (behaviour.m_Name.EndsWith(defCamEnds)) {
+                        cam = serializer.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apaCamEnds) && !behaviour.m_Name.EndsWith(apaPortraitCamEnds)) {
+                        apa = serializer.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(apgCamEnds) && !behaviour.m_Name.EndsWith(apgPortraitCamEnds)) {
+                        apg = serializer.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    } else if (behaviour.m_Name.EndsWith(bpgCamEnds) && !behaviour.m_Name.EndsWith(bpgPortraitCamEnds)) {
+                        bpg = serializer.Deserialize<CharacterImasMotionAsset>(behaviour);
+                    }
+
+                    if (cam != null && apa != null && apg != null && bpg != null) {
+                        break;
+                    }
+                }
+            }
+
+            return cam != null && apa != null && apg != null && bpg != null;
         }
 
         public static (SwayController Body, SwayController Head) LoadSwayControllers([NotNull] string bodyFilePath, [NotNull] string headFilePath) {
@@ -404,6 +470,12 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
             return (Body: body, Head: head);
         }
+
+        internal const int InvalidDancePosition = -1;
+
+        internal const int UnspecifiedCameraNumber = 0;
+
+        internal const int InvalidCameraNumber = -1;
 
         [CanBeNull]
         private static SwayController LoadSwayController([NotNull] string filePath) {
@@ -473,8 +545,6 @@ namespace OpenMLTD.MillionDance.Core.IO {
 
         [NotNull]
         private static readonly Regex DanceAssetVaguePattern = new Regex(@"(?<position>\d{2})_dan", RegexOptions.CultureInvariant);
-
-        private const int InvalidDancePosition = -1;
 
     }
 }

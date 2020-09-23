@@ -1,4 +1,5 @@
 ﻿using Imas.Data.Serialized;
+using JetBrains.Annotations;
 using OpenMLTD.MillionDance.Core;
 
 namespace OpenMLTD.MillionDance {
@@ -89,6 +90,9 @@ namespace OpenMLTD.MillionDance {
         public FallbackFacialExpressionSource PreferredFacialExpressionSource { get; set; }
 
         public bool IgnoreSingControl { get; set; }
+
+        [CanBeNull]
+        public int? DesiredCameraNumber { get; set; }
 
         public enum FallbackFacialExpressionSource {
 

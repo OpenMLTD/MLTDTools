@@ -79,15 +79,8 @@
             this.txtOptExternalDanceAppealFile = new System.Windows.Forms.TextBox();
             this.cboOptAppealType = new System.Windows.Forms.ComboBox();
             this.label26 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.btnOptSelectFEMappings = new System.Windows.Forms.Button();
-            this.txtOptFEMappings = new System.Windows.Forms.TextBox();
             this.cboOptFormationNumber = new System.Windows.Forms.ComboBox();
             this.label24 = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.radFESourcePortrait = new System.Windows.Forms.RadioButton();
-            this.radFESourceLandscape = new System.Windows.Forms.RadioButton();
-            this.label19 = new System.Windows.Forms.Label();
             this.cboOptMotionNumber = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
             this.txtOptFixedFov = new System.Windows.Forms.TextBox();
@@ -125,17 +118,30 @@
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.lnkHelp = new System.Windows.Forms.LinkLabel();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.chkOptAlwaysSinging = new System.Windows.Forms.CheckBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.btnOptSelectFEMappings = new System.Windows.Forms.Button();
+            this.txtOptFEMappings = new System.Windows.Forms.TextBox();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.radFESourcePortrait = new System.Windows.Forms.RadioButton();
+            this.radFESourceLandscape = new System.Windows.Forms.RadioButton();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txtOptSpecifiedCameraNumber = new System.Windows.Forms.NumericUpDown();
+            this.chkOptSpecifyCameraNumber = new System.Windows.Forms.CheckBox();
+            this.label28 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtOptSpecifiedCameraNumber)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -365,6 +371,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(288, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -693,19 +700,16 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.chkOptAlwaysSinging);
+            this.tabPage2.Controls.Add(this.txtOptSpecifiedCameraNumber);
+            this.tabPage2.Controls.Add(this.chkOptSpecifyCameraNumber);
+            this.tabPage2.Controls.Add(this.label28);
             this.tabPage2.Controls.Add(this.label27);
             this.tabPage2.Controls.Add(this.btnOptSelectExternalDanceAppealFile);
             this.tabPage2.Controls.Add(this.txtOptExternalDanceAppealFile);
             this.tabPage2.Controls.Add(this.cboOptAppealType);
             this.tabPage2.Controls.Add(this.label26);
-            this.tabPage2.Controls.Add(this.label18);
-            this.tabPage2.Controls.Add(this.btnOptSelectFEMappings);
-            this.tabPage2.Controls.Add(this.txtOptFEMappings);
             this.tabPage2.Controls.Add(this.cboOptFormationNumber);
             this.tabPage2.Controls.Add(this.label24);
-            this.tabPage2.Controls.Add(this.panel4);
-            this.tabPage2.Controls.Add(this.label19);
             this.tabPage2.Controls.Add(this.cboOptMotionNumber);
             this.tabPage2.Controls.Add(this.label14);
             this.tabPage2.Controls.Add(this.txtOptFixedFov);
@@ -722,13 +726,13 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(409, 298);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Motions";
+            this.tabPage2.Text = "Dance & Camera";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(26, 138);
+            this.label27.Location = new System.Drawing.Point(26, 164);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(135, 13);
             this.label27.TabIndex = 21;
@@ -736,7 +740,7 @@
             // 
             // btnOptSelectExternalDanceAppealFile
             // 
-            this.btnOptSelectExternalDanceAppealFile.Location = new System.Drawing.Point(371, 134);
+            this.btnOptSelectExternalDanceAppealFile.Location = new System.Drawing.Point(371, 160);
             this.btnOptSelectExternalDanceAppealFile.Name = "btnOptSelectExternalDanceAppealFile";
             this.btnOptSelectExternalDanceAppealFile.Size = new System.Drawing.Size(32, 21);
             this.btnOptSelectExternalDanceAppealFile.TabIndex = 23;
@@ -745,7 +749,7 @@
             // 
             // txtOptExternalDanceAppealFile
             // 
-            this.txtOptExternalDanceAppealFile.Location = new System.Drawing.Point(172, 135);
+            this.txtOptExternalDanceAppealFile.Location = new System.Drawing.Point(172, 161);
             this.txtOptExternalDanceAppealFile.Name = "txtOptExternalDanceAppealFile";
             this.txtOptExternalDanceAppealFile.Size = new System.Drawing.Size(193, 20);
             this.txtOptExternalDanceAppealFile.TabIndex = 22;
@@ -759,7 +763,7 @@
             "Special appeal (スペシャルピール)",
             "Another appeal (アナザーアピール)",
             "Gorgeous appeal (ゴージャスアピール)"});
-            this.cboOptAppealType.Location = new System.Drawing.Point(109, 108);
+            this.cboOptAppealType.Location = new System.Drawing.Point(109, 134);
             this.cboOptAppealType.Name = "cboOptAppealType";
             this.cboOptAppealType.Size = new System.Drawing.Size(256, 21);
             this.cboOptAppealType.TabIndex = 20;
@@ -767,37 +771,11 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(7, 111);
+            this.label26.Location = new System.Drawing.Point(7, 137);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(96, 13);
             this.label26.TabIndex = 19;
             this.label26.Text = "Full combo appeal:";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(7, 186);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(139, 13);
-            this.label18.TabIndex = 11;
-            this.label18.Text = "Facial expression mappings:";
-            // 
-            // btnOptSelectFEMappings
-            // 
-            this.btnOptSelectFEMappings.Location = new System.Drawing.Point(371, 182);
-            this.btnOptSelectFEMappings.Name = "btnOptSelectFEMappings";
-            this.btnOptSelectFEMappings.Size = new System.Drawing.Size(32, 21);
-            this.btnOptSelectFEMappings.TabIndex = 13;
-            this.btnOptSelectFEMappings.Text = "...";
-            this.btnOptSelectFEMappings.UseVisualStyleBackColor = true;
-            // 
-            // txtOptFEMappings
-            // 
-            this.txtOptFEMappings.Location = new System.Drawing.Point(172, 183);
-            this.txtOptFEMappings.Name = "txtOptFEMappings";
-            this.txtOptFEMappings.Size = new System.Drawing.Size(193, 20);
-            this.txtOptFEMappings.TabIndex = 12;
-            this.txtOptFEMappings.Text = "Resources/facial_expr.json";
             // 
             // cboOptFormationNumber
             // 
@@ -857,46 +835,6 @@
             this.label24.TabIndex = 16;
             this.label24.Text = "Formation no. (affects position, facial && appeal):";
             // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.radFESourcePortrait);
-            this.panel4.Controls.Add(this.radFESourceLandscape);
-            this.panel4.Location = new System.Drawing.Point(170, 161);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(204, 24);
-            this.panel4.TabIndex = 15;
-            // 
-            // radFESourcePortrait
-            // 
-            this.radFESourcePortrait.AutoSize = true;
-            this.radFESourcePortrait.Location = new System.Drawing.Point(112, -1);
-            this.radFESourcePortrait.Name = "radFESourcePortrait";
-            this.radFESourcePortrait.Size = new System.Drawing.Size(83, 17);
-            this.radFESourcePortrait.TabIndex = 6;
-            this.radFESourcePortrait.Text = "Portrait view";
-            this.radFESourcePortrait.UseVisualStyleBackColor = true;
-            // 
-            // radFESourceLandscape
-            // 
-            this.radFESourceLandscape.AutoSize = true;
-            this.radFESourceLandscape.Checked = true;
-            this.radFESourceLandscape.Location = new System.Drawing.Point(3, -1);
-            this.radFESourceLandscape.Name = "radFESourceLandscape";
-            this.radFESourceLandscape.Size = new System.Drawing.Size(103, 17);
-            this.radFESourceLandscape.TabIndex = 5;
-            this.radFESourceLandscape.TabStop = true;
-            this.radFESourceLandscape.Text = "Landscape view";
-            this.radFESourceLandscape.UseVisualStyleBackColor = true;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(7, 162);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(161, 13);
-            this.label19.TabIndex = 14;
-            this.label19.Text = "Prefer facial expressions used in:";
-            // 
             // cboOptMotionNumber
             // 
             this.cboOptMotionNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -932,7 +870,7 @@
             // txtOptFixedFov
             // 
             this.txtOptFixedFov.Enabled = false;
-            this.txtOptFixedFov.Location = new System.Drawing.Point(109, 254);
+            this.txtOptFixedFov.Location = new System.Drawing.Point(109, 211);
             this.txtOptFixedFov.Name = "txtOptFixedFov";
             this.txtOptFixedFov.Size = new System.Drawing.Size(60, 20);
             this.txtOptFixedFov.TabIndex = 6;
@@ -995,7 +933,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Enabled = false;
-            this.label17.Location = new System.Drawing.Point(201, 257);
+            this.label17.Location = new System.Drawing.Point(201, 214);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(69, 13);
             this.label17.TabIndex = 10;
@@ -1005,7 +943,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Enabled = false;
-            this.label12.Location = new System.Drawing.Point(172, 257);
+            this.label12.Location = new System.Drawing.Point(172, 214);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(25, 13);
             this.label12.TabIndex = 7;
@@ -1014,7 +952,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(26, 257);
+            this.label11.Location = new System.Drawing.Point(26, 214);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(76, 13);
             this.label11.TabIndex = 5;
@@ -1024,7 +962,7 @@
             // 
             this.panel3.Controls.Add(this.radOptCamFormatMvd);
             this.panel3.Controls.Add(this.radOptCamFormatVmd);
-            this.panel3.Location = new System.Drawing.Point(102, 228);
+            this.panel3.Location = new System.Drawing.Point(102, 185);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(301, 24);
             this.panel3.TabIndex = 4;
@@ -1054,7 +992,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(7, 233);
+            this.label10.Location = new System.Drawing.Point(7, 190);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(78, 13);
             this.label10.TabIndex = 3;
@@ -1247,15 +1185,134 @@
             this.lnkHelp.TabStop = true;
             this.lnkHelp.Text = "Usage help";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.chkOptAlwaysSinging);
+            this.tabPage3.Controls.Add(this.label18);
+            this.tabPage3.Controls.Add(this.btnOptSelectFEMappings);
+            this.tabPage3.Controls.Add(this.txtOptFEMappings);
+            this.tabPage3.Controls.Add(this.panel4);
+            this.tabPage3.Controls.Add(this.label19);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(409, 298);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Facial Expressions";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
             // chkOptAlwaysSinging
             // 
             this.chkOptAlwaysSinging.AutoSize = true;
-            this.chkOptAlwaysSinging.Location = new System.Drawing.Point(10, 209);
+            this.chkOptAlwaysSinging.Location = new System.Drawing.Point(10, 57);
             this.chkOptAlwaysSinging.Name = "chkOptAlwaysSinging";
             this.chkOptAlwaysSinging.Size = new System.Drawing.Size(253, 17);
-            this.chkOptAlwaysSinging.TabIndex = 24;
+            this.chkOptAlwaysSinging.TabIndex = 30;
             this.chkOptAlwaysSinging.Text = "Always singing (ignore mute controls in scenario)";
             this.chkOptAlwaysSinging.UseVisualStyleBackColor = true;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(7, 34);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(139, 13);
+            this.label18.TabIndex = 25;
+            this.label18.Text = "Facial expression mappings:";
+            // 
+            // btnOptSelectFEMappings
+            // 
+            this.btnOptSelectFEMappings.Location = new System.Drawing.Point(371, 30);
+            this.btnOptSelectFEMappings.Name = "btnOptSelectFEMappings";
+            this.btnOptSelectFEMappings.Size = new System.Drawing.Size(32, 21);
+            this.btnOptSelectFEMappings.TabIndex = 27;
+            this.btnOptSelectFEMappings.Text = "...";
+            this.btnOptSelectFEMappings.UseVisualStyleBackColor = true;
+            // 
+            // txtOptFEMappings
+            // 
+            this.txtOptFEMappings.Location = new System.Drawing.Point(172, 31);
+            this.txtOptFEMappings.Name = "txtOptFEMappings";
+            this.txtOptFEMappings.Size = new System.Drawing.Size(193, 20);
+            this.txtOptFEMappings.TabIndex = 26;
+            this.txtOptFEMappings.Text = "Resources/facial_expr.json";
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.radFESourcePortrait);
+            this.panel4.Controls.Add(this.radFESourceLandscape);
+            this.panel4.Location = new System.Drawing.Point(170, 9);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(204, 24);
+            this.panel4.TabIndex = 29;
+            // 
+            // radFESourcePortrait
+            // 
+            this.radFESourcePortrait.AutoSize = true;
+            this.radFESourcePortrait.Location = new System.Drawing.Point(112, -1);
+            this.radFESourcePortrait.Name = "radFESourcePortrait";
+            this.radFESourcePortrait.Size = new System.Drawing.Size(83, 17);
+            this.radFESourcePortrait.TabIndex = 6;
+            this.radFESourcePortrait.Text = "Portrait view";
+            this.radFESourcePortrait.UseVisualStyleBackColor = true;
+            // 
+            // radFESourceLandscape
+            // 
+            this.radFESourceLandscape.AutoSize = true;
+            this.radFESourceLandscape.Checked = true;
+            this.radFESourceLandscape.Location = new System.Drawing.Point(3, -1);
+            this.radFESourceLandscape.Name = "radFESourceLandscape";
+            this.radFESourceLandscape.Size = new System.Drawing.Size(103, 17);
+            this.radFESourceLandscape.TabIndex = 5;
+            this.radFESourceLandscape.TabStop = true;
+            this.radFESourceLandscape.Text = "Landscape view";
+            this.radFESourceLandscape.UseVisualStyleBackColor = true;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(7, 10);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(161, 13);
+            this.label19.TabIndex = 28;
+            this.label19.Text = "Prefer facial expressions used in:";
+            // 
+            // txtOptSpecifiedCameraNumber
+            // 
+            this.txtOptSpecifiedCameraNumber.Enabled = false;
+            this.txtOptSpecifiedCameraNumber.Location = new System.Drawing.Point(294, 108);
+            this.txtOptSpecifiedCameraNumber.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.txtOptSpecifiedCameraNumber.Name = "txtOptSpecifiedCameraNumber";
+            this.txtOptSpecifiedCameraNumber.Size = new System.Drawing.Size(71, 20);
+            this.txtOptSpecifiedCameraNumber.TabIndex = 29;
+            this.txtOptSpecifiedCameraNumber.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // chkOptSpecifyCameraNumber
+            // 
+            this.chkOptSpecifyCameraNumber.AutoSize = true;
+            this.chkOptSpecifyCameraNumber.Location = new System.Drawing.Point(191, 109);
+            this.chkOptSpecifyCameraNumber.Name = "chkOptSpecifyCameraNumber";
+            this.chkOptSpecifyCameraNumber.Size = new System.Drawing.Size(61, 17);
+            this.chkOptSpecifyCameraNumber.TabIndex = 28;
+            this.chkOptSpecifyCameraNumber.Text = "Specify";
+            this.chkOptSpecifyCameraNumber.UseVisualStyleBackColor = true;
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(7, 110);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(178, 13);
+            this.label28.TabIndex = 27;
+            this.label28.Text = "Camera no. (for multi-camera songs):";
             // 
             // FMain
             // 
@@ -1287,14 +1344,17 @@
             this.panel1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtOptSpecifiedCameraNumber)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1313,8 +1373,6 @@
         private System.Windows.Forms.Button btnInputScenario;
 
         private System.Windows.Forms.Button btnInputHead;
-
-        private System.Windows.Forms.Button btnOptSelectFEMappings;
 
         private System.Windows.Forms.Button btnOutputCameraMotion;
 
@@ -1365,8 +1423,6 @@
         private System.Windows.Forms.Label label14;
 
         private System.Windows.Forms.Label label15;
-
-        private System.Windows.Forms.Label label18;
 
         private System.Windows.Forms.Label label2;
 
@@ -1420,8 +1476,6 @@
 
         private System.Windows.Forms.TextBox txtOptCharHeight;
 
-        private System.Windows.Forms.TextBox txtOptFEMappings;
-
         private System.Windows.Forms.TextBox txtOutputCameraMotion;
 
         private System.Windows.Forms.TextBox txtOutputCharAnim;
@@ -1429,11 +1483,6 @@
         private System.Windows.Forms.TextBox txtOutputModel;
 
         #endregion
-
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.RadioButton radFESourcePortrait;
-        private System.Windows.Forms.RadioButton radFESourceLandscape;
-        private System.Windows.Forms.Label label19;
         private System.Windows.Forms.ComboBox cboGameToonSkinNumber;
         private System.Windows.Forms.CheckBox chkGameToon;
         private System.Windows.Forms.CheckBox chkGenerateFacialExpression;
@@ -1467,6 +1516,17 @@
         private System.Windows.Forms.TextBox txtOptExternalDanceAppealFile;
         private System.Windows.Forms.ComboBox cboOptAppealType;
         private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.CheckBox chkOptAlwaysSinging;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button btnOptSelectFEMappings;
+        private System.Windows.Forms.TextBox txtOptFEMappings;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.RadioButton radFESourcePortrait;
+        private System.Windows.Forms.RadioButton radFESourceLandscape;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.NumericUpDown txtOptSpecifiedCameraNumber;
+        private System.Windows.Forms.CheckBox chkOptSpecifyCameraNumber;
+        private System.Windows.Forms.Label label28;
     }
 }
